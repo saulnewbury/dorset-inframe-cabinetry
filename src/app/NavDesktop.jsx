@@ -20,7 +20,7 @@ export default function NavDesktop() {
   }, [pathname])
 
   return (
-    <nav className='bg-white fixed w-[100vw] px-[37px] h-[4.5rem] flex justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid'>
+    <nav className='hidden lg:flex bg-white fixed w-[100vw] px-[37px] h-[4.5rem] justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid'>
       <div className='h-[max-content]'>
         <Link href='/'>
           <span className='font-medium cursor-pointer'>

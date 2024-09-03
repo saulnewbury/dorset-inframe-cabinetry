@@ -3,24 +3,30 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
-
 import { createPortal } from 'react-dom'
 
+// Style sheet
 import './nav.css'
 
+// Components
 import SvgIcon from '@/lib/components/SvgIcon'
-
-import { menuMob } from '@/lib/menuMob'
-
 import Dropdown from '@/lib/components/Dropdown'
 
+// Static content
+import { menuMob } from '@/lib/menuMob'
+
 export default function NavMobile() {
+  const [isVisible, setIsVisible] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
     console.log(pathname)
   }, [pathname])
+
+  function toggleNav() {
+    setIsVisible(!isVisible)
+  }
 
   return (
     <nav className='bg-white fixed w-[100vw] px-[37px] h-[4.5rem] flex justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid'>
@@ -47,7 +53,7 @@ export default function NavMobile() {
 
         <div className='h-full w-[1px] bg-lightGrey mr-[36px]'></div>
 
-        <button className=' h-[30px] w-[30px] relative'>
+        <button className=' h-[30px] w-[30px] relative' onClick={toggleNav}>
           <div className='h-[1px] w-full absolute bg-black top-[7px]'></div>
           <div className='h-[1px] w-full absolute bg-black bottom-[14.5px]'></div>
           <div className='h-[1px] w-full absolute bg-black bottom-[7px]'></div>
@@ -55,7 +61,11 @@ export default function NavMobile() {
       </div>
 
       {createPortal(
-        <div className='mob-nav fixed top-[4.5rem] bg-white font-medium text-[14px] leading-8'>
+        <div
+          className={`mob-nav fixed top-[4.5rem] bg-white font-medium text-[14px] leading-8 lg:hidden ${
+            !isVisible ? 'hidden' : 'block'
+          }`}
+        >
           <div className='whitespace-nowrap'>
             {menuMob.map((item, i) => {
               return (
