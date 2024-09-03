@@ -9,9 +9,9 @@ import SvgIcon from '@/lib/components/SvgIcon'
 
 import { menu } from '@/lib/menu'
 
-import Dropdown from '@/lib/components/Dropdown'
+import DropdownDesktop from '@/lib/components/DropdownDesktop'
 
-export default function Nav() {
+export default function NavDesktop() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
 
@@ -20,7 +20,7 @@ export default function Nav() {
   }, [pathname])
 
   return (
-    <nav className='bg-white fixed w-[100vw] px-[37px] h-[5rem] flex justify-between items-center font-medium text-[16px] border-b border-lightGrey border-solid'>
+    <nav className='bg-white fixed w-[100vw] px-[37px] h-[4.5rem] flex justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid'>
       <div className='h-[max-content]'>
         <Link href='/'>
           <span className='font-medium cursor-pointer'>
@@ -46,7 +46,7 @@ export default function Nav() {
               >
                 <span>{item.name}</span>
               </Link>
-              <Dropdown
+              <DropdownDesktop
                 className='dropdown'
                 items={item.submenu}
                 isOpen={item.url === isOpen} // compares instance url with state url

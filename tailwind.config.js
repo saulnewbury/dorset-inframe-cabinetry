@@ -20,7 +20,7 @@ module.exports = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
       },
       colors: {
-        lightGrey: 'hsl(220, 3%, 85%)'
+        lightGrey: 'hsl(220, 3%, 90%)'
       }
     }
   },

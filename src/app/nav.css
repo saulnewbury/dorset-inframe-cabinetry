@@ -25,3 +25,8 @@ nav .link-container .link.active::after {
 .flyout-menu-item:hover {
   color: black;
 }
+
+.mob-nav {
+  height: calc(100% - 4.5rem);
+  width: calc(100%);
+}
