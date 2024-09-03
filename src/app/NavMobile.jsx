@@ -58,7 +58,7 @@ export default function NavMobile() {
         <div className='mob-nav fixed top-[4.5rem] bg-white font-medium text-[14px] leading-8'>
           <div className='whitespace-nowrap'>
             {menuMob.map((item, i) => {
-              return item.submenu ? (
+              return (
                 <div
                   key={i}
                   className='link-container relative border-lightGrey h-full'
@@ -78,23 +78,13 @@ export default function NavMobile() {
                   >
                     <span className='px-[37px]'>{item.name}</span>
                   </Link>
-                  <Dropdown
-                    isMobile
-                    items={item.submenu}
-                    isOpen={item.url === isOpen} // compares instance url with state url
-                    // closeMenu={() => setIsOpen(false)}
-                  />
-                </div>
-              ) : (
-                <div key={i} className='link-container border-lightGrey h-full'>
-                  <Link
-                    className={`link ${
-                      pathname.startsWith(item.url) ? 'active' : ''
-                    } cursor-pointer flex items-center border-b border-lightGrey h-full py-[10px]`}
-                    href={item.url}
-                  >
-                    <span className='px-[37px]'>{item.name}</span>
-                  </Link>
+                  {item.submenu && (
+                    <Dropdown
+                      isMobile
+                      items={item.submenu}
+                      isOpen={item.url === isOpen} // compares instance url with state url
+                    />
+                  )}
                 </div>
               )
             })}
