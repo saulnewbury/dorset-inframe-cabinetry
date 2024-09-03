@@ -63,10 +63,10 @@ export default function NavMobile() {
                   key={i}
                   className='link-container relative border-lightGrey h-full'
                   onClick={() => {
-                    if (!isOpen) {
-                      setIsOpen(item.url)
-                    } else {
+                    if (item.url === isOpen) {
                       setIsOpen(false)
+                    } else {
+                      setIsOpen(item.url)
                     }
                   }}
                 >
@@ -82,7 +82,7 @@ export default function NavMobile() {
                     isMobile
                     items={item.submenu}
                     isOpen={item.url === isOpen} // compares instance url with state url
-                    closeMenu={() => setIsOpen(false)}
+                    // closeMenu={() => setIsOpen(false)}
                   />
                 </div>
               ) : (
