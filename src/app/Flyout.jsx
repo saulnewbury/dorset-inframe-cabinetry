@@ -3,7 +3,7 @@ import '@/nav.css'
 
 import { useState } from 'react'
 
-export default function Flyout({ items, closeMenu }) {
+export default function Flyout({ items }) {
   const [entered, setEntered] = useState()
 
   return (
@@ -19,7 +19,6 @@ export default function Flyout({ items, closeMenu }) {
             className='flyout-menu-item'
             key={i}
             href={item.url}
-            onClick={closeMenu}
             onMouseEnter={() => setEntered(true)}
           >
             {item.name}

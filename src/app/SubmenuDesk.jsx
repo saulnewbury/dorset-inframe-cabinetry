@@ -4,14 +4,13 @@ import { useState } from 'react'
 import Link from 'next/link'
 import '@/nav.css'
 
-import Flyout from '@/lib/components/Flyout.jsx'
+import Flyout from './Flyout.jsx'
 
 export default function SubmenuDesk({ items = '#', isOpen, closeMenu }) {
   const [flyout, setFlyout] = useState(false)
   const [submenu, setSubmenu] = useState(undefined)
-  const [entered, setEntered] = useState(false)
 
-  function handleMouseEnter(e, flyout) {
+  function handleMouseEnter(flyout) {
     if (flyout) {
       setFlyout(true)
       setSubmenu(flyout)
@@ -24,10 +23,7 @@ export default function SubmenuDesk({ items = '#', isOpen, closeMenu }) {
   }
 
   return (
-    <div
-      className='submenu-container leading-8 absolute w-[max-content] translate-y-[100%] bottom-0'
-      onMouseLeave={() => setEntered(false)}
-    >
+    <div className='submenu-container leading-8 absolute w-[max-content] translate-y-[100%] bottom-0'>
       <div className={`${isOpen ? 'block' : 'hidden'} pt-6 flex flex-col`}>
         {items.map((item, i) => {
           return item.flyout ? (
@@ -36,12 +32,12 @@ export default function SubmenuDesk({ items = '#', isOpen, closeMenu }) {
               data-id={i}
               className={`submenu-item flex relative`}
               onMouseEnter={(e) => {
-                handleMouseEnter(e, item.flyout)
-                setEntered(true)
+                handleMouseEnter(item.flyout)
               }}
               onMouseLeave={handleMouseLeave}
+              onClick={closeMenu}
             >
-              <Link key={i} href={item.url} onClick={closeMenu}>
+              <Link key={i} href={item.url}>
                 {item.name}
               </Link>
               {flyout && <Flyout items={submenu} />}
@@ -50,9 +46,9 @@ export default function SubmenuDesk({ items = '#', isOpen, closeMenu }) {
             <div
               key={i}
               className={`submenu-item flex relative`}
-              onMouseEnter={() => setEntered(true)}
+              onClick={closeMenu}
             >
-              <Link key={i} href={item.url} onClick={closeMenu}>
+              <Link key={i} href={item.url}>
                 {item.name}
               </Link>
             </div>
