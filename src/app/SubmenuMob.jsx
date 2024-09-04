@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import '@/nav.css'
 
 // let temp
-export default function SubmenuMob({ items = '#', isOpen }) {
+export default function SubmenuMob({ items = '#', isOpen, hideMenu }) {
   const pathname = usePathname()
 
   return (
@@ -16,7 +16,6 @@ export default function SubmenuMob({ items = '#', isOpen }) {
         } border-b border-lightGrey w-full py-[14px] flex flex-col`}
       >
         {items.map((item, i) => {
-          console.log(item.url)
           return (
             <div
               key={i}
@@ -24,7 +23,15 @@ export default function SubmenuMob({ items = '#', isOpen }) {
                 pathname.endsWith(item.url) ? 'active' : ''
               } flex relative text-black px-[37px] `}
             >
-              <Link className='w-full' key={i} href={item.url}>
+              <Link
+                className='w-full'
+                key={i}
+                href={item.url}
+                onClick={() => {
+                  const str = pathname.split('/').slice(-1)[0]
+                  if (item.url.endsWith('/' + str)) hideMenu()
+                }}
+              >
                 {item.name}
               </Link>
             </div>

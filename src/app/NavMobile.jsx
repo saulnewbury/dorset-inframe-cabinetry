@@ -17,10 +17,10 @@ import SubmenuMob from './SubmenuMob'
 import { menuMob } from '@/lib/menu'
 
 export default function NavMobile() {
-  const [isVisible, setIsVisible] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
+  const [isVisible, setIsVisible] = useState(false) // Entire menu
+  const [isOpen, setIsOpen] = useState(false) // Submenu
 
-  let pathname = usePathname()
+  const pathname = usePathname()
 
   useEffect(() => {
     setIsVisible(false)
@@ -78,6 +78,10 @@ export default function NavMobile() {
                     <Link
                       className={`link cursor-pointer flex items-center relative border-b border-lightGrey h-full py-[10px]`}
                       href={item.url}
+                      onClick={() => {
+                        const str = pathname.split('/').slice(-1)[0]
+                        if (item.url.endsWith('/' + str)) setIsVisible(false)
+                      }}
                     >
                       <span className='px-[37px]'>{item.name}</span>
                     </Link>
@@ -100,6 +104,9 @@ export default function NavMobile() {
                       isMobile
                       items={item.submenu}
                       isOpen={item.name === isOpen} // compares instance name with state name
+                      hideMenu={() => {
+                        setIsVisible(false)
+                      }}
                     />
                   )}
                 </div>
