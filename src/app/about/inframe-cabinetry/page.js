@@ -3,5 +3,5 @@
 import HeroText from '@/lib/components/HeroText'
 
 export default function page() {
-  return <HeroText markup={'inframe cabinetry'} />
+  return <HeroText markup={'Inframe cabinetry'} />
 }

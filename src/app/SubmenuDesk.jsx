@@ -6,7 +6,7 @@ import '@/nav.css'
 
 import Flyout from './Flyout.jsx'
 
-export default function SubmenuDesk({ items = '#', isOpen, closeMenu }) {
+export default function SubmenuDesk({ items = '#', isOpen }) {
   const [flyout, setFlyout] = useState(false)
   const [submenu, setSubmenu] = useState(undefined)
 
@@ -31,11 +31,10 @@ export default function SubmenuDesk({ items = '#', isOpen, closeMenu }) {
               key={i}
               data-id={i}
               className={`submenu-item flex relative`}
-              onMouseEnter={(e) => {
+              onMouseEnter={() => {
                 handleMouseEnter(item.flyout)
               }}
               onMouseLeave={handleMouseLeave}
-              onClick={closeMenu}
             >
               <Link key={i} href={item.url}>
                 {item.name}
@@ -43,11 +42,7 @@ export default function SubmenuDesk({ items = '#', isOpen, closeMenu }) {
               {flyout && <Flyout items={submenu} />}
             </div>
           ) : (
-            <div
-              key={i}
-              className={`submenu-item flex relative`}
-              onClick={closeMenu}
-            >
+            <div key={i} className={`submenu-item flex relative`}>
               <Link key={i} href={item.url}>
                 {item.name}
               </Link>

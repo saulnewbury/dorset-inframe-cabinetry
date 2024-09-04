@@ -37,6 +37,10 @@ nav .backpanel:has(+ .links .link-container:hover) {
   /* color: black; reverse */
   @apply text-[grey];
 }
+.submenu-container .submenu-item.active {
+  /* color: black; reverse */
+  @apply text-[grey];
+}
 
 /* Flyout (desktop only) */
 .flyout-menu-item {
