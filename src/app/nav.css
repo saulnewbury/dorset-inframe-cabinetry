@@ -10,6 +10,7 @@ nav .link:hover {
 
 nav .link::after {
   position: absolute;
+  top: 1px;
   content: '';
   height: 100%;
   width: 100%;
