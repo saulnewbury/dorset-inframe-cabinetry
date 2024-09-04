@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './nav.css'
 
 import SvgIcon from '@/lib/components/SvgIcon'
@@ -25,7 +25,9 @@ export default function NavDesktop() {
         </Link>
       </div>
 
-      <div className='h-full flex items-center'>
+      <div className='backpanel bg-white h-[360px] w-full fixed top-[72px] left-0'></div>
+
+      <div className='links h-full flex items-center'>
         {menuDesk.map((item, i) => {
           return item.submenu ? (
             <div

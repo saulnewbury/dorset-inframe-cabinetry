@@ -1,6 +1,13 @@
+/* Desktop Nav */
+
 nav .link {
   position: relative;
 }
+
+nav .link:hover {
+  @apply text-[grey];
+}
+
 nav .link::after {
   position: absolute;
   content: '';
@@ -18,21 +25,26 @@ nav .link-container .link.active::after {
   opacity: 1;
 }
 
+nav .backpanel {
+  opacity: 0;
+}
+nav .backpanel:has(+ .links .link-container:hover) {
+  opacity: 1;
+}
+
+/* Submenu */
 .submenu-container .submenu-item:hover {
   /* color: black; reverse */
   @apply text-[grey];
 }
 
+/* Flyout (desktop only) */
 .flyout-menu-item {
   /* color: black; reverse */
   @apply text-black;
 }
 .flyout-menu-item:hover {
   /* color: black; reverse */
-  @apply text-[grey];
-}
-
-.link:hover {
   @apply text-[grey];
 }
 
