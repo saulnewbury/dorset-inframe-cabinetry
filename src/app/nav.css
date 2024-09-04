@@ -19,11 +19,21 @@ nav .link-container .link.active::after {
 }
 
 .submenu-container .submenu-item:hover {
-  color: black;
+  /* color: black; reverse */
+  @apply text-[grey];
 }
 
+.flyout-menu-item {
+  /* color: black; reverse */
+  @apply text-black;
+}
 .flyout-menu-item:hover {
-  color: black;
+  /* color: black; reverse */
+  @apply text-[grey];
+}
+
+.link:hover {
+  @apply text-[grey];
 }
 
 .mob-nav {

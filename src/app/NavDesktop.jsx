@@ -2,22 +2,18 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './nav.css'
 
 import SvgIcon from '@/lib/components/SvgIcon'
 
-import { menu } from '@/lib/menu'
+import { menuDesk } from '@/lib/menu'
 
-import DropdownDesktop from '@/lib/components/DropdownDesktop'
+import SubmenuDesk from '@/lib/components/SubmenuDesk'
 
 export default function NavDesktop() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
-
-  useEffect(() => {
-    console.log(pathname)
-  }, [pathname])
 
   return (
     <nav className='hidden lg:flex bg-white fixed w-[100vw] px-[37px] h-[4.5rem] justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid'>
@@ -30,7 +26,7 @@ export default function NavDesktop() {
       </div>
 
       <div className='h-full flex items-center'>
-        {menu.map((item, i) => {
+        {menuDesk.map((item, i) => {
           return item.submenu ? (
             <div
               key={i}
@@ -46,7 +42,7 @@ export default function NavDesktop() {
               >
                 <span>{item.name}</span>
               </Link>
-              <DropdownDesktop
+              <SubmenuDesk
                 className='dropdown'
                 items={item.submenu}
                 isOpen={item.url === isOpen} // compares instance url with state url

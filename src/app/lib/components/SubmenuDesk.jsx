@@ -6,7 +6,7 @@ import '@/nav.css'
 
 import Flyout from '@/lib/components/Flyout.jsx'
 
-export default function Dropdown({ items = '#', isOpen, closeMenu, isMobile }) {
+export default function SubmenuDesk({ items = '#', isOpen, closeMenu }) {
   const [flyout, setFlyout] = useState(false)
   const [submenu, setSubmenu] = useState(undefined)
   const [entered, setEntered] = useState(false)
@@ -25,23 +25,31 @@ export default function Dropdown({ items = '#', isOpen, closeMenu, isMobile }) {
 
   return (
     <div
-      className={`${
-        !isMobile ? 'absolute translate-y-[100%] w-[max-content]' : ''
-      } submenu-container leading-8 bottom-0`}
+      className='submenu-container leading-8 absolute w-[max-content] translate-y-[100%] bottom-0'
       onMouseLeave={() => setEntered(false)}
     >
-      <div
-        className={`${isOpen ? 'block' : 'hidden'} ${
-          isMobile ? 'border-b border-lightGrey w-full py-[14px]' : 'pt-6'
-        } flex flex-col`}
-      >
+      <div className={`${isOpen ? 'block' : 'hidden'} pt-6 flex flex-col`}>
         {items.map((item, i) => {
-          return (
+          return item.flyout ? (
             <div
               key={i}
-              className={`${
-                entered ? 'text-[grey]' : ''
-              } submenu-item flex relative ${isMobile ? 'px-[37px]' : ''}`}
+              data-id={i}
+              className={`submenu-item flex relative`}
+              onMouseEnter={(e) => {
+                handleMouseEnter(e, item.flyout)
+                setEntered(true)
+              }}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Link key={i} href={item.url} onClick={closeMenu}>
+                {item.name}
+              </Link>
+              {flyout && <Flyout items={submenu} />}
+            </div>
+          ) : (
+            <div
+              key={i}
+              className={`submenu-item flex relative`}
               onMouseEnter={() => setEntered(true)}
             >
               <Link key={i} href={item.url} onClick={closeMenu}>
