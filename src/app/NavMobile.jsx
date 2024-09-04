@@ -1,16 +1,17 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { usePathname } from 'next/navigation'
 
 // Style sheet
 import './nav.css'
 
 // Components
 import SvgIcon from '@/lib/components/SvgIcon'
-import MenuButton from './lib/components/MenuButton'
-import SubmenuMob from './lib/components/SubmenuMob'
+import MenuButton from './MenuButton'
+import SubmenuMob from './SubmenuMob'
 
 // Static content
 import { menuMob } from '@/lib/menu'
@@ -19,8 +20,17 @@ export default function NavMobile() {
   const [isVisible, setIsVisible] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
+  let pathname = usePathname()
+
+  useEffect(() => {
+    setIsVisible(false)
+  }, [pathname])
+
   function toggleNav() {
     setIsVisible(!isVisible)
+    if (!isVisible) {
+      setIsOpen(false)
+    }
   }
 
   return (
@@ -34,17 +44,17 @@ export default function NavMobile() {
       </div>
 
       <div className='h-full flex items-center'>
-        <div className='mr-[20px] md:mr-[36px] inline-block relative cursor-pointer'>
+        <div className='mr-[20px] sm:mr-[36px] inline-block relative cursor-pointer'>
           <SvgIcon shape='list' />
           <div className='w-[0.9rem] h-[0.9rem] bg-[black] rounded-full absolute bottom-[4px] -right-[7px] flex justify-center items-center'>
             <span className='text-[#ffffff] text-[0.5rem] font-bold'>25</span>
           </div>
         </div>
 
-        <div className='mr-[20px] md:mr-[36px] inline-block cursor-pointer'>
+        {/* <div className='mr-[20px] md:mr-[36px] inline-block cursor-pointer'>
           <span className='mr-[5px]'>Login</span>
           <SvgIcon shape='login' />
-        </div>
+        </div> */}
 
         <div className='h-full w-[1px] bg-lightGrey mr-[20px] sm:mr-[37px]'></div>
 
@@ -59,18 +69,10 @@ export default function NavMobile() {
         >
           <div className='whitespace-nowrap'>
             {menuMob.map((item, i) => {
-              console.log(item.url)
               return (
                 <div
                   key={i}
                   className='link-container relative border-lightGrey h-full hover:text-[grey]'
-                  onClick={() => {
-                    if (item.name === isOpen) {
-                      setIsOpen(false)
-                    } else {
-                      setIsOpen(item.name)
-                    }
-                  }}
                 >
                   {item.url ? (
                     <Link
@@ -81,6 +83,13 @@ export default function NavMobile() {
                     </Link>
                   ) : (
                     <span
+                      onClick={() => {
+                        if (item.name === isOpen) {
+                          setIsOpen(false)
+                        } else {
+                          setIsOpen(item.name)
+                        }
+                      }}
                       className={`link cursor-pointer flex items-center relative border-b border-lightGrey h-full py-[10px]`}
                     >
                       <span className='px-[37px]'>{item.name}</span>
@@ -90,7 +99,7 @@ export default function NavMobile() {
                     <SubmenuMob
                       isMobile
                       items={item.submenu}
-                      isOpen={item.name === isOpen} // compares instance url with state url
+                      isOpen={item.name === isOpen} // compares instance name with state name
                     />
                   )}
                 </div>

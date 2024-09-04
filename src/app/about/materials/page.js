@@ -1,5 +1,4 @@
 'use client'
-
 import HeroText from '@/lib/components/HeroText'
 import HeroImage from '@/lib/components/HeroImage'
 

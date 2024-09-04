@@ -9,7 +9,7 @@ import SvgIcon from '@/lib/components/SvgIcon'
 
 import { menuDesk } from '@/lib/menu'
 
-import SubmenuDesk from '@/lib/components/SubmenuDesk'
+import SubmenuDesk from '@/SubmenuDesk'
 
 export default function NavDesktop() {
   const [isOpen, setIsOpen] = useState(false)
@@ -63,17 +63,17 @@ export default function NavDesktop() {
           )
         })}
 
-        <span className='mr-[36px] inline-block relative cursor-pointer'>
+        <span className='inline-block relative cursor-pointer'>
           <SvgIcon shape='list' />
           <div className='w-[0.9rem] h-[0.9rem] bg-[black] rounded-full absolute bottom-[4px] -right-[7px] flex justify-center items-center'>
             <span className='text-[#ffffff] text-[0.5rem] font-bold'>25</span>
           </div>
         </span>
 
-        <span className='inline-block cursor-pointer'>
+        {/* <span className='inline-block cursor-pointer'>
           <span className='mr-[5px]'>Login</span>
           <SvgIcon shape='login' />
-        </span>
+        </span> */}
       </div>
     </nav>
   )

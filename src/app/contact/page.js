@@ -1,5 +1,7 @@
-import React from 'react'
+'use client'
+
+import HeroText from '@/lib/components/HeroText'
 
 export default function page() {
-  return <div>contact</div>
+  return <HeroText markup={'Contact'} />
 }
