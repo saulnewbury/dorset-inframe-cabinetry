@@ -16,7 +16,6 @@ export default function NavDesktop() {
   const pathname = usePathname()
 
   useEffect(() => {
-    console.log(pathname.split('/').slice(1).length > 1)
     setIsOpen(false)
   }, [pathname])
 
