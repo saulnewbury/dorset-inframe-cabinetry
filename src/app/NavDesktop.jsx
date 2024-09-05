@@ -13,15 +13,20 @@ import SubmenuDesk from '@/SubmenuDesk'
 
 export default function NavDesktop() {
   const [isOpen, setIsOpen] = useState(false)
+  const [backpanel, setBackpanel] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
     setIsOpen(false)
+    setBackpanel(false)
   }, [pathname])
 
   return (
     <>
       <nav className='hidden lg:flex bg-white fixed w-[100vw] px-[37px] h-[4.5rem] justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid'>
+        {isOpen && (
+          <div className='backpanel bg-[white] h-[328px] w-full fixed top-[72px] left-0 z-40'></div>
+        )}
         <div className='h-[max-content]'>
           <Link href='/'>
             <span className='font-medium cursor-pointer'>
@@ -30,18 +35,20 @@ export default function NavDesktop() {
           </Link>
         </div>
 
-        {isOpen && (
-          <div className='backpanel bg-white h-[360px] w-full fixed top-[72px] left-0'></div>
-        )}
-
         <div className='links h-full flex items-center'>
           {menuDesk.map((item, i) => {
-            return item.submenu ? (
+            return (
               <div
                 key={i}
                 className='link-container h-full'
-                onMouseEnter={() => setIsOpen(item.name)}
-                onMouseLeave={() => setIsOpen(false)}
+                onMouseEnter={() => {
+                  setIsOpen(item.name)
+                  setBackpanel(true)
+                }}
+                onMouseLeave={() => {
+                  setIsOpen(false)
+                  setBackpanel(false)
+                }}
               >
                 <Link
                   className={`link ${
@@ -51,23 +58,14 @@ export default function NavDesktop() {
                 >
                   <span>{item.name}</span>
                 </Link>
-                <SubmenuDesk
-                  className='dropdown'
-                  items={item.submenu}
-                  isOpen={item.name === isOpen} // compares instance url with state url
-                  closeMenu={() => setIsOpen(false)}
-                />
-              </div>
-            ) : (
-              <div key={i} className='link-container h-full'>
-                <Link
-                  className={`link ${
-                    pathname.startsWith(item.url) ? 'active' : ''
-                  } cursor-pointer mr-[36px] h-full flex items-center`}
-                  href={item.url}
-                >
-                  <span>{item.name}</span>
-                </Link>
+                {item.submenu && (
+                  <SubmenuDesk
+                    className='dropdown'
+                    items={item.submenu}
+                    isOpen={item.name === isOpen} // compares instance url with state url
+                    closeMenu={() => setIsOpen(false)}
+                  />
+                )}
               </div>
             )
           })}

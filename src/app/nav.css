@@ -16,6 +16,7 @@ nav .link::after {
   width: 100%;
   border-bottom: solid 1px black;
   opacity: 0;
+  @apply z-[45];
 }
 
 nav .link-container:hover .link::after {

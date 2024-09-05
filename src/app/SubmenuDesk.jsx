@@ -23,7 +23,7 @@ export default function SubmenuDesk({ items = '#', isOpen }) {
   }
 
   return (
-    <div className='submenu-container leading-8 absolute w-[max-content] translate-y-[100%] bottom-0'>
+    <div className='submenu-container leading-8 absolute w-[max-content] translate-y-[100%] bottom-0 z-50'>
       <div className={`${isOpen ? 'block' : 'hidden'} pt-6 flex flex-col`}>
         {items.map((item, i) => {
           return item.flyout ? (
