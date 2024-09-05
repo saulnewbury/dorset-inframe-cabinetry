@@ -13,12 +13,10 @@ import SubmenuDesk from '@/SubmenuDesk'
 
 export default function NavDesktop() {
   const [isOpen, setIsOpen] = useState(false)
-  const [backpanel, setBackpanel] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
     setIsOpen(false)
-    setBackpanel(false)
   }, [pathname])
 
   return (
@@ -41,14 +39,8 @@ export default function NavDesktop() {
               <div
                 key={i}
                 className='link-container h-full'
-                onMouseEnter={() => {
-                  setIsOpen(item.name)
-                  setBackpanel(true)
-                }}
-                onMouseLeave={() => {
-                  setIsOpen(false)
-                  setBackpanel(false)
-                }}
+                onMouseEnter={() => setIsOpen(item.name)}
+                onMouseLeave={() => setIsOpen(false)}
               >
                 <Link
                   className={`link ${
@@ -84,7 +76,7 @@ export default function NavDesktop() {
         </div>
       </nav>
       {pathname.split('/').slice(1).length > 1 && (
-        <div className='fixed font-medium text-[14px] top-[4.5rem] py-2 pl-[20px] sm:pl-[37px]'>
+        <div className='fixed font-normal text-[14px] top-[4.5rem] py-[0.8rem] pl-[20px] sm:pl-[37px]'>
           {[pathname.split('/')].shift().map((crumb, i, arr) => {
             const text = crumb.charAt(0).toUpperCase() + crumb.slice(1)
             if (i > 0 && i < arr.length - 1) {
