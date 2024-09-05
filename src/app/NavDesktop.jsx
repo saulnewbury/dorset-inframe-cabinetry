@@ -5,11 +5,12 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import './nav.css'
 
-import SvgIcon from '@/lib/components/SvgIcon'
+import SvgIcon from '@/components/SvgIcon'
 
-import { menuDesk } from '@/lib/menu'
+import { menuDesk } from '@/lib/data/menu'
 
-import SubmenuDesk from '@/SubmenuDesk'
+import SubmenuDesk from './SubmenuDesk'
+import Breadcrumbs from './Breadcrumbs'
 
 export default function NavDesktop() {
   const [isOpen, setIsOpen] = useState(false)
@@ -75,18 +76,7 @@ export default function NavDesktop() {
         </span> */}
         </div>
       </nav>
-      {pathname.split('/').slice(1).length > 1 && (
-        <div className='fixed font-normal text-[14px] top-[4.5rem] py-[0.8rem] pl-[20px] sm:pl-[37px]'>
-          {[pathname.split('/')].shift().map((crumb, i, arr) => {
-            const text = crumb.charAt(0).toUpperCase() + crumb.slice(1)
-            if (i > 0 && i < arr.length - 1) {
-              return <span>{text}&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-            } else {
-              return <span>{text}</span>
-            }
-          })}
-        </div>
-      )}
+      <Breadcrumbs />
     </>
   )
 }

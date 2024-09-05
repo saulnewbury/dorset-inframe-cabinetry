@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 export default function HeroImage({ src }) {
   return (
-    <div className='h-[80vh] relative'>
+    <div className='min-h-[80vh] relative'>
       <Image
         fill
         priority

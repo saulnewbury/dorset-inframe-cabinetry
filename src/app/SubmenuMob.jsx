@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import '@/nav.css'
+import './nav.css'
 
 // let temp
 export default function SubmenuMob({ items = '#', isOpen, hideMenu }) {

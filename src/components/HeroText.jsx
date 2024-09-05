@@ -1,6 +1,6 @@
 'use client'
 
-import createMarkup from '../helpers/createMarkup.js'
+import createMarkup from '@/lib/helpers/createMarkup.js'
 
 export default function HeroText({ markup }) {
   return (

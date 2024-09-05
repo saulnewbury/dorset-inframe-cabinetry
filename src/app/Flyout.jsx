@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import '@/nav.css'
+import './nav.css'
 
 import { useState } from 'react'
 

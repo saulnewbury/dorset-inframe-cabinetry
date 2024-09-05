@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import '@/nav.css'
+import './nav.css'
 
 import Flyout from './Flyout.jsx'
 

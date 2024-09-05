@@ -1,6 +1,6 @@
 'use client'
 
-import HeroText from '@/lib/components/HeroText'
+import HeroText from '@/components/HeroText'
 
 export default function page() {
   return <HeroText markup={'All products'} />

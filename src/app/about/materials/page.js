@@ -1,6 +1,6 @@
 'use client'
-import HeroText from '@/lib/components/HeroText'
-import HeroImage from '@/lib/components/HeroImage'
+import HeroText from '@/components/HeroText'
+import HeroImage from '@/components/HeroImage'
 import materials from '@/lib/images/materials.jpg'
 
 export default function page() {

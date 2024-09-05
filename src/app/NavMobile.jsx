@@ -9,18 +9,23 @@ import { usePathname } from 'next/navigation'
 import './nav.css'
 
 // Components
-import SvgIcon from '@/lib/components/SvgIcon'
+import SvgIcon from '@/components/SvgIcon'
 import MenuButton from './MenuButton'
 import SubmenuMob from './SubmenuMob'
 
 // Static content
-import { menuMob } from '@/lib/menu'
+import { menuMob } from '@/lib/data/menu'
 
 export default function NavMobile() {
+  const [portal, setPortal] = useState(false)
   const [isVisible, setIsVisible] = useState(false) // Entire menu
   const [isOpen, setIsOpen] = useState(false) // Submenu
 
   const pathname = usePathname()
+
+  useEffect(() => {
+    setPortal(true)
+  }, [])
 
   useEffect(() => {
     setIsVisible(false)
@@ -61,61 +66,62 @@ export default function NavMobile() {
         <MenuButton isVisible={isVisible} toggleNav={toggleNav} />
       </div>
 
-      {createPortal(
-        <div
-          className={`mob-nav fixed top-[4.5rem] bg-white z-[100] font-medium text-[14px] leading-8 lg:hidden ${
-            !isVisible ? 'hidden' : 'block'
-          }`}
-        >
-          <div className='whitespace-nowrap'>
-            {menuMob.map((item, i) => {
-              return (
-                <div
-                  key={i}
-                  className='link-container relative border-lightGrey h-full hover:text-[grey]'
-                >
-                  {item.url ? (
-                    <Link
-                      className={`link cursor-pointer flex items-center relative border-b border-lightGrey h-full py-[10px]`}
-                      href={item.url}
-                      onClick={() => {
-                        const str = pathname.split('/').slice(-1)[0]
-                        if (item.url.endsWith('/' + str)) setIsVisible(false)
-                      }}
-                    >
-                      <span className='px-[37px]'>{item.name}</span>
-                    </Link>
-                  ) : (
-                    <span
-                      onClick={() => {
-                        if (item.name === isOpen) {
-                          setIsOpen(false)
-                        } else {
-                          setIsOpen(item.name)
-                        }
-                      }}
-                      className={`link cursor-pointer flex items-center relative border-b border-lightGrey h-full py-[10px]`}
-                    >
-                      <span className='px-[37px]'>{item.name}</span>
-                    </span>
-                  )}
-                  {item.submenu && (
-                    <SubmenuMob
-                      isMobile
-                      items={item.submenu}
-                      isOpen={item.name === isOpen} // compares instance name with state name
-                      hideMenu={() => {
-                        setIsVisible(false)
-                      }}
-                    />
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>,
-        document.body
-      )}
+      {portal &&
+        createPortal(
+          <div
+            className={`mob-nav fixed top-[4.5rem] bg-white z-[100] font-medium text-[14px] leading-8 lg:hidden ${
+              !isVisible ? 'hidden' : 'block'
+            }`}
+          >
+            <div className='whitespace-nowrap'>
+              {menuMob.map((item, i) => {
+                return (
+                  <div
+                    key={i}
+                    className='link-container relative border-lightGrey h-full hover:text-[grey]'
+                  >
+                    {item.url ? (
+                      <Link
+                        className={`link cursor-pointer flex items-center relative border-b border-lightGrey h-full py-[10px]`}
+                        href={item.url}
+                        onClick={() => {
+                          const str = pathname.split('/').slice(-1)[0]
+                          if (item.url.endsWith('/' + str)) setIsVisible(false)
+                        }}
+                      >
+                        <span className='px-[37px]'>{item.name}</span>
+                      </Link>
+                    ) : (
+                      <span
+                        onClick={() => {
+                          if (item.name === isOpen) {
+                            setIsOpen(false)
+                          } else {
+                            setIsOpen(item.name)
+                          }
+                        }}
+                        className={`link cursor-pointer flex items-center relative border-b border-lightGrey h-full py-[10px]`}
+                      >
+                        <span className='px-[37px]'>{item.name}</span>
+                      </span>
+                    )}
+                    {item.submenu && (
+                      <SubmenuMob
+                        isMobile
+                        items={item.submenu}
+                        isOpen={item.name === isOpen} // compares instance name with state name
+                        hideMenu={() => {
+                          setIsVisible(false)
+                        }}
+                      />
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>,
+          document.body
+        )}
     </nav>
   )
 }

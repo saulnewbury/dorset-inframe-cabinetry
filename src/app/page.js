@@ -1,9 +1,9 @@
 'use client'
 
-import HeroText from './lib/components/HeroText'
-import HeroImage from './lib/components/HeroImage'
+import HeroText from '@/components/HeroText'
+import HeroImage from '@/components/HeroImage'
 
-import kitchen from './lib/images/kitchen1.jpg'
+import kitchen from '@/lib/images/kitchen1.jpg'
 
 import { homeHeroMarkup } from '@/lib/data/data.js'
 
