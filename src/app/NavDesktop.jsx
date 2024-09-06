@@ -22,9 +22,9 @@ export default function NavDesktop() {
 
   return (
     <>
-      <nav className='hidden lg:flex bg-white fixed w-[100vw] px-[37px] h-[4.5rem] justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid'>
+      <nav className='z-40 hidden lg:flex bg-white fixed w-[100vw] px-[37px] h-[4.5rem] justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid'>
         {isOpen && (
-          <div className='backpanel bg-[white] h-[328px] w-full fixed top-[72px] left-0 z-40'></div>
+          <div className='backpanel bg-[#ffffff] h-[328px] w-full fixed top-[72px] left-0'></div>
         )}
         <div className='h-[max-content]'>
           <Link href='/'>
