@@ -1,12 +1,13 @@
-export const menuDesk = [
+export const menu = [
   {
     name: 'About',
     url: '/about',
     submenu: [
       {
-        name: 'Materials',
-        url: '/about/materials',
+        name: 'Materials', // desktop: link, mobile: button
+        url: '/about/materials', // ...only desktop
         flyout: [
+          { name: 'All materials', url: '/about/materials' }, // only mobile - make part of submenu
           { name: 'MDF', url: '/about/materials/mdf' },
           { name: 'MFC', url: '/about/materials/mfc' }
         ]
@@ -16,39 +17,10 @@ export const menuDesk = [
   },
   { name: 'Kitchen planner', url: '/kitchen-planner' },
   {
-    name: 'Products',
-    url: '/products',
+    name: 'Products', // desktop: link, mobile: button
+    url: '/products', // ...only desktop
     submenu: [
-      { name: 'Cabinets', url: '/products/cabinets' },
-      { name: 'Worktops', url: '/products/worktops' },
-      { name: 'Handles and knobs', url: '/products/handles-and-knobs' },
-      { name: 'Sinks and taps', url: '/products/sinks-and-taps' }
-    ]
-  },
-  { name: 'Contact', url: '/contact' }
-]
-
-export const menuMob = [
-  {
-    name: 'About',
-    url: '/about'
-  },
-  {
-    name: 'Materials',
-    // url: '/about/materials',
-    submenu: [
-      { name: 'All materials', url: '/about/materials' },
-      { name: 'MDF', url: '/about/materials/mdf' },
-      { name: 'MFC', url: '/about/materials/mfc' }
-    ]
-  },
-  { name: 'Inframe cabinetry', url: '/about/inframe-cabinetry' },
-  { name: 'Kitchen planner', url: '/kitchen-planner' },
-  {
-    name: 'Products',
-    // url: '/products',
-    submenu: [
-      { name: 'All products', url: '/products' },
+      { name: 'All products', url: '/products' }, // only mobile - make part of submenu
       { name: 'Cabinets', url: '/products/cabinets' },
       { name: 'Worktops', url: '/products/worktops' },
       { name: 'Handles and knobs', url: '/products/handles-and-knobs' },

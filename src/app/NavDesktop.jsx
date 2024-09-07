@@ -8,6 +8,7 @@ import './nav.css'
 import SvgIcon from '@/components/SvgIcon'
 
 import { menuDesk } from '@/lib/data/menu'
+import { menu } from '@/lib/data/menu'
 
 import SubmenuDesk from './SubmenuDesk'
 import Breadcrumbs from './Breadcrumbs'
@@ -35,7 +36,7 @@ export default function NavDesktop() {
         </div>
 
         <div className='links h-full flex items-center'>
-          {menuDesk.map((item, i) => {
+          {menu.map((item, i) => {
             return (
               <div
                 key={i}

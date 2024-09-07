@@ -14,6 +14,7 @@ export default function Flyout({ items }) {
       onMouseEnter={() => setEntered(false)}
     >
       {items.map((item, i) => {
+        if (i === 0) return
         return (
           <Link
             className='flyout-menu-item'

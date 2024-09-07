@@ -15,6 +15,7 @@ import SubmenuMob from './SubmenuMob'
 
 // Static content
 import { menuMob } from '@/lib/data/menu'
+import { menu } from '@/lib/data/menu'
 
 export default function NavMobile() {
   const [portal, setPortal] = useState(false)
@@ -74,13 +75,13 @@ export default function NavMobile() {
             }`}
           >
             <div className='whitespace-nowrap'>
-              {menuMob.map((item, i) => {
+              {menu.map((item, i) => {
                 return (
                   <div
                     key={i}
                     className='link-container relative border-lightGrey h-full hover:text-[grey]'
                   >
-                    {item.url ? (
+                    {!item.submenu ? (
                       <Link
                         className={`link cursor-pointer flex items-center relative border-b border-lightGrey h-full py-[10px]`}
                         href={item.url}

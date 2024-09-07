@@ -16,7 +16,30 @@ export default function SubmenuMob({ items = '#', isOpen, hideMenu }) {
         } border-b border-lightGrey w-full py-[14px] flex flex-col`}
       >
         {items.map((item, i) => {
-          return (
+          return item.flyout ? (
+            item.flyout.map((sub, i) => {
+              return (
+                <div
+                  key={i}
+                  className={`submenu-item ${
+                    pathname.endsWith(sub.url) ? 'active' : ''
+                  } flex relative text-black px-[37px] `}
+                >
+                  <Link
+                    className='w-full'
+                    key={i}
+                    href={sub.url}
+                    onClick={() => {
+                      const str = pathname.split('/').slice(-1)[0]
+                      if (sub.url.endsWith('/' + str)) hideMenu()
+                    }}
+                  >
+                    {sub.name}
+                  </Link>
+                </div>
+              )
+            })
+          ) : (
             <div
               key={i}
               className={`submenu-item ${
