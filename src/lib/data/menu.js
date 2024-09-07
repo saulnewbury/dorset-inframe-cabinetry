@@ -24,7 +24,8 @@ export const menu = [
       { name: 'Cabinets', url: '/products/cabinets' },
       { name: 'Worktops', url: '/products/worktops' },
       { name: 'Handles and knobs', url: '/products/handles-and-knobs' },
-      { name: 'Sinks and taps', url: '/products/sinks-and-taps' }
+      { name: 'Sinks and taps', url: '/products/sinks-and-taps' },
+      { name: 'Appliances', url: '/products/appliances' }
     ]
   },
   { name: 'Contact', url: '/contact' }

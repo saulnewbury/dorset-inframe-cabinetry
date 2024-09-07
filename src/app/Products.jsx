@@ -23,7 +23,13 @@ export default function Products() {
                 </div>
               </div>
 
-              <Image fill src={p.src} className='object-cover' />
+              <Image
+                fill
+                src={p.src}
+                className='object-cover'
+                sizes='(max-width: 479px) 50vw, (max-width: 975px) 33.33vw, 25vw'
+                alt='something'
+              />
             </Link>
           )
         })}

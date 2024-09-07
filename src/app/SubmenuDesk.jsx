@@ -42,11 +42,13 @@ export default function SubmenuDesk({ items = '#', isOpen }) {
               {flyout && <Flyout items={submenu} />}
             </div>
           ) : (
-            <div key={i} className={`submenu-item flex relative`}>
-              <Link key={i} href={item.url}>
-                {item.name}
-              </Link>
-            </div>
+            i !== 0 && (
+              <div key={i} className={`submenu-item flex relative`}>
+                <Link key={i} href={item.url}>
+                  {item.name}
+                </Link>
+              </div>
+            )
           )
         })}
       </div>
