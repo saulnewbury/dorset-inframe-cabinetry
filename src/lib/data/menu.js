@@ -21,7 +21,7 @@ export const menuDesk = [
     submenu: [
       { name: 'Cabinets', url: '/products/cabinets' },
       { name: 'Worktops', url: '/products/worktops' },
-      { name: 'Handles and nobs', url: '/products/handles-and-nobs' },
+      { name: 'Handles and knobs', url: '/products/handles-and-knobs' },
       { name: 'Sinks and taps', url: '/products/sinks-and-taps' }
     ]
   },
@@ -51,7 +51,7 @@ export const menuMob = [
       { name: 'All products', url: '/products' },
       { name: 'Cabinets', url: '/products/cabinets' },
       { name: 'Worktops', url: '/products/worktops' },
-      { name: 'Handles and nobs', url: '/products/handles-and-nobs' },
+      { name: 'Handles and knobs', url: '/products/handles-and-knobs' },
       { name: 'Sinks and taps', url: '/products/sinks-and-taps' }
     ]
   },
