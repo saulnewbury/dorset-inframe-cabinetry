@@ -33,7 +33,7 @@ export default function TxtImg({ keyPoints }) {
         </div>
       )}
       {point.images && (
-        <div className='aspect-square w-[50vw]'>
+        <div className='aspect-square lg:w-[50vw]'>
           <div
             className='h-full w-full gap-[.5vw]'
             style={{
@@ -47,7 +47,7 @@ export default function TxtImg({ keyPoints }) {
                 <div key={i} className='relative bg-green-500' style={img.grid}>
                   <Image
                     fill
-                    sizes='10vw'
+                    sizes='20vw'
                     src={img.src}
                     className='object-cover'
                   />
