@@ -40,7 +40,7 @@ export default function NavMobile() {
   }
 
   return (
-    <nav className='z-40 bg-white fixed w-[100vw] px-[25px] sm:px-[37px] h-[4.5rem] flex justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid'>
+    <nav className='gutter z-40 bg-white fixed w-[100vw] h-[4.5rem] flex justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid'>
       <div className='h-[max-content]'>
         <Link href='/'>
           <span className='font-medium cursor-pointer'>
@@ -62,7 +62,7 @@ export default function NavMobile() {
           <SvgIcon shape='login' />
         </div> */}
 
-        <div className='h-full w-[1px] bg-lightGrey mr-[20px] sm:mr-[37px]'></div>
+        <div className='h-full w-[1px] bg-lightGrey mr-[20px] sm:mr-[37px]' />
 
         <MenuButton isVisible={isVisible} toggleNav={toggleNav} />
       </div>

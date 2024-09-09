@@ -1,15 +1,9 @@
 import Image from 'next/image'
 
-export default function HeroImage({ src }) {
+export default function HeroImage({ src, alt }) {
   return (
     <div className='min-h-[80vh] relative'>
-      <Image
-        fill
-        priority
-        src={src}
-        alt={'something'}
-        className='object-cover'
-      />
+      <Image fill priority src={src} alt={alt} className='object-cover' />
     </div>
   )
 }

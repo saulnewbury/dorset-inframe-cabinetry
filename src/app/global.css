@@ -7,19 +7,14 @@
   margin: 0;
 }
 
-:root {
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
   }
 }
 
 body {
-  /* height: 100vh; */
-  font-weight: 500;
-
   -webkit-font-smoothing: antialiased;
+  @apply font-normal;
 }
 
 @layer utilities {
@@ -30,4 +25,20 @@ body {
 
 svg {
   color: black;
+}
+
+.gutter {
+  @apply px-[20px] sm:px-[37px];
+}
+
+.gutter-right {
+  @apply mr-[20px] sm:mr-[37px];
+}
+
+.indent {
+  @apply md:px-[5vw];
+}
+
+p {
+  @apply font-normal;
 }

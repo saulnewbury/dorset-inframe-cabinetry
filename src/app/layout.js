@@ -1,5 +1,5 @@
 import { Inter } from 'next/font/google'
-import './globals.css'
+import './global.css'
 
 import Menu from './Menu.jsx'
 console.log(Menu)

@@ -1,6 +1,3 @@
-import Image from 'next/image'
-import Link from 'next/link'
-
 // Components
 import HeroText from '@/components/HeroText'
 import HeroImage from '@/components/HeroImage'
@@ -12,7 +9,7 @@ import kitchen from '@/lib/images/kitchen1.jpg'
 
 import Footer from '@/components/Footer'
 
-import { homeHeroMarkup } from '@/lib/data/data.js'
+import { homeHeroMarkup } from '@/lib/data/markup.js'
 
 export default function Home() {
   return (
