@@ -1,5 +1,6 @@
 'use client'
 
+import { Fragment } from 'react'
 import Link from 'next/link'
 import './nav.css'
 
@@ -17,47 +18,40 @@ export default function SubmenuDesk({ items = '#', isOpen }) {
       >
         {items.map((item, i) => {
           return item.flyout ? (
-            <>
+            <Fragment key={item.id}>
               <div
-                key={i}
                 data-id={i}
                 className={`${
                   pathname.endsWith(item.url) ? 'active' : ''
                 } submenu-item flex relative`}
               >
-                <Link key={i} href={item.url}>
-                  {item.name}
-                </Link>
+                <Link href={item.url}>{item.name}</Link>
               </div>
               {item.flyout &&
-                item.flyout.map((item, i) => {
+                item.flyout.map((sub, i) => {
                   if (i == 0) return
                   return (
                     <div
-                      key={i}
+                      key={sub.id}
                       data-id={i}
                       className={`${
-                        pathname.endsWith(item.url) ? 'active' : ''
+                        pathname.endsWith(sub.url) ? 'active' : ''
                       } submenu-item flex relative`}
                     >
-                      <Link key={i} href={item.url}>
-                        {item.name}
-                      </Link>
+                      <Link href={sub.url}>{sub.name}</Link>
                     </div>
                   )
                 })}
-            </>
+            </Fragment>
           ) : (
             i !== 0 && (
               <div
-                key={i}
+                key={item.id}
                 className={`${
                   pathname.endsWith(item.url) ? 'active' : ''
                 } submenu-item flex relative`}
               >
-                <Link key={i} href={item.url}>
-                  {item.name}
-                </Link>
+                <Link href={item.url}>{item.name}</Link>
               </div>
             )
           )
