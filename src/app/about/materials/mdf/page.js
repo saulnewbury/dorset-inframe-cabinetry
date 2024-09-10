@@ -2,6 +2,7 @@ import HeroText from '@/components/HeroText'
 import HeroImage from '@/components/HeroImage'
 import Intro from '@/components/Intro'
 import TxtImg from '@/components/TxtImg'
+import TxtImgAlt from '@/components/TxtImgAlt'
 import Footer from '@/components/Footer'
 
 import finsaHydrofugo from '@/lib/images/finsa-hydrofugo.jpg'
@@ -22,6 +23,7 @@ export default function page() {
       <HeroImage src={finsaHydrofugo} />
       <Intro text={text} />
       <TxtImg keyPoints={keyPointsMDF} />
+      {/* <TxtImgAlt keyPoints={keyPointsMDF} /> */}
       <Footer />
     </>
   )

@@ -2,6 +2,7 @@ import HeroText from '@/components/HeroText'
 import HeroImage from '@/components/HeroImage'
 import Intro from '@/components/Intro'
 import TxtImg from '@/components/TxtImg'
+import TxtImgAlt from '@/components/TxtImgAlt'
 import Footer from '@/components/Footer'
 
 import { keyPointsInframeCabinetry } from '@/lib/data/keyPoints'
@@ -19,7 +20,8 @@ export default function page() {
       />
       <HeroImage src={bathroomGrey} alt='something' />
       <Intro text={text} />
-      <TxtImg keyPoints={keyPointsInframeCabinetry} />
+      {/* <TxtImg keyPoints={keyPointsInframeCabinetry} /> */}
+      <TxtImgAlt keyPoints={keyPointsInframeCabinetry} />
       <Footer />
     </>
   )

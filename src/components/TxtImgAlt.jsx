@@ -9,11 +9,11 @@ export default function TxtImg({ keyPoints }) {
         {keyPoints.map((point, i) => (
           <div
             key={i}
-            className={`flex flex-col-reverse gap-10 mb-[8rem] ${
+            className={`flex flex-col-reverse gap-10 mb-[8rem] lg:h-[100vh] ${
               i % 2 == 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
             } `}
           >
-            <div className='lg:w-[50vw] flex items-center justify-center py-[5rem] lg:aspect-square'>
+            <div className='lg:w-[50vw] flex items-center justify-center py-[5rem]'>
               <div>
                 <h3 className='font-semibold mb-[1rem]'>{point.title}</h3>
                 <p>{point.body}</p>
@@ -27,7 +27,7 @@ export default function TxtImg({ keyPoints }) {
 
             {/* Point can include an Image. a Diagram or a grid of images */}
             {point.src && (
-              <div className='relative lg:w-[50%] h-[100vh] lg:h-auto'>
+              <div className='relative lg:w-[50vw] h-[100vh] lg:h-auto'>
                 <Image
                   src={point.src}
                   fill
@@ -38,7 +38,7 @@ export default function TxtImg({ keyPoints }) {
               </div>
             )}
             {point.diagram && (
-              <div className='relative lg:w-[50%] h-[100vh] lg:h-auto p-[5rem]'>
+              <div className='relative lg:w-[50%] h-[100vh] lg:h-auto'>
                 <Image
                   src={point.diagram}
                   className='object-cover'
@@ -47,7 +47,7 @@ export default function TxtImg({ keyPoints }) {
               </div>
             )}
             {point.images && (
-              <div className='aspect-square lg:w-[50vw]'>
+              <div className='lg:w-[50vw]'>
                 <div
                   className='h-full w-full gap-[.5vw]'
                   style={{

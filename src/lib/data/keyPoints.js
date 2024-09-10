@@ -12,6 +12,7 @@ import bathroomStone from '@/lib/images/bathroom-stone.jpg'
 import bathroomGrey from '@/lib/images/bathroom-grey.jpg'
 import kitchenGreen from '@/lib/images/kitchen-green.jpg'
 import inframeSketch from '@/lib/images/inframe-sketch.jpg'
+import diagram from '@/lib/images/diagram.jpg'
 
 export const keyPointsMaterials = [
   {
@@ -62,7 +63,7 @@ export const keyPointsInframeCabinetry = [
   {
     title: 'Form and function',
     body: "Inframe cabinets are not just beautiful, they're functional too. The sturdy construction provides durability, and the design often includes thoughtful touches like high-quality hinges and perfectly aligned doors. This combination of form and function makes the cabinetry not only look good but work well in everyday life.",
-    diagram: inframeSketch,
+    src: diagram,
     alt: 'Traditional inframe bathroom filled with steam'
   },
   {
