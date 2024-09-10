@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import Button from './Button'
 
 export default function TxtImg({ keyPoints }) {
   return keyPoints.map((point, i) => (
@@ -13,9 +14,15 @@ export default function TxtImg({ keyPoints }) {
         <div className='indent'>
           <h3 className='font-semibold mb-[1rem]'>{point.title}</h3>
           <p>{point.body}</p>
-          {point.link && <Link href={point.url}>{point.link}</Link>}
+          {point.link && (
+            <Button href={point.url} classes='mt-[2rem]'>
+              {point.link}
+            </Button>
+          )}
         </div>
       </div>
+
+      {/* Point can include an Image. a Diagram or a grid of images */}
       {point.src && (
         <div className='relative lg:w-[50%] h-[100vh] lg:h-auto'>
           <Image
@@ -54,27 +61,6 @@ export default function TxtImg({ keyPoints }) {
                 </div>
               )
             })}
-            {/* <div
-              className='bg-green-400'
-              // style={{ gridColumnStart: '1', gridColumnEnd: '2' }}
-            ></div>
-            <div
-              className='bg-blue-400'
-              style={{ gridColumnStart: '2', gridColumnEnd: '4' }}
-            ></div>
-            <div
-              className='bg-red-400'
-              style={{ gridColumnStart: '1', gridColumnEnd: '3' }}
-            ></div>
-            <div
-              className='bg-green-400'
-              // style={{ gridColumnStart: '3', gridColumnEnd: '4' }}
-            ></div>
-            <div className='bg-blue-400'></div>
-            <div
-              className='bg-red-400'
-              style={{ gridColumnStart: '2', gridColumnEnd: '4' }}
-            ></div> */}
           </div>
         </div>
       )}

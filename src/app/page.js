@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <>
       <HeroText markup={homeHeroMarkup} />
-      <HeroImage src={kitchen} />
+      <HeroImage src={kitchen} alt='something' />
       <MaterialsWeLove />
       <Products />
       <Footer classes='bg-[#606D8E] text-white pb-[120px]' />

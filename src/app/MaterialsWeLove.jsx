@@ -5,7 +5,7 @@ import Link from 'next/link'
 import kitchenBlue from '@/lib/images/kitchen-blue.jpg'
 import mdf from '@/lib/images/mdf.jpg'
 
-import Section from '@/components/Section'
+import Button from '@/components/Button'
 import HeaderText from '@/components/HeaderText'
 
 export default function MaterialsWeLove() {
@@ -45,14 +45,17 @@ export default function MaterialsWeLove() {
           Why MDF and MFC are our materials of choice...
         </p>
 
-        <div className='text-center flex justify-center'>
+        <Button href='/about/materials' classes='justify-center'>
+          Read more
+        </Button>
+        {/* <div className='text-center flex justify-center'>
           <Link
             className='font-normal box-border border-solid border-black border-[1px] px-[42px] py-[12px] rounded-md hover:border-[#606D8E]  hover:font-medium hover:bg-[#606D8E] hover:text-white mr-[20px]'
             href='/about/materials'
           >
             Read more
           </Link>
-        </div>
+        </div> */}
       </div>
     </section>
   )
