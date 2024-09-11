@@ -29,7 +29,7 @@ svg {
 }
 
 .gutter {
-  @apply mx-[20mx] sm:px-[37px];
+  @apply px-[20px] sm:px-[37px];
 }
 
 .gutter-right {

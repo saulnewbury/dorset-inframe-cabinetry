@@ -9,7 +9,7 @@ export default function TxtImg({ keyPoints }) {
         {keyPoints.map((point, i) => (
           <div
             key={i}
-            className={`flex flex-col-reverse gap-10 mb-[8rem] lg:h-[100vh] ${
+            className={`flex flex-col-reverse lg:gap-10 lg:mb-[8rem]  ${
               i % 2 == 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
             } `}
           >
@@ -27,7 +27,7 @@ export default function TxtImg({ keyPoints }) {
 
             {/* Point can include an Image. a Diagram or a grid of images */}
             {point.src && (
-              <div className='relative lg:w-[50vw] h-[100vh] lg:h-auto'>
+              <div className='relative lg:w-[50vw] h-[60vh] lg:h-auto aspect-[3/4]'>
                 <Image
                   src={point.src}
                   fill
@@ -38,7 +38,7 @@ export default function TxtImg({ keyPoints }) {
               </div>
             )}
             {point.diagram && (
-              <div className='relative lg:w-[50%] h-[100vh] lg:h-auto'>
+              <div className='relative lg:w-[50%] h-[60vh] lg:h-auto aspect-[3/4]'>
                 <Image
                   src={point.diagram}
                   className='object-cover'
@@ -47,7 +47,7 @@ export default function TxtImg({ keyPoints }) {
               </div>
             )}
             {point.images && (
-              <div className='lg:w-[50vw]'>
+              <div className='lg:w-[50vw] aspect-[3/4] h-[80vh] lg:h-auto'>
                 <div
                   className='h-full w-full gap-[.5vw]'
                   style={{
@@ -68,6 +68,7 @@ export default function TxtImg({ keyPoints }) {
                           sizes='20vw'
                           src={img.src}
                           className='object-cover'
+                          alt={img.alt}
                         />
                       </div>
                     )
