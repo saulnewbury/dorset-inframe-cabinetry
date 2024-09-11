@@ -7,8 +7,9 @@ import ProductGrid from '../ProductGrid'
 import productRange from '@/lib/data/products'
 
 export default function page({ params }) {
+  console.log(params)
   const products = productRange.find((item) => {
-    const text = params.slug.split('-').join(' ')
+    const text = params.category.split('-').join(' ')
     const name = text.charAt(0).toUpperCase() + text.slice(1)
     return item.name === name
   })
