@@ -10,6 +10,7 @@ import handle2a from '@/lib/images/products/handle2a.webp'
 import handle2b from '@/lib/images/products/handle2b.webp'
 
 const products = [
+  { name: 'Cabinets' },
   { name: 'Worktops' },
   {
     name: 'Handles and knobs',
