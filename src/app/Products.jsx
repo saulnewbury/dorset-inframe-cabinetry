@@ -15,6 +15,7 @@ export default function Products() {
           {productCategories.map((p) => {
             return (
               <Link
+                key={p.name}
                 href={p.url}
                 className='relative w-[49.321%] md:w-[32.432%] lg:w-[20%] h-[auto] aspect-square inline-block'
               >
