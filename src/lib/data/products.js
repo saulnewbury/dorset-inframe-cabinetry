@@ -22,8 +22,8 @@ const products = [
         categories: ['All', 'Solid brass', 'Knobs'],
         price: '£8',
         images: [
-          { src: knob1a, alt: 'something' },
-          { src: knob1b, alt: 'something' }
+          { src: knob1a, alt: '' },
+          { src: knob1b, alt: '' }
         ]
       },
       {
@@ -33,8 +33,8 @@ const products = [
         price: '£12',
         categories: ['All', 'Solid brass', 'Handles'],
         images: [
-          { src: handle1a, alt: 'something' },
-          { src: handle1b, alt: 'something' }
+          { src: handle1a, alt: '' },
+          { src: handle1b, alt: '' }
         ]
       },
       {
@@ -44,8 +44,8 @@ const products = [
         price: '£10',
         categories: ['All', 'Black', 'Knobs'],
         images: [
-          { src: knob2a, alt: 'something' },
-          { src: knob2b, alt: 'something' }
+          { src: knob2a, alt: '' },
+          { src: knob2b, alt: '' }
         ]
       },
       {
@@ -55,8 +55,8 @@ const products = [
         price: '£16',
         categories: ['All', 'Black', 'Handles'],
         images: [
-          { src: handle2a, alt: 'something' },
-          { src: handle2b, alt: 'something' }
+          { src: handle2a, alt: '' },
+          { src: handle2b, alt: '' }
         ]
       },
       {
@@ -66,8 +66,8 @@ const products = [
         categories: ['All', 'Solid brass', 'Knobs'],
         price: '£8',
         images: [
-          { src: knob1a, alt: 'something' },
-          { src: knob1b, alt: 'something' }
+          { src: knob1a, alt: '' },
+          { src: knob1b, alt: '' }
         ]
       },
       {
@@ -77,8 +77,8 @@ const products = [
         price: '£12',
         categories: ['All', 'Solid brass', 'Handles'],
         images: [
-          { src: handle1a, alt: 'something' },
-          { src: handle1b, alt: 'something' }
+          { src: handle1a, alt: '' },
+          { src: handle1b, alt: '' }
         ]
       },
       {
@@ -88,8 +88,8 @@ const products = [
         price: '£10',
         categories: ['All', 'Black', 'Knobs'],
         images: [
-          { src: knob2a, alt: 'something' },
-          { src: knob2b, alt: 'something' }
+          { src: knob2a, alt: '' },
+          { src: knob2b, alt: '' }
         ]
       },
       {
@@ -99,8 +99,8 @@ const products = [
         price: '£16',
         categories: ['All', 'Black', 'Handles'],
         images: [
-          { src: handle2a, alt: 'something' },
-          { src: handle2b, alt: 'something' }
+          { src: handle2a, alt: '' },
+          { src: handle2b, alt: '' }
         ]
       }
     ]

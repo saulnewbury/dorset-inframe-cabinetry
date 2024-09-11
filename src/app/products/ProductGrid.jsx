@@ -33,7 +33,7 @@ export default function ProductGrid({ items }) {
         <div className='pb-8 font-normal'>
           {categories.map((cat, i) => (
             <span
-              key={i}
+              key={cat}
               data-option={cat}
               className={`${
                 cat === selected ? 'underline' : ''
@@ -48,7 +48,7 @@ export default function ProductGrid({ items }) {
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-[4vw] md:gap-[3vw] lg:gap-[2vw] '>
           {filtered.map((item, i) => {
             return (
-              <div key={i} className='flex flex-col'>
+              <div key={item.name + i} className='flex flex-col'>
                 <Link
                   href={pathname + '/' + item.name.toLowerCase()}
                   className='relative aspect-[3/4]'
@@ -57,7 +57,7 @@ export default function ProductGrid({ items }) {
                     return i % 2 === 0 ? (
                       <Image
                         // priority
-                        key={i}
+                        key={image.src + i}
                         fill
                         sizes='(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 976px) 33vw, 25vw'
                         src={image.src}
@@ -67,7 +67,7 @@ export default function ProductGrid({ items }) {
                     ) : (
                       <Image
                         // priority
-                        key={i}
+                        key={image.src + i}
                         fill
                         sizes='(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 976px) 33vw, 25vw'
                         src={image.src}
