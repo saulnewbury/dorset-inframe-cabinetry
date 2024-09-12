@@ -17,7 +17,7 @@ export default function page({ params }) {
   return (
     <>
       <HeroText markup={products.name} />
-      {products.items && <ProductGrid items={products.items} />}
+      {products && <ProductGrid products={products} />}
     </>
   )
 }

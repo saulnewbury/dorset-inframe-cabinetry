@@ -9,11 +9,72 @@ import knob2b from '@/lib/images/products/knob2b.webp'
 import handle2a from '@/lib/images/products/handle2a.webp'
 import handle2b from '@/lib/images/products/handle2b.webp'
 
+import wallCabinet1a from '@/lib/images/products/wall-cabinet1a.jpg'
+import wallCabinet1b from '@/lib/images/products/wall-cabinet1b.jpg'
+import baseCabinet1a from '@/lib/images/products/base-cabinet1a.jpg'
+import baseCabinet1b from '@/lib/images/products/base-cabinet1b.jpg'
+
 const products = [
-  { name: 'Cabinets' },
+  {
+    name: 'Cabinets',
+    categories: [
+      { name: 'All' },
+      {
+        name: 'Base cabinets',
+        subCategories: [
+          'For corner',
+          'For sink',
+          'For hob',
+          'For hob and oven',
+          'For washing machine'
+        ]
+      },
+      {
+        name: 'Wall cabinets',
+        subCategories: [
+          'For corner',
+          'For sink',
+          'For hob',
+          'For hob and oven',
+          'For washing machine'
+        ]
+      }
+    ],
+    items: [
+      {
+        id: crypto.randomUUID(),
+        name: 'Floor cabinet',
+        desc: 'Floor cabinet with door',
+        categories: ['All', 'Base cabinets', 'With door', 'For corner'],
+        price: '£24',
+        images: [
+          { id: crypto.randomUUID(), src: baseCabinet1a, alt: '' },
+          { id: crypto.randomUUID(), src: baseCabinet1b, alt: '' }
+        ]
+      },
+      {
+        id: crypto.randomUUID(),
+        name: 'Wall cabinet',
+        desc: 'Wall cabinet with door',
+        categories: ['All', 'Wall cabinets', 'For sink'],
+        price: '£24',
+        images: [
+          { id: crypto.randomUUID(), src: wallCabinet1a, alt: '' },
+          { id: crypto.randomUUID(), src: wallCabinet1b, alt: '' }
+        ]
+      }
+    ]
+  },
   { name: 'Worktops' },
   {
     name: 'Handles and knobs',
+    categories: [
+      { name: 'All' },
+      { name: 'Solid brass' },
+      { name: 'Knobs' },
+      { name: 'Black' },
+      { name: 'Handles' }
+    ],
     items: [
       {
         id: crypto.randomUUID(),
@@ -22,8 +83,8 @@ const products = [
         categories: ['All', 'Solid brass', 'Knobs'],
         price: '£8',
         images: [
-          { src: knob1a, alt: '' },
-          { src: knob1b, alt: '' }
+          { id: crypto.randomUUID(), src: knob1a, alt: '' },
+          { id: crypto.randomUUID(), src: knob1b, alt: '' }
         ]
       },
       {
@@ -33,8 +94,8 @@ const products = [
         price: '£12',
         categories: ['All', 'Solid brass', 'Handles'],
         images: [
-          { src: handle1a, alt: '' },
-          { src: handle1b, alt: '' }
+          { id: crypto.randomUUID(), src: handle1a, alt: '' },
+          { id: crypto.randomUUID(), src: handle1b, alt: '' }
         ]
       },
       {
@@ -44,8 +105,8 @@ const products = [
         price: '£10',
         categories: ['All', 'Black', 'Knobs'],
         images: [
-          { src: knob2a, alt: '' },
-          { src: knob2b, alt: '' }
+          { id: crypto.randomUUID(), src: knob2a, alt: '' },
+          { id: crypto.randomUUID(), src: knob2b, alt: '' }
         ]
       },
       {
@@ -55,8 +116,8 @@ const products = [
         price: '£16',
         categories: ['All', 'Black', 'Handles'],
         images: [
-          { src: handle2a, alt: '' },
-          { src: handle2b, alt: '' }
+          { id: crypto.randomUUID(), src: handle2a, alt: '' },
+          { id: crypto.randomUUID(), src: handle2b, alt: '' }
         ]
       },
       {
@@ -66,8 +127,8 @@ const products = [
         categories: ['All', 'Solid brass', 'Knobs'],
         price: '£8',
         images: [
-          { src: knob1a, alt: '' },
-          { src: knob1b, alt: '' }
+          { id: crypto.randomUUID(), src: knob1a, alt: '' },
+          { id: crypto.randomUUID(), src: knob1b, alt: '' }
         ]
       },
       {
@@ -77,8 +138,8 @@ const products = [
         price: '£12',
         categories: ['All', 'Solid brass', 'Handles'],
         images: [
-          { src: handle1a, alt: '' },
-          { src: handle1b, alt: '' }
+          { id: crypto.randomUUID(), src: handle1a, alt: '' },
+          { id: crypto.randomUUID(), src: handle1b, alt: '' }
         ]
       },
       {
@@ -88,8 +149,8 @@ const products = [
         price: '£10',
         categories: ['All', 'Black', 'Knobs'],
         images: [
-          { src: knob2a, alt: '' },
-          { src: knob2b, alt: '' }
+          { id: crypto.randomUUID(), src: knob2a, alt: '' },
+          { id: crypto.randomUUID(), src: knob2b, alt: '' }
         ]
       },
       {
@@ -99,8 +160,8 @@ const products = [
         price: '£16',
         categories: ['All', 'Black', 'Handles'],
         images: [
-          { src: handle2a, alt: '' },
-          { src: handle2b, alt: '' }
+          { id: crypto.randomUUID(), src: handle2a, alt: '' },
+          { id: crypto.randomUUID(), src: handle2b, alt: '' }
         ]
       }
     ]
