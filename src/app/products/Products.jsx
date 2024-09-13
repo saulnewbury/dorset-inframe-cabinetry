@@ -9,9 +9,8 @@ export default function Products() {
       <div className='indent mb-[120px] grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:gap-[4vw] md:gap-[3vw] lg:gap-[2vw]'>
         {productCategories.map((p) => {
           return (
-            <div className='flex flex-col'>
+            <div key={p.name} className='flex flex-col'>
               <Link
-                key={p.name}
                 href={p.url}
                 className='relative w-[100%] aspect-square inline-block'
               >
