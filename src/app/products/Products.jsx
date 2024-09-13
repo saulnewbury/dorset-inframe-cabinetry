@@ -1,23 +1,19 @@
 import Link from 'next/link'
 import Image from 'next/image'
 
-import Section from '@/components/Section'
-import HeaderText from '@/components/HeaderText'
-
 import { productCategories } from '@/lib/data/productCategories'
 
 export default function Products() {
   return (
-    <section className='gutter pt-[5rem] lg:pt-[8rem]'>
-      <div className='indent'>
-        <HeaderText>Products</HeaderText>
-        <div className='flex gap-[1vw] pt-[60px] mb-[120px] flex-wrap lg:flex-nowrap'>
-          {productCategories.map((p) => {
-            return (
+    <section className='gutter'>
+      <div className='indent h-auto grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:gap-[4vw] md:gap-[3vw] lg:gap-[2vw]'>
+        {productCategories.map((p) => {
+          return (
+            <div className='flex flex-col'>
               <Link
                 key={p.name}
                 href={p.url}
-                className='relative w-[49.321%] md:w-[32.432%] lg:w-[20%] h-[auto] aspect-square inline-block'
+                className='relative w-[100%] aspect-square inline-block'
               >
                 <div className='absolute left-0 top-0 z-10 transition ease-in-out bg-black/30 lg:bg-black/0 hover:bg-black/50 opacity-100 lg:opacity-0 hover:opacity-100 h-full w-full flex'>
                   <div className='absolute pointer-events-none transition z-20 text-white font-normal flex items-center justify-center w-full h-full'>
@@ -29,13 +25,13 @@ export default function Products() {
                   fill
                   src={p.src}
                   className='object-cover'
-                  sizes='(max-width: 479px) 50vw, (max-width: 975px) 33.33vw, 25vw'
+                  sizes='(max-width: 480px) 100vw, (max-width: 768px) 100vw, (max-width: 976px) 50vw, 33.33vw'
                   alt='something'
                 />
               </Link>
-            )
-          })}
-        </div>
+            </div>
+          )
+        })}
       </div>
     </section>
   )

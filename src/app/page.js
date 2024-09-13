@@ -2,7 +2,7 @@
 import HeroText from '@/components/HeroText'
 import HeroImage from '@/components/HeroImage'
 import MaterialsWeLove from './MaterialsWeLove'
-import Products from './Products'
+import ProductsMini from './ProductsMini'
 
 // Images
 import kitchen from '@/lib/images/kitchen1.jpg'
@@ -17,7 +17,7 @@ export default function Home() {
       <HeroText markup={homeHeroMarkup} />
       <HeroImage src={kitchen} alt='something' />
       <MaterialsWeLove />
-      <Products />
+      <ProductsMini />
       <Footer classes='bg-[#606D8E] text-white pb-[120px]' />
     </>
   )

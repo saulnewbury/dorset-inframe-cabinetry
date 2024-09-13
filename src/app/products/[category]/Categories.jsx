@@ -53,7 +53,7 @@ export default function Categories({ categories, handleClick, selected }) {
             <div className='absolute text-[.9rem] z-40 w-[max-content] h-[max-content]'>
               <div className='bg-[#F0F0EE] leading-6 mt-[18px] py-5 px-6 shadow-[0_14px_32px_-9px_rgba(0,0,0,0.1)]'>
                 <div
-                  className='cursor-pointer'
+                  className='cursor-pointer hover:text-[#919191]'
                   data-option={`["${cat.name}", null]`} // top and sub
                   onClick={(e) => {
                     handleClick(e)
@@ -75,7 +75,7 @@ export default function Categories({ categories, handleClick, selected }) {
                         cat.name === selected.top && selected.sub === sub
                           ? 'text-[#919191]'
                           : ''
-                      } cursor-pointer`}
+                      } cursor-pointer hover:text-[#919191]`}
                     >
                       {sub}
                     </div>

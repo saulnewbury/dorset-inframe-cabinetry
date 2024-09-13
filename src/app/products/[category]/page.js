@@ -2,7 +2,7 @@
 // routes covered: worktops, cabinets (not sinks and taps or appliances)
 
 import HeroText from '@/components/HeroText'
-import ProductGrid from '../ProductGrid'
+import ProductGrid from './ProductGrid'
 
 import productRange from '@/lib/data/products'
 

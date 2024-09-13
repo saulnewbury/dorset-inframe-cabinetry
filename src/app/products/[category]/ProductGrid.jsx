@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 // import Categories from './[category]/Categories'
-import Categories from './[category]/Categories'
+import Categories from './Categories'
 
 export default function ProductGrid({ products }) {
   const { items, categories } = products
