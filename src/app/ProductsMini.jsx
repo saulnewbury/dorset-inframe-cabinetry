@@ -9,17 +9,17 @@ export default function Products() {
     <section className='gutter pt-[5rem] lg:pt-[8rem]'>
       <div className='indent'>
         <HeaderText>Products</HeaderText>
-        <div className='flex gap-[1vw] pt-[60px] mb-[120px] flex-wrap lg:flex-nowrap'>
+        <div className='grid gap-[1vw] pt-[60px] mb-[120px] grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-5 sm:gap-[3vw] md:gap-[2vw] lg:gap-[1vw]'>
           {productCategories.map((p) => {
             return (
               <Link
                 key={p.name}
                 href={p.url}
-                className='relative w-[49.321%] md:w-[32.432%] lg:w-[20%] h-[auto] aspect-square inline-block'
+                className='relative w-full h-[auto] aspect-square inline-block'
               >
                 <div className='absolute left-0 top-0 z-10 transition ease-in-out bg-black/30 lg:bg-black/0 hover:bg-black/50 opacity-100 lg:opacity-0 hover:opacity-100 h-full w-full flex'>
                   <div className='absolute pointer-events-none transition z-20 text-white font-normal flex items-center justify-center w-full h-full'>
-                    <span>{p.name}</span>
+                    <span className='p-[10px] text-center'>{p.name}</span>
                   </div>
                 </div>
 

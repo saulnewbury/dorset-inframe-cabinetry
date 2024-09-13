@@ -6,7 +6,7 @@ import { productCategories } from '@/lib/data/productCategories'
 export default function Products() {
   return (
     <section className='gutter'>
-      <div className='indent h-auto grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:gap-[4vw] md:gap-[3vw] lg:gap-[2vw]'>
+      <div className='indent mb-[120px] grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:gap-[4vw] md:gap-[3vw] lg:gap-[2vw]'>
         {productCategories.map((p) => {
           return (
             <div className='flex flex-col'>

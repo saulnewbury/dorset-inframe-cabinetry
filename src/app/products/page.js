@@ -2,13 +2,14 @@
 
 import HeroText from '@/components/HeroText'
 import Products from './Products'
-import ProductsMini from '../ProductsMini'
+import Footer from '@/components/Footer'
 
 export default function page() {
   return (
     <>
       <HeroText markup={'All products'} />
       <Products />
+      <Footer />
     </>
   )
 }
