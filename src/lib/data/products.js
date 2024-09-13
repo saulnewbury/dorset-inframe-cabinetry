@@ -13,6 +13,10 @@ import wallCabinet1a from '@/lib/images/products/wall-cabinet1a.jpg'
 import wallCabinet1b from '@/lib/images/products/wall-cabinet1b.jpg'
 import baseCabinet1a from '@/lib/images/products/base-cabinet1a.jpg'
 import baseCabinet1b from '@/lib/images/products/base-cabinet1b.jpg'
+import wallCabinet1aGrey from '@/lib/images/products/wall-cabinet1a-grey.jpg'
+import wallCabinet1bGrey from '@/lib/images/products/wall-cabinet1b-grey.jpg'
+import baseCabinet1aGrey from '@/lib/images/products/base-cabinet1a-grey.jpg'
+import baseCabinet1bGrey from '@/lib/images/products/base-cabinet1b-grey.jpg'
 
 const products = [
   {
@@ -48,9 +52,48 @@ const products = [
         desc: 'Floor cabinet with door',
         categories: ['All', 'Base cabinets', 'For sink'],
         price: '£24',
+        sizes: [
+          { w: 66.6, h: 80 },
+          { w: 71.6, h: 80 },
+          { w: 76.6, h: 80 }
+        ],
+        options: [
+          {
+            instruction: 'Choose frame finish',
+            options: [
+              { name: 'Beige', hex: '#F5F3F0' },
+              { name: 'Grey', hex: '#D8DADB' },
+              { name: 'Pale green', hex: '#ECEDE8' },
+              { name: 'Blue', hex: '#3B5771' },
+              { name: 'Dark stone', hex: '#393D40' }
+            ]
+          }
+        ],
         images: [
-          { id: crypto.randomUUID(), src: baseCabinet1a, alt: '' },
-          { id: crypto.randomUUID(), src: baseCabinet1b, alt: '' }
+          {
+            id: crypto.randomUUID(),
+            src: baseCabinet1a,
+            alt: '',
+            name: 'Beige'
+          },
+          {
+            id: crypto.randomUUID(),
+            src: baseCabinet1b,
+            alt: '',
+            name: 'Beige'
+          },
+          {
+            id: crypto.randomUUID(),
+            src: baseCabinet1aGrey,
+            alt: '',
+            name: 'Grey'
+          },
+          {
+            id: crypto.randomUUID(),
+            src: baseCabinet1bGrey,
+            alt: '',
+            name: 'Grey'
+          }
         ]
       },
       {
@@ -59,9 +102,48 @@ const products = [
         desc: 'Wall cabinet with door',
         categories: ['All', 'Wall cabinets', 'With door'],
         price: '£24',
+        sizes: [
+          { w: 66.6, h: 80 },
+          { w: 71.6, h: 80 },
+          { w: 76.6, h: 80 }
+        ],
+        options: [
+          {
+            instruction: 'Choose frame finish',
+            options: [
+              { name: 'Beige', hex: '#F5F3F0' },
+              { name: 'Grey', hex: '#D8DADB' },
+              { name: 'Pale green', hex: '#ECEDE8' },
+              { name: 'Blue', hex: '#3B5771' },
+              { name: 'Dark stone', hex: '#393D40' }
+            ]
+          }
+        ],
         images: [
-          { id: crypto.randomUUID(), src: wallCabinet1a, alt: '' },
-          { id: crypto.randomUUID(), src: wallCabinet1b, alt: '' }
+          {
+            id: crypto.randomUUID(),
+            src: wallCabinet1a,
+            alt: '',
+            name: 'Beige'
+          },
+          {
+            id: crypto.randomUUID(),
+            src: wallCabinet1b,
+            alt: '',
+            name: 'Beige'
+          },
+          {
+            id: crypto.randomUUID(),
+            src: wallCabinet1aGrey,
+            alt: '',
+            name: 'Grey'
+          },
+          {
+            id: crypto.randomUUID(),
+            src: wallCabinet1bGrey,
+            alt: '',
+            name: 'Grey'
+          }
         ]
       }
     ]

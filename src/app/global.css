@@ -45,6 +45,9 @@ svg {
 .indent-right {
   @apply md:mr-[5vw];
 }
+.indent-left {
+  @apply md:ml-[5vw];
+}
 
 p {
   @apply font-normal;
