@@ -46,7 +46,7 @@ export default function ProductGrid({ products }) {
   }
 
   return (
-    <section className='gutter'>
+    <section className='gutter pb-[120px]'>
       <div className='indent'>
         {/* basic filter vs dropdown subCat filter */}
         {filtered ? (
@@ -65,6 +65,7 @@ export default function ProductGrid({ products }) {
                   <div key={item.id} className='flex flex-col'>
                     <Link href={href} className='relative aspect-[3/4]'>
                       {item.images.map((image, i) => {
+                        if (i > 1) return
                         return i % 2 === 0 ? (
                           <Image
                             priority

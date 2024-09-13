@@ -3,6 +3,7 @@
 
 import HeroText from '@/components/HeroText'
 import ProductGrid from './ProductGrid'
+import Footer from '@/components/Footer'
 
 import productRange from '@/lib/data/products'
 
@@ -17,6 +18,7 @@ export default function page({ params }) {
     <>
       <HeroText markup={products.name} />
       {products && <ProductGrid products={products} />}
+      <Footer />
     </>
   )
 }

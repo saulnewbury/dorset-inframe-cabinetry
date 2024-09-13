@@ -1,4 +1,4 @@
-import HeroText from '@/components/HeroText'
+import Footer from '@/components/Footer'
 import Product from './Product'
 
 import products from '@/lib/data/products'
@@ -9,14 +9,16 @@ export default function page({ params }) {
 
   return (
     <>
-      <HeroText markup={product.name} desc={product.desc} />
+      {/* <HeroText markup={product.name} desc={product.desc} /> */}
       <Product
         name={product.name}
+        desc={product.desc}
         price={product.price}
         images={product.images}
         sizes={product.sizes}
         options={product.options}
       />
+      <Footer />
     </>
   )
 }
