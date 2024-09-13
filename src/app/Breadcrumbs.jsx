@@ -9,7 +9,8 @@ export default function Breadcrumbs() {
     segments.length > 1 && (
       <div className='fixed font-normal text-[14px] top-[4.5rem] py-[0.8rem] pl-[20px] sm:pl-[37px] w-full bg-white z-30 '>
         {segments.map((name, i, arr) => {
-          const text = name.charAt(0).toUpperCase() + name.slice(1)
+          const text =
+            name.charAt(0).toUpperCase() + name.slice(1).split('-').join(' ')
           if (i < arr.length - 1) {
             const href = '/' + segments.slice(0, i + 1).join('/')
             return (

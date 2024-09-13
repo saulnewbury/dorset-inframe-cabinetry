@@ -22,8 +22,8 @@ const products = [
       {
         name: 'Base cabinets',
         subCategories: [
-          'For corner',
           'For sink',
+          'For corner',
           'For hob',
           'For hob and oven',
           'For washing machine'
@@ -32,6 +32,7 @@ const products = [
       {
         name: 'Wall cabinets',
         subCategories: [
+          'With door',
           'For corner',
           'For sink',
           'For hob',
@@ -45,7 +46,7 @@ const products = [
         id: crypto.randomUUID(),
         name: 'Floor cabinet',
         desc: 'Floor cabinet with door',
-        categories: ['All', 'Base cabinets', 'With door', 'For corner'],
+        categories: ['All', 'Base cabinets', 'For sink'],
         price: '£24',
         images: [
           { id: crypto.randomUUID(), src: baseCabinet1a, alt: '' },
@@ -56,7 +57,7 @@ const products = [
         id: crypto.randomUUID(),
         name: 'Wall cabinet',
         desc: 'Wall cabinet with door',
-        categories: ['All', 'Wall cabinets', 'For sink'],
+        categories: ['All', 'Wall cabinets', 'With door'],
         price: '£24',
         images: [
           { id: crypto.randomUUID(), src: wallCabinet1a, alt: '' },

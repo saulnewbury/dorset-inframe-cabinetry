@@ -27,10 +27,10 @@ export default function Categories({ categories, handleClick, selected }) {
         >
           <span
             data-option={`["${cat.name}", null]`} // top and sub
-            onClick={handleClick}
             className={`${
               cat.name === selected.top ? 'underline' : ''
             } relative mr-5 cursor-pointer hover:underline`}
+            onClick={handleClick}
           >
             {cat.name}
 
@@ -51,17 +51,8 @@ export default function Categories({ categories, handleClick, selected }) {
           )}
           {submenu === cat.name && cat.subCategories && (
             <div className='absolute text-[.9rem] z-40 w-[max-content] h-[max-content]'>
-              <div className='bg-[#F0F0EE] leading-6 mt-[18px] py-5 px-6 shadow-[0_14px_32px_-9px_rgba(0,0,0,0.1)]'>
-                <div
-                  className='cursor-pointer'
-                  data-option={`["${cat.name}", null]`} // top and sub
-                  onClick={(e) => {
-                    handleClick(e)
-                    setSubmenu(null)
-                  }}
-                >
-                  All {cat.name.toLowerCase()}
-                </div>
+              <div className='bg-[#F0F0EE] mt-[18px] py-5 px-6 shadow-[0_14px_32px_-9px_rgba(0,0,0,0.1)]'>
+                <div className='font-medium pb-2'>{cat.name}</div>
                 {cat.subCategories.map((sub, i) => {
                   return (
                     <div
@@ -75,7 +66,7 @@ export default function Categories({ categories, handleClick, selected }) {
                         cat.name === selected.top && selected.sub === sub
                           ? 'text-[#919191]'
                           : ''
-                      } cursor-pointer`}
+                      } leading-6 cursor-pointer`}
                     >
                       {sub}
                     </div>
