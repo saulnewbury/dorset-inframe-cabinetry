@@ -26,9 +26,9 @@ export const menu = [
       { name: 'All products', url: '/products', id: 9 }, // only mobile - make part of submenu
       { name: 'Cabinets', url: '/products/cabinets', id: 10 },
       { name: 'Worktops', url: '/products/worktops', id: 11 },
-      { name: 'Handles and knobs', url: '/products/handles-and-knobs', id: 12 },
-      { name: 'Sinks and taps', url: '/products/sinks-and-taps', id: 13 },
-      { name: 'Appliances', url: '/products/appliances', id: 14 }
+      { name: 'Handles and knobs', url: '/products/handles-and-knobs', id: 12 }
+      // { name: 'Sinks and taps', url: '/products/sinks-and-taps', id: 13 },
+      // { name: 'Appliances', url: '/products/appliances', id: 14 }
     ]
   },
   { name: 'Contact', url: '/contact', id: 15 }

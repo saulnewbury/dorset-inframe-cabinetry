@@ -9,7 +9,7 @@ export default function Products() {
     <section className='gutter pt-[5rem] lg:pt-[8rem]'>
       <div className='indent'>
         <HeaderText>Products</HeaderText>
-        <div className='grid gap-[1vw] pt-[60px] mb-[120px] grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-5 sm:gap-[3vw] md:gap-[2vw] lg:gap-[1vw]'>
+        <div className='grid gap-[1vw] pt-[60px] mb-[120px] grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:gap-[3vw] md:gap-[2vw] lg:gap-[1vw]'>
           {productCategories.map((p) => {
             return (
               <Link
