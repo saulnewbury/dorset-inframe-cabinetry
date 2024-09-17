@@ -11,9 +11,11 @@ export default function Product({ name, price, images, sizes, options, desc }) {
   const shoot = useRef()
 
   useEffect(() => {
-    const sw = shoot.current.getBoundingClientRect().width
-    const ow = optionsContainer.current.getBoundingClientRect().width
-    if (ow > sw) setCanScroll(true)
+    if (options) {
+      const sw = shoot.current.getBoundingClientRect().width
+      const ow = optionsContainer.current.getBoundingClientRect().width
+      if (ow > sw) setCanScroll(true)
+    }
   }, [])
 
   function handleClick(name) {
@@ -67,8 +69,8 @@ export default function Product({ name, price, images, sizes, options, desc }) {
                   aria-label='Project status'
                   className='-ml-[3px] mr-[20px] inline-block focus:outline-none focus:underline data-[focus]:outline-blue-500 min-w-[8rem]'
                 >
-                  {sizes.map((size) => (
-                    <option value={size.w + size.h}>
+                  {sizes.map((size, i) => (
+                    <option key={i} value={size.w + size.h}>
                       {size.w}cm&nbsp;x&nbsp;{size.h}cm
                     </option>
                   ))}
