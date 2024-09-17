@@ -15,7 +15,7 @@ export default function page() {
     <>
       <HeroText
         markup={
-          'Inframe cabinetry: timeless appeal suited to both modern and traditional interiors.'
+          'Inframe cabinetry: timeless appeal suited to both modern and traditional interiors'
         }
       />
       <HeroImage src={bathroomGrey} alt='something' />

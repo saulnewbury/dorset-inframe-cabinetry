@@ -59,3 +59,7 @@ h2,
 div {
   text-wrap: balance;
 }
+
+.header {
+  @apply text-[24px] lg:text-[28px] leading-[32px] lg:leading-[37px] font-normal;
+}
