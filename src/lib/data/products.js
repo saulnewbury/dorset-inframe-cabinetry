@@ -51,11 +51,10 @@ const products = [
         name: 'Floor cabinet',
         desc: 'Floor cabinet with door',
         categories: ['All', 'Base cabinets', 'For sink'],
-        price: '£24',
+        price: '£24.00',
         sizes: [
           { w: 66.6, h: 80 },
-          { w: 71.6, h: 80 },
-          { w: 76.6, h: 80 }
+          { w: 71.6, h: 80 }
         ],
         options: [
           {
@@ -74,25 +73,29 @@ const products = [
             id: crypto.randomUUID(),
             src: baseCabinet1a,
             alt: '',
-            name: 'Beige'
+            name: 'Beige',
+            size: { w: 66.6, h: 80 }
           },
           {
             id: crypto.randomUUID(),
             src: baseCabinet1b,
             alt: '',
-            name: 'Beige'
+            name: 'Beige',
+            size: { w: 66.6, h: 80 }
           },
           {
             id: crypto.randomUUID(),
             src: baseCabinet1aGrey,
             alt: '',
-            name: 'Grey'
+            name: 'Grey',
+            size: { w: 71.6, h: 80 }
           },
           {
             id: crypto.randomUUID(),
             src: baseCabinet1bGrey,
             alt: '',
-            name: 'Grey'
+            name: 'Grey',
+            size: { w: 71.6, h: 80 }
           }
         ]
       },
@@ -101,11 +104,10 @@ const products = [
         name: 'Wall cabinet',
         desc: 'Wall cabinet with door',
         categories: ['All', 'Wall cabinets', 'With door'],
-        price: '£24',
+        price: '£24.00',
         sizes: [
           { w: 66.6, h: 80 },
-          { w: 71.6, h: 80 },
-          { w: 76.6, h: 80 }
+          { w: 71.6, h: 80 }
         ],
         options: [
           {
@@ -124,25 +126,29 @@ const products = [
             id: crypto.randomUUID(),
             src: wallCabinet1a,
             alt: '',
-            name: 'Beige'
+            name: 'Beige',
+            size: { w: 66.6, h: 80 }
           },
           {
             id: crypto.randomUUID(),
             src: wallCabinet1b,
             alt: '',
-            name: 'Beige'
+            name: 'Beige',
+            size: { w: 66.6, h: 80 }
           },
           {
             id: crypto.randomUUID(),
             src: wallCabinet1aGrey,
             alt: '',
-            name: 'Grey'
+            name: 'Grey',
+            size: { w: 71.6, h: 80 }
           },
           {
             id: crypto.randomUUID(),
             src: wallCabinet1bGrey,
             alt: '',
-            name: 'Grey'
+            name: 'Grey',
+            size: { w: 71.6, h: 80 }
           }
         ]
       }
@@ -164,7 +170,7 @@ const products = [
         name: 'Artem',
         desc: 'Solid brass door knob',
         categories: ['All', 'Solid brass', 'Knobs'],
-        price: '£8',
+        price: '£8.00',
         images: [
           { id: crypto.randomUUID(), src: knob1a, alt: '' },
           { id: crypto.randomUUID(), src: knob1b, alt: '' }
@@ -174,7 +180,7 @@ const products = [
         id: crypto.randomUUID(),
         name: 'Lacie',
         desc: 'Solid brass handle',
-        price: '£12',
+        price: '£12.00',
         categories: ['All', 'Solid brass', 'Handles'],
         images: [
           { id: crypto.randomUUID(), src: handle1a, alt: '' },
@@ -185,7 +191,7 @@ const products = [
         id: crypto.randomUUID(),
         name: 'Aminta',
         desc: 'Cylindar door knob',
-        price: '£10',
+        price: '£10.00',
         categories: ['All', 'Black', 'Knobs'],
         images: [
           { id: crypto.randomUUID(), src: knob2a, alt: '' },
@@ -196,7 +202,7 @@ const products = [
         id: crypto.randomUUID(),
         name: 'Killain',
         desc: 'Hexagonal handle',
-        price: '£16',
+        price: '£16.00',
         categories: ['All', 'Black', 'Handles'],
         images: [
           { id: crypto.randomUUID(), src: handle2a, alt: '' },
@@ -208,7 +214,7 @@ const products = [
         name: 'Artem',
         desc: 'Solid brass door knob',
         categories: ['All', 'Solid brass', 'Knobs'],
-        price: '£8',
+        price: '£8.00',
         images: [
           { id: crypto.randomUUID(), src: knob1a, alt: '' },
           { id: crypto.randomUUID(), src: knob1b, alt: '' }
@@ -218,7 +224,7 @@ const products = [
         id: crypto.randomUUID(),
         name: 'Lacie',
         desc: 'Solid brass handle',
-        price: '£12',
+        price: '£12.00',
         categories: ['All', 'Solid brass', 'Handles'],
         images: [
           { id: crypto.randomUUID(), src: handle1a, alt: '' },
@@ -229,7 +235,7 @@ const products = [
         id: crypto.randomUUID(),
         name: 'Aminta',
         desc: 'Cylindar door knob',
-        price: '£10',
+        price: '£10.00',
         categories: ['All', 'Black', 'Knobs'],
         images: [
           { id: crypto.randomUUID(), src: knob2a, alt: '' },
@@ -240,7 +246,7 @@ const products = [
         id: crypto.randomUUID(),
         name: 'Killain',
         desc: 'Hexagonal handle',
-        price: '£16',
+        price: '£16.00',
         categories: ['All', 'Black', 'Handles'],
         images: [
           { id: crypto.randomUUID(), src: handle2a, alt: '' },

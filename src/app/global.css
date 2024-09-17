@@ -5,6 +5,7 @@
 * {
   box-sizing: border-box;
   margin: 0;
+  @apply font-normal;
 }
 
 @media (prefers-color-scheme: dark) {
