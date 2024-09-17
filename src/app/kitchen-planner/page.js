@@ -1,7 +1,5 @@
-'use client'
-
-import HeroText from '@/components/HeroText'
+import ConfigureYourKitchen from '../ConfigureYourKitchen'
 
 export default function page() {
-  return <HeroText markup={'Kitchen planner'} />
+  return <ConfigureYourKitchen classes='fixed max-h-[unset] md:my-0' />
 }
