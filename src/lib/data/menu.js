@@ -33,3 +33,12 @@ export const menu = [
   },
   { name: 'Contact', url: '/contact', id: 15 }
 ]
+
+export const plannerMenu = [
+  {
+    name: 'Define your space',
+    url: '/kitchen-planner/define-your-space'
+  },
+  { name: 'Make it yours', url: '/kitchen-planner/make-it-yours' },
+  { name: 'Bring it to life', url: '/kitchen-planner/bring-to-life' }
+]

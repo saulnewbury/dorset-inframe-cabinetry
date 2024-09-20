@@ -1,29 +1,32 @@
 import Link from 'next/link'
-export default function Button({ children, href, classes, color = '' }) {
+import { twMerge } from 'tailwind-merge'
+export default function Button({ children, href, classes, primary }) {
   return href ? (
-    <div className={`flex ${classes}`}>
-      <Link
-        className={`${
-          color
-            ? `hover:border-[${color}] hover:bg-[${color}] hover:text-white`
-            : 'hover:border-[2px] hover:px-[41px] hover:py-[11px]'
-        } font-normal box-border border-solid border-black border-[1px] px-[42px] py-[12px] rounded-md hover:font-medium`}
-        href={href}
-      >
-        {children}
-      </Link>
-    </div>
+    <Link
+      className={twMerge(
+        `${
+          primary
+            ? `bg-blue text-white hover:bg-darkBlue border-blue hover:border-darkBlue`
+            : 'text-black bg-transparent hover:bg-lightBlue border-black'
+        }  text-center font-normal box-border border-solid border-[1px] px-[42px] py-[12px] rounded-md`,
+        classes
+      )}
+      href={href}
+    >
+      {children}
+    </Link>
   ) : (
-    <div className={`flex ${classes}`}>
-      <button
-        className={`${
-          color
-            ? `hover:border-[${color}] hover:bg-[${color}] hover:text-white`
-            : 'hover:border-[2px] hover:px-[41px] hover:py-[11px]'
-        } font-normal box-border border-solid border-black border-[1px] px-[42px] py-[12px] rounded-md hover:font-medium`}
-      >
-        {children}
-      </button>
-    </div>
+    <button
+      className={twMerge(
+        `${
+          primary
+            ? `bg-blue text-white hover:bg-darkBlue border-blue hover:border-darkBlue`
+            : 'text-black bg-transparent hover:bg-lightBlue border-black'
+        }  text-center font-normal box-border border-solid border-[1px] px-[42px] py-[12px] rounded-md`,
+        classes
+      )}
+    >
+      {children}
+    </button>
   )
 }

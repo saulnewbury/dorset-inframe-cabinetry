@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
 
-import { productCategories } from '@/lib/data/productCategories'
+import products from '@/lib/data/products'
 
 export default function Products() {
   return (
     <section className='gutter'>
       <div className='indent mb-[120px] grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:gap-[4vw] md:gap-[3vw] lg:gap-[2vw]'>
-        {productCategories.map((p) => {
+        {products.map((p) => {
           return (
             <div key={p.name} className='flex flex-col'>
               <Link

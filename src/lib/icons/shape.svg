@@ -1,0 +1,8 @@
+<svg width="34" height="34" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg">
+  <g id="root">
+    <rect x="0.5" y="0.5" width="33" height="33" stroke="black"/>
+    <path d="M17 34V22" stroke="black"/>
+    <path d="M22 12V0" stroke="black"/>
+    <path d="M1 17H28" stroke="black"/>
+  </g>
+</svg>

@@ -1,0 +1,7 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+ <g id="root">
+    <rect x="1.06396" y="1.06836" width="98" height="98" stroke="black"/>
+    <path d="M2.00195 50.064L55.0704 50.064" stroke="black" stroke-dasharray="2 2"/>
+    <path d="M55.0703 1.00049L55.0703 50.0638" stroke="black" stroke-dasharray="2 2"/>
+  </g>
+</svg>

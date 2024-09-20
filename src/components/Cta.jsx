@@ -6,10 +6,10 @@ export default function Cta({ data }) {
   return (
     <section className='gutter py-[5rem] lg:py-[8rem] bg-[#FFFEE7]'>
       <div className='indent text-center'>
-        <p className='text-[24px] font-normal'>{text}</p>
-        <Button href={link.href} classes='mt-[2rem] justify-center'>
-          {link.text}
-        </Button>
+        <p className='text-[24px] font-normal mb-[2rem]'>{text}</p>
+        <div className='flex justify-center'>
+          <Button href={link.href}>{link.text}</Button>
+        </div>
       </div>
     </section>
   )

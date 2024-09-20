@@ -16,11 +16,18 @@ export default function ConfigureYourKitchen({ classes = '' }) {
     >
       <div className='md:px-[5rem] h-full max-h-[800px] max-w-[800px] relative top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]'>
         <div className='absolute h-full w-full top-0 left-0'>
-          <Image src={kitchenSketch} fill className='object-cover opacity-50' />
+          <Image
+            src={kitchenSketch}
+            fill
+            className='object-cover opacity-50'
+            alt=''
+          />
         </div>
         <div className='absolute top-0 left-0 h-full w-full flex flex-col items-center justify-center '>
           <h1 className='header mb-[2rem]'>Design your kitchen today</h1>
-          <Button>Kitchen Planner</Button>
+          <Button href={'/kitchen-planner/define-your-space'}>
+            Kitchen Planner
+          </Button>
         </div>
       </div>
     </section>

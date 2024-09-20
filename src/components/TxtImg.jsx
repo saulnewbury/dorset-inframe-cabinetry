@@ -12,12 +12,8 @@ export default function TxtImg({ keyPoints }) {
       <div className='gutter lg:w-[50vw] bg-[#F0F0EE] flex items-center justify-center py-[5rem] lg:aspect-square'>
         <div className='indent'>
           <h3 className='font-semibold mb-[1rem]'>{point.title}</h3>
-          <p>{point.body}</p>
-          {point.link && (
-            <Button href={point.url} classes='mt-[2rem]'>
-              {point.link}
-            </Button>
-          )}
+          <p className='mb-[2rem]'>{point.body}</p>
+          {point.link && <Button href={point.url}>{point.link}</Button>}
         </div>
       </div>
 

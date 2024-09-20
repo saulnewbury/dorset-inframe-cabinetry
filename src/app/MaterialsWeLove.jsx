@@ -45,9 +45,9 @@ export default function MaterialsWeLove() {
           Why MDF and MFC are our materials of choice...
         </p>
 
-        <Button href='/about/materials' classes='justify-center'>
-          Read more
-        </Button>
+        <div className='flex justify-center'>
+          <Button href='/about/materials'>Read more</Button>
+        </div>
         {/* <div className='text-center flex justify-center'>
           <Link
             className='font-normal box-border border-solid border-black border-[1px] px-[42px] py-[12px] rounded-md hover:border-[#606D8E]  hover:font-medium hover:bg-[#606D8E] hover:text-white mr-[20px]'

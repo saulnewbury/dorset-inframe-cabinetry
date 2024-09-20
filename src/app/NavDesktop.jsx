@@ -7,7 +7,6 @@ import './nav.css'
 
 import SvgIcon from '@/components/SvgIcon'
 
-import { menuDesk } from '@/lib/data/menu'
 import { menu } from '@/lib/data/menu'
 
 import SubmenuDesk from './SubmenuDesk'

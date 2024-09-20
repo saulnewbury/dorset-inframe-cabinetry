@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import HeaderText from '@/components/HeaderText'
 
-import { productCategories } from '@/lib/data/productCategories'
+import products from '@/lib/data/products.js'
 
 export default function Products() {
   return (
@@ -10,7 +10,7 @@ export default function Products() {
       <div className='indent'>
         <HeaderText>Products</HeaderText>
         <div className='grid gap-[1vw] pt-[60px] mb-[60px] grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 sm:gap-[3vw] md:gap-[2vw] lg:gap-[1vw]'>
-          {productCategories.map((p) => {
+          {products.map((p) => {
             return (
               <Link
                 key={p.name}

@@ -20,7 +20,12 @@ module.exports = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
       },
       colors: {
-        lightGrey: 'hsl(220, 3%, 90%)'
+        lightGrey: 'hsl(220, 3%, 90%)',
+        blue: 'hsl(223, 19%, 47%)',
+        darkBlue: 'hsl(223, 19%, 40%)',
+        blueTint: 'hsl(223, 10%, 94%)',
+        lightBlue: 'hsl(220, 29%, 94%)',
+        overlay: 'hsla(0, 0%, 20%, .6)'
       }
     }
   },

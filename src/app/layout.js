@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google'
 import './global.css'
 
 import Menu from './Menu.jsx'
+import Experience from '@/app/Experience'
 console.log(Menu)
 
 const inter = Inter({ subsets: ['latin'] })
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
     <html lang='en'>
       <body className={`${inter.className} font-light`}>
         <Menu />
+        <Experience />
         {children}
       </body>
     </html>

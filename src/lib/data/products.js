@@ -18,9 +18,15 @@ import wallCabinet1bGrey from '@/lib/images/products/wall-cabinet1b-grey.jpg'
 import baseCabinet1aGrey from '@/lib/images/products/base-cabinet1a-grey.jpg'
 import baseCabinet1bGrey from '@/lib/images/products/base-cabinet1b-grey.jpg'
 
+import knobs from '@/lib/images/nobs.jpg'
+import worktops from '@/lib/images/worktops.jpg'
+import cabinets from '@/lib/images/cabinets.jpg'
+
 const products = [
   {
     name: 'Cabinets',
+    src: cabinets,
+    url: '/products/cabinets',
     categories: [
       { name: 'All' },
       {
@@ -154,9 +160,11 @@ const products = [
       }
     ]
   },
-  { name: 'Worktops' },
+  { name: 'Worktops', src: worktops, url: '/products/worktops' },
   {
     name: 'Handles and knobs',
+    src: knobs,
+    url: '/products/handles-and-knobs',
     categories: [
       { name: 'All' },
       { name: 'Solid brass' },
