@@ -1,8 +1,9 @@
 import SvgIcon from '@/components/SvgIcon'
 import DefineYourSpace from './define-your-space/DefineYourSpace'
+import ProductGrid from '../products/[category]/ProductGrid'
 
 export default function ContentBox({ closeContentBox, content }) {
-  console.log(content)
+  console.log(content.name)
   return (
     <div className='fixed z-[100] flex h-[100vh] w-[100vw] top-0 left-0 bg-overlay px-[98px] py-[40px]'>
       <div className='bg-white w-full h-full relative'>
@@ -15,7 +16,7 @@ export default function ContentBox({ closeContentBox, content }) {
         </button>
         <div className='gutter h-full relative'>
           <h2 className='pt-[2rem] text-[18px]'>{content.content.title}</h2>
-          {content.name === 'Define your space' && (
+          {content.name === 'Choose floor plan' && (
             <DefineYourSpace close={closeContentBox} />
           )}
           {/* {content.name === 'Add a wall' && <DefineYourSpace />}
@@ -23,9 +24,9 @@ export default function ContentBox({ closeContentBox, content }) {
             {content.name === 'Add sloped ceiling' && <DefineYourSpace />}
             {content.name === 'Add windows' && <DefineYourSpace />}
             {content.name === 'Add doors' && <DefineYourSpace />}
-            {content.name === 'Add wall openings' && <DefineYourSpace />}
-            {content.name === 'Structure' && <DefineYourSpace />}
-            {content.name === 'Electricity' && <DefineYourSpace />}
+            {content.name === 'Add wall openings' && <DefineYourSpace />} */}
+          {content.name === 'Structures' && <ProductGrid />}
+          {/* {content.name === 'Electricity' && <DefineYourSpace />}
             {content.name === 'Heating' && <DefineYourSpace />}
             {content.name === 'Ventilation' && <DefineYourSpace />}
             {content.name === 'Fittings' && <DefineYourSpace />} */}

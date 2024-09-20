@@ -9,7 +9,7 @@ const shapes = [
     name: 'shape',
     options: [
       {
-        name: 'Define your space',
+        name: 'Choose floor plan',
         content: { title: 'Select a general floor plan' }
       }
     ]
@@ -68,7 +68,6 @@ export default function Sidebar({
               showContent ? 'pointer-events-none' : ''
             } relative h-[4rem] mb-[1rem] flex flex-col items-center hover:font-medium`}
             onMouseEnter={() => {
-              console.log('wassup')
               handleOpen(shape.name)
             }}
             onMouseLeave={() => {
@@ -89,28 +88,25 @@ export default function Sidebar({
 
             {/* Flyout */}
             {open === shape.name && (
-              <>
-                {/* Menu */}
-                <div className='absolute left-[51px] -top-[10.5px]  min-w-[7rem]'>
-                  <div className='bg-blueTint flex-col py-[16px] px-[20px] w-full ml-[10px] leading-6'>
-                    {shape.options.map((option, idx) => {
-                      return (
-                        <div
-                          key={idx}
-                          className='text-nowrap text-left hover:text-[#919191]'
-                          onClick={() => {
-                            handleOpen('')
-                            handleShowContent(shape.name)
-                            handleContent(option)
-                          }}
-                        >
-                          {option.name}
-                        </div>
-                      )
-                    })}
-                  </div>
+              <div className='absolute left-[51px] -top-[10.5px]  min-w-[7rem]'>
+                <div className='bg-blueTint flex-col py-[16px] px-[20px] w-full ml-[10px] leading-6'>
+                  {shape.options.map((option, idx) => {
+                    return (
+                      <div
+                        key={idx}
+                        className='text-nowrap text-left hover:text-[#919191]'
+                        onClick={() => {
+                          handleOpen('')
+                          handleShowContent(shape.name)
+                          handleContent(option)
+                        }}
+                      >
+                        {option.name}
+                      </div>
+                    )
+                  })}
                 </div>
-              </>
+              </div>
             )}
           </button>
         </Fragment>

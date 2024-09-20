@@ -6,7 +6,7 @@ import Button from '@/components/Button'
 const enclosedShapes = ['square', 'slice', 'notch']
 const openPlanShapes = ['square-divide', 'corner-divide', 'notch-divide']
 
-export default function DefineYourSpace({ close }) {
+export default function DefineYourSpace() {
   const [selected, setSelected] = useState(undefined)
   const [showContinueButton, setShowContinueButton] = useState(false)
 

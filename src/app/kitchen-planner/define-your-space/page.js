@@ -1,5 +1,5 @@
 'use client'
-import { useState, Fragment } from 'react'
+import { useState } from 'react'
 
 import ContentBox from '../ContentBox'
 import Sidebar from '../SideBar'
@@ -13,7 +13,6 @@ export default function page() {
     <>
       <Sidebar
         handleOpen={(name) => {
-          console.log(name)
           setOpen(name)
         }}
         handleShowContent={(name) => {
@@ -21,6 +20,7 @@ export default function page() {
         }}
         handleContent={(option) => setContent(option)}
         open={open}
+        showContent={showContent}
         content={content}
       />
 
