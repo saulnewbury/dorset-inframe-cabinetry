@@ -8,11 +8,6 @@
   @apply font-normal;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-  }
-}
-
 body {
   -webkit-font-smoothing: antialiased;
   text-wrap: balance;

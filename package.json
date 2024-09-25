@@ -10,10 +10,14 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.1.8",
+    "@react-three/drei": "^9.0.1",
+    "@react-three/fiber": "^8.17.7",
+    "@types/three": "^0.168.0",
     "next": "14.2.6",
     "react": "^18",
     "react-dom": "^18",
-    "tailwind-merge": "^2.5.2"
+    "tailwind-merge": "^2.5.2",
+    "three": "^0.168.0"
   },
   "devDependencies": {
     "eslint": "^8",

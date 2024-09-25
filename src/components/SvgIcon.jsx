@@ -16,6 +16,9 @@ import squareDivide from '@/lib/icons/square-divide-fplan.svg'
 import notchDivide from '@/lib/icons/notch-divide-fplan.svg'
 import cornerDivide from '@/lib/icons/corner-divide-fplan.svg'
 
+import icon2d from '@/lib/icons/2d-icon.svg'
+import icon3d from '@/lib/icons/3d-icon.svg'
+
 import tick from '@/lib/icons/tick.svg'
 
 const icons = [
@@ -32,7 +35,9 @@ const icons = [
   { icon: squareDivide, shape: 'square-divide' },
   { icon: notchDivide, shape: 'notch-divide' },
   { icon: cornerDivide, shape: 'corner-divide' },
-  { icon: tick, shape: 'tick' }
+  { icon: tick, shape: 'tick' },
+  { icon: icon2d, shape: '2d' },
+  { icon: icon3d, shape: '3d' }
 ]
 
 export default function SvgIcon({ shape = '', alt = undefined, classes = '' }) {
