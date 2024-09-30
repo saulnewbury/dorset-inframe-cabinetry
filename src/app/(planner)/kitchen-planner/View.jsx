@@ -1,15 +1,12 @@
 'use client'
 
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { PerspectiveContext } from '@/app/context.js'
 
 import SvgIcon from '@/components/SvgIcon'
 
-export default function Perspective() {
+export default function View() {
   const { changeView, view } = useContext(PerspectiveContext)
-  useEffect(() => {
-    // console.log(changeView)
-  })
 
   return (
     <div className='absolute bottom-[40px] w-full flex justify-center'>

@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import Content from '../Content'
 import Sidebar from '../Sidebar'
-import Perspective from '../Perspective'
+import View from '../View'
 import { useContext, useEffect } from 'react'
 import { CanvasContext } from '@/app/context'
 
@@ -37,7 +37,7 @@ export default function Page() {
         }}
       />
 
-      <Perspective />
+      <View />
 
       {/* <ContentBox /> */}
       {showContent && (

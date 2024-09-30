@@ -6,7 +6,7 @@ export default function PerspectiveContextProvider({ children }) {
   const [view, setView] = useState('2d')
 
   function changeView(perspective) {
-    console.log('whatsup')
+    console.log(perspective)
     setView(perspective)
   }
 

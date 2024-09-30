@@ -1,4 +1,4 @@
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from '@/components/SvgIcon.jsx'
 import DefineYourSpace from './define-your-space/DefineYourSpace'
 import Items from './Items'
 

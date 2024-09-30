@@ -1,19 +1,35 @@
 'use client'
-import { useState } from 'react'
+import {
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useContext,
+  useEffect
+} from 'react'
+
+import {} from '@react-three/drei'
+
 import { Canvas } from '@react-three/fiber'
-import { useImperativeHandle, forwardRef } from 'react'
+
+import { PerspectiveContext } from '@/app/context.js'
 
 import Experience from './Experience'
+import P2D from './P2D'
+import P3D from './P3D'
 
 export default forwardRef(function KitchenPlanner(props, ref) {
   const [show, setShow] = useState(false)
+  const { view } = useContext(PerspectiveContext)
+
+  useEffect(() => {
+    console.log(view)
+  }, [view])
 
   useImperativeHandle(
     ref,
     () => {
       return {
         showCanvas: () => {
-          console.log('show')
           setShow(true)
         },
         hideCanvas: () => {
@@ -26,18 +42,7 @@ export default forwardRef(function KitchenPlanner(props, ref) {
 
   return (
     <div className={`${show ? '' : 'hidden'} w-full h-full fixed`}>
-      <Canvas
-        orthographic
-        camera={{
-          zoom: 150,
-          fov: 45,
-          near: 0.1,
-          far: 200,
-          position: [0, 6, 0]
-        }}
-      >
-        <Experience />
-      </Canvas>
+      {view === '2d' ? <P2D /> : <P3D />}
     </div>
   )
 })

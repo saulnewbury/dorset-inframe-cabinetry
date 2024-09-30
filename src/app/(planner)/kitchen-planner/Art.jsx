@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useMemo, useEffect, useRef } from 'react'
 
-export default function Wall() {
+export default function Art() {
   const geometry = useRef()
   const verticesCount = 10 * 3
 
