@@ -9,7 +9,8 @@ export default function P2D() {
         zoom: 100,
         fov: 45,
         near: 0.1,
-        far: 200
+        far: 200,
+        position: [0, 6, 0]
       }}
     >
       <Experience />

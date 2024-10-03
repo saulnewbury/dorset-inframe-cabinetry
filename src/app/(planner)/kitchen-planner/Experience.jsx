@@ -1,17 +1,15 @@
 'use client'
-import { useEffect, useContext } from 'react'
+import { useContext } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from '@react-three/drei'
+
 import { PerspectiveContext } from '@/app/context.js'
 
-import Shape from './Shape'
+import FloorPlan from './FloorPlan.jsx'
 
 export default function Experience() {
   const { view } = useContext(PerspectiveContext)
 
-  useEffect(() => {
-    console.log(view)
-  }, [view])
   return (
     <>
       {/* Logic elements */}
@@ -23,13 +21,13 @@ export default function Experience() {
       <ambientLight intensity={1.5} />
 
       {/* Scene */}
-      <Shape />
+      <FloorPlan />
 
       {/* Floor */}
-      {/* <mesh rotation-x={view === '3d' ? Math.PI * 0.5 : 0}>
+      <mesh rotation-x={view === '3d' ? Math.PI * 0.5 : 0}>
         <planeGeometry args={[3, 3]} />
-        <meshStandardMaterial color='lightblue' side={THREE.DoubleSide} />
-      </mesh> */}
+        <meshBasicMaterial color='lightblue' side={THREE.DoubleSide} />
+      </mesh>
     </>
   )
 }

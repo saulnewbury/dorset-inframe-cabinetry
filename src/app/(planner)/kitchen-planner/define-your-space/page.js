@@ -24,7 +24,7 @@ export default function Page() {
 
   return (
     <>
-      <Sidebar
+      {/* <Sidebar
         handleContent={(option) => setContent(option)}
         open={open}
         showContent={showContent}
@@ -35,9 +35,9 @@ export default function Page() {
         handleShowContent={(name) => {
           setShowContent(name)
         }}
-      />
+      /> */}
 
-      <View />
+      {/* <View /> */}
 
       {/* <ContentBox /> */}
       {showContent && (
