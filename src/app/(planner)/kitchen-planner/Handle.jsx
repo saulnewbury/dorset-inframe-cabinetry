@@ -5,7 +5,7 @@ import { DragControls, useCursor } from '@react-three/drei'
 // TODO:
 // Calc handle rotation - half that of angle made by walls
 export default forwardRef(function Handle(
-  { t, x, z, angle, handleDrag, end, dragEnd },
+  { t, x, z, angle, handleDrag, end, dragging },
   handle
 ) {
   const [hovered, setHovered] = useState(false)
@@ -29,7 +29,10 @@ export default forwardRef(function Handle(
       }}
       onDragEnd={() => {
         setMousedown(false)
-        dragEnd()
+        dragging(false)
+      }}
+      onDragStart={() => {
+        dragging(true)
       }}
     >
       <group position={[x, 1.5 + 0.05, z]}>

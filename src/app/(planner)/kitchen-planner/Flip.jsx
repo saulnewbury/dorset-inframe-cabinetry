@@ -1,13 +1,16 @@
 import * as THREE from 'three'
 
-export default function Flip({ t, dpx, dpz, angle, end, flip }) {
+export default function Flip({ t, dpx, dpz, angle, end, dragging, flip }) {
   return (
     <group position={[dpx, 1.5 + 0.05, dpz]}>
       <group rotation-y={angle}>
         <group position={[0 - t / 2, 2 + 0.05, end ? t / 2 : 0 - t / 2]}>
           <mesh
             // rotation-y={angle}
-            onPointerOver={() => flip(true)}
+            onPointerOver={() => {
+              if (dragging) return
+              flip(true)
+            }}
           >
             <boxGeometry args={[t * 1.5, t * 1.5, t * 1.5]} />
             <meshStandardMaterial

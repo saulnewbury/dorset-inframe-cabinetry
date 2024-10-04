@@ -16,7 +16,7 @@ export default function Wall({ params }) {
 
   const { view } = useContext(PerspectiveContext)
 
-  const [dragEnd, setDragEnd] = useState(true)
+  const [dragging, setDragging] = useState(false)
   const [end, setEnd] = useState(true)
   const [angle, setAngle] = useState(theta)
   const [l, setLength] = useState(w)
@@ -47,7 +47,7 @@ export default function Wall({ params }) {
     const a = calculateAdjacent(l, angle)
     const o = calculateOpposite(l, angle)
     return { a, o }
-  }, [dragEnd])
+  }, [dragging])
 
   function handleDrag() {
     // hyp and adj from center of world
@@ -80,6 +80,7 @@ export default function Wall({ params }) {
           dpx={0}
           dpz={0}
           end={end}
+          dragging={dragging}
           flip={() => {
             setEnd(!end)
             if (end) {
@@ -103,8 +104,8 @@ export default function Wall({ params }) {
           x={handlePos.x}
           z={handlePos.z}
           handleDrag={handleDrag}
-          dragEnd={() => {
-            setDragEnd(!dragEnd)
+          dragging={(bool) => {
+            setDragging(bool)
           }}
           angle={angle}
           ref={handle}
