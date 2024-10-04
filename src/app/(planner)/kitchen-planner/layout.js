@@ -12,7 +12,7 @@ export default function Layout({ children }) {
   const kitchenPlanner = useRef()
 
   useEffect(() => {
-    setRef(kitchenPlanner)
+    setRef(kitchenPlanner) // give ref to CanvasContext
   }, [])
 
   return (

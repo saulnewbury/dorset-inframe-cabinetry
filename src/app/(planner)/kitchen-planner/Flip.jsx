@@ -1,10 +1,10 @@
 import * as THREE from 'three'
 
-export default function Flip({ t, dpx, dpz, angle, flip }) {
+export default function Flip({ t, dpx, dpz, angle, end, flip }) {
   return (
     <group position={[dpx, 1.5 + 0.05, dpz]}>
       <group rotation-y={angle}>
-        <group position={[0 - t / 2, 2 + 0.05, 0 + t / 2]}>
+        <group position={[0 - t / 2, 2 + 0.05, end ? t / 2 : 0 - t / 2]}>
           <mesh
             // rotation-y={angle}
             onPointerOver={() => flip(true)}

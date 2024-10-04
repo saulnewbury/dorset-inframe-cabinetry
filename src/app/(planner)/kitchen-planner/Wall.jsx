@@ -12,7 +12,7 @@ import Flip from './Flip'
 import Position from './Position'
 
 export default function Wall({ params }) {
-  const { w, h, t, x, z, theta } = params
+  const { id, w, h, t, x, z, theta } = params
 
   const { view } = useContext(PerspectiveContext)
 
@@ -22,6 +22,8 @@ export default function Wall({ params }) {
   const [l, setLength] = useState(w)
   const [px, setPx] = useState(x)
   const [pz, setPz] = useState(z)
+
+  // Stays here
   const [handlePos, setHandlePos] = useState({})
   const group = useRef()
   const handle = useRef()
@@ -62,7 +64,6 @@ export default function Wall({ params }) {
   return (
     <>
       {/* Group x: horizontal, y: height, z: length (vertical) */}
-      {/* <group ref={group} position={[gpx, h / 2, gpz]}> */}
       <group rotation-y={angle} ref={group} position={[gpx, h / 2, gpz]}>
         {/* Wall */}
         <mesh position={[-t / 2, 0, wpz]}>
@@ -78,6 +79,7 @@ export default function Wall({ params }) {
           t={t}
           dpx={0}
           dpz={0}
+          end={end}
           flip={() => {
             setEnd(!end)
             if (end) {
@@ -108,7 +110,6 @@ export default function Wall({ params }) {
           ref={handle}
         />
       )}
-      {/* </group> */}
     </>
   )
 }

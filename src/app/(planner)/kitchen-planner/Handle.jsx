@@ -1,4 +1,4 @@
-import { useState, forwardRef, useEffect, useLayoutEffect } from 'react'
+import { useState, forwardRef, useEffect } from 'react'
 import * as THREE from 'three'
 import { DragControls, useCursor } from '@react-three/drei'
 
@@ -14,7 +14,7 @@ export default forwardRef(function Handle(
 
   const cc = document.querySelector('.canvas-container')
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     cc.style.cursor = hovered || mousedown ? 'none' : 'default'
     return () => {
       cc.style.cursor = 'default'

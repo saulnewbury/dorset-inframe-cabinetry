@@ -3,9 +3,6 @@
 export const square = () => {
   const wall = 2
 
-  // gpz = end ? py / 2 : -(py / 2),
-  //   gpx = px,
-
   return [
     {
       id: 0,
@@ -27,3 +24,8 @@ export const square = () => {
     }
   ]
 }
+// Floor plan takes responsibility for rendering the walls
+// Reducer handles the geometry computations e.g.
+// Child passes back info about itself (new position and
+// angle [that's what's passed into it]) and then the reducer,
+// calculates what happens as a result.
