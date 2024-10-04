@@ -2,8 +2,10 @@ import { useState, forwardRef, useEffect, useLayoutEffect } from 'react'
 import * as THREE from 'three'
 import { DragControls, useCursor } from '@react-three/drei'
 
+// TODO:
+// Calc handle rotation - half that of angle made by walls
 export default forwardRef(function Handle(
-  { t, x, z, angle, handleDrag, dragEnd },
+  { t, x, z, angle, handleDrag, end, dragEnd },
   handle
 ) {
   const [hovered, setHovered] = useState(false)
@@ -32,14 +34,14 @@ export default forwardRef(function Handle(
     >
       <group position={[x, 1.5 + 0.05, z]}>
         <group rotation-y={angle}>
-          <group position={[0 - t / 2, 2 + 0.05, 0 + t / 2]}>
+          <group position={[0 - t / 2, 2 + 0.05, !end ? 0 + t / 2 : 0 - t / 2]}>
             <mesh
-              rotation-y={-angle}
+              // rotation-y={end ? -angle : angle}
               onPointerOver={() => setHovered(true)}
               onPointerOut={() => setHovered(false)}
               onPointerDown={() => setMousedown(true)}
             >
-              <boxGeometry args={[t * 1.5, t * 1.5, t * 1.5]} />
+              <boxGeometry args={[t, t, t]} />
               <meshStandardMaterial
                 color='orange'
                 side={THREE.DoubleSide}

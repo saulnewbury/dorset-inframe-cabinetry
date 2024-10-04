@@ -96,6 +96,7 @@ export default function Wall({ params }) {
       {view === '2d' && (
         <Handle
           key={end}
+          end={end}
           t={t}
           x={handlePos.x}
           z={handlePos.z}
