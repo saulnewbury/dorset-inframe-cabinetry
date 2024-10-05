@@ -37,7 +37,7 @@ export default function Page() {
         }}
       /> */}
 
-      {/* <View /> */}
+      <View />
 
       {/* <ContentBox /> */}
       {showContent && (
