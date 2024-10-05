@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useContext, Fragment } from 'react'
+import { useState, useContext, Fragment } from 'react'
 import { square } from './floorplans'
 
 import Wall from './Wall'
@@ -24,6 +24,10 @@ export default function FloorPlan() {
     setPlan(newArray)
   }
 
+  function updateHandle(x, z, id) {
+    setHandle({ x, z, id })
+  }
+
   return (
     <>
       {plan.map((point, i) => (
@@ -32,12 +36,9 @@ export default function FloorPlan() {
             params={point}
             t={0.15}
             h={1}
+            handleCoordinates={updateHandle}
             toggleHandle={() => {
               setShowHandle(true)
-            }}
-            handleCoordinates={(x, z, id) => {
-              if (dragging) return
-              setHandle({ x, z, id })
             }}
           />
           <Wall a={plan[i]} b={plan[(i + 1) % 4]} t={0.15} h={1} />
