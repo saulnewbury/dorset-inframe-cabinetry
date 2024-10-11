@@ -6,6 +6,8 @@ import { OrbitControls } from '@react-three/drei'
 import { PerspectiveContext } from '@/app/context.js'
 
 import FloorPlan from './FloorPlan.jsx'
+import FloorPlanRad from './FloorPlanRad.jsx'
+import FloorPlanRad2 from './FloorPlanRad2.jsx'
 
 export default function Experience() {
   const { view } = useContext(PerspectiveContext)
@@ -21,13 +23,14 @@ export default function Experience() {
       <ambientLight intensity={1.5} />
 
       {/* Scene */}
-      <FloorPlan />
+      {/* <FloorPlan /> */}
+      <FloorPlanRad />
 
       {/* Floor */}
-      <mesh rotation-x={view === '3d' ? Math.PI * 0.5 : 0}>
+      {/* <mesh rotation-x={view === '3d' ? Math.PI * 0.5 : 0}>
         <planeGeometry args={[3, 3]} />
         <meshBasicMaterial color='lightblue' side={THREE.DoubleSide} />
-      </mesh>
+      </mesh> */}
     </>
   )
 }

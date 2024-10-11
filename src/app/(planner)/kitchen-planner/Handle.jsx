@@ -10,7 +10,8 @@ export default function Corner({
   handleDrag,
   dragging,
   toggleHandle,
-  showHandle
+  showHandle,
+  startPosition
 }) {
   const { x, z } = useMemo(() => ({ x: params.x, z: params.z }), [showHandle])
 
@@ -30,8 +31,14 @@ export default function Corner({
 
   return (
     <DragControls
-      onDragStart={dragging}
-      onDragEnd={dragging}
+      onDragStart={() => {
+        const { x, z } = handle.current.getWorldPosition(new THREE.Vector3())
+        dragging()
+        startPosition(x, z)
+      }}
+      onDragEnd={() => {
+        dragging()
+      }}
       onDrag={() => {
         const { x, z } = handle.current.getWorldPosition(new THREE.Vector3())
         handleDrag(id, x, z)
@@ -47,7 +54,7 @@ export default function Corner({
         }}
       >
         <boxGeometry args={[t * 2, 0, t * 2]} />
-        <meshStandardMaterial color='green' />
+        <meshStandardMaterial color='green' transparent opacity={0.3} />
       </mesh>
     </DragControls>
   )

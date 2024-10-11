@@ -17,12 +17,11 @@ import { PerspectiveContext } from '@/app/context'
  * it's newlocations thereby updating the corners.
  */
 
-export default function FloorPlan() {
+export default function FloorPlanRad() {
   const [points, setPoints] = useState(square)
   const [handle, setHandle] = useState({})
   const [showHandle, setShowHandle] = useState(false)
   const [dragging, setDragging] = useState(false)
-  const [startPos, setStartPos] = useState({})
   const [axisPair, setAxisPair] = useState([])
 
   const { view } = useContext(PerspectiveContext)
@@ -31,35 +30,9 @@ export default function FloorPlan() {
     const newArray = points.map((point) => {
       if (point.id !== id) return point
 
-      const snapTolerance = 0.05
-      const mx = nearestMultiple(x, 1)
-      const mz = nearestMultiple(z, 1)
-      const valueX = checkDifference(mx, x, startPos.x, snapTolerance)
-      const valueZ = checkDifference(mz, z, startPos.z, snapTolerance)
-
-      return { id, x: valueX, z: valueZ }
+      return { id, x, z }
     })
     setPoints(newArray)
-  }
-
-  function nearestMultiple(num, multiple) {
-    return Math.round(num / multiple) * multiple
-  }
-
-  function checkDifference(nearestMultiple, current, startPos, tolerance) {
-    if (
-      current > nearestMultiple - tolerance &&
-      current < nearestMultiple + tolerance
-    ) {
-      return nearestMultiple
-    } else if (
-      current > startPos - tolerance &&
-      current < startPos + tolerance
-    ) {
-      return startPos
-    } else {
-      return current
-    }
   }
 
   function updateHandle(id, x, z) {
@@ -118,10 +91,6 @@ export default function FloorPlan() {
           params={handle}
           handleDrag={updatePlan}
           showHandle={showHandle}
-          startPosition={(x, z) => {
-            // console.log('start: ' + x + ' ' + z)
-            setStartPos({ x, z })
-          }}
           dragging={() => {
             setDragging(!dragging)
           }}

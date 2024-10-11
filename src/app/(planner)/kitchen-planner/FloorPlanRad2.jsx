@@ -17,7 +17,7 @@ import { PerspectiveContext } from '@/app/context'
  * it's newlocations thereby updating the corners.
  */
 
-export default function FloorPlan() {
+export default function FloorPlanRad2() {
   const [points, setPoints] = useState(square)
   const [handle, setHandle] = useState({})
   const [showHandle, setShowHandle] = useState(false)
@@ -28,38 +28,130 @@ export default function FloorPlan() {
   const { view } = useContext(PerspectiveContext)
 
   function updatePlan(id, x, z) {
+    const id1 = id - 1 === 0 ? points.length : id - 1
+    const id2 = (id % points.length) + 1
+
+    const position1 = points.find((p) => p.id === id1)
+    const position2 = points.find((p) => p.id === id2)
+
+    const snapIncrement = 0.3926991
+    const snapRange = 0.1
+
     const newArray = points.map((point) => {
       if (point.id !== id) return point
 
-      const snapTolerance = 0.05
-      const mx = nearestMultiple(x, 1)
-      const mz = nearestMultiple(z, 1)
-      const valueX = checkDifference(mx, x, startPos.x, snapTolerance)
-      const valueZ = checkDifference(mz, z, startPos.z, snapTolerance)
+      // Find the nearest snap points on both grids
+      const snapped1 = snapToRadialGrid(
+        x,
+        z,
+        position1.x,
+        position1.z,
+        snapIncrement,
+        snapRange
+      )
+      const snapped2 = snapToRadialGrid(
+        x,
+        z,
+        position2.x,
+        position2.z,
+        snapIncrement
+      )
 
-      return { id, x: valueX, z: valueZ }
+      // Calculate the distance to both snapped positions
+      const distToSnapped1 = distance(x, z, snapped1.x, snapped1.z)
+      const distToSnapped2 = distance(x, z, snapped2.x, snapped2.z)
+
+      // Select the closer of the two snapped points
+      let finalX, finalZ
+      if (distToSnapped1 < distToSnapped2) {
+        finalX = snapped1.x
+        finalZ = snapped1.z
+      } else {
+        finalX = snapped2.x
+        finalZ = snapped2.z
+      }
+
+      // Check for intersection between the two snapped lines
+      const intersection = calculateIntersection(
+        position1,
+        position2,
+        snapped1,
+        snapped2,
+        snapRange
+      )
+
+      // If intersection is valid, snap to the intersection point
+      if (
+        intersection &&
+        distance(x, z, intersection.x, intersection.z) < snapRange
+      ) {
+        finalX = intersection.x
+        finalZ = intersection.z
+      }
+
+      return { id, x: finalX, z: finalZ }
     })
     setPoints(newArray)
   }
 
-  function nearestMultiple(num, multiple) {
-    return Math.round(num / multiple) * multiple
+  // Calculate intersection point if within snapping range
+  function calculateIntersection(position1, position2, pos1, pos2, snapRange) {
+    const angleDiff = Math.abs(normalizeAngle(pos1.angle - pos2.angle))
+
+    // If angles are approximately the same, no intersection
+    if (angleDiff < 0.001 || angleDiff > 2 * Math.PI - 0.001) return null
+
+    // Use the law of cosines to compute intersection
+    const dx = pos1.x - position1.x
+    const dz = pos1.z - position1.z
+    const distance1 = Math.sqrt(dx * dx + dz * dz)
+
+    const dx2 = pos2.x - position2.x
+    const dz2 = pos2.z - position2.z
+    const distance2 = Math.sqrt(dx2 * dx2 + dz2 * dz2)
+
+    // If the two snapped points are close enough, return the average position
+    if (distance1 < snapRange && distance2 < snapRange) {
+      const intersectX = (pos1.x + pos2.x) / 2
+      const intersectZ = (pos1.z + pos2.z) / 2
+      return { x: intersectX, z: intersectZ }
+    }
+    return null
   }
 
-  function checkDifference(nearestMultiple, current, startPos, tolerance) {
-    if (
-      current > nearestMultiple - tolerance &&
-      current < nearestMultiple + tolerance
-    ) {
-      return nearestMultiple
-    } else if (
-      current > startPos - tolerance &&
-      current < startPos + tolerance
-    ) {
-      return startPos
-    } else {
-      return current
+  function snapToRadialGrid(x, z, centerX, centerZ, snapIncrement, snapRange) {
+    const dx = x - centerX
+    const dz = z - centerZ
+    let angle = Math.atan2(dz, dx)
+
+    angle = normalizeAngle(angle) // Normalize to [0, 2π]
+    const nearestAngle = Math.round(angle / snapIncrement) * snapIncrement
+
+    // Snap if within range
+    if (angularDifference(angle, nearestAngle) <= snapRange) {
+      const distanceFromCenter = Math.sqrt(dx * dx + dz * dz) // Distance from center
+      const snappedX = centerX + distanceFromCenter * Math.cos(nearestAngle)
+      const snappedZ = centerZ + distanceFromCenter * Math.sin(nearestAngle)
+      return { x: snappedX, z: snappedZ, angle: nearestAngle }
     }
+
+    // No snapping if not within range
+    return { x, z, angle }
+  }
+
+  function normalizeAngle(angle) {
+    return (angle + 2 * Math.PI) % (2 * Math.PI)
+  }
+
+  // Helper to calculate angular difference accounting for wraparound
+  function angularDifference(angle1, angle2) {
+    const diff = normalizeAngle(angle1 - angle2)
+    return Math.min(diff, 2 * Math.PI - diff)
+  }
+
+  // Calculate distance between two points
+  function distance(x1, z1, x2, z2) {
+    return Math.sqrt((x1 - x2) ** 2 + (z1 - z2) ** 2)
   }
 
   function updateHandle(id, x, z) {
