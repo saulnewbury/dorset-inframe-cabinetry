@@ -32,9 +32,7 @@ export default function Corner({
   return (
     <DragControls
       onDragStart={() => {
-        const { x, z } = handle.current.getWorldPosition(new THREE.Vector3())
         dragging()
-        startPosition(x, z)
       }}
       onDragEnd={() => {
         dragging()

@@ -1,6 +1,6 @@
 import { Group } from 'three'
 
-export default function Grid({ coords }) {
+export default function RadialGrid({ coords }) {
   const { x, z } = coords
 
   return (

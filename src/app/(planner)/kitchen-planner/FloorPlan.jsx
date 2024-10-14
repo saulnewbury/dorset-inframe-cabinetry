@@ -5,7 +5,7 @@ import { square, slice } from './floorplans'
 import Wall from './Wall'
 import Corner from './Corner'
 import Handle from './Handle'
-import Grid from './Grid'
+import Grid from './RadialGrid'
 
 import { PerspectiveContext } from '@/app/context'
 
