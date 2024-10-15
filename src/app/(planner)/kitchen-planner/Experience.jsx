@@ -1,14 +1,22 @@
 'use client'
+
+// Modules
+import { useState, useContext, useRef, useEffect } from 'react'
 import { OrbitControls } from '@react-three/drei'
 
-import { useState, useContext, useRef } from 'react'
+// Helpers
+import { radToDeg } from '@/lib/helpers/radToDeg'
+
+// Data
 import { square, slice } from './floorplans'
 
+// Objects
 import Wall from './Wall'
 import Corner from './Corner'
 import RadialGrid from './RadialGrid'
 import Floor from './Floor'
 
+// Context
 import { PerspectiveContext } from '@/app/context.js'
 
 /**
@@ -36,6 +44,8 @@ export default function Experience() {
 
   const over = useRef(new Set())
   const dragBase = useRef()
+  const orbitControls = useRef()
+  const walls = useRef()
 
   const [axisPair, setAxisPair] = useState([])
 
@@ -43,10 +53,38 @@ export default function Experience() {
   const snap = (pt) => pt && { x: Math.round(pt.x), z: Math.round(pt.z) }
   const { view } = useContext(PerspectiveContext)
 
+  function handleChange() {
+    const sceneRotation = radToDeg(orbitControls.current.getAzimuthalAngle())
+
+    walls.current.traverse((obj) => {
+      if (obj.name) {
+        const wallRotation = radToDeg(obj.rotation.z)
+        if (isWallFacingCamera(sceneRotation, wallRotation)) {
+          obj.visible = false
+        } else {
+          obj.visible = true
+        }
+      }
+    })
+  }
+
+  function isWallFacingCamera(sceneRotation, wallRotation) {
+    let relativeAngle = (wallRotation + sceneRotation + 360) % 360
+    return relativeAngle >= 120 && relativeAngle <= 240
+  }
+
+  useEffect(() => {
+    handleChange()
+  }, [])
+
   return (
     <>
       {/* Logic elements */}
-      <OrbitControls enableRotate={view === '2d' ? false : true} />
+      <OrbitControls
+        enableRotate={view === '2d' ? false : true}
+        ref={orbitControls}
+        onChange={handleChange}
+      />
       <axesHelper />
 
       {/* Environment elements */}
@@ -69,25 +107,27 @@ export default function Experience() {
           onDragEnd={dragEnd}
         />
       ))}
-      {points.map((from, n) => {
-        return (
-          <Wall
-            key={'wall-' + n}
-            id={from.id}
-            color={from.color}
-            from={from}
-            to={points[wrap(from.id + 1)]}
-            next={points[wrap(from.id + 2)]}
-            prev={points[wrap(from.id - 1)]}
-            // features={features[n]}
-            hover={hover}
-            onHover={doHover}
-            onDragStart={dragStart}
-            onDrag={moveWall}
-            onDragEnd={dragEnd}
-          />
-        )
-      })}
+      <group ref={walls}>
+        {points.map((from, n) => {
+          return (
+            <Wall
+              key={'wall-' + n}
+              id={from.id}
+              color={from.color}
+              from={from}
+              to={points[wrap(from.id + 1)]}
+              next={points[wrap(from.id + 2)]}
+              prev={points[wrap(from.id - 1)]}
+              // features={features[n]}
+              hover={hover}
+              onHover={doHover}
+              onDragStart={dragStart}
+              onDrag={moveWall}
+              onDragEnd={dragEnd}
+            />
+          )
+        })}
+      </group>
 
       {axisPair.map((axis, i) => (
         <RadialGrid key={i} coords={axis} />

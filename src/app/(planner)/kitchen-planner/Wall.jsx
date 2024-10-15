@@ -26,7 +26,6 @@ export default function Wall({
   const wall = useRef()
 
   const { view } = useContext(PerspectiveContext)
-  console.log(view === '2d')
   const [dragging, setDragging] = useState(false)
   const [pointerPosition, setPosition] = useState()
   const showHandle = (hover && hover === wall.current) || dragging
@@ -59,7 +58,6 @@ export default function Wall({
 
   // Drag state
   const { handle, matrix } = useMemo(() => {
-    console.log(pointerPosition)
     const handle = pointerPosition || pos.slice()
     handle[1] = h + 0.1
     const matrix = new Matrix4()
@@ -68,7 +66,12 @@ export default function Wall({
 
   return (
     <>
-      <mesh position={pos} rotation-x={Math.PI * 0.5} rotation-z={angle}>
+      <mesh
+        position={pos}
+        rotation-x={Math.PI * 0.5}
+        rotation-z={angle}
+        name='wall'
+      >
         <extrudeGeometry args={[shape, { depth: 1, bevelEnabled: false }]} />
         <meshStandardMaterial color={color} />
       </mesh>
