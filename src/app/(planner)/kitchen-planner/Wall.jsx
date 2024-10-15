@@ -1,6 +1,9 @@
 import { useMemo, useRef, useState, useContext } from 'react'
 import { Matrix4, Shape, Vector2, Vector3 } from 'three'
 import { DragControls } from '@react-three/drei'
+import { radToDeg } from '@/lib/helpers/radToDeg.js'
+
+import Length from './Length.jsx'
 
 import { PerspectiveContext } from '@/app/context.js'
 
@@ -43,9 +46,13 @@ export default function Wall({
   const mitreEnd = (angleNext - angle) / 2
   const mitreStart = (angle - anglePrev) / 2
 
-  const clamp = (t) => (Math.abs(t) < 2.5 ? t : 0)
+  const clamp = (t) => (Math.abs(t) < 3.5 ? t : 0)
   const te = t * clamp(Math.tan(mitreEnd))
   const ts = t * clamp(Math.tan(mitreStart))
+
+  if (id === 2) {
+    console.log('ID-' + id + ': ' + mitreStart + ' ' + mitreEnd)
+  }
 
   // Base shape for the wall footprint
   const shape = new Shape([
@@ -66,15 +73,26 @@ export default function Wall({
 
   return (
     <>
-      <mesh
+      <group
+        name='wall'
         position={pos}
         rotation-x={Math.PI * 0.5}
         rotation-z={angle}
-        name='wall'
       >
-        <extrudeGeometry args={[shape, { depth: 1, bevelEnabled: false }]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
+        <mesh>
+          <extrudeGeometry args={[shape, { depth: 1, bevelEnabled: false }]} />
+          <meshStandardMaterial color={color} />
+        </mesh>
+
+        <Length
+          offset={0.3}
+          // end={[len / 2 - te / 2, t / -2]}
+          // start={[len / -2 + ts / 2, t / -2]}
+          end={[len / 2 - te / 2, t / -2]}
+          start={[len / -2 + ts / 2, t / -2]}
+          color='red'
+        />
+      </group>
       <mesh
         position={pos}
         rotation-y={-angle}

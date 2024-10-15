@@ -26,7 +26,12 @@ export default function Floor({ points }) {
     <mesh rotation-x={Math.PI / 2}>
       <shapeGeometry args={[shape]} />
       {/* <meshStandardMaterial map={colourMap} side={DoubleSide} /> */}
-      <meshStandardMaterial color='grey' side={DoubleSide} />
+      <meshStandardMaterial
+        color='lightblue'
+        transparent
+        opacity={0.3}
+        side={DoubleSide}
+      />
     </mesh>
   )
 }

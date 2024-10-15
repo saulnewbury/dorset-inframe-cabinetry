@@ -53,28 +53,8 @@ export default function Experience() {
   const snap = (pt) => pt && { x: Math.round(pt.x), z: Math.round(pt.z) }
   const { view } = useContext(PerspectiveContext)
 
-  function handleChange() {
-    const sceneRotation = radToDeg(orbitControls.current.getAzimuthalAngle())
-
-    walls.current.traverse((obj) => {
-      if (obj.name) {
-        const wallRotation = radToDeg(obj.rotation.z)
-        if (isWallFacingCamera(sceneRotation, wallRotation)) {
-          obj.visible = false
-        } else {
-          obj.visible = true
-        }
-      }
-    })
-  }
-
-  function isWallFacingCamera(sceneRotation, wallRotation) {
-    let relativeAngle = (wallRotation + sceneRotation + 360) % 360
-    return relativeAngle >= 120 && relativeAngle <= 240
-  }
-
   useEffect(() => {
-    handleChange()
+    hideWalls()
   }, [])
 
   return (
@@ -83,7 +63,7 @@ export default function Experience() {
       <OrbitControls
         enableRotate={view === '2d' ? false : true}
         ref={orbitControls}
-        onChange={handleChange}
+        onChange={hideWalls}
       />
       <axesHelper />
 
@@ -306,6 +286,25 @@ export default function Experience() {
       x: from.x + dist * Math.cos(thetaGrid),
       z: from.z + dist * Math.sin(thetaGrid)
     }
+  }
+
+  function hideWalls() {
+    // const sceneRotation = radToDeg(orbitControls.current.getAzimuthalAngle())
+    // walls.current.traverse((obj) => {
+    //   if (obj.name) {
+    //     const wallRotation = radToDeg(obj.rotation.z)
+    //     if (isWallFacingCamera(sceneRotation, wallRotation)) {
+    //       obj.visible = false
+    //     } else {
+    //       obj.visible = true
+    //     }
+    //   }
+    // })
+  }
+
+  function isWallFacingCamera(sceneRotation, wallRotation) {
+    let relativeAngle = (wallRotation + sceneRotation + 360) % 360
+    return relativeAngle >= 120 && relativeAngle <= 240
   }
 
   /**
