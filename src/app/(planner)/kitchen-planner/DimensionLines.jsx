@@ -1,10 +1,9 @@
 'use client'
 import React, { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-
 import Measurement from './Measurement'
 
-export default function Length({ start, end, offset, color }) {
+export default function DimensionsLines({ start, end, offset, color, angle }) {
   const line = useRef()
   const sl = useRef()
   const el = useRef()
@@ -21,11 +20,11 @@ export default function Length({ start, end, offset, color }) {
   length.push(new THREE.Vector3(end[0], 0, end[1]))
 
   // startMark
-  startLine.push(new THREE.Vector3(start[0], 0 - 0.3, start[1]))
+  startLine.push(new THREE.Vector3(start[0], 0 - 0.05, start[1]))
   startLine.push(new THREE.Vector3(start[0], 0 + 0.05, start[1]))
 
   // endMark
-  endLine.push(new THREE.Vector3(end[0], 0 - 0.3, end[1]))
+  endLine.push(new THREE.Vector3(end[0], 0 - 0.05, end[1]))
   endLine.push(new THREE.Vector3(end[0], 0 + 0.05, end[1]))
 
   useEffect(() => {
@@ -36,7 +35,6 @@ export default function Length({ start, end, offset, color }) {
 
   return (
     <group position-y={offset}>
-      {/* <line ref={line}> */}
       <line ref={line}>
         <bufferGeometry />
         <lineBasicMaterial color={color} />

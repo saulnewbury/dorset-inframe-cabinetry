@@ -41,19 +41,24 @@ import { PerspectiveContext } from '@/app/context.js'
 export default function Experience() {
   const [points, setPoints] = useState(square)
   const [hover, setHover] = useState()
+  const [axisPair, setAxisPair] = useState([])
+  const [options, setOptions] = useState(() => {
+    return square().map((point) => {
+      return { id: point.id, line: false }
+    })
+  })
 
   const over = useRef(new Set())
   const dragBase = useRef()
   const orbitControls = useRef()
   const walls = useRef()
 
-  const [axisPair, setAxisPair] = useState([])
-
   const wrap = (id) => (id + points.length) % points.length
   const snap = (pt) => pt && { x: Math.round(pt.x), z: Math.round(pt.z) }
   const { view } = useContext(PerspectiveContext)
 
   useEffect(() => {
+    if (view === '2d') return
     hideWalls()
   }, [])
 
@@ -83,6 +88,7 @@ export default function Experience() {
           onDragStart={dragStart}
           onDrag={moveCorner}
           createRadialGrid={createRadialGrid}
+          showMeasurementLines={showMeasurementLines}
           highlightWalls={highlightWalls}
           onDragEnd={dragEnd}
         />
@@ -93,12 +99,15 @@ export default function Experience() {
             <Wall
               key={'wall-' + n}
               id={from.id}
+              line={options[from.id].line}
               color={from.color}
               from={from}
               to={points[wrap(from.id + 1)]}
               next={points[wrap(from.id + 2)]}
               prev={points[wrap(from.id - 1)]}
               // features={features[n]}
+              highlightWalls={highlightWalls}
+              showMeasurementLines={showMeasurementLines}
               hover={hover}
               onHover={doHover}
               onDragStart={dragStart}
@@ -109,26 +118,64 @@ export default function Experience() {
         })}
       </group>
 
-      {axisPair.map((axis, i) => (
-        <RadialGrid key={i} coords={axis} />
-      ))}
+      {axisPair &&
+        axisPair.map((axis, i) => <RadialGrid key={i} coords={axis} />)}
     </>
   )
 
-  function highlightWalls(id = null) {
+  /**
+   * Show measurement lines while dragging corners and walls.
+   */
+  function showMeasurementLines(id = null, dragType = null) {
+    const newArray = options.map((option) => {
+      const a = wrap(id - 1) // update option
+      const b = dragType === 'corner' ? id : wrap(id + 1)
+
+      // revert
+      if (id === null) return { ...option, line: false }
+
+      // highlight walls when corner is dragged
+      if (dragType === 'corner' && (a === option.id || b === option.id)) {
+        return { ...option, line: true }
+      }
+
+      // highlight walls when corner is dragged
+      if (dragType === 'wall' && (a === option.id || b === option.id)) {
+        return { ...option, line: true }
+      } else if (dragType === 'wall' && id === option.id) {
+        return { ...option, line: false }
+      }
+
+      return option
+    })
+    setOptions(newArray)
+  }
+
+  /**
+   * Adds highlighting to walls, when hovering over a wall or corner.
+   */
+  function highlightWalls(id = null, dragType = null) {
     const newArray = points.map((point) => {
       const a = wrap(id - 1) // update point
-      const b = id // update point
+      const b = dragType === 'corner' ? id : wrap(id + 1)
 
+      // revert
       if (id === null) return { ...point, color: '#C8C8C8' }
 
-      if (a === point.id || b === point.id) {
+      // highlight walls when corner is dragged
+      if (dragType === 'corner' && (a === point.id || b === point.id)) {
         return { ...point, color: '#819ACB' }
-      } else {
-        return point
       }
-    })
 
+      // highlight walls when corner is dragged
+      if (dragType === 'wall' && (a === point.id || b === point.id)) {
+        return { ...point, color: '#C8C8C8' }
+      } else if (dragType === 'wall' && id === point.id) {
+        return { ...point, color: '#819ACB' }
+      }
+
+      return point
+    })
     setPoints(newArray)
   }
 
@@ -228,7 +275,7 @@ export default function Experience() {
 
     const newArray = points.map((point) => {
       if (point.id !== id) return point
-      return { id, ...snapRadial(pt, prev, next) }
+      return { ...point, ...snapRadial(pt, prev, next) }
     })
     setPoints(newArray)
   }
@@ -289,17 +336,18 @@ export default function Experience() {
   }
 
   function hideWalls() {
-    // const sceneRotation = radToDeg(orbitControls.current.getAzimuthalAngle())
-    // walls.current.traverse((obj) => {
-    //   if (obj.name) {
-    //     const wallRotation = radToDeg(obj.rotation.z)
-    //     if (isWallFacingCamera(sceneRotation, wallRotation)) {
-    //       obj.visible = false
-    //     } else {
-    //       obj.visible = true
-    //     }
-    //   }
-    // })
+    if (view === '2d') return
+    const sceneRotation = radToDeg(orbitControls.current.getAzimuthalAngle())
+    walls.current.traverse((obj) => {
+      if (obj.name) {
+        const wallRotation = radToDeg(obj.rotation.z)
+        if (isWallFacingCamera(sceneRotation, wallRotation)) {
+          obj.visible = false
+        } else {
+          obj.visible = true
+        }
+      }
+    })
   }
 
   function isWallFacingCamera(sceneRotation, wallRotation) {
@@ -313,6 +361,11 @@ export default function Experience() {
    */
 
   function createRadialGrid(id) {
+    if (!id) {
+      setAxisPair(false)
+      return
+    }
+
     const pair = points.filter((point) => {
       const a = wrap(id + 1)
       const b = wrap(id - 1)

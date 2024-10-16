@@ -1,5 +1,3 @@
-import { Group } from 'three'
-
 export default function RadialGrid({ coords }) {
   const { x, z } = coords
 

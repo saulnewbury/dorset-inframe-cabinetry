@@ -1,9 +1,10 @@
-import { useMemo, useRef, useState, useContext } from 'react'
+import { useMemo, useRef, useState, useContext, useEffect } from 'react'
 import { Matrix4, Shape, Vector2, Vector3 } from 'three'
 import { DragControls } from '@react-three/drei'
 import { radToDeg } from '@/lib/helpers/radToDeg.js'
 
 import Length from './Length.jsx'
+import DimensionsLines from './DimensionLines.jsx'
 
 import { PerspectiveContext } from '@/app/context.js'
 
@@ -19,12 +20,15 @@ export default function Wall({
   to,
   prev,
   next,
+  line,
   color,
   hover,
   onHover = noop,
   onDragStart = noop,
   onDrag = noop,
-  onDragEnd = noop
+  onDragEnd = noop,
+  highlightWalls,
+  showMeasurementLines
 }) {
   const wall = useRef()
 
@@ -49,10 +53,6 @@ export default function Wall({
   const clamp = (t) => (Math.abs(t) < 3.5 ? t : 0)
   const te = t * clamp(Math.tan(mitreEnd))
   const ts = t * clamp(Math.tan(mitreStart))
-
-  if (id === 2) {
-    console.log('ID-' + id + ': ' + mitreStart + ' ' + mitreEnd)
-  }
 
   // Base shape for the wall footprint
   const shape = new Shape([
@@ -84,14 +84,23 @@ export default function Wall({
           <meshStandardMaterial color={color} />
         </mesh>
 
-        <Length
-          offset={0.3}
-          // end={[len / 2 - te / 2, t / -2]}
-          // start={[len / -2 + ts / 2, t / -2]}
-          end={[len / 2 - te / 2, t / -2]}
-          start={[len / -2 + ts / 2, t / -2]}
-          color='red'
-        />
+        {view === '2d' && line && (
+          <Length
+            offset={0.3}
+            end={[len / 2 - (t * Math.tan(mitreEnd)) / 2, t / -2]}
+            start={[len / -2 + (t * Math.tan(mitreStart)) / 2, t / -2]}
+            color='black'
+          />
+        )}
+        {view === '2d' && (
+          <DimensionsLines
+            angle={angle}
+            offset={-0.3}
+            end={[len / 2 - (t * Math.tan(mitreEnd)) / 2, t / -2]}
+            start={[len / -2 + (t * Math.tan(mitreStart)) / 2, t / -2]}
+            color='#6B6B6B'
+          />
+        )}
       </group>
       <mesh
         position={pos}
@@ -99,9 +108,11 @@ export default function Wall({
         ref={wall}
         onPointerOver={(ev) => {
           onHover(ev, true)
+          highlightWalls(id, 'wall')
         }}
         onPointerOut={(ev) => {
           onHover(ev, false)
+          highlightWalls(null, 'wall')
         }}
         onPointerMove={trackMousePosition}
       >
@@ -116,11 +127,13 @@ export default function Wall({
           onDragStart={() => {
             setDragging(true)
             onDragStart()
+            showMeasurementLines(id, 'wall')
           }}
           onDrag={moveHandle}
           onDragEnd={() => {
             setDragging(false)
             onDragEnd()
+            showMeasurementLines(null, 'wall')
             const { x, z } = handleRef.current.getWorldPosition(new Vector3())
             setPosition([x, h + 0.1, z])
           }}

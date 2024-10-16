@@ -16,7 +16,8 @@ export default function Corner({
   onDragEnd,
   onDragStart,
   createRadialGrid,
-  highlightWalls
+  highlightWalls,
+  showMeasurementLines
 }) {
   const corner = useRef()
   const [dragging, setDragging] = useState(false)
@@ -53,13 +54,12 @@ export default function Corner({
           if (view !== '2d') return
           onHover(ev, true)
           setHovered(true)
-          highlightWalls(id)
-          // createRadialGrid(id) // dev perposes only.
+          highlightWalls(id, 'corner')
         }}
         onPointerOut={(ev) => {
           if (view !== '2d') return
           onHover(ev, false)
-          highlightWalls()
+          highlightWalls(null, 'corner')
         }}
       >
         <boxGeometry args={[t * 2, 0, t * 2]} />
@@ -75,13 +75,17 @@ export default function Corner({
           autoTransform={false}
           onDragStart={() => {
             setDragging(true)
+            showMeasurementLines(id, 'corner')
             onDragStart()
+            // createRadialGrid(id) // dev perposes only.
           }}
           onDrag={moveCorner}
           onDragEnd={() => {
             setDragging(false)
             onHover(true, corner.current)
+            showMeasurementLines(null, 'corner')
             onDragEnd()
+            // createRadialGrid(null) // dev perposes only.
           }}
         >
           <mesh
