@@ -365,7 +365,7 @@ export default function Experience() {
    */
 
   function createRadialGrid(id) {
-    if (!id) {
+    if (id === null) {
       setAxisPair(false)
       return
     }
@@ -373,6 +373,8 @@ export default function Experience() {
     const pair = points.filter((point) => {
       const a = wrap(id + 1)
       const b = wrap(id - 1)
+
+      console.log(a, b)
       if (a === point.id || b === point.id) {
         return { x: point.x, z: point.z }
       }
