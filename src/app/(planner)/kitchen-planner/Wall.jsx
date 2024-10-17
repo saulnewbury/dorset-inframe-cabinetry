@@ -88,15 +88,16 @@ export default function Wall({
           <meshStandardMaterial color={color} />
         </mesh>
 
-        {view === '2d' && line && (
+        {/* {view === '2d' && line && (
           <Length
             offset={0.3}
             end={[len / 2 - (t * Math.tan(mitreEnd)) / 2, t / -2]}
             start={[len / -2 + (t * Math.tan(mitreStart)) / 2, t / -2]}
             color='black'
           />
-        )}
-        {view === '2d' && isNinetyDegrees && (
+        )} */}
+        {/* {view === '2d' && isNinetyDegrees && ( */}
+        {view === '2d' && (
           <DimensionsLines
             angle={angle}
             offset={-0.3}
