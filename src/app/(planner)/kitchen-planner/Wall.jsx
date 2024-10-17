@@ -31,6 +31,8 @@ export default function Wall({
   highlightWalls,
   showMeasurementLines
 }) {
+  const wrap = (id) => (id + points.length) % points.length
+
   const wall = useRef()
 
   // console.log(isDup)
@@ -99,9 +101,10 @@ export default function Wall({
         {/* {view === '2d' && isNinetyDegrees && ( */}
         {view === '2d' && (
           <DimensionsLines
+            moveHandle={() => onDrag({ id: wrap(id - 1), x, z })}
             angle={angle}
             offset={-0.3}
-            end={[len / 2 - (t * Math.tan(mitreEnd)) / 2, t / -2]}
+            end={[len / 2 - (t * Math.tan(mitreEnd)) / 2, t / -2]} // inside length
             start={[len / -2 + (t * Math.tan(mitreStart)) / 2, t / -2]}
             color='#6B6B6B'
           />

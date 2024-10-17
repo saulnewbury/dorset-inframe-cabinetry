@@ -2,26 +2,14 @@
 import { Html } from '@react-three/drei'
 import { useState, useEffect, useRef } from 'react'
 
-// Condition
-// don't show for opposit wall's of the same length
-// only show for walls that are at right angles to the scene.
-
 export default function Quantity({ children, angle }) {
   const [isVisible, setIsVisible] = useState(false)
   const [value, setValue] = useState(children)
   const [focus, setFocus] = useState(false)
 
+  // TODO {id, dx, dz}
+
   const input = useRef(null)
-
-  function handleClickOutside(event) {
-    if (input.current && !input.current.contains(event.target)) {
-      setIsVisible(false)
-    }
-  }
-
-  function toggleModal() {
-    setIsVisible(!isVisible)
-  }
 
   useEffect(() => {
     if (isVisible) {
@@ -41,19 +29,11 @@ export default function Quantity({ children, angle }) {
       : false
 
   const style = {
-    textAlign: 'center',
-    width: '24px',
-    fontSize: '6px',
-    transform: `rotateX(180deg) rotateZ(${flip ? '180' : '0'}deg)`,
-    outline: 'none',
-    background: 'white',
-    cursor: 'pointer'
+    transform: `rotateX(180deg) rotateZ(${flip ? '180' : '0'}deg)`
   }
 
-  function handleClickOutside(event) {
-    if (input.current && !input.current.contains(event.target)) {
-      setIsVisible(false)
-    }
+  function handleSubmit() {
+    setIsVisible(false)
   }
 
   return (
@@ -62,9 +42,14 @@ export default function Quantity({ children, angle }) {
         <div
           onClick={toggleModal}
           style={style}
-          className='px-[2px] hover:shadow-[0px_.1px_5px_rgba(0,0,0,0.2)] mt-[1px]'
+          className='cursor-pointer mt-[0.5px] px-[4px] text-[5px] w-[max-content] text-center bg-white'
         >
-          <span className='mt-[1px] inline-block'>{children}</span>
+          <div className='hover:scale-110'>
+            <span className='text-[5px] inline-block'>
+              {children.replace('.', '')}
+            </span>
+            <span className='text-[4px] inline-block'>&nbsp;mm</span>
+          </div>
         </div>
       </Html>
       {isVisible && (
@@ -82,7 +67,7 @@ export default function Quantity({ children, angle }) {
             />
             <button
               onClick={() => {
-                setShowInput(false)
+                handleSubmit()
               }}
               type='button'
               className='bg-darkBlue w-[100%] text-base text-white px-[1rem] py-[.5rem]'
@@ -94,4 +79,16 @@ export default function Quantity({ children, angle }) {
       )}
     </>
   )
+
+  function handleClickOutside(event) {
+    if (input.current && !input.current.contains(event.target)) {
+      setIsVisible(false)
+    }
+  }
+
+  function toggleModal() {
+    setIsVisible(!isVisible)
+  }
 }
+
+// hover:shadow-[0px_.1px_5px_rgba(0,0,0,0.2)]
