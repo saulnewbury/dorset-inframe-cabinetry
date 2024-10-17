@@ -1,14 +1,13 @@
 'use client'
-import { Html } from '@react-three/drei'
+import { Html, Text } from '@react-three/drei'
 import { useState, useEffect, useRef } from 'react'
 
 const noop = () => {}
 
 export default function Quantity({ children, angle, onChange = noop }) {
   const [isVisible, setIsVisible] = useState(false)
-  const [value, setValue] = useState(children)
-  const [focus, setFocus] = useState(false)
 
+  const value = String(children * 1000).slice(0, 4)
   // TODO {id, dx, dz}
 
   const input = useRef(null)
@@ -37,7 +36,7 @@ export default function Quantity({ children, angle, onChange = noop }) {
   function handleSubmit(ev) {
     ev.preventDefault()
     const re = /^\d+(?:.\d{0,3})?$/
-    const v = input.current.querySelector('input').value
+    const v = input.current.querySelector('input').value / 1000
     if (!re.test(v)) return
     onChange(parseFloat(v))
     setIsVisible(false)
@@ -45,17 +44,15 @@ export default function Quantity({ children, angle, onChange = noop }) {
 
   return (
     <>
-      <Html as="div" transform center>
+      <Html as='div' transform center>
         <div
           onClick={toggleModal}
           style={style}
-          className="cursor-pointer mt-[0.5px] px-[4px] text-[5px] w-[max-content] text-center bg-white"
+          className='cursor-pointer mt-[0.5px] px-[4px] text-[5px] w-[max-content] text-center bg-white'
         >
-          <div className="hover:scale-110">
-            <span className="text-[5px] inline-block">
-              {children.replace('.', '')}
-            </span>
-            <span className="text-[4px] inline-block">&nbsp;mm</span>
+          <div className='hover:scale-110'>
+            <span className='text-[5px] inline-block'>{value}</span>
+            <span className='text-[4px] inline-block'>&nbsp;mm</span>
           </div>
         </div>
       </Html>
@@ -67,12 +64,12 @@ export default function Quantity({ children, angle, onChange = noop }) {
             className={`bg-[#e9e9e9] p-[1rem] text-[16px] shadow-[0px_.1px_5px_rgba(0,0,0,0.2)] w-[max-content] h-[max-content] hover:shadow-[0px_.1px_5px_rgba(0,0,0,0.2)]`}
           >
             <input
-              className="bg-[transparent] max-w-[4rem] mb-[10px] px-[2px] block border-solid border-b-[1px] border-black"
-              defaultValue={children}
+              className='bg-[transparent] max-w-[4rem] mb-[10px] px-[2px] block border-solid border-b-[1px] border-black'
+              defaultValue={value}
             />
             <button
-              type="submit"
-              className="bg-darkBlue w-[100%] text-base text-white px-[1rem] py-[.5rem]"
+              type='submit'
+              className='bg-darkBlue w-[100%] text-base text-white px-[1rem] py-[.5rem]'
             >
               Apply
             </button>
@@ -92,5 +89,3 @@ export default function Quantity({ children, angle, onChange = noop }) {
     setIsVisible(!isVisible)
   }
 }
-
-// hover:shadow-[0px_.1px_5px_rgba(0,0,0,0.2)]
