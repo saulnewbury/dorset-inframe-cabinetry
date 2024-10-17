@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
-import Measurement from './Measurement'
+import Quanitiy from './Quantity'
 
 export default function Length({ start, end, offset, color }) {
   const line = useRef()
@@ -14,7 +14,7 @@ export default function Length({ start, end, offset, color }) {
     endLine = []
 
   // measurement
-  const measurement = (end[0] - start[0]).toFixed(3)
+  const quantity = (end[0] - start[0]).toFixed(3)
 
   // line
   length.push(new THREE.Vector3(start[0], 0, start[1]))
@@ -49,7 +49,7 @@ export default function Length({ start, end, offset, color }) {
         <bufferGeometry />
         <lineBasicMaterial color={color} />
       </line>
-      <Measurement>{measurement}</Measurement>
+      <Quanitiy>{quantity}</Quanitiy>
     </group>
   )
 }

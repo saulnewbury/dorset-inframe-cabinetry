@@ -9,6 +9,7 @@ import DimensionsLines from './DimensionLines.jsx'
 import { PerspectiveContext } from '@/app/context.js'
 
 import { t, h } from './const.js'
+import { isWithinRange } from '@/lib/helpers/isWithinRange.js'
 
 const noop = () => {}
 
@@ -32,6 +33,7 @@ export default function Wall({
 }) {
   const wall = useRef()
 
+  // console.log(isDup)
   const { view } = useContext(PerspectiveContext)
   const [dragging, setDragging] = useState(false)
   const [pointerPosition, setPosition] = useState()
@@ -63,6 +65,8 @@ export default function Wall({
     new Vector2((len - te) / 2, t / 2)
   ])
 
+  const isNinetyDegrees = checkAngle(angle)
+
   // Drag state
   const { handle, matrix } = useMemo(() => {
     const handle = pointerPosition || pos.slice()
@@ -92,7 +96,7 @@ export default function Wall({
             color='black'
           />
         )}
-        {view === '2d' && (
+        {view === '2d' && isNinetyDegrees && (
           <DimensionsLines
             angle={angle}
             offset={-0.3}
@@ -173,5 +177,29 @@ export default function Wall({
     const wallItself = new Vector3(to.x - from.x, 0, to.z - from.z)
     const pt = pointer.projectOnVector(wallItself)
     setPosition([pt.x + from.x, h + 0.1, pt.z + from.z])
+  }
+
+  /**
+   * Check that angle of wall is 90 degrees.
+   */
+
+  function checkAngle(angle) {
+    angle = equalizeAngle(angle)
+
+    if (isWithinRange(angle, 0.0) || isWithinRange(angle, Math.PI / 2)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  function equalizeAngle(angle) {
+    const piOver2 = Math.PI / 2 // π/2 in radians
+
+    // Check if the angle is a multiple of π/2
+    if (angle % piOver2 === 0) {
+      return piOver2 // Set to π/2
+    }
+    return angle // Return the angle unchanged if not a multiple of π/2
   }
 }

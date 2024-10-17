@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-import Measurement from './Measurement'
+import Quantity from './Quantity'
 
 export default function DimensionsLines({ start, end, offset, color, angle }) {
   const line = useRef()
@@ -13,7 +13,7 @@ export default function DimensionsLines({ start, end, offset, color, angle }) {
     endLine = []
 
   // measurement
-  const measurement = (end[0] - start[0]).toFixed(3)
+  const quantity = (end[0] - start[0]).toFixed(3)
 
   // line
   length.push(new THREE.Vector3(start[0], 0, start[1]))
@@ -47,7 +47,7 @@ export default function DimensionsLines({ start, end, offset, color, angle }) {
         <bufferGeometry />
         <lineBasicMaterial color={color} />
       </line>
-      <Measurement>{measurement}</Measurement>
+      <Quantity angle={angle}>{quantity}</Quantity>
     </group>
   )
 }

@@ -39,6 +39,8 @@ import { PerspectiveContext } from '@/app/context.js'
  */
 
 export default function Experience() {
+  const seen = new Set()
+
   const [points, setPoints] = useState(square)
   const [hover, setHover] = useState()
   const [axisPair, setAxisPair] = useState([])
@@ -99,6 +101,7 @@ export default function Experience() {
             <Wall
               key={'wall-' + n}
               id={from.id}
+              idDup={true}
               line={options[from.id].line}
               color={from.color}
               from={from}
@@ -155,6 +158,7 @@ export default function Experience() {
    * Adds highlighting to walls, when hovering over a wall or corner.
    */
   function highlightWalls(id = null, dragType = null) {
+    if (view !== '2d') return
     const newArray = points.map((point) => {
       const a = wrap(id - 1) // update point
       const b = dragType === 'corner' ? id : wrap(id + 1)

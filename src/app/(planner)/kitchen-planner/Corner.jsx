@@ -1,7 +1,7 @@
 'use client'
 
 import { DragControls, useCursor } from '@react-three/drei'
-import { useRef, useState, useMemo, useEffect, useContext } from 'react'
+import { useRef, useState, useMemo, useLayoutEffect, useContext } from 'react'
 import { Matrix4, Vector3 } from 'three'
 import { t, h } from './const.js'
 
@@ -31,12 +31,12 @@ export default function Corner({
 
   const cc = document.querySelector('.canvas-container')
 
-  useEffect(() => {
-    cc.style.cursor = hovered ? 'none' : 'default'
-    return () => {
-      cc.style.cursor = 'default'
-    }
-  }, [hovered])
+  // useLayoutEffect(() => {
+  //   cc.style.cursor = hovered ? 'none' : 'default'
+  //   return () => {
+  //     cc.style.cursor = 'default'
+  //   }
+  // }, [hovered])
 
   const { handle, matrix } = useMemo(() => {
     const handle = pos.slice()
@@ -55,11 +55,13 @@ export default function Corner({
           onHover(ev, true)
           setHovered(true)
           highlightWalls(id, 'corner')
+          cc.style.cursor = 'none'
         }}
         onPointerOut={(ev) => {
           if (view !== '2d') return
           onHover(ev, false)
           highlightWalls(null, 'corner')
+          cc.style.cursor = 'default'
         }}
       >
         <boxGeometry args={[t * 2, 0, t * 2]} />
@@ -77,7 +79,7 @@ export default function Corner({
             setDragging(true)
             showMeasurementLines(id, 'corner')
             onDragStart()
-            // createRadialGrid(id) // dev perposes only.
+            createRadialGrid(id) // dev perposes only.
           }}
           onDrag={moveCorner}
           onDragEnd={() => {
@@ -85,7 +87,7 @@ export default function Corner({
             onHover(true, corner.current)
             showMeasurementLines(null, 'corner')
             onDragEnd()
-            // createRadialGrid(null) // dev perposes only.
+            createRadialGrid(null) // dev perposes only.
           }}
         >
           <mesh
