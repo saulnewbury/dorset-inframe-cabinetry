@@ -21,8 +21,8 @@ export default function Corner({
 }) {
   const corner = useRef()
   const [dragging, setDragging] = useState(false)
-  const [hovered, setHovered] = useState(false)
-  const showHandle = dragging || hovered || (hover && hover === corner.current)
+  const hovered = hover && hover === corner.current
+  const showHandle = dragging || hovered
   const pos = [at.x, h + 0.01, at.z]
 
   const { view } = useContext(PerspectiveContext)
@@ -53,7 +53,6 @@ export default function Corner({
         onPointerOver={(ev) => {
           if (view !== '2d') return
           onHover(ev, true)
-          setHovered(true)
           highlightWalls(id, 'corner')
           cc.style.cursor = 'none'
         }}
@@ -66,7 +65,7 @@ export default function Corner({
       >
         <boxGeometry args={[t * 2, 0, t * 2]} />
         <meshStandardMaterial
-          color='blue'
+          color="blue"
           transparent
           opacity={hovered && view === '2d' ? 0.3 : 0.0}
         />
@@ -84,20 +83,14 @@ export default function Corner({
           onDrag={moveCorner}
           onDragEnd={() => {
             setDragging(false)
-            onHover(true, corner.current)
             showMeasurementLines(null, 'corner')
             onDragEnd()
             createRadialGrid(null) // dev perposes only.
           }}
         >
-          <mesh
-            position={handle}
-            onPointerOut={() => {
-              setHovered(false)
-            }}
-          >
+          <mesh position={handle}>
             <boxGeometry args={[t * 2, 0, t * 2]} />
-            <meshStandardMaterial color='green' transparent opacity={0} />
+            <meshStandardMaterial color="green" transparent opacity={0} />
           </mesh>
         </DragControls>
       )}
