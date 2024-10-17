@@ -116,6 +116,7 @@ export default function Experience() {
               onDragStart={dragStart}
               onDrag={moveWall}
               onDragEnd={dragEnd}
+              onResize={resizeWall}
             />
           )
         })}
@@ -207,6 +208,40 @@ export default function Experience() {
 
   function dragEnd() {
     dragBase.current = undefined
+  }
+
+  /**
+   * Callback to handle resizing a wall through its dimension line. Moves the
+   * start and end of the next wall (clockwise) by the required amount (dx, dz)
+   * to extend the indicated wall, then calculates where this modified wall will
+   * intersect the wall after that, so as to keep internal angles the same.
+   *
+   * @param {number} id - Identifier for wall that's been changed
+   * @param {number} dl - Delta length
+   */
+  function resizeWall(id, dl) {
+    const start = points[id]
+    const end = points[wrap(id + 1)]
+    const next = points[wrap(id + 2)]
+    const after = points[wrap(id + 3)]
+    const theta = Math.atan2(end.z - start.z, end.x - start.x)
+    const dx = dl * Math.cos(theta)
+    const dz = dl * Math.sin(theta)
+    let from = { ...end }
+    let to = { ...next }
+    from.x += dx
+    from.z += dz
+    to.x += dx
+    to.z += dz
+
+    Object.assign(to, intersection(from, to, next, after) || {})
+
+    const newArray = points.map((point) => {
+      if (point.id === wrap(id + 1)) return from
+      if (point.id === wrap(id + 2)) return to
+      return point
+    })
+    setPoints(newArray)
   }
 
   /**

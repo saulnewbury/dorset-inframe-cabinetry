@@ -28,6 +28,7 @@ export default function Wall({
   onDragStart = noop,
   onDrag = noop,
   onDragEnd = noop,
+  onResize = noop,
   highlightWalls,
   showMeasurementLines
 }) {
@@ -80,7 +81,7 @@ export default function Wall({
   return (
     <>
       <group
-        name='wall'
+        name="wall"
         position={pos}
         rotation-x={Math.PI * 0.5}
         rotation-z={angle}
@@ -106,7 +107,8 @@ export default function Wall({
             offset={-0.3}
             end={[len / 2 - (t * Math.tan(mitreEnd)) / 2, t / -2]} // inside length
             start={[len / -2 + (t * Math.tan(mitreStart)) / 2, t / -2]}
-            color='#6B6B6B'
+            color="#6B6B6B"
+            onChange={(dl) => onResize(id, dl)}
           />
         )}
       </group>
@@ -148,7 +150,7 @@ export default function Wall({
         >
           <mesh position={handle} ref={handleRef}>
             <boxGeometry args={[t * 2, 0, t * 2]} />
-            <meshStandardMaterial color='green' transparent opacity={0.5} />
+            <meshStandardMaterial color="green" transparent opacity={0.5} />
           </mesh>
         </DragControls>
       )}

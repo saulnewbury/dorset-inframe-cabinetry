@@ -3,7 +3,16 @@ import React, { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import Quantity from './Quantity'
 
-export default function DimensionsLines({ start, end, offset, color, angle }) {
+const noop = () => {}
+
+export default function DimensionsLines({
+  start,
+  end,
+  offset,
+  color,
+  angle,
+  onChange = noop
+}) {
   const line = useRef()
   const sl = useRef()
   const el = useRef()
@@ -47,7 +56,9 @@ export default function DimensionsLines({ start, end, offset, color, angle }) {
         <bufferGeometry />
         <lineBasicMaterial color={color} />
       </line>
-      <Quantity angle={angle}>{quantity}</Quantity>
+      <Quantity angle={angle} onChange={(l) => onChange(l - quantity)}>
+        {quantity}
+      </Quantity>
     </group>
   )
 }
