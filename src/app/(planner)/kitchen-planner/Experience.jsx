@@ -169,14 +169,14 @@ export default function Experience() {
 
       // highlight walls when corner is dragged
       if (dragType === 'corner' && (a === point.id || b === point.id)) {
-        return { ...point, color: '#819ACB' }
+        return { ...point, color: '#8DB3FF' }
       }
 
       // highlight walls when corner is dragged
       if (dragType === 'wall' && (a === point.id || b === point.id)) {
         return { ...point, color: '#C8C8C8' }
       } else if (dragType === 'wall' && id === point.id) {
-        return { ...point, color: '#819ACB' }
+        return { ...point, color: '#8DB3FF' }
       }
 
       return point

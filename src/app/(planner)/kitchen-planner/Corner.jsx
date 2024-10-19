@@ -1,9 +1,11 @@
 'use client'
 
-import { DragControls, useCursor } from '@react-three/drei'
-import { useRef, useState, useMemo, useLayoutEffect, useContext } from 'react'
+import { DragControls, useCursor, Html } from '@react-three/drei'
+import { useRef, useState, useMemo, useContext } from 'react'
 import { Matrix4, Vector3 } from 'three'
 import { t, h } from './const.js'
+
+import SvgIcon from '@/components/SvgIcon.jsx'
 
 import { PerspectiveContext } from '@/app/context.js'
 
@@ -31,13 +33,6 @@ export default function Corner({
 
   const cc = document.querySelector('.canvas-container')
 
-  // useLayoutEffect(() => {
-  //   cc.style.cursor = hovered ? 'none' : 'default'
-  //   return () => {
-  //     cc.style.cursor = 'default'
-  //   }
-  // }, [hovered])
-
   const { handle, matrix } = useMemo(() => {
     const handle = pos.slice()
     handle[1] += 0.1
@@ -47,29 +42,37 @@ export default function Corner({
 
   return (
     <>
-      <mesh
-        ref={corner}
-        position={pos}
-        onPointerOver={(ev) => {
-          if (view !== '2d') return
-          onHover(ev, true)
-          highlightWalls(id, 'corner')
-          cc.style.cursor = 'none'
-        }}
-        onPointerOut={(ev) => {
-          if (view !== '2d') return
-          onHover(ev, false)
-          highlightWalls(null, 'corner')
-          cc.style.cursor = 'default'
-        }}
-      >
-        <boxGeometry args={[t * 2, 0, t * 2]} />
-        <meshStandardMaterial
-          color="blue"
-          transparent
-          opacity={hovered && view === '2d' ? 0.3 : 0.0}
-        />
-      </mesh>
+      <group>
+        <mesh
+          ref={corner}
+          position={pos}
+          onPointerOver={(ev) => {
+            if (view !== '2d') return
+            onHover(ev, true)
+            highlightWalls(id, 'corner')
+            cc.style.cursor = 'none'
+          }}
+          onPointerOut={(ev) => {
+            if (view !== '2d') return
+            onHover(ev, false)
+            highlightWalls(null, 'corner')
+            cc.style.cursor = 'default'
+          }}
+        >
+          <boxGeometry args={[t * 2, 0, t * 2]} />
+          <meshStandardMaterial
+            color='blue'
+            transparent
+            // opacity={hovered && view === '2d' ? 0.3 : 0.0}
+            opacity={0.0}
+          />
+        </mesh>
+        {showHandle && view === '2d' && (
+          <Html position={pos} center className='pointer-events-none'>
+            <SvgIcon shape='corner-handle' classes='scale-125' />
+          </Html>
+        )}
+      </group>
       {showHandle && view === '2d' && (
         <DragControls
           matrix={matrix}
@@ -85,12 +88,13 @@ export default function Corner({
             setDragging(false)
             showMeasurementLines(null, 'corner')
             onDragEnd()
+
             createRadialGrid(null) // dev perposes only.
           }}
         >
           <mesh position={handle}>
             <boxGeometry args={[t * 2, 0, t * 2]} />
-            <meshStandardMaterial color="green" transparent opacity={0} />
+            <meshStandardMaterial color='green' transparent opacity={0} />
           </mesh>
         </DragControls>
       )}

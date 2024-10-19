@@ -1,7 +1,9 @@
-import { useMemo, useRef, useState, useContext, useEffect } from 'react'
+import { useMemo, useRef, useState, useContext } from 'react'
 import { Matrix4, Shape, Vector2, Vector3 } from 'three'
-import { DragControls } from '@react-three/drei'
+import { DragControls, Html, Svg } from '@react-three/drei'
 import { radToDeg } from '@/lib/helpers/radToDeg.js'
+
+import SvgIcon from '@/components/SvgIcon.jsx'
 
 import Length from './Length.jsx'
 import DimensionsLines from './DimensionLines.jsx'
@@ -36,7 +38,6 @@ export default function Wall({
 
   const wall = useRef()
 
-  // console.log(isDup)
   const { view } = useContext(PerspectiveContext)
   const [dragging, setDragging] = useState(false)
   const [pointerPosition, setPosition] = useState()
@@ -48,6 +49,8 @@ export default function Wall({
   const angle = Math.atan2(to.z - from.z, to.x - from.x)
   const pos = [(from.x + to.x) / 2, h, (from.z + to.z) / 2]
   const wallNormal = new Vector3(Math.sin(angle), 0, -Math.cos(angle))
+
+  console.log(angle)
 
   // Mitre geometry
   const angleNext = Math.atan2(next.z - to.z, next.x - to.x)
@@ -68,7 +71,7 @@ export default function Wall({
     new Vector2((len - te) / 2, t / 2)
   ])
 
-  const isNinetyDegrees = checkAngle(angle)
+  const isInRange = checkAngle(angle)
 
   // Drag state
   const { handle, matrix } = useMemo(() => {
@@ -81,7 +84,7 @@ export default function Wall({
   return (
     <>
       <group
-        name="wall"
+        name='wall'
         position={pos}
         rotation-x={Math.PI * 0.5}
         rotation-z={angle}
@@ -102,12 +105,12 @@ export default function Wall({
         {/* {view === '2d' && isNinetyDegrees && ( */}
         {view === '2d' && (
           <DimensionsLines
-            moveHandle={() => onDrag({ id: wrap(id - 1), x, z })}
+            // moveHandle={() => onDrag({ id: wrap(id - 1), x, z })}
             angle={angle}
             offset={-0.3}
             end={[len / 2 - (t * Math.tan(mitreEnd)) / 2, t / -2]} // inside length
             start={[len / -2 + (t * Math.tan(mitreStart)) / 2, t / -2]}
-            color="#6B6B6B"
+            color='#6B6B6B'
             onChange={(dl) => onResize(id, dl)}
           />
         )}
@@ -148,10 +151,47 @@ export default function Wall({
             setPosition([x, h + 0.1, z])
           }}
         >
-          <mesh position={handle} ref={handleRef}>
-            <boxGeometry args={[t * 2, 0, t * 2]} />
-            <meshStandardMaterial color="green" transparent opacity={0.5} />
-          </mesh>
+          <group position={handle} rotation-y={-angle} ref={handleRef}>
+            <mesh>
+              <boxGeometry args={[t * 2, 0, t * 2]} />
+              <meshStandardMaterial color='green' transparent opacity={0} />
+            </mesh>
+            <group position-z='-0.075'>
+              <Html
+                center
+                as='div'
+                position-y='-10'
+                className='pointer-events-none'
+              >
+                <div
+                  className='flex items-center justify-center'
+                  style={{
+                    transform: `rotateZ(${angle + 1.5708}rad) translateX(-70%)`
+                  }}
+                >
+                  <SvgIcon shape='wall-handle-left' classes=' scale-80' />
+                </div>
+              </Html>
+            </group>
+
+            <group position-z='0.075'>
+              <Html
+                center
+                as='div'
+                position-y='-10'
+                className='pointer-events-none'
+              >
+                <div
+                  className='flex items-center justify-center'
+                  style={{
+                    transform: `rotateZ(${angle + 1.5708}rad) translateX(70%)`
+                  }}
+                >
+                  <SvgIcon shape='wall-handle-right' classes=' scale-80' />
+                </div>
+              </Html>
+            </group>
+          </group>
         </DragControls>
       )}
     </>
@@ -189,10 +229,20 @@ export default function Wall({
    * Check that angle of wall is 90 degrees.
    */
 
+  // function checkAngle(angle) {
+  //   angle = equalizeAngle(angle)
+
+  //   if (isWithinRange(angle, 0.0) || isWithinRange(angle, Math.PI / 2)) {
+  //     return true
+  //   } else {
+  //     return false
+  //   }
+  // }
+
   function checkAngle(angle) {
     angle = equalizeAngle(angle)
 
-    if (isWithinRange(angle, 0.0) || isWithinRange(angle, Math.PI / 2)) {
+    if (isWithinRange(angle, Math.PI / 4)) {
       return true
     } else {
       return false

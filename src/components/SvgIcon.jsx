@@ -16,6 +16,11 @@ import squareDivide from '@/lib/icons/square-divide-fplan.svg'
 import notchDivide from '@/lib/icons/notch-divide-fplan.svg'
 import cornerDivide from '@/lib/icons/corner-divide-fplan.svg'
 
+import wallHandle from '@/lib/icons/wall-handle.svg'
+import wallHandleRight from '@/lib/icons/wall-handle-right.svg'
+import wallHandleLeft from '@/lib/icons/wall-handle-left.svg'
+import cornerHandle from '@/lib/icons/corner-handle.svg'
+
 import icon2d from '@/lib/icons/2d-icon.svg'
 import icon3d from '@/lib/icons/3d-icon.svg'
 
@@ -36,6 +41,10 @@ const icons = [
   { icon: notchDivide, shape: 'notch-divide' },
   { icon: cornerDivide, shape: 'corner-divide' },
   { icon: tick, shape: 'tick' },
+  { icon: wallHandle, shape: 'wall-handle' },
+  { icon: wallHandleRight, shape: 'wall-handle-right' },
+  { icon: wallHandleLeft, shape: 'wall-handle-left' },
+  { icon: cornerHandle, shape: 'corner-handle' },
   { icon: icon2d, shape: '2d' },
   { icon: icon3d, shape: '3d' }
 ]
