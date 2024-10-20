@@ -39,8 +39,6 @@ import { PerspectiveContext } from '@/app/context.js'
  */
 
 export default function Experience() {
-  const seen = new Set()
-
   const [points, setPoints] = useState(square)
   const [hover, setHover] = useState()
   const [axisPair, setAxisPair] = useState([])
@@ -85,12 +83,17 @@ export default function Experience() {
           key={'corner-' + n}
           id={at.id}
           at={at}
+          next={points[wrap(at.id + 1)]}
+          post={points[wrap(at.id + 2)]}
+          prev={points[wrap(at.id - 1)]}
+          pro={points[wrap(at.id - 2)]}
           hover={hover}
           onHover={doHover}
           onDragStart={dragStart}
           onDrag={moveCorner}
           createRadialGrid={createRadialGrid}
           showMeasurementLines={showMeasurementLines}
+          removeRedundantPoints={removeRedundantPoints}
           highlightWalls={highlightWalls}
           onDragEnd={dragEnd}
         />
@@ -316,6 +319,44 @@ export default function Experience() {
       if (point.id !== id) return point
       return { ...point, ...snapRadial(pt, prev, next) }
     })
+
+    setPoints(newArray)
+  }
+
+  /**
+   * Callback to remove redundant points on drag end.
+   */
+
+  function removeRedundantPoints(id, at, next, post, prev, pro) {
+    let arr = []
+    const proPrevWallAngle = Math.atan2(prev.z - pro.z, prev.x - pro.x)
+    const prevAtWallAngle = Math.atan2(at.z - prev.z, at.x - prev.x)
+    const atNextWallAngle = Math.atan2(next.z - at.z, next.x - at.x)
+    const nextPostWallAngle = Math.atan2(post.z - next.z, post.x - next.x)
+
+    const mitreEndA = Math.abs(prevAtWallAngle - proPrevWallAngle) % 3.14159 // mitreEnd if 0 delete point id - 1
+    const mitreEndB = Math.abs(atNextWallAngle - prevAtWallAngle) % 3.14159 // mitreEnd if 0 delete point id
+    const mitreEndC = Math.abs(nextPostWallAngle - atNextWallAngle) % 3.14159 // mitreEnd if 0 delete point id + 1
+
+    if (mitreEndA.toFixed(5) == 0) {
+      arr.push(id - 1)
+    }
+    if (mitreEndB.toFixed(5) == 0) {
+      arr.push(id)
+    }
+    if (mitreEndC.toFixed(5) == 0) {
+      arr.push(id + 1)
+    }
+
+    if (arr.length === 0) return
+
+    // filter out points that match one of the ids in the arry
+    const filtered = points.filter((p) => !arr.some((id) => id === p.id))
+    const newArray = filtered.map((p, i) => {
+      console.log({ ...p, id: i })
+      return { ...p, id: i }
+    })
+
     setPoints(newArray)
   }
 
@@ -409,7 +450,6 @@ export default function Experience() {
       const a = wrap(id + 1)
       const b = wrap(id - 1)
 
-      console.log(a, b)
       if (a === point.id || b === point.id) {
         return { x: point.x, z: point.z }
       }

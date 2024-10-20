@@ -21,8 +21,6 @@ export default function DimensionsLines({
     startLine = [],
     endLine = []
 
-  console.log(angle)
-
   // measurement
   const quantity = (end[0] - start[0]).toFixed(3)
 

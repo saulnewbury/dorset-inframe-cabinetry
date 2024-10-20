@@ -50,13 +50,13 @@ export default function Wall({
   const pos = [(from.x + to.x) / 2, h, (from.z + to.z) / 2]
   const wallNormal = new Vector3(Math.sin(angle), 0, -Math.cos(angle))
 
-  console.log(angle)
+  // console.log(angle)
 
   // Mitre geometry
-  const angleNext = Math.atan2(next.z - to.z, next.x - to.x)
   const anglePrev = Math.atan2(from.z - prev.z, from.x - prev.x)
-  const mitreEnd = (angleNext - angle) / 2
+  const angleNext = Math.atan2(next.z - to.z, next.x - to.x)
   const mitreStart = (angle - anglePrev) / 2
+  const mitreEnd = (angleNext - angle) / 2
 
   const clamp = (t) => (Math.abs(t) < 3.5 ? t : 0)
   const te = t * clamp(Math.tan(mitreEnd))
@@ -173,7 +173,6 @@ export default function Wall({
                 </div>
               </Html>
             </group>
-
             <group position-z='0.075'>
               <Html
                 center

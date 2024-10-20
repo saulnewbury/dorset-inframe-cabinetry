@@ -12,6 +12,10 @@ import { PerspectiveContext } from '@/app/context.js'
 export default function Corner({
   id,
   at,
+  next,
+  post,
+  prev,
+  pro,
   hover,
   onHover,
   onDrag,
@@ -19,12 +23,14 @@ export default function Corner({
   onDragStart,
   createRadialGrid,
   highlightWalls,
-  showMeasurementLines
+  showMeasurementLines,
+  removeRedundantPoints
 }) {
   const corner = useRef()
   const [dragging, setDragging] = useState(false)
   const hovered = hover && hover === corner.current
   const showHandle = dragging || hovered
+
   const pos = [at.x, h + 0.01, at.z]
 
   const { view } = useContext(PerspectiveContext)
@@ -88,7 +94,7 @@ export default function Corner({
             setDragging(false)
             showMeasurementLines(null, 'corner')
             onDragEnd()
-
+            removeRedundantPoints(id, at, next, post, prev, pro)
             createRadialGrid(null) // dev perposes only.
           }}
         >
