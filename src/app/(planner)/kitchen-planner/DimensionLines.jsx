@@ -30,11 +30,11 @@ export default function DimensionsLines({
 
   // startMark
   startLine.push(new THREE.Vector3(start[0], 0 - 0.05, start[1]))
-  startLine.push(new THREE.Vector3(start[0], 0 + 0.05, start[1]))
+  startLine.push(new THREE.Vector3(start[0], 0 + 0.1, start[1]))
 
   // endMark
   endLine.push(new THREE.Vector3(end[0], 0 - 0.05, end[1]))
-  endLine.push(new THREE.Vector3(end[0], 0 + 0.05, end[1]))
+  endLine.push(new THREE.Vector3(end[0], 0 + 0.1, end[1]))
 
   useEffect(() => {
     line.current.geometry.setFromPoints(length)

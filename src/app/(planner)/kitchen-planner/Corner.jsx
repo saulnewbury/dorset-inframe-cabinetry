@@ -75,7 +75,7 @@ export default function Corner({
         </mesh>
         {showHandle && view === '2d' && (
           <Html position={pos} center className='pointer-events-none'>
-            <SvgIcon shape='corner-handle' classes='scale-125' />
+            <SvgIcon shape='corner-handle-circle' classes='scale-110' />
           </Html>
         )}
       </group>

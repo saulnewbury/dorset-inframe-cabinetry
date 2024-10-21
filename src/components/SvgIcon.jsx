@@ -19,7 +19,10 @@ import cornerDivide from '@/lib/icons/corner-divide-fplan.svg'
 import wallHandle from '@/lib/icons/wall-handle.svg'
 import wallHandleRight from '@/lib/icons/wall-handle-right.svg'
 import wallHandleLeft from '@/lib/icons/wall-handle-left.svg'
+import wallHandleStrokeLeft from '@/lib/icons/wall-handle-stroke-left.svg'
+import wallHandleStrokeRight from '@/lib/icons/wall-handle-stroke-right.svg'
 import cornerHandle from '@/lib/icons/corner-handle.svg'
+import cornerHandleCircle from '@/lib/icons/corner-handle-circle.svg'
 
 import icon2d from '@/lib/icons/2d-icon.svg'
 import icon3d from '@/lib/icons/3d-icon.svg'
@@ -44,7 +47,10 @@ const icons = [
   { icon: wallHandle, shape: 'wall-handle' },
   { icon: wallHandleRight, shape: 'wall-handle-right' },
   { icon: wallHandleLeft, shape: 'wall-handle-left' },
+  { icon: wallHandleStrokeLeft, shape: 'wall-handle-stroke-left' },
+  { icon: wallHandleStrokeRight, shape: 'wall-handle-stroke-right' },
   { icon: cornerHandle, shape: 'corner-handle' },
+  { icon: cornerHandleCircle, shape: 'corner-handle-circle' },
   { icon: icon2d, shape: '2d' },
   { icon: icon3d, shape: '3d' }
 ]

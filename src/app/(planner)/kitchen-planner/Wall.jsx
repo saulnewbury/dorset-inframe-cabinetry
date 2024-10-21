@@ -130,7 +130,7 @@ export default function Wall({
         }}
         onPointerMove={trackMousePosition}
       >
-        <boxGeometry args={[len - t * 4, 0.001, t * 2]} />
+        <boxGeometry args={[len - t * 3, 0.001, t * 2]} />
         <meshNormalMaterial transparent opacity={0} />
       </mesh>
 
@@ -141,7 +141,6 @@ export default function Wall({
           onClick={(ev) => {
             if (ev.delta !== 0) return
             handleClick(id, pointerPosition[0], pointerPosition[2])
-            // onHover(ev, false)
           }}
           onDragStart={() => {
             setDragging(true)
@@ -172,10 +171,13 @@ export default function Wall({
                 <div
                   className='flex items-center justify-center'
                   style={{
-                    transform: `rotateZ(${angle + 1.5708}rad) translateX(-70%)`
+                    transform: `rotateZ(${angle + 1.5708}rad) translateX(-80%)`
                   }}
                 >
-                  <SvgIcon shape='wall-handle-left' classes=' scale-80' />
+                  <SvgIcon
+                    shape='wall-handle-stroke-left'
+                    classes=' scale-125'
+                  />
                 </div>
               </Html>
             </group>
@@ -189,10 +191,13 @@ export default function Wall({
                 <div
                   className='flex items-center justify-center'
                   style={{
-                    transform: `rotateZ(${angle + 1.5708}rad) translateX(70%)`
+                    transform: `rotateZ(${angle + 1.5708}rad) translateX(80%)`
                   }}
                 >
-                  <SvgIcon shape='wall-handle-right' classes=' scale-80' />
+                  <SvgIcon
+                    shape='wall-handle-stroke-right'
+                    classes=' scale-125'
+                  />
                 </div>
               </Html>
             </group>
