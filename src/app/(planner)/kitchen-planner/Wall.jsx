@@ -29,6 +29,7 @@ export default function Wall({
   onHover = noop,
   onDragStart = noop,
   onDrag = noop,
+  handleClick,
   onDragEnd = noop,
   onResize = noop,
   highlightWalls,
@@ -41,7 +42,7 @@ export default function Wall({
   const { view } = useContext(PerspectiveContext)
   const [dragging, setDragging] = useState(false)
   const [pointerPosition, setPosition] = useState()
-  const showHandle = (hover && hover === wall.current) || dragging
+  let showHandle = (hover && hover === wall.current) || dragging
   const handleRef = useRef()
 
   // Wall geometry
@@ -137,6 +138,11 @@ export default function Wall({
         <DragControls
           autoTransform={false}
           matrix={matrix}
+          onClick={(ev) => {
+            if (ev.delta !== 0) return
+            handleClick(id, pointerPosition[0], pointerPosition[2])
+            // onHover(ev, false)
+          }}
           onDragStart={() => {
             setDragging(true)
             onDragStart()

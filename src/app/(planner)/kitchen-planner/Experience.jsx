@@ -114,6 +114,7 @@ export default function Experience() {
               // features={features[n]}
               highlightWalls={highlightWalls}
               showMeasurementLines={showMeasurementLines}
+              handleClick={insertPoint}
               hover={hover}
               onHover={doHover}
               onDragStart={dragStart}
@@ -192,6 +193,7 @@ export default function Experience() {
    * with a preference for the latter if there's a conflict.
    */
   function doHover(ev, isHover) {
+    console.log(ev)
     if (dragBase.current) return
     if (isHover) over.current.add(ev.eventObject)
     else over.current.delete(ev.eventObject)
@@ -326,7 +328,6 @@ export default function Experience() {
   /**
    * Callback to remove redundant points on drag end.
    */
-
   function removeRedundantPoints(id, at, next, post, prev, pro) {
     let arr = []
     const proPrevWallAngle = Math.atan2(prev.z - pro.z, prev.x - pro.x)
@@ -347,7 +348,6 @@ export default function Experience() {
     if (mitreEndC.toFixed(5) == 0) {
       arr.push(id + 1)
     }
-
     if (arr.length === 0) return
 
     // filter out points that match one of the ids in the arry
@@ -358,6 +358,20 @@ export default function Experience() {
     })
 
     setPoints(newArray)
+  }
+
+  function insertPoint(id, x, z) {
+    const arr = [...points]
+    arr.splice(id + 1, 0, { id, x, z, color: '#C8C8C8' })
+
+    const newPoints = arr.map((p, i) => ({ ...p, id: i }))
+    const newOptions = arr.map((p, i) => {
+      return { id: p.id, line: false }
+    })
+
+    setOptions(newOptions)
+    setPoints(newPoints)
+    setHover(undefined)
   }
 
   /**
