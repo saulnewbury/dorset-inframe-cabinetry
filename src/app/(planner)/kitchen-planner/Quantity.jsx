@@ -8,7 +8,6 @@ export default function Quantity({ children, angle, onChange = noop }) {
   const [isVisible, setIsVisible] = useState(false)
 
   const value = String(children * 1000).slice(0, 4)
-  // TODO {id, dx, dz}
 
   const input = useRef(null)
 

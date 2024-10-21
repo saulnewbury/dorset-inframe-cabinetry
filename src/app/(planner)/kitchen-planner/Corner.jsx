@@ -16,6 +16,7 @@ export default function Corner({
   post,
   prev,
   pro,
+  is3D,
   hover,
   onHover,
   onDrag,
@@ -53,13 +54,13 @@ export default function Corner({
           ref={corner}
           position={pos}
           onPointerOver={(ev) => {
-            if (view !== '2d') return
+            if (is3D) return
             onHover(ev, true)
             highlightWalls(id, 'corner')
             cc.style.cursor = 'none'
           }}
           onPointerOut={(ev) => {
-            if (view !== '2d') return
+            if (is3D) return
             onHover(ev, false)
             highlightWalls(null, 'corner')
             cc.style.cursor = 'default'
@@ -73,13 +74,13 @@ export default function Corner({
             opacity={0.0}
           />
         </mesh>
-        {showHandle && view === '2d' && (
+        {showHandle && !is3D && (
           <Html position={pos} center className='pointer-events-none'>
             <SvgIcon shape='corner-handle-circle' classes='scale-110' />
           </Html>
         )}
       </group>
-      {showHandle && view === '2d' && (
+      {showHandle && !is3D && (
         <DragControls
           matrix={matrix}
           autoTransform={false}

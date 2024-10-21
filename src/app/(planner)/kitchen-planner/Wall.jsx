@@ -23,6 +23,7 @@ export default function Wall({
   to,
   prev,
   next,
+  is3D,
   line,
   color,
   hover,
@@ -95,7 +96,7 @@ export default function Wall({
           <meshStandardMaterial color={color} />
         </mesh>
 
-        {/* {view === '2d' && line && (
+        {/* {!is3D && line && (
           <Length
             offset={0.3}
             end={[len / 2 - (t * Math.tan(mitreEnd)) / 2, t / -2]}
@@ -103,8 +104,8 @@ export default function Wall({
             color='black'
           />
         )} */}
-        {/* {view === '2d' && isNinetyDegrees && ( */}
-        {view === '2d' && (
+        {/* {!is3D && isNinetyDegrees && ( */}
+        {!is3D && (
           <DimensionsLines
             // moveHandle={() => onDrag({ id: wrap(id - 1), x, z })}
             angle={angle}
@@ -134,7 +135,7 @@ export default function Wall({
         <meshNormalMaterial transparent opacity={0} />
       </mesh>
 
-      {showHandle && view === '2d' && (
+      {showHandle && !is3D && (
         <DragControls
           autoTransform={false}
           matrix={matrix}

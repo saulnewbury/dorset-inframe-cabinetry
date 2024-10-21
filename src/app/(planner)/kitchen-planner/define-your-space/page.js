@@ -3,7 +3,6 @@ import { useState } from 'react'
 
 import Content from '../Content'
 import Sidebar from '../Sidebar'
-import View from '../View'
 import { useContext, useEffect } from 'react'
 import { CanvasContext } from '@/app/context'
 
@@ -36,8 +35,6 @@ export default function Page() {
           setShowContent(name)
         }}
       />
-
-      <View />
 
       {/* <ContentBox /> */}
       {showContent && (

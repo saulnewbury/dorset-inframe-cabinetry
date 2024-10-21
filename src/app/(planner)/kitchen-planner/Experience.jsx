@@ -1,8 +1,9 @@
 'use client'
 
 // Modules
-import { useState, useContext, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { OrbitControls } from '@react-three/drei'
+import { Vector3 } from 'three'
 
 // Helpers
 import { radToDeg } from '@/lib/helpers/radToDeg'
@@ -15,9 +16,6 @@ import Wall from './Wall'
 import Corner from './Corner'
 import RadialGrid from './RadialGrid'
 import Floor from './Floor'
-
-// Context
-import { PerspectiveContext } from '@/app/context.js'
 
 /**
  * @typedef {{
@@ -38,7 +36,7 @@ import { PerspectiveContext } from '@/app/context.js'
  * it's newlocations thereby updating the corners.
  */
 
-export default function Experience() {
+export default function Experience({ is3D }) {
   const [points, setPoints] = useState(square)
   const [hover, setHover] = useState()
   const [axisPair, setAxisPair] = useState([])
@@ -54,21 +52,21 @@ export default function Experience() {
   const walls = useRef()
 
   const wrap = (id) => (id + points.length) % points.length
-  const snap = (pt) => pt && { x: Math.round(pt.x), z: Math.round(pt.z) }
-  const { view } = useContext(PerspectiveContext)
 
   useEffect(() => {
-    if (view === '2d') return
     hideWalls()
-  }, [])
+  }, [is3D])
 
   return (
     <>
       {/* Logic elements */}
       <OrbitControls
-        enableRotate={view === '2d' ? false : true}
+        enableRotate={is3D ? true : false}
+        enablePan={is3D ? true : false}
         ref={orbitControls}
         onChange={hideWalls}
+        maxPolarAngle={Math.PI / 2.5}
+        panSpeed={0.5}
       />
       <axesHelper />
 
@@ -88,6 +86,7 @@ export default function Experience() {
           prev={points[wrap(at.id - 1)]}
           pro={points[wrap(at.id - 2)]}
           hover={hover}
+          is3D={is3D}
           onHover={doHover}
           onDragStart={dragStart}
           onDrag={moveCorner}
@@ -111,6 +110,7 @@ export default function Experience() {
               to={points[wrap(from.id + 1)]}
               next={points[wrap(from.id + 2)]}
               prev={points[wrap(from.id - 1)]}
+              is3D={is3D}
               // features={features[n]}
               highlightWalls={highlightWalls}
               showMeasurementLines={showMeasurementLines}
@@ -163,7 +163,7 @@ export default function Experience() {
    * Adds highlighting to walls, when hovering over a wall or corner.
    */
   function highlightWalls(id = null, dragType = null) {
-    if (view !== '2d') return
+    if (is3D) return
     const newArray = points.map((point) => {
       const a = wrap(id - 1) // update point
       const b = dragType === 'corner' ? id : wrap(id + 1)
@@ -193,7 +193,6 @@ export default function Experience() {
    * with a preference for the latter if there's a conflict.
    */
   function doHover(ev, isHover) {
-    console.log(ev)
     if (dragBase.current) return
     if (isHover) over.current.add(ev.eventObject)
     else over.current.delete(ev.eventObject)
@@ -430,18 +429,29 @@ export default function Experience() {
   }
 
   function hideWalls() {
-    if (view === '2d') return
-    const sceneRotation = radToDeg(orbitControls.current.getAzimuthalAngle())
-    walls.current.traverse((obj) => {
-      if (obj.name) {
-        const wallRotation = radToDeg(obj.rotation.z)
-        if (isWallFacingCamera(sceneRotation, wallRotation)) {
-          obj.visible = false
-        } else {
+    if (!is3D) {
+      walls.current.traverse((obj) => {
+        if (obj.name === 'wall') {
           obj.visible = true
         }
-      }
-    })
+      })
+    }
+    if (is3D) {
+      const sceneRotation = radToDeg(orbitControls.current.getAzimuthalAngle())
+      console.log(sceneRotation)
+      walls.current.traverse((obj) => {
+        if (obj.name === 'wall') {
+          const wallRotation = radToDeg(obj.rotation.z)
+          if (isWallFacingCamera(sceneRotation, wallRotation)) {
+            obj.scale.z = 0.001
+            obj.position.y = 0.001
+          } else {
+            obj.scale.z = 1
+            obj.position.y = 1
+          }
+        }
+      })
+    }
   }
 
   function isWallFacingCamera(sceneRotation, wallRotation) {
