@@ -460,7 +460,6 @@ export default function Experience({ is3D }) {
     }
     if (is3D) {
       const sceneRotation = radToDeg(orbitControls.current.getAzimuthalAngle())
-      console.log(sceneRotation)
       walls.current.traverse((obj) => {
         if (obj.name === 'wall') {
           const wallRotation = radToDeg(obj.rotation.z)
