@@ -3,7 +3,7 @@
 // Modules
 import { useState, useRef, useEffect } from 'react'
 import { OrbitControls } from '@react-three/drei'
-import { Vector3 } from 'three'
+import * as THREE from 'three'
 
 // Helpers
 import { radToDeg } from '@/lib/helpers/radToDeg'
@@ -16,6 +16,8 @@ import Wall from './Wall'
 import Corner from './Corner'
 import RadialGrid from './RadialGrid'
 import Floor from './Floor'
+
+import { h } from './const.js'
 
 /**
  * @typedef {{
@@ -55,6 +57,7 @@ export default function Experience({ is3D }) {
 
   useEffect(() => {
     hideWalls()
+    orbitControls.current.reset()
   }, [is3D])
 
   return (
@@ -62,11 +65,17 @@ export default function Experience({ is3D }) {
       {/* Logic elements */}
       <OrbitControls
         enableRotate={is3D ? true : false}
-        enablePan={is3D ? true : false}
+        enablePan={hover ? false : true}
         ref={orbitControls}
         onChange={hideWalls}
         maxPolarAngle={Math.PI / 2.5}
-        panSpeed={0.5}
+        panSpeed={1}
+        zoomSpeed={0.5}
+        mouseButtons={{
+          LEFT: is3D ? THREE.MOUSE.ROTATE : THREE.MOUSE.PAN,
+          MIDDLE: THREE.MOUSE.DOLLY,
+          RIGHT: THREE.MOUSE.PAN
+        }}
       />
       <axesHelper />
 
@@ -83,8 +92,9 @@ export default function Experience({ is3D }) {
           at={at}
           next={points[wrap(at.id + 1)]}
           post={points[wrap(at.id + 2)]}
-          prev={points[wrap(at.id - 1)]}
-          pro={points[wrap(at.id - 2)]}
+          ante={points[wrap(at.id - 1)]}
+          prev={points[wrap(at.id - 2)]}
+          pro={points[wrap(at.id - 3)]}
           hover={hover}
           is3D={is3D}
           onHover={doHover}
@@ -327,26 +337,33 @@ export default function Experience({ is3D }) {
   /**
    * Callback to remove redundant points on drag end.
    */
-  function removeRedundantPoints(id, at, next, post, prev, pro) {
+  function removeRedundantPoints(id, at, next, post, ante, prev, pro) {
+    console.log(ante)
     let arr = []
     const proPrevWallAngle = Math.atan2(prev.z - pro.z, prev.x - pro.x)
-    const prevAtWallAngle = Math.atan2(at.z - prev.z, at.x - prev.x)
+    const prevAnteWallAngle = Math.atan2(ante.z - prev.z, ante.x - prev.x)
+    const anteAtWallAngle = Math.atan2(at.z - ante.z, at.x - ante.x)
     const atNextWallAngle = Math.atan2(next.z - at.z, next.x - at.x)
     const nextPostWallAngle = Math.atan2(post.z - next.z, post.x - next.x)
 
-    const mitreEndA = Math.abs(prevAtWallAngle - proPrevWallAngle) % 3.14159 // mitreEnd if 0 delete point id - 1
-    const mitreEndB = Math.abs(atNextWallAngle - prevAtWallAngle) % 3.14159 // mitreEnd if 0 delete point id
-    const mitreEndC = Math.abs(nextPostWallAngle - atNextWallAngle) % 3.14159 // mitreEnd if 0 delete point id + 1
+    const mitreEndA = Math.abs(prevAnteWallAngle - proPrevWallAngle) % 3.14159 // mitreEnd if 0 delete point id - 1
+    const mitreEndB = Math.abs(anteAtWallAngle - prevAnteWallAngle) % 3.14159 // mitreEnd if 0 delete point id - 1
+    const mitreEndC = Math.abs(atNextWallAngle - anteAtWallAngle) % 3.14159 // mitreEnd if 0 delete point id
+    const mitreEndD = Math.abs(nextPostWallAngle - atNextWallAngle) % 3.14159 // mitreEnd if 0 delete point id + 1
 
     if (mitreEndA.toFixed(5) == 0) {
-      arr.push(id - 1)
+      arr.push(id - 2)
     }
     if (mitreEndB.toFixed(5) == 0) {
-      arr.push(id)
+      arr.push(id - 1)
     }
     if (mitreEndC.toFixed(5) == 0) {
+      arr.push(id)
+    }
+    if (mitreEndD.toFixed(5) == 0) {
       arr.push(id + 1)
     }
+
     if (arr.length === 0) return
 
     // filter out points that match one of the ids in the arry
@@ -447,7 +464,7 @@ export default function Experience({ is3D }) {
             obj.position.y = 0.001
           } else {
             obj.scale.z = 1
-            obj.position.y = 1
+            obj.position.y = h
           }
         }
       })

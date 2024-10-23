@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState, useContext } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Matrix4, Shape, Vector2, Vector3 } from 'three'
-import { DragControls, Html, Svg } from '@react-three/drei'
+import { DragControls, Html } from '@react-three/drei'
 import { radToDeg } from '@/lib/helpers/radToDeg.js'
 
 import SvgIcon from '@/components/SvgIcon.jsx'
@@ -8,9 +8,8 @@ import SvgIcon from '@/components/SvgIcon.jsx'
 import Length from './Length.jsx'
 import DimensionsLines from './DimensionLines.jsx'
 
-import { PerspectiveContext } from '@/app/context.js'
-
 import { t, h } from './const.js'
+
 import { isWithinRange } from '@/lib/helpers/isWithinRange.js'
 
 const noop = () => {}
@@ -36,11 +35,8 @@ export default function Wall({
   highlightWalls,
   showMeasurementLines
 }) {
-  const wrap = (id) => (id + points.length) % points.length
-
   const wall = useRef()
 
-  const { view } = useContext(PerspectiveContext)
   const [dragging, setDragging] = useState(false)
   const [pointerPosition, setPosition] = useState()
   let showHandle = (hover && hover === wall.current) || dragging
@@ -92,7 +88,7 @@ export default function Wall({
         rotation-z={angle}
       >
         <mesh>
-          <extrudeGeometry args={[shape, { depth: 1, bevelEnabled: false }]} />
+          <extrudeGeometry args={[shape, { depth: 2, bevelEnabled: false }]} />
           <meshStandardMaterial color={color} />
         </mesh>
 
@@ -107,7 +103,6 @@ export default function Wall({
         {/* {!is3D && isNinetyDegrees && ( */}
         {!is3D && (
           <DimensionsLines
-            // moveHandle={() => onDrag({ id: wrap(id - 1), x, z })}
             angle={angle}
             offset={-0.3}
             end={[len / 2 - (t * Math.tan(mitreEnd)) / 2, t / -2]} // inside length
@@ -139,8 +134,10 @@ export default function Wall({
         <DragControls
           autoTransform={false}
           matrix={matrix}
-          onClick={(ev) => {
-            if (ev.delta !== 0) return
+          onDoubleClick={(ev) => {
+            console.log('on click ' + ev.delta)
+            if (ev.delta !== 0 && ev.delta !== 1) return
+            console.log('passed the guard')
             handleClick(id, pointerPosition[0], pointerPosition[2])
           }}
           onDragStart={() => {

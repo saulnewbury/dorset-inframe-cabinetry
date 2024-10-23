@@ -1,13 +1,11 @@
 'use client'
 
 import { DragControls, useCursor, Html } from '@react-three/drei'
-import { useRef, useState, useMemo, useContext } from 'react'
+import { useRef, useState, useMemo } from 'react'
 import { Matrix4, Vector3 } from 'three'
 import { t, h } from './const.js'
 
 import SvgIcon from '@/components/SvgIcon.jsx'
-
-import { PerspectiveContext } from '@/app/context.js'
 
 export default function Corner({
   id,
@@ -15,6 +13,7 @@ export default function Corner({
   next,
   post,
   prev,
+  ante,
   pro,
   is3D,
   hover,
@@ -33,8 +32,6 @@ export default function Corner({
   const showHandle = dragging || hovered
 
   const pos = [at.x, h + 0.01, at.z]
-
-  const { view } = useContext(PerspectiveContext)
 
   useCursor(hovered)
 
@@ -95,7 +92,7 @@ export default function Corner({
             setDragging(false)
             showMeasurementLines(null, 'corner')
             onDragEnd()
-            removeRedundantPoints(id, at, next, post, prev, pro)
+            removeRedundantPoints(id, at, next, post, ante, prev, pro)
             createRadialGrid(null) // dev perposes only.
           }}
         >
