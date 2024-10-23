@@ -29,9 +29,9 @@ export default function Wall({
   onHover = noop,
   onDragStart = noop,
   onDrag = noop,
-  handleClick,
   onDragEnd = noop,
   onResize = noop,
+  insertPoint,
   highlightWalls,
   showMeasurementLines
 }) {
@@ -40,6 +40,7 @@ export default function Wall({
   const [dragging, setDragging] = useState(false)
   const [pointerPosition, setPosition] = useState()
   let showHandle = (hover && hover === wall.current) || dragging
+
   const handleRef = useRef()
 
   // Wall geometry
@@ -138,7 +139,7 @@ export default function Wall({
             console.log('on click ' + ev.delta)
             if (ev.delta !== 0 && ev.delta !== 1) return
             console.log('passed the guard')
-            handleClick(id, pointerPosition[0], pointerPosition[2])
+            insertPoint(id, pointerPosition[0], pointerPosition[2])
           }}
           onDragStart={() => {
             setDragging(true)

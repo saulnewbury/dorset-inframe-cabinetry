@@ -14,7 +14,7 @@ import {
 // import woodFloor from './textures/shutterstock_2408341353.png'
 // import tileFloor from './textures/shutterstock_754494433.jpg'
 
-export default function Floor({ points }) {
+export default function Floor({ points, handlePan }) {
   // const colourMap = useLoader(TextureLoader, tileFloor)
   const shape = new Shape(points.map((p) => new Vector2(p.x, p.z)))
   shape.closePath()
@@ -23,7 +23,16 @@ export default function Floor({ points }) {
   // colourMap.repeat.set(0.1, 0.1)
 
   return (
-    <mesh rotation-x={Math.PI / 2}>
+    <mesh
+      rotation-x={Math.PI / 2}
+      onPointerMove={(e) => {
+        if (e.intersections.length > 1) {
+          handlePan(false)
+        } else {
+          handlePan(true)
+        }
+      }}
+    >
       <shapeGeometry args={[shape]} />
       {/* <meshStandardMaterial map={colourMap} side={DoubleSide} /> */}
       <meshStandardMaterial

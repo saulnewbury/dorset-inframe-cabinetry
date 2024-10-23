@@ -42,6 +42,7 @@ export default function Experience({ is3D }) {
   const [points, setPoints] = useState(square)
   const [hover, setHover] = useState()
   const [axisPair, setAxisPair] = useState([])
+  const [enablePan, setPan] = useState(false)
   const [options, setOptions] = useState(() => {
     return square().map((point) => {
       return { id: point.id, line: false }
@@ -65,7 +66,7 @@ export default function Experience({ is3D }) {
       {/* Logic elements */}
       <OrbitControls
         enableRotate={is3D ? true : false}
-        enablePan={hover ? false : true}
+        enablePan={enablePan ? true : false}
         ref={orbitControls}
         onChange={hideWalls}
         maxPolarAngle={Math.PI / 2.5}
@@ -84,7 +85,12 @@ export default function Experience({ is3D }) {
       <ambientLight intensity={1.5} />
 
       {/* Scene */}
-      <Floor points={points} />
+      <Floor
+        points={points}
+        handlePan={(bool) => {
+          setPan(bool)
+        }}
+      />
       {points.map((at, n) => (
         <Corner
           key={'corner-' + n}
@@ -124,7 +130,7 @@ export default function Experience({ is3D }) {
               // features={features[n]}
               highlightWalls={highlightWalls}
               showMeasurementLines={showMeasurementLines}
-              handleClick={insertPoint}
+              insertPoint={insertPoint}
               hover={hover}
               onHover={doHover}
               onDragStart={dragStart}
@@ -338,7 +344,6 @@ export default function Experience({ is3D }) {
    * Callback to remove redundant points on drag end.
    */
   function removeRedundantPoints(id, at, next, post, ante, prev, pro) {
-    console.log(ante)
     let arr = []
     const proPrevWallAngle = Math.atan2(prev.z - pro.z, prev.x - pro.x)
     const prevAnteWallAngle = Math.atan2(ante.z - prev.z, ante.x - prev.x)
