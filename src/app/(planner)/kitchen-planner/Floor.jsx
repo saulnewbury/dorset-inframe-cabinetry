@@ -24,6 +24,7 @@ export default function Floor({ points, handlePan }) {
 
   return (
     <mesh
+      receiveShadow
       rotation-x={Math.PI / 2}
       onPointerMove={(e) => {
         if (e.intersections.length > 1) {
@@ -35,12 +36,7 @@ export default function Floor({ points, handlePan }) {
     >
       <shapeGeometry args={[shape]} />
       {/* <meshStandardMaterial map={colourMap} side={DoubleSide} /> */}
-      <meshStandardMaterial
-        color='lightblue'
-        transparent
-        opacity={0.3}
-        side={DoubleSide}
-      />
+      <meshStandardMaterial color='#ffffff' side={DoubleSide} />
     </mesh>
   )
 }

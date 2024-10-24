@@ -2,7 +2,12 @@
 
 // Modules
 import { useState, useRef, useEffect } from 'react'
-import { OrbitControls } from '@react-three/drei'
+import {
+  OrbitControls,
+  useHelper,
+  BakeShadows,
+  SoftShadows
+} from '@react-three/drei'
 import * as THREE from 'three'
 
 // Helpers
@@ -53,6 +58,10 @@ export default function Experience({ is3D }) {
   const dragBase = useRef()
   const orbitControls = useRef()
   const walls = useRef()
+  const light = useRef()
+
+  // useHelper(light, THREE.DirectionalLightHelper, 1)
+  useHelper(light, THREE.DirectionalLightHelper, 1)
 
   const wrap = (id) => (id + points.length) % points.length
 
@@ -63,7 +72,7 @@ export default function Experience({ is3D }) {
 
   return (
     <>
-      {/* Logic elements */}
+      {/* <color args={['#ccccff']} attach='background' /> */}
       <OrbitControls
         enableRotate={is3D ? true : false}
         enablePan={enablePan ? true : false}
@@ -80,11 +89,18 @@ export default function Experience({ is3D }) {
         }}
       />
       <axesHelper />
-
       {/* Environment elements */}
-      <directionalLight position={[1, 2, 3]} intensity={4.5} />
-      <ambientLight intensity={1.5} />
+      {is3D && <BakeShadows />}
 
+      <SoftShadows size={25} samples={10} focus={0} />
+      <ambientLight intensity={1.5} />
+      <directionalLight
+        ref={light}
+        position={[4, 4, -2]}
+        castShadow={is3D ? true : false}
+        intensity={4.5}
+        shadow-mapSize={[1024 * 3, 1024 * 3]}
+      />
       {/* Scene */}
       <Floor
         points={points}
@@ -142,7 +158,6 @@ export default function Experience({ is3D }) {
           )
         })}
       </group>
-
       {axisPair &&
         axisPair.map((axis, i) => <RadialGrid key={i} coords={axis} />)}
     </>

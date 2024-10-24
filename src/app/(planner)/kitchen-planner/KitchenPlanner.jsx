@@ -52,7 +52,7 @@ export default forwardRef(function KitchenPlanner(props, ref) {
       ref={container}
       className={`canvas-container ${show ? '' : 'hidden'} w-full h-full fixed`}
     >
-      <Canvas frameloop='demand'>
+      <Canvas frameloop='demand' shadows>
         <Camera is3D={is3D} />
         <Experience is3D={is3D} />
       </Canvas>

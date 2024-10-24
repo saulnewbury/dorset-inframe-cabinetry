@@ -49,15 +49,18 @@ export default function Quantity({ children, angle, onChange = noop }) {
 
   return (
     <>
-      <Html center rotation-y={angle}>
+      <Html
+        center
+        className='h-[max-content] w-[max-content pointer-events-none'
+      >
         <div
-          onClick={toggleModal}
           style={style}
-          className='cursor-pointer px-[7px] w-[max-content] h-[max-content] text-center bg-white'
+          onClick={toggleModal}
+          className='cursor-pointer px-[7px] w-[max-content] h-[max-content] text-center bg-white pointer-events-auto'
         >
           <div className='hover:scale-110'>
-            <span className='text-[10px] inline-block'>{value}</span>
-            <span className='text-[7px] inline-block'>&nbsp;mm</span>
+            <span className='text-[12px] inline-block'>{value}</span>
+            <span className='text-[9px] inline-block'>&nbsp;mm</span>
           </div>
         </div>
       </Html>
