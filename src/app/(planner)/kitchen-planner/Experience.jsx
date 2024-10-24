@@ -72,7 +72,7 @@ export default function Experience({ is3D }) {
         maxPolarAngle={Math.PI / 2.5}
         panSpeed={1}
         zoomSpeed={0.5}
-        dampingFactor={is3D ? 0.05 : 0.3}
+        dampingFactor={is3D ? 0.1 : 0.3}
         mouseButtons={{
           LEFT: is3D ? THREE.MOUSE.ROTATE : THREE.MOUSE.PAN,
           MIDDLE: THREE.MOUSE.DOLLY,

@@ -68,10 +68,13 @@ export default function Quantity({ children, angle, onChange = noop }) {
             ref={input}
             className={`bg-[#e9e9e9] p-[1rem] text-[16px] shadow-[0px_.1px_5px_rgba(0,0,0,0.2)] w-[max-content] h-[max-content] hover:shadow-[0px_.1px_5px_rgba(0,0,0,0.2)]`}
           >
-            <input
-              className='bg-[transparent] max-w-[4rem] mb-[10px] px-[2px] block border-solid border-b-[1px] border-black'
-              defaultValue={value}
-            />
+            <div className='border-solid border-b-[1px] border-black  mb-[10px] px-[2px]'>
+              <input
+                className='bg-[transparent] w-[max-content] max-w-[3rem]'
+                defaultValue={value}
+              />
+              <span className='text-[10px]'>mm</span>
+            </div>
             <button
               type='submit'
               className='bg-darkBlue w-[100%] text-base text-white px-[1rem] py-[.5rem]'
