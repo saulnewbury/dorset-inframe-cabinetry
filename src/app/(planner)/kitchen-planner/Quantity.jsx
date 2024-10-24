@@ -1,6 +1,7 @@
 'use client'
 import { Html } from '@react-three/drei'
 import { useState, useEffect, useRef } from 'react'
+import { radToDeg } from 'three/src/math/MathUtils'
 
 const noop = () => {}
 
@@ -21,6 +22,10 @@ export default function Quantity({ children, angle, onChange = noop }) {
     }
   }, [isVisible])
 
+  useEffect(() => {
+    console.log(angle)
+  }, [angle])
+
   const num = +String(angle).slice(0, 5)
 
   const flip =
@@ -29,7 +34,8 @@ export default function Quantity({ children, angle, onChange = noop }) {
       : false
 
   const style = {
-    transform: `rotateX(180deg) rotateZ(${flip ? '180' : '0'}deg)`
+    // transform: `rotateX(180deg) rotateZ(${flip ? '180' : '0'}deg)`
+    transform: `rotateZ(${flip ? 0 : radToDeg(angle)}deg) translateY(-10%)`
   }
 
   function handleSubmit(ev) {
@@ -43,15 +49,15 @@ export default function Quantity({ children, angle, onChange = noop }) {
 
   return (
     <>
-      <Html as='div' transform center>
+      <Html center rotation-y={angle}>
         <div
           onClick={toggleModal}
           style={style}
-          className='cursor-pointer mt-[0.5px] px-[4px] text-[5px] w-[max-content] text-center bg-white'
+          className='cursor-pointer px-[7px] w-[max-content] h-[max-content] text-center bg-white'
         >
           <div className='hover:scale-110'>
-            <span className='text-[5px] inline-block'>{value}</span>
-            <span className='text-[4px] inline-block'>&nbsp;mm</span>
+            <span className='text-[10px] inline-block'>{value}</span>
+            <span className='text-[7px] inline-block'>&nbsp;mm</span>
           </div>
         </div>
       </Html>

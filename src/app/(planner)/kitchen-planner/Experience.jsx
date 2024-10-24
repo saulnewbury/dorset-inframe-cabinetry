@@ -283,8 +283,8 @@ export default function Experience({ is3D }) {
     from.z += dz
     to.x += dx
     to.z += dz
-    const p1 = intersection(from, to, prev, start)
-    const p2 = intersection(from, to, end, next)
+    const p1 = intersection(from, to, prev, start) ?? from
+    const p2 = intersection(from, to, end, next) ?? to
 
     if (!p1 || !p2) return
 
@@ -343,50 +343,44 @@ export default function Experience({ is3D }) {
   /**
    * Callback to remove redundant points on drag end.
    */
-  function removeRedundantPoints(id, at, next, post, ante, prev, pro) {
-    let arr = []
-    const proPrevWallAngle = Math.atan2(prev.z - pro.z, prev.x - pro.x)
-    const prevAnteWallAngle = Math.atan2(ante.z - prev.z, ante.x - prev.x)
-    const anteAtWallAngle = Math.atan2(at.z - ante.z, at.x - ante.x)
-    const atNextWallAngle = Math.atan2(next.z - at.z, next.x - at.x)
-    const nextPostWallAngle = Math.atan2(post.z - next.z, post.x - next.x)
+  function removeRedundantPoints() {
+    let ids = []
+    const angles = points.map((p, i) =>
+      Math.atan2(p.z - points[wrap(i - 1)].z, p.x - points[wrap(i - 1)].x)
+    )
 
-    const mitreEndA = Math.abs(prevAnteWallAngle - proPrevWallAngle) % 3.14159 // mitreEnd if 0 delete point id - 1
-    const mitreEndB = Math.abs(anteAtWallAngle - prevAnteWallAngle) % 3.14159 // mitreEnd if 0 delete point id - 1
-    const mitreEndC = Math.abs(atNextWallAngle - anteAtWallAngle) % 3.14159 // mitreEnd if 0 delete point id
-    const mitreEndD = Math.abs(nextPostWallAngle - atNextWallAngle) % 3.14159 // mitreEnd if 0 delete point id + 1
+    angles.forEach((a, i) => {
+      const from = Math.round(radToDeg(a.toFixed(5)))
+      const to = Math.round(radToDeg(angles[wrap(i + 1)].toFixed(5)))
+      console.log(from, to)
+      if (from === to) {
+        ids.push(i)
+      }
+    })
 
-    if (mitreEndA.toFixed(5) == 0) {
-      arr.push(id - 2)
-    }
-    if (mitreEndB.toFixed(5) == 0) {
-      arr.push(id - 1)
-    }
-    if (mitreEndC.toFixed(5) == 0) {
-      arr.push(id)
-    }
-    if (mitreEndD.toFixed(5) == 0) {
-      arr.push(id + 1)
-    }
-
-    if (arr.length === 0) return
+    if (ids.length === 0) return
 
     // filter out points that match one of the ids in the arry
-    const filtered = points.filter((p) => !arr.some((id) => id === p.id))
+    const filtered = points.filter((p) => !ids.some((id) => id === p.id))
     const newArray = filtered.map((p, i) => {
-      console.log({ ...p, id: i })
       return { ...p, id: i }
     })
 
     setPoints(newArray)
+    setHover(undefined)
+    const cc = document.querySelector('.canvas-container')
+    cc.style.cursor = 'default'
   }
 
+  /**
+   * Callback to insert a new point.
+   */
   function insertPoint(id, x, z) {
     const arr = [...points]
     arr.splice(id + 1, 0, { id, x, z, color: '#C8C8C8' })
 
     const newPoints = arr.map((p, i) => ({ ...p, id: i }))
-    const newOptions = arr.map((p, i) => {
+    const newOptions = arr.map((p) => {
       return { id: p.id, line: false }
     })
 
@@ -407,7 +401,7 @@ export default function Experience({ is3D }) {
   function snapRadial(pt, prev, next) {
     if (!pt) return pt
     const dist = (a, b) => Math.sqrt((a.x - b.x) ** 2 + (a.z - b.z) ** 2)
-    const dsnap = 0.1
+    const dsnap = 0.05
     const pp = radialIntersect(pt, prev)
     const pn = radialIntersect(pt, next)
     const is = intersection(prev, pp, next, pn)

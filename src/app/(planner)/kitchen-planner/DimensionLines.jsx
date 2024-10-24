@@ -40,7 +40,9 @@ export default function DimensionsLines({
     line.current.geometry.setFromPoints(length)
     sl.current.geometry.setFromPoints(startLine)
     el.current.geometry.setFromPoints(endLine)
-  })
+
+    // console.log(quantity)
+  }, [start, end, angle])
 
   return (
     <group position-y={offset}>

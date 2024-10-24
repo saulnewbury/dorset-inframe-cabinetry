@@ -136,9 +136,7 @@ export default function Wall({
           autoTransform={false}
           matrix={matrix}
           onDoubleClick={(ev) => {
-            console.log('on click ' + ev.delta)
             if (ev.delta !== 0 && ev.delta !== 1) return
-            console.log('passed the guard')
             insertPoint(id, pointerPosition[0], pointerPosition[2])
           }}
           onDragStart={() => {
