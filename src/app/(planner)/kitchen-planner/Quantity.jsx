@@ -34,8 +34,9 @@ export default function Quantity({ children, angle, onChange = noop }) {
       : false
 
   const style = {
-    // transform: `rotateX(180deg) rotateZ(${flip ? '180' : '0'}deg)`
-    transform: `rotateZ(${flip ? 0 : radToDeg(angle)}deg) translateY(-10%)`
+    transform: `rotateZ(${
+      flip ? radToDeg(angle) + 180 : radToDeg(angle)
+    }deg) translateY(-10%)`
   }
 
   function handleSubmit(ev) {

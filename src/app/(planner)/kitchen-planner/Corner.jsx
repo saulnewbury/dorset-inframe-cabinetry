@@ -52,15 +52,18 @@ export default function Corner({
           position={pos}
           onPointerOver={(ev) => {
             if (is3D) return
-            onHover(ev, true)
             highlightWalls(id, 'corner')
-            cc.style.cursor = 'none'
           }}
           onPointerOut={(ev) => {
             if (is3D) return
             onHover(ev, false)
             highlightWalls(null, 'corner')
             cc.style.cursor = 'default'
+          }}
+          onPointerMove={(ev) => {
+            if (is3D) return
+            onHover(ev, true)
+            cc.style.cursor = 'none'
           }}
         >
           <boxGeometry args={[t * 2, 0, t * 2]} />
