@@ -24,6 +24,8 @@ import wallHandleStrokeRight from '@/lib/icons/wall-handle-stroke-right.svg'
 import cornerHandle from '@/lib/icons/corner-handle.svg'
 import cornerHandleCircle from '@/lib/icons/corner-handle-circle.svg'
 
+import pen from '@/lib/icons/pen.svg'
+
 import icon2d from '@/lib/icons/2d-icon.svg'
 import icon3d from '@/lib/icons/3d-icon.svg'
 
@@ -52,7 +54,8 @@ const icons = [
   { icon: cornerHandle, shape: 'corner-handle' },
   { icon: cornerHandleCircle, shape: 'corner-handle-circle' },
   { icon: icon2d, shape: '2d' },
-  { icon: icon3d, shape: '3d' }
+  { icon: icon3d, shape: '3d' },
+  { icon: pen, shape: 'pen' }
 ]
 
 export default function SvgIcon({ shape = '', alt = undefined, classes = '' }) {

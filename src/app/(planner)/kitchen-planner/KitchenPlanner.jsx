@@ -10,7 +10,7 @@ import ViewControls from './ViewControls'
 
 export default forwardRef(function KitchenPlanner(props, ref) {
   const [show, setShow] = useState(false)
-  const [is3D, set3D] = useState(false)
+  const [is3D, set3D] = useState(true)
 
   const container = useRef()
 

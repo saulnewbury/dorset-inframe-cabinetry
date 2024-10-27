@@ -21,6 +21,7 @@ import Wall from './Wall'
 import Corner from './Corner'
 import RadialGrid from './RadialGrid'
 import Floor from './Floor'
+import Feature from './Feature'
 
 import { h } from './const.js'
 
@@ -74,8 +75,8 @@ export default function Experience({ is3D }) {
     <>
       {/* <color args={['#ccccff']} attach='background' /> */}
       <OrbitControls
-        enableRotate={is3D ? true : false}
-        enablePan={enablePan ? true : false}
+        enableRotate={is3D}
+        enablePan={enablePan}
         ref={orbitControls}
         onChange={hideWalls}
         maxPolarAngle={Math.PI / 2.5}
@@ -157,6 +158,7 @@ export default function Experience({ is3D }) {
             />
           )
         })}
+        <Feature />
       </group>
       {axisPair &&
         axisPair.map((axis, i) => <RadialGrid key={i} coords={axis} />)}
