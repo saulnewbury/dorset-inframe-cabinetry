@@ -19,7 +19,8 @@
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.5.2",
-    "three": "^0.168.0"
+    "three": "^0.168.0",
+    "zustand": "^5.0.0"
   },
   "devDependencies": {
     "eslint": "^8",

@@ -14,14 +14,13 @@ import * as THREE from 'three'
 import { radToDeg } from '@/lib/helpers/radToDeg'
 
 // Data
-import { square, slice } from './floorplans'
+import { square } from './floorplans'
 
 // Objects
 import Wall from './Wall'
 import Corner from './Corner'
 import RadialGrid from './RadialGrid'
 import Floor from './Floor'
-import Feature from './Feature'
 
 import { h } from './const.js'
 
@@ -62,7 +61,7 @@ export default function Experience({ is3D }) {
   const light = useRef()
 
   // useHelper(light, THREE.DirectionalLightHelper, 1)
-  useHelper(light, THREE.DirectionalLightHelper, 1)
+  useHelper(light, THREE.PointLightHelper, 1)
 
   const wrap = (id) => (id + points.length) % points.length
 
@@ -96,11 +95,16 @@ export default function Experience({ is3D }) {
       <SoftShadows size={25} samples={10} focus={0} />
       <ambientLight intensity={1.5} />
       <directionalLight
-        ref={light}
         position={[4, 4, -2]}
         castShadow={is3D ? true : false}
         intensity={4.5}
         shadow-mapSize={[1024 * 3, 1024 * 3]}
+      />
+      <pointLight
+        ref={light}
+        args={[0xfffae6, 1, 100]}
+        intensity={6.5}
+        position={[0, 3, 0]}
       />
       {/* Scene */}
       <Floor
@@ -145,7 +149,7 @@ export default function Experience({ is3D }) {
               next={points[wrap(from.id + 2)]}
               prev={points[wrap(from.id - 1)]}
               is3D={is3D}
-              // features={features[n]}
+              features={from.features}
               highlightWalls={highlightWalls}
               showMeasurementLines={showMeasurementLines}
               insertPoint={insertPoint}
@@ -158,7 +162,6 @@ export default function Experience({ is3D }) {
             />
           )
         })}
-        <Feature />
       </group>
       {axisPair &&
         axisPair.map((axis, i) => <RadialGrid key={i} coords={axis} />)}

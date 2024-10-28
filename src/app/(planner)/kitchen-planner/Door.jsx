@@ -1,79 +1,60 @@
-import { DoubleSide } from 'three'
-import { Vector2, Shape } from 'three'
-import { cw, sw, casing, stops, d, sd } from '@/lib/data/features/door.js'
-import { t } from './const.js'
+import { BufferGeometry, Path } from 'three'
+import { t, h } from './const'
 
-export default function Door() {
-  const cOpp = cw * Math.tan(45 * (Math.PI / 180))
-  const sOpp = sw * Math.tan(45 * (Math.PI / 180))
+/**
+ * Component to display the symbol for a door, in 'plan' view.
+ * @param {{
+ *   open: 'left' | 'right'
+ *   facing: 'out' | 'in'
+ *   at: number
+ *   length: number
+ * }}
+ */
+export default function Door({ open, facing, at, length }) {
+  const buffer = new BufferGeometry()
+  const shape = new Path()
+  const angle = Math.PI / (facing === 'out' ? 4 : -4)
 
-  const side = new Shape([
-    new Vector2(-casing[0].len / 2, -cw / 2),
-    new Vector2(-casing[0].len / 2 + cOpp, cw / 2),
-    new Vector2(casing[0].len / 2 - cOpp, cw / 2),
-    new Vector2(casing[0].len / 2, -cw / 2)
-  ])
+  // The side on which the door 'opens' is as viewed from the inside of the
+  // room - therefore 'right' also equals 'end'.
 
-  const top = new Shape([
-    new Vector2(-casing[2].len / 2, -cw / 2),
-    new Vector2(-casing[2].len / 2 + cOpp, cw / 2),
-    new Vector2(casing[2].len / 2 - cOpp, cw / 2),
-    new Vector2(casing[2].len / 2, -cw / 2)
-  ])
+  if (open === 'right') {
+    shape
+      .moveTo(length * Math.cos(angle), length * Math.sin(angle))
+      .lineTo(0, 0)
+      .lineTo(length, 0)
+      .absarc(0, 0, length, 0, angle * 1.5, facing === 'in')
+  } else {
+    shape
+      .moveTo(length * (1 - Math.cos(angle)), length * Math.sin(angle))
+      .lineTo(length, 0)
+      .lineTo(0, 0)
+      .absarc(
+        length,
+        0,
+        length,
+        -Math.PI,
+        -angle * 1.5 - Math.PI,
+        facing === 'out'
+      )
+  }
+  buffer.setFromPoints(shape.getPoints())
 
-  const sideStop = new Shape([
-    new Vector2(-stops[0].len / 2, -sw / 2),
-    new Vector2(-stops[0].len / 2 + sOpp, sw / 2),
-    new Vector2(stops[0].len / 2 - sOpp, sw / 2),
-    new Vector2(stops[0].len / 2, -sw / 2)
-  ])
-
-  const topStop = new Shape([
-    new Vector2(-stops[2].len / 2, -sw / 2),
-    new Vector2(-stops[2].len / 2 + sOpp, sw / 2),
-    new Vector2(stops[2].len / 2 - sOpp, sw / 2),
-    new Vector2(stops[2].len / 2, -sw / 2)
-  ])
+  // The symbol for the door consists of a (blue) opening overlaid with a
+  // triangle/arc shape that shows which way the door opens.
 
   return (
-    <group position-y={casing[0].len / 2 - cw}>
-      {/* <group> */}
-      {casing.map((f, i) =>
-        i < 2 ? (
-          <mesh key={i} position={f.pos} rotation={f.rotation} receiveShadow>
-            <extrudeGeometry args={[side, { depth: d, bevelEnabled: false }]} />
-            <meshStandardMaterial side={DoubleSide} />
-          </mesh>
-        ) : (
-          <mesh key={i} position={f.pos} rotation={f.rotation} receiveShadow>
-            <extrudeGeometry args={[top, { depth: d, bevelEnabled: false }]} />
-            <meshStandardMaterial side={DoubleSide} />
-          </mesh>
-        )
-      )}
-      {stops.map((f, i) =>
-        i < 2 ? (
-          <mesh key={i} position={f.pos} rotation={f.rotation} receiveShadow>
-            <extrudeGeometry
-              args={[sideStop, { depth: sd, bevelEnabled: false }]}
-            />
-            <meshStandardMaterial side={DoubleSide} />
-          </mesh>
-        ) : (
-          <mesh key={i} position={f.pos} rotation={f.rotation} receiveShadow>
-            <extrudeGeometry
-              args={[topStop, { depth: sd, bevelEnabled: false }]}
-            />
-            <meshStandardMaterial side={DoubleSide} />
-          </mesh>
-        )
-      )}
-      <mesh position-y={-0.02} receiveShadow>
-        <boxGeometry
-          args={[casing[2].len - t / 2 - 0.1, casing[0].len - t / 2 - 0.05, sd]}
-        />
-        <meshStandardMaterial side={DoubleSide} color='white' />
+    <group
+      position={[at - length / 2, depth + 0.05, 0]}
+      rotation-x={Math.PI / -2}
+    >
+      <mesh position={[length / 2, 0, -0.01]}>
+        <planeGeometry args={[length, thick]} />
+        <meshBasicMaterial color={0x049ef4} />
       </mesh>
+      <line geometry={buffer}>
+        <lineBasicMaterial args={[{ color: 0, linewidth: 1 }]} />
+      </line>
     </group>
   )
 }

@@ -4,6 +4,7 @@ import { DragControls, Html } from '@react-three/drei'
 import { radToDeg } from '@/lib/helpers/radToDeg.js'
 
 import SvgIcon from '@/components/SvgIcon.jsx'
+import Feature from './Feature.jsx'
 
 import Length from './Length.jsx'
 import DimensionsLines from './DimensionLines.jsx'
@@ -31,10 +32,12 @@ export default function Wall({
   onDrag = noop,
   onDragEnd = noop,
   onResize = noop,
+  features,
   insertPoint,
   highlightWalls,
   showMeasurementLines
 }) {
+  if (features) console.log(features)
   const wall = useRef()
 
   const [dragging, setDragging] = useState(false)
@@ -112,6 +115,8 @@ export default function Wall({
             onChange={(dl) => onResize(id, dl)}
           />
         )}
+        {features &&
+          features.map((detail, i) => <Feature key={i} {...detail} />)}
       </group>
       <mesh
         position={pos}

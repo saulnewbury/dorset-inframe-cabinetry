@@ -1,13 +1,20 @@
 import { DoubleSide } from 'three'
 import { Vector2, Shape } from 'three'
-import { casing, dim, frame } from '@/lib/data/features/window.js'
+import {
+  casingDimensions,
+  frameDimensions,
+  dim
+} from '@/lib/data/features/window.js'
 
-import { t } from '@/app/(planner)/kitchen-planner/const'
+import { h } from '@/app/(planner)/kitchen-planner/const'
 
-const { d, w, totalHeightFromFloor } = dim
+const { d, w } = dim
 
-export default function Window() {
+export default function Window3D({ width = 1.5, height = 0.8 }) {
   const opp = w * Math.tan(45 * (Math.PI / 180))
+
+  const casing = casingDimensions(width, height)
+  const frame = frameDimensions(width, height)
 
   const jamb = new Shape([
     new Vector2(-frame[2].len / 2, -w / 2),
@@ -24,9 +31,9 @@ export default function Window() {
 
   return (
     <group
-      position-y={totalHeightFromFloor}
+      position-z={-frame[0].len / 2 + h - 1.2}
       rotation-z={-Math.PI / 2}
-      position-z={-1.5 - t / 2}
+      rotation-x={-Math.PI / 2}
     >
       {casing.map((c, i) => {
         return (

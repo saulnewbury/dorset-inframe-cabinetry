@@ -8,9 +8,12 @@ import Experience from './Experience'
 import Camera from './Camera'
 import ViewControls from './ViewControls'
 
+import { useExpState } from './expContext'
+
 export default forwardRef(function KitchenPlanner(props, ref) {
+  const { is3D, set3D } = useExpState()
   const [show, setShow] = useState(false)
-  const [is3D, set3D] = useState(true)
+  // const [is3D, set3D] = useState(true)
 
   const container = useRef()
 

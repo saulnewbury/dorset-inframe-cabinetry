@@ -15,7 +15,7 @@ export default function Camera({ is3D }) {
   useEffect(() => {
     if (is3D) {
       set({ camera: cam3d.current })
-      cam3d.current.position.set(0, 4, 6)
+      cam3d.current.position.set(0, 4, 8)
     } else {
       set({ camera: cam2d.current })
       cam2d.current.lookAt(0, 0, 0)
@@ -25,11 +25,11 @@ export default function Camera({ is3D }) {
 
   return (
     <>
-      <PerspectiveCamera ref={cam3d} position={[0, 4, 6]} zoom={0.8} />
+      <PerspectiveCamera ref={cam3d} position={[0, 4, 8]} zoom={0.8} />
       <OrthographicCamera
         ref={cam2d}
         position={[0, 50, 0]}
-        zoom={100}
+        zoom={60}
         near={0}
         far={100}
         left={window.innerWidth / -2}
