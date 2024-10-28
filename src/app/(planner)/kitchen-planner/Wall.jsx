@@ -89,7 +89,7 @@ export default function Wall({
         rotation-z={angle}
       >
         <mesh castShadow receiveShadow>
-          <extrudeGeometry args={[shape, { depth: 2, bevelEnabled: false }]} />
+          <extrudeGeometry args={[shape, { depth: h, bevelEnabled: false }]} />
           <meshStandardMaterial color={color} />
         </mesh>
 

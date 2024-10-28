@@ -1,5 +1,5 @@
 // starting shapes
-export const square = (l = 3.15) => {
+export const square = (l = 5.15) => {
   return [
     { id: 0, x: -l / 2, z: -l / 2, color: '#D9D8D8' }, // top left
     { id: 1, x: l / 2, z: -l / 2, color: '#D9D8D8' }, // top right
