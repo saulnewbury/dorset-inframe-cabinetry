@@ -22,10 +22,6 @@ export default function Quantity({ children, angle, onChange = noop }) {
     }
   }, [isVisible])
 
-  useEffect(() => {
-    console.log(angle)
-  }, [angle])
-
   const num = +String(angle).slice(0, 5)
 
   const flip =

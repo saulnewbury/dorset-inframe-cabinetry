@@ -37,7 +37,6 @@ export default function Wall({
   highlightWalls,
   showMeasurementLines
 }) {
-  if (features) console.log(features)
   const wall = useRef()
 
   const [dragging, setDragging] = useState(false)
@@ -116,7 +115,15 @@ export default function Wall({
           />
         )}
         {features &&
-          features.map((detail, i) => <Feature key={i} {...detail} />)}
+          features.map((detail, i) => (
+            <Feature
+              key={i}
+              {...detail}
+              onHover={onHover}
+              anchor={len * detail.offset - len / 2}
+              color='#6B6B6B'
+            />
+          ))}
       </group>
       <mesh
         position={pos}

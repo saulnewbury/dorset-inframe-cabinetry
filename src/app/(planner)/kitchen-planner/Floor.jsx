@@ -36,12 +36,7 @@ export default function Floor({ points, handlePan }) {
     >
       <shapeGeometry args={[shape]} />
       {/* <meshStandardMaterial map={colourMap} side={DoubleSide} /> */}
-      <meshStandardMaterial
-        color='#ffffff'
-        side={DoubleSide}
-        // transparent
-        // opacity={0.5}
-      />
+      <meshStandardMaterial color='#ffffff' side={DoubleSide} />
     </mesh>
   )
 }

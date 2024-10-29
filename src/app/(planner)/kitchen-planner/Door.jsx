@@ -1,20 +1,20 @@
-import { BufferGeometry, Path } from 'three'
+import { BufferGeometry, Path, Matrix4, Vector3 } from 'three'
+import { DragControls } from '@react-three/drei'
+import { useMemo, useState } from 'react'
+
 import { t, h } from './const'
 
 /**
  * Component to display the symbol for a door, in 'plan' view.
- * @param {{
- *   open: 'left' | 'right'
- *   facing: 'out' | 'in'
- *   at: number
- *   length: number
- * }}
  */
-export default function Door({ open, facing, at, length }) {
+
+export default function Door({ open, facing, at, length, color, onHover }) {
+  const [pointerPosition, setPosition] = useState()
   const buffer = new BufferGeometry()
   const shape = new Path()
   const angle = Math.PI / (facing === 'out' ? 4 : -4)
 
+  const cc = document.querySelector('.canvas-container')
   // The side on which the door 'opens' is as viewed from the inside of the
   // room - therefore 'right' also equals 'end'.
 
@@ -43,18 +43,58 @@ export default function Door({ open, facing, at, length }) {
   // The symbol for the door consists of a (blue) opening overlaid with a
   // triangle/arc shape that shows which way the door opens.
 
+  // Drag state
+  // const { matrix } = useMemo(() => {
+  // const handle = pointerPosition || pos.slice()
+  // handle[1] = h + 0.1
+  //   const matrix = new Matrix4()
+  //   return { matrix }
+  // }, [pointerPosition])
+
   return (
-    <group
-      position={[at - length / 2, depth + 0.05, 0]}
-      rotation-x={Math.PI / -2}
-    >
-      <mesh position={[length / 2, 0, -0.01]}>
-        <planeGeometry args={[length, thick]} />
-        <meshBasicMaterial color={0x049ef4} />
-      </mesh>
-      <line geometry={buffer}>
-        <lineBasicMaterial args={[{ color: 0, linewidth: 1 }]} />
-      </line>
-    </group>
+    <DragControls>
+      <group rotation-x={Math.PI} position-z={-0.1} position-x={-length / 2}>
+        <mesh position={[length / 2, 0, -0.01]}>
+          <planeGeometry args={[length, t]} />
+          <meshBasicMaterial color={0xaaaaff} />
+        </mesh>
+        <mesh
+          position={[length / 2, 0, -0.01]}
+          onPointerOver={(ev) => {
+            onHover(ev, true)
+            cc.style.cursor = 'pointer'
+          }}
+          onPointerOut={(ev) => {
+            onHover(ev, false)
+            cc.style.cursor = 'default'
+          }}
+          // onPointerMove={trackMousePosition}
+        >
+          <planeGeometry args={[length, t * 2]} />
+          <meshBasicMaterial transparent opacity={0} />
+        </mesh>
+        <line geometry={buffer}>
+          <lineBasicMaterial
+            args={[{ color: (color = '#6B6B6B'), linewidth: 1 }]}
+          />
+        </line>
+      </group>
+    </DragControls>
   )
+
+  function moveFeature(lm) {
+    // const v = new Vector3()
+    // v.setFromMatrixPosition(lm)
+    // let { x: dx, z: dz } = v.projectOnVector(new Vector3(0, 0, 0))
+    // onDrag({ id, dx, dz })
+    // matrix.copy(lm)
+  }
+
+  function trackMousePosition(ev) {
+    //  if (dragging) return
+    // const pointer = new Vector3(ev.point.x - from.x, 0, ev.point.z - from.z)
+    // const windowItself = new Vector3(to.x - from.x, 0, to.z - from.z)
+    // const pt = pointer.projectOnVector(windowItself)
+    // setPosition([pt.x + from.x, h + 0.1, pt.z + from.z])
+  }
 }

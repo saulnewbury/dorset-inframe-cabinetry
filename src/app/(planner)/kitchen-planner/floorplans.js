@@ -15,7 +15,13 @@ export const square = (l = 5.15) => {
       color: '#D9D8D8',
       features: [{ type: 'door:left:in', width: 1.2, offset: 0.5 }]
     }, // top right
-    { id: 2, x: l / 2, z: l / 2, color: '#D9D8D8' }, // bottom right
+    {
+      id: 2,
+      x: l / 2,
+      z: l / 2,
+      color: '#D9D8D8',
+      features: [{ type: 'door:left:in', width: 1.2, offset: 0.5 }]
+    }, // bottom right
     { id: 3, x: -l / 2, z: l / 2, color: '#D9D8D8' } // bottom left
   ]
 }

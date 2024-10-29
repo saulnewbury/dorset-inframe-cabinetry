@@ -100,12 +100,14 @@ export default function Experience({ is3D }) {
         intensity={4.5}
         shadow-mapSize={[1024 * 3, 1024 * 3]}
       />
-      <pointLight
-        ref={light}
-        args={[0xfffae6, 1, 100]}
-        intensity={6.5}
-        position={[0, 3, 0]}
-      />
+      {is3D && (
+        <pointLight
+          ref={light}
+          args={[0xfffae6, 1, 100]}
+          intensity={6.5}
+          position={[0, 3, 0]}
+        />
+      )}
       {/* Scene */}
       <Floor
         points={points}
