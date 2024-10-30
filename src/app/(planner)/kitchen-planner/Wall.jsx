@@ -32,6 +32,7 @@ export default function Wall({
   onDrag = noop,
   onDragEnd = noop,
   onResize = noop,
+  onMoveFeature = noop,
   features,
   insertPoint,
   highlightWalls,
@@ -85,7 +86,7 @@ export default function Wall({
   return (
     <>
       <group
-        name='wall'
+        name="wall"
         position={pos}
         rotation-x={Math.PI * 0.5}
         rotation-z={angle}
@@ -110,7 +111,7 @@ export default function Wall({
             offset={-0.3}
             end={[len / 2 - (t * Math.tan(mitreEnd)) / 2, t / -2]} // inside length
             start={[len / -2 + (t * Math.tan(mitreStart)) / 2, t / -2]}
-            color='#6B6B6B'
+            color="#6B6B6B"
             onChange={(dl) => onResize(id, dl)}
           />
         )}
@@ -119,9 +120,11 @@ export default function Wall({
             <Feature
               key={i}
               {...detail}
+              len={len}
               onHover={onHover}
+              onMoved={(pos) => onMoveFeature(i, pos / len + 0.5)}
               anchor={len * detail.offset - len / 2}
-              color='#6B6B6B'
+              color="#6B6B6B"
             />
           ))}
       </group>
@@ -168,44 +171,44 @@ export default function Wall({
           <group position={handle} rotation-y={-angle} ref={handleRef}>
             <mesh>
               <boxGeometry args={[t * 2, 0, t * 2]} />
-              <meshStandardMaterial color='green' transparent opacity={0} />
+              <meshStandardMaterial color="green" transparent opacity={0} />
             </mesh>
-            <group position-z='-0.075'>
+            <group position-z="-0.075">
               <Html
                 center
-                as='div'
-                position-y='-10'
-                className='pointer-events-none'
+                as="div"
+                position-y="-10"
+                className="pointer-events-none"
               >
                 <div
-                  className='flex items-center justify-center'
+                  className="flex items-center justify-center"
                   style={{
                     transform: `rotateZ(${angle + 1.5708}rad) translateX(-80%)`
                   }}
                 >
                   <SvgIcon
-                    shape='wall-handle-stroke-left'
-                    classes=' scale-125'
+                    shape="wall-handle-stroke-left"
+                    classes=" scale-125"
                   />
                 </div>
               </Html>
             </group>
-            <group position-z='0.075'>
+            <group position-z="0.075">
               <Html
                 center
-                as='div'
-                position-y='-10'
-                className='pointer-events-none'
+                as="div"
+                position-y="-10"
+                className="pointer-events-none"
               >
                 <div
-                  className='flex items-center justify-center'
+                  className="flex items-center justify-center"
                   style={{
                     transform: `rotateZ(${angle + 1.5708}rad) translateX(80%)`
                   }}
                 >
                   <SvgIcon
-                    shape='wall-handle-stroke-right'
-                    classes=' scale-125'
+                    shape="wall-handle-stroke-right"
+                    classes=" scale-125"
                   />
                 </div>
               </Html>

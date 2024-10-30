@@ -10,8 +10,10 @@ export default function Feature({
   width,
   height,
   anchor,
+  len,
   color,
-  onHover
+  onHover,
+  onMoved
 }) {
   const is3D = useExpState((state) => state.is3D)
   const [feature, open, facing] = type.split(':')
@@ -26,8 +28,10 @@ export default function Feature({
           open={open}
           facing={facing}
           at={anchor}
+          max={len}
           length={width}
           color={color}
+          onMoved={onMoved}
         />
       )
     case 'window':

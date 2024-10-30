@@ -161,6 +161,7 @@ export default function Experience({ is3D }) {
               onDrag={moveWall}
               onDragEnd={dragEnd}
               onResize={resizeWall}
+              onMoveFeature={(f, offset) => featureMoved(from, f, offset)}
             />
           )
         })}
@@ -294,6 +295,7 @@ export default function Experience({ is3D }) {
    * then work out the intersection with adjacent walls.
    */
   function moveWall(data) {
+    console.log('moveWall')
     const { id, dx, dz } = data
     const start = dragBase.current[id]
     const end = dragBase.current[wrap(id + 1)]
@@ -517,5 +519,24 @@ export default function Experience({ is3D }) {
       }
     })
     setAxisPair(pair)
+  }
+
+  /**
+   * Called to move a feature on a wall, when dragging stops. Note that we update
+   * state in a timeout callback so that all the drag events have time to settle.
+   *
+   * @param {Point} pt - Starting point of wall containing the feature
+   * @param {number} i - Index of feature on that wall
+   * @param {number} offset - New offset
+   */
+
+  function featureMoved(pt, i, offset) {
+    setTimeout(() => {
+      const nf = { ...pt.features[i], offset }
+      const features = pt.features.toSpliced(i, 1, nf)
+      const p = { ...pt, features }
+      const n = points.indexOf(pt)
+      setPoints(points.toSpliced(n, 1, p))
+    }, 10)
   }
 }
