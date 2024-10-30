@@ -56,8 +56,14 @@ export default function Window3D({ width = 1.5, height = 0.8 }) {
           </mesh>
         )
       )}
+      {/* Mullion */}
       <mesh>
         <boxGeometry args={[frame[0].len, w, d - 0.01]} />
+        <meshStandardMaterial />
+      </mesh>
+      {/* Pain */}
+      <mesh>
+        <boxGeometry args={[frame[0].len, width, d - 0.05]} />
         <meshStandardMaterial />
       </mesh>
     </group>

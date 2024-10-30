@@ -2,7 +2,7 @@
 import { t } from '@/app/(planner)/kitchen-planner/const'
 
 const w = 0.05
-const d = t + t * 0.2
+const d = t + t * 0.4
 
 export const dim = { w, d }
 

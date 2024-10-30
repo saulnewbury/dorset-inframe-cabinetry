@@ -1,6 +1,6 @@
-import { BufferGeometry, Path, Matrix4, Vector3 } from 'three'
+import { BufferGeometry, Path, Matrix4, Vector3, Euler } from 'three'
 import { DragControls } from '@react-three/drei'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useRef } from 'react'
 
 import { t, h } from './const'
 
@@ -9,10 +9,12 @@ import { t, h } from './const'
  */
 
 export default function Door({ open, facing, at, length, color, onHover }) {
-  const [pointerPosition, setPosition] = useState()
+  // const [pointerPosition, setPosition] = useState()
   const buffer = new BufferGeometry()
   const shape = new Path()
   const angle = Math.PI / (facing === 'out' ? 4 : -4)
+
+  const dragControls = useRef()
 
   const cc = document.querySelector('.canvas-container')
   // The side on which the door 'opens' is as viewed from the inside of the
@@ -44,15 +46,20 @@ export default function Door({ open, facing, at, length, color, onHover }) {
   // triangle/arc shape that shows which way the door opens.
 
   // Drag state
-  // const { matrix } = useMemo(() => {
-  // const handle = pointerPosition || pos.slice()
-  // handle[1] = h + 0.1
-  //   const matrix = new Matrix4()
-  //   return { matrix }
-  // }, [pointerPosition])
+  const { matrix, feature } = useMemo(() => {
+    // const feature = pointerPosition || pos.slice()
+    // handle[1] = h + 0.1
+    const matrix = new Matrix4()
+    return { matrix }
+  }, [])
 
   return (
-    <DragControls>
+    <DragControls
+      matrix={matrix}
+      autoTransform='false'
+      onDrag={moveFeature}
+      ref={dragControls}
+    >
       <group rotation-x={Math.PI} position-z={-0.1} position-x={-length / 2}>
         <mesh position={[length / 2, 0, -0.01]}>
           <planeGeometry args={[length, t]} />
@@ -82,12 +89,13 @@ export default function Door({ open, facing, at, length, color, onHover }) {
     </DragControls>
   )
 
-  function moveFeature(lm) {
-    // const v = new Vector3()
-    // v.setFromMatrixPosition(lm)
-    // let { x: dx, z: dz } = v.projectOnVector(new Vector3(0, 0, 0))
-    // onDrag({ id, dx, dz })
+  function moveFeature(lm, dlm, wm) {
+    // const { z } = dragControls.current.parent.rotation
+    // const rM = new Matrix4()
+    // rM.makeRotationZ(-z + Math.PI / 2)
+    // lm.multiply(rM)
     // matrix.copy(lm)
+    // ask the wall what its rotation is
   }
 
   function trackMousePosition(ev) {

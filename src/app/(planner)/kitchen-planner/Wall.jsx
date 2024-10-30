@@ -223,7 +223,7 @@ export default function Wall({
    */
   function moveHandle(lm) {
     const v = new Vector3()
-    v.setFromMatrixPosition(lm)
+    v.setFromMatrixPosition(lm) // tranlation part of the matrix
     let { x: dx, z: dz } = v.projectOnVector(wallNormal)
     onDrag({ id, dx, dz })
     matrix.copy(lm)
@@ -238,9 +238,14 @@ export default function Wall({
    */
   function trackMousePosition(ev) {
     if (dragging) return
+    // Vector from the beginning of the wall to where the mouse is
     const pointer = new Vector3(ev.point.x - from.x, 0, ev.point.z - from.z)
+    // Vector from the start to the end of the wal
     const wallItself = new Vector3(to.x - from.x, 0, to.z - from.z)
+    // project first vector onto the second which tells me where a perpendicular line from the wall intersects where the mouse is
+    // So i get a distance along the wall in the direction of the wall.
     const pt = pointer.projectOnVector(wallItself)
+    // I can then map that into world coordinates and setPosition of the handle
     setPosition([pt.x + from.x, h + 0.1, pt.z + from.z])
   }
 
