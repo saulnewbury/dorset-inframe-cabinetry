@@ -60,6 +60,16 @@ export default function Experience({ is3D }) {
   const walls = useRef()
   const light = useRef()
 
+  /**
+   * Nota bene:
+   * Event handlers should use 'pointsArray.current', in place of the 'points'
+   * state value, and should update this AND use 'setPoints' to update state.
+   * This allows multiple events that arrive before the state is updated to
+   * each use the 'latest' data - otherwise they can use 'old' state data that
+   * React has not yet got around to replacing.
+   */
+  const pointsArray = useRef(points)
+
   // useHelper(light, THREE.DirectionalLightHelper, 1)
   useHelper(light, THREE.PointLightHelper, 1)
 
@@ -204,7 +214,7 @@ export default function Experience({ is3D }) {
    */
   function highlightWalls(id = null, dragType = null) {
     if (is3D) return
-    const newArray = points.map((point) => {
+    const newArray = pointsArray.current.map((point) => {
       const a = wrap(id - 1) // update point
       const b = dragType === 'corner' ? id : wrap(id + 1)
 
@@ -226,6 +236,7 @@ export default function Experience({ is3D }) {
       return point
     })
     if (newArray.every((pt, n) => pt.color === points[n].color)) return
+    pointsArray.current = newArray
     setPoints(newArray)
   }
 
@@ -281,11 +292,12 @@ export default function Experience({ is3D }) {
 
     Object.assign(to, intersection(from, to, next, after) || {})
 
-    const newArray = points.map((point) => {
+    const newArray = pointsArray.current.map((point) => {
       if (point.id === wrap(id + 1)) return from
       if (point.id === wrap(id + 2)) return to
       return point
     })
+    pointsArray.current = newArray
     setPoints(newArray)
   }
 
@@ -314,11 +326,12 @@ export default function Experience({ is3D }) {
 
     if (!p1 || !p2) return
 
-    const newArray = points.map((point) => {
+    const newArray = pointsArray.current.map((point) => {
       if (point.id === id) return { ...point, ...p1 }
       if (point.id === (id + 1) % points.length) return { ...point, ...p2 }
       return point
     })
+    pointsArray.current = newArray
     setPoints(newArray)
   }
 
@@ -358,11 +371,12 @@ export default function Experience({ is3D }) {
     pt.x += dx
     pt.z += dz
 
-    const newArray = points.map((point) => {
+    const newArray = pointsArray.current.map((point) => {
       if (point.id !== id) return point
       return { ...point, ...snapRadial(pt, prev, next) }
     })
 
+    pointsArray.current = newArray
     setPoints(newArray)
   }
 
@@ -371,7 +385,7 @@ export default function Experience({ is3D }) {
    */
   function removeRedundantPoints() {
     let ids = []
-    const angles = points.map((p, i) =>
+    const angles = pointsArray.current.map((p, i) =>
       Math.atan2(p.z - points[wrap(i - 1)].z, p.x - points[wrap(i - 1)].x)
     )
 
@@ -387,11 +401,12 @@ export default function Experience({ is3D }) {
     if (ids.length === 0) return
 
     // filter out points that match one of the ids in the arry
-    const filtered = points.filter((p) => !ids.some((id) => id === p.id))
+    const filtered = pointsArray.filter((p) => !ids.some((id) => id === p.id))
     const newArray = filtered.map((p, i) => {
       return { ...p, id: i }
     })
 
+    pointsArray.current = newArray
     setPoints(newArray)
     setHover(undefined)
     const cc = document.querySelector('.canvas-container')
@@ -402,14 +417,19 @@ export default function Experience({ is3D }) {
    * Callback to insert a new point.
    */
   function insertPoint(id, x, z) {
-    const arr = [...points]
-    arr.splice(id + 1, 0, { id, x, z, color: '#C8C8C8' })
+    const arr = pointsArray.current.toSpliced(id + 1, 0, {
+      id,
+      x,
+      z,
+      color: '#C8C8C8'
+    })
 
     const newPoints = arr.map((p, i) => ({ ...p, id: i }))
     const newOptions = arr.map((p) => {
       return { id: p.id, line: false }
     })
 
+    pointsArray.current = newPoints
     setOptions(newOptions)
     setPoints(newPoints)
     setHover(undefined)
@@ -532,12 +552,11 @@ export default function Experience({ is3D }) {
    */
 
   function featureMoved(pt, i, offset) {
-    setTimeout(() => {
-      const nf = { ...pt.features[i], offset }
-      const features = pt.features.toSpliced(i, 1, nf)
-      const p = { ...pt, features }
-      const n = points.indexOf(pt)
-      setPoints(points.toSpliced(n, 1, p))
-    }, 10)
+    const nf = { ...pt.features[i], offset }
+    const features = pt.features.toSpliced(i, 1, nf)
+    const p = { ...pt, features }
+    const n = pointsArray.current.indexOf(pt)
+    pointsArray.current = pointsArray.current.toSpliced(n, 1, p)
+    setPoints(pointsArray.current)
   }
 }
