@@ -225,6 +225,7 @@ export default function Experience({ is3D }) {
 
       return point
     })
+    if (newArray.every((pt, n) => pt.color === points[n].color)) return
     setPoints(newArray)
   }
 

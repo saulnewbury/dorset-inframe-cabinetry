@@ -4,6 +4,8 @@ import { useMemo, useRef, useState } from 'react'
 
 import { t, h } from './const'
 
+let dragTarget
+
 /**
  * Component to display the symbol for a door, in 'plan' view.
  */
@@ -61,11 +63,14 @@ export default function Door({
 
   return (
     <DragControls
+      ref={drag}
       autoTransform={false}
       matrix={matrix}
+      onDragStart={() => {
+        dragTarget = drag.current
+      }}
       onDrag={moveFeature}
       onDragEnd={endDrag}
-      ref={drag}
     >
       <group
         rotation-x={Math.PI}
@@ -108,6 +113,7 @@ export default function Door({
    */
 
   function moveFeature(lm) {
+    if (dragTarget !== drag.current) return
     const v = new Vector3().setFromMatrixPosition(lm)
     const r = new Matrix4()
       .extractRotation(drag.current.parent.matrixWorld)
@@ -125,7 +131,8 @@ export default function Door({
    * Also resets the drag matrix, in anticipation of this change.
    */
 
-  function endDrag() {
+  function endDrag(ev) {
+    if (dragTarget !== drag.current) return
     const v = new Vector3().setFromMatrixPosition(matrix)
     onMoved(at + v.x)
     setMatrix(new Matrix4())
