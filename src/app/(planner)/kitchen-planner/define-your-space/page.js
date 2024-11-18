@@ -1,10 +1,10 @@
 'use client'
 import { useState } from 'react'
 
-import Content from '../Content'
+import Dialog from '../Dialog'
 import Sidebar from '../Sidebar'
 import { useContext, useEffect } from 'react'
-import { CanvasContext } from '@/app/context'
+import { CanvasContext } from '@/context'
 
 export default function Page() {
   const [open, setOpen] = useState(false)
@@ -38,8 +38,9 @@ export default function Page() {
 
       {/* <ContentBox /> */}
       {showContent && (
-        <Content
+        <Dialog
           content={content}
+          Body={content.component}
           closeContentBox={() => {
             setShowContent('')
             setOpen('')

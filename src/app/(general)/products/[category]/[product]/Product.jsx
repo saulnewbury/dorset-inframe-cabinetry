@@ -20,7 +20,6 @@ export default function Product({ name, price, images, sizes, options, desc }) {
 
   function handleClick(name) {
     const arr = images.filter((image) => image.name === name)
-    console.log(arr)
     setFinish([...arr])
   }
 

@@ -1,0 +1,8 @@
+<svg width="34" height="36" viewBox="0 0 34 36" xmlns="http://www.w3.org/2000/svg">
+  <g id="root" fill="none">
+    <path d="M0 35L34 35" stroke="black"/>
+    <path d="M1 35V1H33V35" stroke="black"/>
+    <path d="M1 18L33 18" stroke="black"/>
+    <path d="M17 1L17 35" stroke="black"/>
+  </g>
+</svg>

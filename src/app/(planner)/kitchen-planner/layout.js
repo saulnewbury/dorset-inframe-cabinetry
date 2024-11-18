@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from 'react'
 import KitchenPlanner from './KitchenPlanner'
 import NavConfigurator from './NavConfigurator'
 
-import { CanvasContext } from '../../context'
+import { CanvasContext } from '../../../context'
 import PerspectiveContextProvider from './perspectiveContextProvider'
 
 export default function Layout({ children }) {

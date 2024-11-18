@@ -1,8 +1,5 @@
 'use client'
 
-import { useContext } from 'react'
-import { PerspectiveContext } from '@/app/context.js'
-
 import SvgIcon from '@/components/SvgIcon'
 
 export default function ViewControls({ changePerspective, is3D }) {
@@ -14,7 +11,7 @@ export default function ViewControls({ changePerspective, is3D }) {
           className={`${
             !is3D ? 'bg-[#F0F0EE]' : ''
           } hover:bg-[#F0F0EE] h-[50px] w-[50px] rounded-full mr-[12px]`}
-          onClick={(e) => {
+          onClick={() => {
             changePerspective(false)
           }}
         >
@@ -25,7 +22,7 @@ export default function ViewControls({ changePerspective, is3D }) {
           className={`${
             is3D ? 'bg-[#F0F0EE]' : ''
           } hover:bg-[#F0F0EE] h-[50px] w-[50px] rounded-full`}
-          onClick={(e) => {
+          onClick={() => {
             changePerspective(true)
           }}
         >

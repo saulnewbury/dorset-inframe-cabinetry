@@ -29,7 +29,7 @@ export default function Camera({ is3D }) {
       <OrthographicCamera
         ref={cam2d}
         position={[0, 50, 0]}
-        zoom={60}
+        zoom={80}
         near={0}
         far={100}
         left={window.innerWidth / -2}

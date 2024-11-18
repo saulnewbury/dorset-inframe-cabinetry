@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useContext } from 'react'
-import { CanvasContext } from '@/app/context'
+import { CanvasContext } from '@/context'
 
 export default function Page() {
   const ref = useContext(CanvasContext)

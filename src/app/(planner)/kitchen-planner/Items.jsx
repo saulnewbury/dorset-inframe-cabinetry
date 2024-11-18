@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 export default function Items({ items = [] }) {
   const [hover, setHover] = useState(false)
-  console.log(items)
+
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-[4vw] md:gap-[3vw] lg:gap-[2vw] pb-[2rem] '>
       {items.map((item) => {

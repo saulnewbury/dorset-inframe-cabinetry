@@ -3,6 +3,8 @@ export const metadata = {
   description: 'Configure your kitchen with our kitchen planner'
 }
 
+import ModelContextProvider from './ModelContextProvider'
+
 export default function Layout({ children }) {
-  return <>{children}</>
+  return <ModelContextProvider>{children}</ModelContextProvider>
 }

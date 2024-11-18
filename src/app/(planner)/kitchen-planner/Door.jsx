@@ -1,140 +1,247 @@
-import { BufferGeometry, Path, Matrix4, Vector3, MathUtils } from 'three'
-import { DragControls } from '@react-three/drei'
-import { useMemo, useRef, useState } from 'react'
+import { useContext, useMemo } from 'react'
+import { BufferGeometry, Path, TextureLoader, Vector2, Shape } from 'three'
+import { useLoader } from '@react-three/fiber'
 
-import { t, h } from './const'
+import { AppContext } from '@/appState'
 
-let dragTarget
+import { wh, wt } from '@/const'
+
+// Reusable materials
+import { wallMaterial, doorMaterial, linesMaterial } from '@/materials'
+
+// Texture images for door styles:
+import solid_2pane from '@/assets/doors/solid-2pane.svg'
+import topGlass_2pane from '@/assets/doors/top-glass-2pane.svg'
+import twinGlass_2pane from '@/assets/doors/twin-glass-2pane.svg'
+import solid_1pane from '@/assets/doors/solid-1pane.svg'
+import glass_1pane from '@/assets/doors/glass-1pane.svg'
+
+const pattern = {
+  'solid-1pane': solid_1pane.src,
+  'glass-1pane': glass_1pane.src,
+  'solid-2pane': solid_2pane.src,
+  'top-2pane': topGlass_2pane.src,
+  'twin-2pane': twinGlass_2pane.src
+}
 
 /**
- * Component to display the symbol for a door, in 'plan' view.
+ * General component to display a door. Checks 2D/3D state to determine which
+ * form to render.
  */
+export default function Door(props) {
+  const { is3D } = useContext(AppContext)
+  if (is3D) return <Door3D {...props} />
+  else return <Door2D {...props} />
+}
 
-export default function Door({
-  open,
-  facing,
-  at,
-  max,
-  length,
-  color,
-  onHover,
-  onMoved = () => {}
-}) {
-  const [matrix, setMatrix] = useState(new Matrix4())
-  const drag = useRef()
-  const spaceBefore = max / 2 + at - length / 2
-  const spaceAfter = max / 2 - at - length / 2
-
-  const cc = document.querySelector('.canvas-container')
-
-  const buffer = useMemo(() => {
-    const b = new BufferGeometry()
-    const shape = new Path()
-    const angle = Math.PI / (facing === 'out' ? 4 : -4)
-    // The side on which the door 'opens' is as viewed from the inside of the
-    // room - therefore 'right' also equals 'end'.
-
-    if (open === 'right') {
-      shape
-        .moveTo(length * Math.cos(angle), length * Math.sin(angle))
-        .lineTo(0, 0)
-        .lineTo(length, 0)
-        .absarc(0, 0, length, 0, angle * 1.5, facing === 'in')
-    } else {
-      shape
-        .moveTo(length * (1 - Math.cos(angle)), length * Math.sin(angle))
-        .lineTo(length, 0)
-        .lineTo(0, 0)
-        .absarc(
-          length,
-          0,
-          length,
-          -Math.PI,
-          -angle * 1.5 - Math.PI,
-          facing === 'out'
-        )
-    }
-    b.setFromPoints(shape.getPoints())
-    return b
-  }, [length, open, facing])
-
-  // The symbol for the door consists of a (blue) opening overlaid with a
-  // triangle/arc shape that shows which way the door opens.
-
-  return (
-    <DragControls
-      ref={drag}
-      autoTransform={false}
-      matrix={matrix}
-      onDragStart={() => {
-        dragTarget = drag.current
-      }}
-      onDrag={moveFeature}
-      onDragEnd={endDrag}
-    >
-      <group
-        rotation-x={Math.PI}
-        position-z={-0.1}
-        position-x={at - length / 2}
-      >
-        <mesh position={[length / 2, 0, -0.01]}>
-          <planeGeometry args={[length, t]} />
-          <meshBasicMaterial color={0xaaaaff} />
-        </mesh>
-        <mesh
-          position={[length / 2, 0, -0.01]}
-          onPointerOver={(ev) => {
-            onHover(ev, true)
-            cc.style.cursor = 'pointer'
-          }}
-          onPointerOut={(ev) => {
-            onHover(ev, false)
-            cc.style.cursor = 'default'
-          }}
-          // onPointerMove={trackMousePosition}
-        >
-          <planeGeometry args={[length, t * 2]} />
-          <meshBasicMaterial transparent opacity={0} />
-        </mesh>
-        <line geometry={buffer}>
-          <lineBasicMaterial
-            args={[{ color: (color = '#6B6B6B'), linewidth: 1 }]}
-          />
-        </line>
-      </group>
-    </DragControls>
+/**
+ * Renders a door for the 2D (plan) view.
+ */
+function Door2D({ len, offset, width, option, onClick = () => {} }) {
+  const [handle, opens] = option.split(':')
+  const angle = Math.PI / (opens === 'out' ? 4 : -4)
+  const lines = useMemo(
+    () =>
+      new BufferGeometry().setFromPoints(
+        new Path()
+          .moveTo(width * (Math.cos(angle) - 0.5), width * Math.sin(angle))
+          .lineTo(-width / 2, 0)
+          .lineTo(width / 2, 0)
+          .arc(-width, 0, width, 0, angle * 1.5, opens === 'in')
+          .getPoints()
+      ),
+    [width, opens]
   )
 
-  /**
-   * Called during drag, whenever the pointer position changes. Maps the pointer
-   * movement to 'wall' local coordinate space by reversing the wall's rotation,
-   * then clamps movement to just the 'x' direction and limits movement so that
-   * the door stays within the length of the wall.
-   */
+  return (
+    <group position={[offset - len / 2, wh + 0.1, 0]} rotation-x={-Math.PI / 2}>
+      <mesh material={doorMaterial} onClick={onClick}>
+        <planeGeometry args={[width, wt]} />
+      </mesh>
+      <line
+        geometry={lines}
+        material={linesMaterial}
+        scale-x={handle === 'left' ? -1 : 1}
+      />
+    </group>
+  )
+}
 
-  function moveFeature(lm) {
-    if (dragTarget !== drag.current) return
-    const v = new Vector3().setFromMatrixPosition(lm)
-    const r = new Matrix4()
-      .extractRotation(drag.current.parent.matrixWorld)
-      .invert()
-    v.applyMatrix4(r)
-    v.y = v.z = 0
-    v.x = MathUtils.clamp(v.x, -spaceBefore, spaceAfter)
-    // console.log(v.x)
-    matrix.setPosition(v)
+/**
+ * Component to render a door in the 3D (elevation) view. Fills in the lintel
+ * and then paints both sides of the door, switching handle side (by reversing
+ * scale) on the outside.
+ */
+function Door3D({ style, len, offset, width, option }) {
+  const texture = useLoader(TextureLoader, pattern[style])
+  const [handle] = option.split(':')
+  const height = wh - 0.4
+  const scale = handle === 'left' ? -1 : 1
+
+  const cw = 0.05
+  const d = wt + wt * 0.4
+  const sw = cw / 2
+  const sd = wt + wt * 0.3
+
+  const cOpp = cw * Math.tan(45 * (Math.PI / 180))
+  const sOpp = sw * Math.tan(45 * (Math.PI / 180))
+
+  const casing = getCasingDimensions(width, height + cOpp)
+  const stops = getStopsDimensions(width, height + cOpp)
+
+  const side = new Shape([
+    new Vector2(-casing[0].len / 2, -cw / 2),
+    new Vector2(-casing[0].len / 2 + cOpp, cw / 2),
+    new Vector2(casing[0].len / 2 - cOpp, cw / 2),
+    new Vector2(casing[0].len / 2, -cw / 2)
+  ])
+
+  const top = new Shape([
+    new Vector2(-casing[2].len / 2, -cw / 2),
+    new Vector2(-casing[2].len / 2 + cOpp, cw / 2),
+    new Vector2(casing[2].len / 2 - cOpp, cw / 2),
+    new Vector2(casing[2].len / 2, -cw / 2)
+  ])
+
+  const sideStop = new Shape([
+    new Vector2(-stops[0].len / 2, -sw / 2),
+    new Vector2(-stops[0].len / 2 + sOpp, sw / 2),
+    new Vector2(stops[0].len / 2 - sOpp, sw / 2),
+    new Vector2(stops[0].len / 2, -sw / 2)
+  ])
+
+  const topStop = new Shape([
+    new Vector2(-stops[2].len / 2, -sw / 2),
+    new Vector2(-stops[2].len / 2 + sOpp, sw / 2),
+    new Vector2(stops[2].len / 2 - sOpp, sw / 2),
+    new Vector2(stops[2].len / 2, -sw / 2)
+  ])
+
+  return (
+    <group position={[offset - len / 2, 0, 0]}>
+      {/* Lintel */}
+      <mesh
+        position={[0, wh - 0.2, 0]}
+        material={wallMaterial}
+        castShadow
+        receiveShadow
+      >
+        <boxGeometry args={[width, 0.4, wt]} />
+      </mesh>
+      <group position-y={height / 2 - cOpp / 2}>
+        {/* Casing */}
+        {casing.map((f, i) =>
+          i < 2 ? (
+            <mesh
+              key={i}
+              position={f.pos}
+              rotation={f.rotation}
+              castShadow
+              receiveShadow
+            >
+              <extrudeGeometry
+                args={[side, { depth: d, bevelEnabled: false }]}
+              />
+              <meshStandardMaterial color='white' />
+            </mesh>
+          ) : (
+            <mesh
+              key={i}
+              position={f.pos}
+              rotation={f.rotation}
+              castShadow
+              receiveShadow
+            >
+              <extrudeGeometry
+                args={[top, { depth: d, bevelEnabled: false }]}
+              />
+              <meshStandardMaterial color='white' />
+            </mesh>
+          )
+        )}
+        {/* Stops */}
+        {stops.map((f, i) =>
+          i < 2 ? (
+            <mesh
+              key={i}
+              position={f.pos}
+              rotation={f.rotation}
+              castShadow
+              receiveShadow
+            >
+              <extrudeGeometry
+                args={[sideStop, { depth: sd, bevelEnabled: false }]}
+              />
+              <meshStandardMaterial />
+            </mesh>
+          ) : (
+            <mesh
+              key={i}
+              position={f.pos}
+              rotation={f.rotation}
+              castShadow
+              receiveShadow
+            >
+              <extrudeGeometry
+                args={[topStop, { depth: sd, bevelEnabled: false }]}
+              />
+              <meshStandardMaterial />
+            </mesh>
+          )
+        )}
+        {/* Door */}
+        <mesh position-y={-0.01} castShadow receiveShadow>
+          <boxGeometry
+            args={[
+              casing[2].len - wt / 2 - 0.085,
+              casing[0].len - wt / 2 - 0.065,
+              sd
+            ]}
+          />
+          <meshStandardMaterial color='#F9F9F9' />
+        </mesh>
+      </group>
+    </group>
+  )
+
+  function getCasingDimensions(width, height) {
+    // order: left right top
+    return [
+      {
+        pos: [-width / 2 + cw / 2, 0, -d / 2],
+        rotation: [0, 0, -Math.PI / 2],
+        len: height
+      },
+      {
+        pos: [width / 2 - cw / 2, 0, -d / 2],
+        rotation: [0, 0, Math.PI / 2],
+        len: height
+      },
+      {
+        pos: [0, height / 2 - cw / 2, -d / 2],
+        rotation: [0, 0, Math.PI],
+        len: width
+      }
+    ]
   }
 
-  /**
-   * Called at the end of the drag process (on pointer up). Sends the new
-   * offset of the door up to the parent (wall) to update the 'at' property.
-   * Also resets the drag matrix, in anticipation of this change.
-   */
-
-  function endDrag(ev) {
-    if (dragTarget !== drag.current) return
-    const v = new Vector3().setFromMatrixPosition(matrix)
-    onMoved(at + v.x)
-    setMatrix(new Matrix4())
+  function getStopsDimensions(width, height) {
+    return [
+      {
+        pos: [-width / 2 + sw / 2 + cw, -cw / 2, -sd / 2],
+        rotation: [0, 0, -Math.PI / 2],
+        len: height - cw
+      },
+      {
+        pos: [width / 2 - sw / 2 - cw, -cw / 2, -sd / 2],
+        rotation: [0, 0, Math.PI / 2],
+        len: height
+      },
+      {
+        pos: [0, height / 2 - sw / 2 - cw, -sd / 2],
+        rotation: [0, 0, Math.PI],
+        len: width - cw * 2
+      }
+    ]
   }
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 297 290" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-324.541,-19.809)">
+        <path d="M605.606,294.394L605.606,104.677L415.89,294.394L605.606,294.394Z" style="fill:rgb(174,220,236);fill-rule:nonzero;"/>
+        <path d="M339.786,35.054L339.786,221.705L526.437,35.054L339.786,35.054Z" style="fill:rgb(174,220,236);fill-rule:nonzero;"/>
+        <path d="M526.437,35.054L339.786,221.705L339.786,221.962L526.694,35.054L526.437,35.054Z" style="fill:rgb(174,220,236);fill-rule:nonzero;"/>
+        <path d="M398.97,294.394L415.89,294.394L605.606,104.677L605.606,87.757L398.97,294.394Z" style="fill:rgb(206,234,244);fill-rule:nonzero;"/>
+        <path d="M605.606,54.002L365.215,294.394L398.97,294.394L605.606,87.757L605.606,54.002Z" style="fill:rgb(174,220,236);fill-rule:nonzero;"/>
+        <path d="M605.606,35.054L526.694,35.054L339.786,221.962L339.786,294.394L365.215,294.394L605.606,54.002L605.606,35.054Z" style="fill:rgb(206,234,244);fill-rule:nonzero;"/>
+        <rect x="324.541" y="19.809" width="12.18" height="289.83" style="fill:white;fill-rule:nonzero;"/>
+        <rect x="336.721" y="19.809" width="3.065" height="289.83" style="fill:rgb(229,229,229);fill-rule:nonzero;"/>
+        <rect x="466.606" y="19.809" width="12.18" height="289.83" style="fill:white;fill-rule:nonzero;"/>
+        <rect x="463.541" y="19.809" width="3.065" height="289.83" style="fill:rgb(229,229,229);fill-rule:nonzero;"/>
+        <rect x="336.721" y="294.394" width="271.951" height="3.065" style="fill:rgb(229,229,229);fill-rule:nonzero;"/>
+        <rect x="336.721" y="31.989" width="271.951" height="3.065" style="fill:rgb(229,229,229);fill-rule:nonzero;"/>
+        <rect x="608.672" y="19.809" width="12.18" height="289.83" style="fill:white;fill-rule:nonzero;"/>
+        <rect x="605.606" y="19.809" width="3.066" height="289.83" style="fill:rgb(229,229,229);fill-rule:nonzero;"/>
+        <rect x="478.786" y="19.809" width="3.066" height="289.83" style="fill:rgb(229,229,229);fill-rule:nonzero;"/>
+        <rect x="336.721" y="297.459" width="271.951" height="12.18" style="fill:white;fill-rule:nonzero;"/>
+        <rect x="336.721" y="19.809" width="271.951" height="12.18" style="fill:white;fill-rule:nonzero;"/>
+    </g>
+</svg>

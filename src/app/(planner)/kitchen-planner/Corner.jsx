@@ -1,123 +1,119 @@
-'use client'
-
-import { DragControls, useCursor, Html } from '@react-three/drei'
-import { useRef, useState, useMemo } from 'react'
+import { useContext, useMemo, useRef, useState } from 'react'
+import { DragControls, Html } from '@react-three/drei'
 import { Matrix4, Vector3 } from 'three'
-import { t, h } from './const.js'
+import { intersection, radialIntersect } from '@/utils/mathutils'
 
-import SvgIcon from '@/components/SvgIcon.jsx'
+import { ModelContext } from '@/model/context'
 
+import { wt, wh } from '@/const'
+
+// Image for drag handle:
+import cornerHandle from '@/assets/icons/corner-handle-circle.svg'
+import { hoverMaterial } from '@/materials'
+
+/**
+ * Renders a drag handle for a corner (vertex) between two walls. Dragging this
+ * handle moves the corner.
+ */
 export default function Corner({
-  id,
   at,
-  next,
-  post,
   prev,
-  ante,
-  pro,
-  is3D,
+  next,
   hover,
-  onHover,
-  onDrag,
-  onDragEnd,
-  onDragStart,
-  createRadialGrid,
-  highlightWalls,
-  showMeasurementLines,
-  removeRedundantPoints
+  onHover = () => {},
+  onDrag = () => {}
 }) {
-  const corner = useRef()
+  const [, dispatch] = useContext(ModelContext)
   const [dragging, setDragging] = useState(false)
-  const hovered = hover && hover === corner.current
-  const showHandle = dragging || hovered
+  const showHandle = hover?.type === 'corner' && hover.id === at.id
+  const point = useRef(null)
 
-  const pos = [at.x, h + 0.01, at.z]
-
-  useCursor(hovered)
-
-  const cc = document.querySelector('.canvas-container')
-
-  const { handle, matrix } = useMemo(() => {
-    const handle = pos.slice()
-    handle[1] += 0.1
-    const matrix = new Matrix4()
-    return { handle, matrix }
-  }, [showHandle, dragging])
+  const [matrix, origin] = useMemo(
+    () => [new Matrix4(), { ...at, y: 0 }],
+    [showHandle || dragging]
+  )
 
   return (
     <>
-      <group>
-        <mesh
-          ref={corner}
-          position={pos}
-          onPointerOver={(ev) => {
-            if (is3D) return
-            highlightWalls(id, 'corner')
-          }}
-          onPointerOut={(ev) => {
-            if (is3D) return
-            onHover(ev, false)
-            highlightWalls(null, 'corner')
-            cc.style.cursor = 'default'
-          }}
-          onPointerMove={(ev) => {
-            if (is3D) return
-            onHover(ev, true)
-            cc.style.cursor = 'none'
-          }}
-        >
-          <boxGeometry args={[t * 2, 0, t * 2]} />
-          <meshStandardMaterial
-            color='blue'
-            transparent
-            // opacity={hovered && view === '2d' ? 0.3 : 0.0}
-            opacity={0.0}
-          />
-        </mesh>
-        {showHandle && !is3D && (
-          <Html position={pos} center className='pointer-events-none'>
-            <SvgIcon shape='corner-handle-circle' classes='scale-110' />
-          </Html>
-        )}
-      </group>
-      {showHandle && !is3D && (
+      <mesh
+        position={[at.x, wh + 0.02, at.z]}
+        rotation-x={Math.PI / -2}
+        material={hoverMaterial}
+        userData={{ type: 'corner', id: at.id }}
+        onPointerOver={(ev) => onHover(ev, true)}
+        onPointerOut={(ev) => onHover(ev, false)}
+      >
+        <circleGeometry args={[wt * 0.8]} />
+      </mesh>
+      {(showHandle || dragging) && (
         <DragControls
           matrix={matrix}
           autoTransform={false}
-          onDragStart={() => {
-            setDragging(true)
-            showMeasurementLines(id, 'corner')
-            onDragStart()
-            createRadialGrid(id) // dev perposes only.
-          }}
+          onDragStart={beginDrag}
+          onDragEnd={endDrag}
           onDrag={moveCorner}
-          onDragEnd={() => {
-            setDragging(false)
-            showMeasurementLines(null, 'corner')
-            onDragEnd()
-            removeRedundantPoints(id, at, next, post, ante, prev, pro)
-            createRadialGrid(null) // dev perposes only.
-          }}
         >
-          <mesh position={handle}>
-            <boxGeometry args={[t * 2, 0, t * 2]} />
-            <meshStandardMaterial color='green' transparent opacity={0} />
-          </mesh>
+          <group position={[at.x, wh + 0.05, at.z]}>
+            <mesh rotation-x={Math.PI / -2}>
+              <circleGeometry args={[wt]} />
+              <meshStandardMaterial color='#4080bf' transparent opacity={0} />
+            </mesh>
+            <Html center className='pointer-events-none select-none'>
+              <img
+                src={cornerHandle.src}
+                alt=''
+                className='size-[26px] max-w-none'
+                style={{ translate: '-1px 1px' }}
+              />
+            </Html>
+          </group>
         </DragControls>
       )}
     </>
   )
 
   /**
-   * Callback for drag controls. Derives the relative movement from the start
-   * of the drag and notifies the parent of the delta (dx & dz).
-   * @param {Matrix4} lm    Local transformation matrix
+   * Callback for 'drag start' event. Records the position of the corner, to be
+   * used in calculating the new desired position during the drag.
    */
+  function beginDrag() {
+    onDrag(true) // lock hover
+    setDragging(true)
+    point.current = at
+  }
 
+  /**
+   * Callback for 'drag end' event. Updates the model with the final position
+   * of the corner, and resets ready for the next drag.
+   */
+  function endDrag() {
+    onDrag(false) // unlock hover
+    setDragging(false)
+    dispatch({ id: 'moveCorner', to: point.current, dragging: false })
+    point.current = null
+  }
+
+  /**
+   * Callback for 'drag' event. Updates the model with the new desired position
+   * of the corner.
+   */
   function moveCorner(lm) {
-    const v = new Vector3()
-    v.setFromMatrixPosition(lm)
-    onDrag({ id, dx: v.x, dz: v.z })
-    matrix.copy(lm)
+    let pt = new Vector3().setFromMatrixPosition(lm).add(origin)
+
+    const dist = (a, b) => Math.sqrt((a.x - b.x) ** 2 + (a.z - b.z) ** 2)
+    const dsnap = 0.1
+
+    const pp = radialIntersect(pt, prev)
+    const pn = radialIntersect(pt, next)
+    const is = intersection(prev, pp, next, pn)
+    const dpp = dist(pt, pp)
+    const dpn = dist(pt, pn)
+    const dis = is ? dist(pt, is) : dsnap * 2
+
+    if (dis < dsnap) pt = is
+    else if (dpp < dsnap || dpn < dsnap) pt = dpp < dpn ? pp : pn
+
+    point.current = { ...origin, x: pt.x, z: pt.z }
+    dispatch({ id: 'moveCorner', to: point.current, dragging: true })
   }
 }

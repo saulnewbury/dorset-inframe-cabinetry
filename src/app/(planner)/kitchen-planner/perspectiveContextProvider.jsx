@@ -1,12 +1,11 @@
 'use client'
 import { useState } from 'react'
-import { PerspectiveContext } from '@/app/context.js'
+import { PerspectiveContext } from '@/context.js'
 
 export default function PerspectiveContextProvider({ children }) {
   const [view, setView] = useState('2d')
 
   function changeView(perspective) {
-    console.log(perspective)
     setView(perspective)
   }
 

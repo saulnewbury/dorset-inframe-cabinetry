@@ -2,7 +2,6 @@ import Button from './Button'
 
 export default function Cta({ data }) {
   const { text, link } = data
-  console.log(link)
   return (
     <section className='gutter py-[5rem] lg:py-[8rem] bg-[#FFFEE7]'>
       <div className='indent text-center'>

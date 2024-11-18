@@ -38,8 +38,6 @@ export default function ProductGrid({ products }) {
       })
     }
 
-    // console.log(arr)
-
     setFiltered([...arr])
     setSelected({ top: option[0], sub: option[1] })
   }
