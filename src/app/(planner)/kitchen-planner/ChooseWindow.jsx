@@ -103,7 +103,7 @@ function WindowButton({ id, title, image, selected, onClick = () => {} }) {
         src={image.src}
         alt=''
         className={clsx(
-          'h-[200px] hover:border-cyan-500 rounded-sm bg-stone-100 object-cover',
+          'h-[200px] hover:border-cyan-500 rounded-sm bg-[#aaaaaa] object-cover',
           selected ? 'border-blue-700' : 'border-transparent'
         )}
       />

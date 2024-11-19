@@ -26,7 +26,6 @@ const opp = w * Math.tan(45 * (Math.PI / 180))
  * form to render.
  */
 export default function Window(props) {
-  console.log(AppContext)
   const { is3D } = useAppState()
   if (is3D) return <Window3D {...props} />
   else return <Window2D {...props} />
