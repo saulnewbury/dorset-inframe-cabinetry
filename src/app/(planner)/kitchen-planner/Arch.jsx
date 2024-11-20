@@ -1,6 +1,4 @@
-import { useContext } from 'react'
-
-import { AppContext } from '@/appState'
+import { useAppState } from '@/appState'
 
 import { wh, wt } from '@/const'
 
@@ -12,7 +10,7 @@ import { wallMaterial, archMaterial } from '@/materials'
  * form to render.
  */
 export default function Arch(props) {
-  const is3D = useContext(AppContext)
+  const { is3D } = useAppState()
   if (is3D) return <Arch3D {...props} />
   else return <Arch2D {...props} />
 }
