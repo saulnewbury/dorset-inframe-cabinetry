@@ -15,7 +15,7 @@ export default function SelectWall({ value, onChange = () => {} }) {
     <svg
       viewBox={[b.left, b.top, b.width, b.height].join(' ')}
       onClick={getSegment}
-      height="150"
+      height='150'
     >
       {model.walls[0]?.map((from, n, a) => (
         <WallSegment
@@ -64,8 +64,9 @@ function WallSegment({ id, from, to, prev, next, isHighlight }) {
       points={points.map((p) => `${p.x},${p.y}`).join(' ')}
       fill={colour}
       stroke={colour}
-      strokeWidth="0.01"
+      strokeWidth='0.01'
       transform={`rotate(${radToDeg(angle)} ${mid.x} ${mid.y})`}
+      className='hover:cursor-pointer'
     />
   )
 }

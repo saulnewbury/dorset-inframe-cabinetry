@@ -1,29 +1,35 @@
-import { useMemo } from 'react'
-import { BufferGeometry, Path, Vector2, Shape } from 'three'
+import { useContext, useMemo } from 'react'
+import { BufferGeometry, Path, TextureLoader, Vector2, Shape } from 'three'
+import { useLoader } from '@react-three/fiber'
 
-import DoorDouble from './DoorDouble'
-import DoorSingle from './DoorSingle'
-
-import { useAppState } from '@/appState'
+import { AppContext } from '@/appState'
 
 import { wh, wt } from '@/const'
 
 // Reusable materials
 import { wallMaterial, doorMaterial, linesMaterial } from '@/materials'
 
-// Styles:
-//   solid_1pane.src
-//   glass_1pane.src
-//   solid_2pane.src (todo)
-//   topGlass_2pane.src (todo)
-//   twinGlass_2pane.src (todo)
+// Texture images for door styles:
+import solid_2pane from '@/assets/doors/solid-2pane.svg'
+import topGlass_2pane from '@/assets/doors/top-glass-2pane.svg'
+import twinGlass_2pane from '@/assets/doors/twin-glass-2pane.svg'
+import solid_1pane from '@/assets/doors/solid-1pane.svg'
+import glass_1pane from '@/assets/doors/glass-1pane.svg'
+
+const pattern = {
+  'solid-1pane': solid_1pane.src,
+  'glass-1pane': glass_1pane.src,
+  'solid-2pane': solid_2pane.src,
+  'top-2pane': topGlass_2pane.src,
+  'twin-2pane': twinGlass_2pane.src
+}
 
 /**
  * General component to display a door. Checks 2D/3D state to determine which
  * form to render.
  */
 export default function Door(props) {
-  const { is3D } = useAppState()
+  const { is3D } = useContext(AppContext)
   if (is3D) return <Door3D {...props} />
   else return <Door2D {...props} />
 }
@@ -67,8 +73,10 @@ function Door2D({ len, offset, width, option, onClick = () => {} }) {
  * scale) on the outside.
  */
 function Door3D({ style, len, offset, width, option }) {
-  console.log(style)
+  const texture = useLoader(TextureLoader, pattern[style])
+  const [handle] = option.split(':')
   const height = wh - 0.4
+  const scale = handle === 'left' ? -1 : 1
 
   const cw = 0.05
   const d = wt + wt * 0.4
@@ -80,15 +88,36 @@ function Door3D({ style, len, offset, width, option }) {
 
   const casing = getCasingDimensions(width, height + cOpp)
   const stops = getStopsDimensions(width, height + cOpp)
-  const sideLeft = getSideLeft(casing, cw, cOpp)
-  const sideRight = getSideRight(casing, cw, cOpp)
-  const top = getTop(casing, cw, cOpp)
-  const sideStopLeft = getSideStopLeft(stops, sw, sOpp)
-  const sideStopRight = getSideStopRight(stops, sw, sOpp)
-  const topStop = getTopStop(stops, sw, sOpp)
+
+  const side = new Shape([
+    new Vector2(-casing[0].len / 2, -cw / 2),
+    new Vector2(-casing[0].len / 2 + cOpp, cw / 2),
+    new Vector2(casing[0].len / 2 - cOpp, cw / 2),
+    new Vector2(casing[0].len / 2, -cw / 2)
+  ])
+
+  const top = new Shape([
+    new Vector2(-casing[2].len / 2, -cw / 2),
+    new Vector2(-casing[2].len / 2 + cOpp, cw / 2),
+    new Vector2(casing[2].len / 2 - cOpp, cw / 2),
+    new Vector2(casing[2].len / 2, -cw / 2)
+  ])
+
+  const sideStop = new Shape([
+    new Vector2(-stops[0].len / 2, -sw / 2),
+    new Vector2(-stops[0].len / 2 + sOpp, sw / 2),
+    new Vector2(stops[0].len / 2 - sOpp, sw / 2),
+    new Vector2(stops[0].len / 2, -sw / 2)
+  ])
+
+  const topStop = new Shape([
+    new Vector2(-stops[2].len / 2, -sw / 2),
+    new Vector2(-stops[2].len / 2 + sOpp, sw / 2),
+    new Vector2(stops[2].len / 2 - sOpp, sw / 2),
+    new Vector2(stops[2].len / 2, -sw / 2)
+  ])
 
   return (
-    // <group position={[offset - len / 2, 0, 0]}>
     <group position={[offset - len / 2, 0, 0]}>
       {/* Lintel */}
       <mesh
@@ -100,9 +129,9 @@ function Door3D({ style, len, offset, width, option }) {
         <boxGeometry args={[width, 0.4, wt]} />
       </mesh>
       <group position-y={height / 2 - cOpp / 2}>
-        {/* Casing (left, right, top) */}
+        {/* Casing */}
         {casing.map((f, i) =>
-          i < 1 ? (
+          i < 2 ? (
             <mesh
               key={i}
               position={f.pos}
@@ -111,22 +140,9 @@ function Door3D({ style, len, offset, width, option }) {
               receiveShadow
             >
               <extrudeGeometry
-                args={[sideLeft, { depth: d, bevelEnabled: false }]}
+                args={[side, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial color='white' />
-            </mesh>
-          ) : i < 2 ? (
-            <mesh
-              key={i}
-              position={f.pos}
-              rotation={f.rotation}
-              castShadow
-              receiveShadow
-            >
-              <extrudeGeometry
-                args={[sideRight, { depth: d, bevelEnabled: false }]}
-              />
-              <meshStandardMaterial />
             </mesh>
           ) : (
             <mesh
@@ -139,13 +155,13 @@ function Door3D({ style, len, offset, width, option }) {
               <extrudeGeometry
                 args={[top, { depth: d, bevelEnabled: false }]}
               />
-              <meshStandardMaterial />
+              <meshStandardMaterial color='white' />
             </mesh>
           )
         )}
-        {/* Stops (left, right, top) */}
+        {/* Stops */}
         {stops.map((f, i) =>
-          i < 1 ? (
+          i < 2 ? (
             <mesh
               key={i}
               position={f.pos}
@@ -154,20 +170,7 @@ function Door3D({ style, len, offset, width, option }) {
               receiveShadow
             >
               <extrudeGeometry
-                args={[sideStopLeft, { depth: sd, bevelEnabled: false }]}
-              />
-              <meshStandardMaterial />
-            </mesh>
-          ) : i < 2 ? (
-            <mesh
-              key={i}
-              position={f.pos}
-              rotation={f.rotation}
-              castShadow
-              receiveShadow
-            >
-              <extrudeGeometry
-                args={[sideStopRight, { depth: sd, bevelEnabled: false }]}
+                args={[sideStop, { depth: sd, bevelEnabled: false }]}
               />
               <meshStandardMaterial />
             </mesh>
@@ -187,69 +190,19 @@ function Door3D({ style, len, offset, width, option }) {
           )
         )}
         {/* Door */}
-        {style === 'solid-1pane' && (
-          <DoorSingle casing={casing} thick={wt} depth={sd} />
-        )}
-        {style === 'solid-2pane' && (
-          <DoorDouble casing={casing} thick={wt} depth={sd} />
-        )}
+        <mesh position-y={-0.01} castShadow receiveShadow>
+          <boxGeometry
+            args={[
+              casing[2].len - wt / 2 - 0.085,
+              casing[0].len - wt / 2 - 0.065,
+              sd
+            ]}
+          />
+          <meshStandardMaterial color='#F9F9F9' />
+        </mesh>
       </group>
     </group>
   )
-
-  function getSideLeft(casing, cw, cOpp) {
-    return new Shape([
-      new Vector2(-casing[0].len / 2, -cw / 2),
-      new Vector2(-casing[0].len / 2 + cOpp, cw / 2),
-      new Vector2(casing[0].len / 2 - cw, cw / 2),
-      new Vector2(casing[0].len / 2 - cw, -cw / 2)
-    ])
-  }
-
-  function getSideRight(casing, cw, cOpp) {
-    return new Shape([
-      new Vector2(-casing[0].len / 2 + cw, -cw / 2),
-      new Vector2(-casing[0].len / 2 + cOpp, cw / 2),
-      new Vector2(casing[0].len / 2 - cOpp, cw / 2),
-      new Vector2(casing[0].len / 2, -cw / 2)
-    ])
-  }
-
-  function getTop(casing, cw, cOpp) {
-    return new Shape([
-      new Vector2(-casing[2].len / 2, -cw / 2),
-      new Vector2(-casing[2].len / 2 + cOpp, cw / 2),
-      new Vector2(casing[2].len / 2 - cOpp, cw / 2),
-      new Vector2(casing[2].len / 2, -cw / 2)
-    ])
-  }
-
-  function getSideStopRight(stops, sw, sOpp) {
-    return new Shape([
-      new Vector2(-stops[0].len / 2 + sw * 2, -sw / 2),
-      new Vector2(-stops[0].len / 2 + sw * 2, sw / 2),
-      new Vector2(stops[0].len / 2 - sOpp, sw / 2),
-      new Vector2(stops[0].len / 2, -sw / 2)
-    ])
-  }
-
-  function getSideStopLeft(stops, sw, sOpp) {
-    return new Shape([
-      new Vector2(-stops[0].len / 2, -sw / 2),
-      new Vector2(-stops[0].len / 2 + sOpp, sw / 2),
-      new Vector2(stops[0].len / 2 - sw * 2, sw / 2),
-      new Vector2(stops[0].len / 2 - sw * 2, -sw / 2)
-    ])
-  }
-
-  function getTopStop(stops, sw, sOpp) {
-    return new Shape([
-      new Vector2(-stops[2].len / 2, -sw / 2),
-      new Vector2(-stops[2].len / 2 + sOpp, sw / 2),
-      new Vector2(stops[2].len / 2 - sOpp, sw / 2),
-      new Vector2(stops[2].len / 2, -sw / 2)
-    ])
-  }
 
   function getCasingDimensions(width, height) {
     // order: left right top

@@ -3,7 +3,6 @@ import { forwardRef, useContext, useMemo, useRef, useState } from 'react'
 import { MathUtils, Matrix4, Vector3 } from 'three'
 import clsx from 'clsx'
 
-import { AppContext } from '@/context'
 import { ModelContext } from '@/model/context'
 import { doorStyles, windowStyles } from '@/model/itemStyles'
 
@@ -31,7 +30,6 @@ const itemStyles = {
 
 export default function Opening(props) {
   const { type, id, width, offset, len, mitre, hover, onDrag, onHover } = props
-  console.log(AppContext)
   const { is3D } = useAppState()
   const [, dispatch] = useContext(ModelContext)
   const [dragging, setDragging] = useState(false)

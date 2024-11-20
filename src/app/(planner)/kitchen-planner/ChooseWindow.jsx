@@ -4,6 +4,8 @@ import clsx from 'clsx'
 
 import SelectWall from './SelectWall'
 
+import Button from '@/components/Button'
+
 import { windowStyles as styles } from '@/model/itemStyles'
 
 /**
@@ -13,13 +15,13 @@ export default function ChooseWindow({ onClose = () => {} }) {
   const [, dispatch] = useContext(ModelContext)
   const [style, setStyle] = useState()
   const [height, setHeight] = useState('normal')
-  const [width, setWidth] = useState(0.5)
+  const [width, setWidth] = useState(0.8)
   const [wall, setWall] = useState(0)
   return (
     <form onSubmit={selectWindow} className='[&>p]:my-3 text-[14px]'>
       {/* Window style */}
       <p className='text-gray-400'>Choose style:</p>
-      <div className='flex flex-wrap gap-5'>
+      <div className='flex flex-wrap gap-5 mb-5'>
         {styles.map((s) => (
           <WindowButton
             key={s.id}
@@ -56,13 +58,15 @@ export default function ChooseWindow({ onClose = () => {} }) {
       </p>
       {/* Submit button */}
       <p>
-        <button
+        <Button disabled={!style}>Submit</Button>
+
+        {/* <button
           type='submit'
           disabled={!style}
           className='bg-blue-700 text-white rounded-md px-2 py-1 disabled:bg-red-400'
         >
           Submit
-        </button>
+        </button> */}
       </p>
     </form>
   )
@@ -97,17 +101,16 @@ function WindowButton({ id, title, image, selected, onClick = () => {} }) {
     <button
       type='button'
       onClick={() => onClick(id)}
-      className='flex flex-col gap-[0.3rem]'
+      className='flex flex-col gap-[0.3rem]  border border-lightGrey '
     >
       <img
         src={image.src}
         alt=''
         className={clsx(
-          'h-[200px] hover:border-cyan-500 rounded-sm bg-[#aaaaaa] object-cover',
-          selected ? 'border-blue-700' : 'border-transparent'
+          'h-[200px] hover:border-cyan-500 rounded-sm hover:bg-[#f5f5f5] bg-[#ffffff]',
+          selected ? 'border-blue-700 bg-[#f5f5f5]' : 'border-transparent'
         )}
       />
-      <span>{title}</span>
     </button>
   )
 }

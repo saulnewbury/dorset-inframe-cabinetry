@@ -1,8 +1,8 @@
 // Door images:
-import solid_2pane from '@/assets/doors/solid-2pane.svg'
+import solid_2pane from '@/assets/doors/solid-double.webp'
 import topGlass_2pane from '@/assets/doors/top-glass-2pane.svg'
 import twinGlass_2pane from '@/assets/doors/twin-glass-2pane.svg'
-import solid_1pane from '@/assets/doors/solid-1pane.svg'
+import solid_1pane from '@/assets/doors/solid-single.webp'
 import glass_1pane from '@/assets/doors/glass-1pane.svg'
 
 // Window images:
