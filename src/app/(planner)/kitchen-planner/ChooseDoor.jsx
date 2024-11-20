@@ -68,13 +68,6 @@ export default function ChooseDoor({ onClose = () => {} }) {
       </p>
       {/* Submit button */}
       <p>
-        {/* <button
-          type='submit'
-          disabled={!style}
-          className='bg-blue-700 text-white rounded-md px-2 py-1 disabled:bg-gray-400'
-        >
-          Submit
-        </button> */}
         <Button disabled={!style}>Submit</Button>
       </p>
     </form>
