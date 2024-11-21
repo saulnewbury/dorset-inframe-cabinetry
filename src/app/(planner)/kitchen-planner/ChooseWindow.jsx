@@ -58,7 +58,9 @@ export default function ChooseWindow({ onClose = () => {} }) {
       </p>
       {/* Submit button */}
       <p>
-        <Button disabled={!style}>Submit</Button>
+        <Button primary disabled={!style}>
+          Submit
+        </Button>
 
         {/* <button
           type='submit'

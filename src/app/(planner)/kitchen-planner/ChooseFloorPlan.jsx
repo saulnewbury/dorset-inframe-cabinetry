@@ -54,17 +54,16 @@ export default function ChooseFloorPlan({ onClose = () => {} }) {
           })}
         </div>
       </div>
-      {showContinueButton && (
-        <div onClick={() => select(selected)}>
-          <Button
-            classes='absolute bottom-[5rem] left-[50%] -translate-x-[50%]'
-            primary={true}
-          >
-            Continue
-            {/* <div onClick={() => select(selected)}>Continue</div> */}
-          </Button>
-        </div>
-      )}
+
+      <div onClick={() => select(selected)}>
+        <Button
+          classes='absolute bottom-[5rem] left-[50%] -translate-x-[50%]'
+          primary={true}
+          disabled={!selected}
+        >
+          Continue
+        </Button>
+      </div>
     </div>
   )
 

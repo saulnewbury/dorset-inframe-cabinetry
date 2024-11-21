@@ -67,9 +67,9 @@ export default function ChooseDoor({ onClose = () => {} }) {
         <SelectWall value={wall} onChange={setWall} />
       </p>
       {/* Submit button */}
-      <p>
-        <Button disabled={!style}>Submit</Button>
-      </p>
+      <Button primary disabled={!style}>
+        Submit
+      </Button>
     </form>
   )
 
