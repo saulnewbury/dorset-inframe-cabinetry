@@ -7,9 +7,9 @@ export default function Items({ items = [] }) {
 
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-[4vw] md:gap-[3vw] lg:gap-[2vw] pb-[2rem] '>
-      {items.map((item) => {
+      {items.map((item, i) => {
         return (
-          <div key={item.id} className='flex flex-col'>
+          <div key={i} className='flex flex-col'>
             <button className='relative aspect-[3/4]'>
               {item.images.map((image, i) => {
                 if (i > 1) return

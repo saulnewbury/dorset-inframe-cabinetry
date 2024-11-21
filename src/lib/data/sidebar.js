@@ -21,168 +21,168 @@ export const defineYourSpace = [
       }
     ]
   },
-  // {
-  //   name: 'features',
-  //   options: [
-  //     {
-  //       name: 'Add wall',
-  //       heading: 'Add internal wall',
-  //       component: ChooseAddWall
-  //     },
-  //     {
-  //       name: 'Add separation area',
-  //       heading: 'Add an area separation'
-  //     },
-  //     {
-  //       name: 'Add sloped ceiling',
-  //       heading: 'Add a sloped ceiling'
-  //     }
-  //   ]
-  // },
+  {
+    name: 'features',
+    options: [
+      {
+        name: 'Add wall',
+        heading: 'Add internal wall',
+        component: ChooseAddWall
+      }
+      // {
+      //   name: 'Add separation area',
+      //   heading: 'Add an area separation'
+      // },
+      // {
+      //   name: 'Add sloped ceiling',
+      //   heading: 'Add a sloped ceiling'
+      // }
+    ]
+  },
   {
     name: 'openings',
     options: [
       {
         name: 'Add windows',
         heading: 'Windows',
-        component: ChooseWindow,
-        items: [
-          {
-            name: 'item1',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item2',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item3',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item4',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item5',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item6',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item7',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item8',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          }
-        ]
+        component: ChooseWindow
+        // items: [
+        //   {
+        //     name: 'item1',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item2',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item3',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item4',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item5',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item6',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item7',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item8',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   }
+        // ]
       },
       {
         name: 'Add doors',
         heading: 'Doors',
-        component: ChooseDoor,
-        items: [
-          {
-            name: 'item1',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item2',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item3',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item4',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item5',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item6',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item7',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          },
-          {
-            name: 'item8',
-            desc: 'A brief description',
-            images: [
-              { id: crypto.randomUUID(), src: placeholderA },
-              { id: crypto.randomUUID(), src: placeholderB }
-            ]
-          }
-        ]
+        component: ChooseDoor
+        // items: [
+        //   {
+        //     name: 'item1',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item2',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item3',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item4',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item5',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item6',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item7',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item8',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   }
+        // ]
       },
       {
         name: 'Add wall openings',
@@ -256,13 +256,369 @@ export const defineYourSpace = [
         ]
       }
     ]
+  },
+  {
+    name: 'elements',
+    options: [
+      {
+        name: 'Base units',
+        heading: 'Choose a base unit',
+        component: ChooseBaseUnit
+        // items: [
+        //   {
+        //     name: 'item1',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+        //       { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item2',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+        //       { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item3',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+        //       { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item4',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+        //       { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item5',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+        //       { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item6',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+        //       { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item7',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+        //       { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item8',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+        //       { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+        //     ]
+        //   }
+        // ]
+      },
+      {
+        name: 'Electricity',
+        heading: 'Electricity',
+        items: [
+          {
+            name: 'item1',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item2',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item3',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item4',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item5',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item6',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item7',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item8',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          }
+        ]
+      },
+      {
+        name: 'Heating',
+        heading: 'Heating',
+        items: [
+          {
+            name: 'item1',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item2',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item3',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item4',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item5',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item6',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item7',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item8',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          }
+        ]
+      },
+      {
+        name: 'Ventilation',
+        heading: 'Ventilation',
+        items: [
+          {
+            name: 'item1',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item2',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item3',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item4',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item5',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item6',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item7',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item8',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          }
+        ]
+      },
+      {
+        name: 'Fittings',
+        heading: 'Fittings',
+        items: [
+          {
+            name: 'item1',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item2',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item3',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item4',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item5',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item6',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item7',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          },
+          {
+            name: 'item8',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA, alt: '' },
+              { id: crypto.randomUUID(), src: placeholderB, alt: '' }
+            ]
+          }
+        ]
+      }
+    ]
   }
   // {
-  //   name: 'elements',
+  //   name: 'Something else',
   //   options: [
   //     {
-  //       name: 'Structures',
-  //       heading: 'Structures',
+  //       name: 'Base units',
+  //       heading: 'Choose a base unit',
   //       items: [
   //         {
   //           name: 'item1',

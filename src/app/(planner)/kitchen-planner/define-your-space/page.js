@@ -24,15 +24,15 @@ export default function Page() {
   return (
     <>
       <Sidebar
-        handleContent={(option) => setContent(option)}
         open={open}
         showContent={showContent}
         content={content}
-        handleOpen={(name) => {
-          setOpen(name)
-        }}
+        handleContent={(option) => setContent(option)}
         handleShowContent={(name) => {
           setShowContent(name)
+        }}
+        handleOpen={(name) => {
+          setOpen(name)
         }}
       />
 

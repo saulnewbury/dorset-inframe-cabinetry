@@ -1,8 +1,9 @@
 import { forwardRef, useImperativeHandle, useState, useRef } from 'react'
 import SvgIcon from '@/components/SvgIcon.jsx'
-import Items from './Items'
+// import Items from './Items'
 
 const Dialog = forwardRef(({ closeContentBox, content, Body }, ref) => {
+  console.log(Body)
   return (
     <div className='fixed z-[100] flex h-[100vh] w-[100vw] top-0 left-0 bg-overlay px-[98px] py-[40px]'>
       {/* <div className='bg-white w-full h-full relative'> */}
@@ -19,6 +20,11 @@ const Dialog = forwardRef(({ closeContentBox, content, Body }, ref) => {
 
           <Body onClose={closeContentBox} />
           {/* {content.name === 'Electricity' && <Items items={content.items} />} */}
+          {/* {!content.items ? (
+            <Body onClose={closeContentBox} />
+          ) : (
+            <Items items={content.items} />
+          )} */}
         </div>
       </div>
     </div>

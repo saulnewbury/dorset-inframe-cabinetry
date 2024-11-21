@@ -5,6 +5,7 @@ import clsx from 'clsx'
 
 import { AppContext } from '@/appState'
 import { ModelContext } from '@/model/context'
+import { useAppState } from '@/appState'
 
 import { baseUnitStyles as unitStyles } from '@/model/itemStyles'
 import { wt } from '@/const'
@@ -37,7 +38,8 @@ export default function KitchenUnit({
   onHover = () => {},
   onDrag = () => {}
 }) {
-  const { is3D } = useContext(AppContext)
+  // const { is3D } = useContext(AppContext)
+  const { is3D } = useAppState()
   const [model, dispatch] = useContext(ModelContext)
   const [dragging, setDragging] = useState(false)
   const info = useRef()
