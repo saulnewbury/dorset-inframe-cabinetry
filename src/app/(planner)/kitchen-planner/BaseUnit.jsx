@@ -1,3 +1,4 @@
+'use client'
 import { useMemo } from 'react'
 import { MeshStandardMaterial, TextureLoader } from 'three'
 import { useLoader } from '@react-three/fiber'

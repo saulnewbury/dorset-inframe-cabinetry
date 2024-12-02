@@ -1,3 +1,4 @@
+'use client'
 import { useContext, useMemo } from 'react'
 import { BufferGeometry, Vector3, TextureLoader, Vector2, Shape } from 'three'
 

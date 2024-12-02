@@ -117,11 +117,143 @@ export const defineYourSpace = [
         name: 'Add doors',
         heading: 'Doors',
         component: ChooseDoor
+        // items: [
+        //   {
+        //     name: 'item1',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item2',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item3',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item4',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item5',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item6',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item7',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   },
+        //   {
+        //     name: 'item8',
+        //     desc: 'A brief description',
+        //     images: [
+        //       { id: crypto.randomUUID(), src: placeholderA },
+        //       { id: crypto.randomUUID(), src: placeholderB }
+        //     ]
+        //   }
+        // ]
       },
       {
         name: 'Add wall openings',
         heading: 'Wall openings',
-        component: ChooseArch
+        component: ChooseArch,
+        items: [
+          {
+            name: 'item1',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA },
+              { id: crypto.randomUUID(), src: placeholderB }
+            ]
+          },
+          {
+            name: 'item2',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA },
+              { id: crypto.randomUUID(), src: placeholderB }
+            ]
+          },
+          {
+            name: 'item3',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA },
+              { id: crypto.randomUUID(), src: placeholderB }
+            ]
+          },
+          {
+            name: 'item4',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA },
+              { id: crypto.randomUUID(), src: placeholderB }
+            ]
+          },
+          {
+            name: 'item5',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA },
+              { id: crypto.randomUUID(), src: placeholderB }
+            ]
+          },
+          {
+            name: 'item6',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA },
+              { id: crypto.randomUUID(), src: placeholderB }
+            ]
+          },
+          {
+            name: 'item7',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA },
+              { id: crypto.randomUUID(), src: placeholderB }
+            ]
+          },
+          {
+            name: 'item8',
+            desc: 'A brief description',
+            images: [
+              { id: crypto.randomUUID(), src: placeholderA },
+              { id: crypto.randomUUID(), src: placeholderB }
+            ]
+          }
+        ]
       }
     ]
   },
