@@ -53,7 +53,7 @@ export default function Experience({ is3D }) {
   const light = useRef()
 
   // useHelper(light, THREE.DirectionalLightHelper, 1)
-  useHelper(light, THREE.PointLightHelper, 1)
+  // useHelper(light, THREE.PointLightHelper, 1)
 
   const hovered = useRef(new Set())
 
@@ -88,7 +88,7 @@ export default function Experience({ is3D }) {
         }}
         onChange={hideWalls}
       />
-      <axesHelper />
+      {/* <axesHelper /> */}
       {/* Environment elements */}
       {is3D && <BakeShadows />}
 

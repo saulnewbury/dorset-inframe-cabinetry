@@ -2,6 +2,8 @@ import { useContext, useState } from 'react'
 import { ModelContext } from '@/model/context'
 import clsx from 'clsx'
 
+import Button from '@/components/Button'
+
 import { baseUnitStyles as styles } from '@/model/itemStyles'
 
 const widths = Object.keys(styles)
@@ -11,10 +13,10 @@ export default function ChooseBaseUnit({ onClose = () => {} }) {
   const [width, setWidth] = useState(300)
   const [style, setStyle] = useState('')
   return (
-    <form onSubmit={selectUnit} className="[&>p]:my-4">
+    <form onSubmit={selectUnit} className='[&>p]:my-4'>
       {/* Width */}
       <p>
-        <span className="text-gray-400">Width (mm):</span>{' '}
+        <span className='text-gray-400'>Width (mm):</span>{' '}
         <select
           value={width}
           onChange={(ev) => {
@@ -28,7 +30,7 @@ export default function ChooseBaseUnit({ onClose = () => {} }) {
         </select>
       </p>
       {/* Styles */}
-      <p className="flex wrap gap-5">
+      <p className='flex wrap gap-5'>
         {(styles[width] ?? []).map((unit) => (
           <BaseUnitButton
             key={unit.id}
@@ -40,13 +42,16 @@ export default function ChooseBaseUnit({ onClose = () => {} }) {
       </p>
       {/* Submit button */}
       <p>
-        <button
-          type="submit"
+        {/* <button
+          type='submit'
           disabled={!style}
-          className="bg-blue-700 text-white rounded-md px-2 py-1 disabled:bg-gray-400"
+          className='bg-blue-700 text-white rounded-md px-2 py-1 disabled:bg-gray-400'
         >
           Submit
-        </button>
+        </button> */}
+        <Button primary disabled={!style}>
+          Submit
+        </Button>
       </p>
     </form>
   )
@@ -66,14 +71,14 @@ export default function ChooseBaseUnit({ onClose = () => {} }) {
 function BaseUnitButton({ id, title, image, isActive, onClick }) {
   return (
     <button
-      type="button"
+      type='button'
       onClick={() => onClick(id)}
       className={clsx(
         'w-32 flex flex-col items-center p-3 border-2 rounded-sm',
         isActive ? 'border-cyan-600' : 'border-transparent'
       )}
     >
-      <img src={image.src} alt="" className="h-32" />
+      <img src={image.src} alt='' className='h-32' />
       <span>{title}</span>
     </button>
   )
