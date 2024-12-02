@@ -14,8 +14,8 @@ import {
 import tileFloor from '@/assets/textures/shutterstock_754494433.jpg'
 
 export default function Floor({ points, handlePan }) {
+  const texture = useLoader(TextureLoader, tileFloor.src)
   const colourMap = useMemo(() => {
-    const texture = useLoader(TextureLoader, tileFloor.src)
     texture.wrapS = texture.wrapT = RepeatWrapping
     texture.repeat.set(0.5, 0.5)
     return texture
