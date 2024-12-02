@@ -15,11 +15,13 @@ import tileFloor from '@/assets/textures/shutterstock_754494433.jpg'
 
 export default function Floor({ points, handlePan }) {
   const texture = useLoader(TextureLoader, tileFloor.src)
-  const colourMap = useMemo(() => {
-    texture.wrapS = texture.wrapT = RepeatWrapping
-    texture.repeat.set(0.5, 0.5)
-    return texture
-  }, [])
+  texture.wrapS = texture.wrapT = RepeatWrapping
+  texture.repeat.set(0.5, 0.5)
+  // const colourMap = useMemo(() => {
+  //   texture.wrapS = texture.wrapT = RepeatWrapping
+  //   texture.repeat.set(0.5, 0.5)
+  //   return texture
+  // }, [])
   const shape = useMemo(
     () => new Shape(points.map((p) => new Vector2(p.x, p.z))).closePath(),
     [points]
@@ -33,7 +35,7 @@ export default function Floor({ points, handlePan }) {
       onPointerOut={() => handlePan(false)}
     >
       <shapeGeometry args={[shape]} />
-      <meshStandardMaterial map={colourMap} side={DoubleSide} />
+      <meshStandardMaterial map={texture} side={DoubleSide} />
       {/* <meshStandardMaterial color='#ffffff' side={DoubleSide} /> */}
     </mesh>
   )
