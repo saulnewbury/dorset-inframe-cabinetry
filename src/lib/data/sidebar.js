@@ -15,6 +15,7 @@ export const defineYourSpace = [
     name: 'shape',
     options: [
       {
+        fullWidth: true,
         name: 'Choose floor plan',
         heading: 'Select a general floor plan',
         component: ChooseFloorPlan

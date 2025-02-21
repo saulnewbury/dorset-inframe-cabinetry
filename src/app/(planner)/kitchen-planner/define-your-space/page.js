@@ -39,6 +39,7 @@ export default function Page() {
       {/* <ContentBox /> */}
       {showContent && (
         <Dialog
+          fullWidth={content.fullWidth ? true : false}
           content={content}
           Body={content.component}
           closeContentBox={() => {
