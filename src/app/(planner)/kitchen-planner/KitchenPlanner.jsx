@@ -27,7 +27,7 @@ export default forwardRef(function KitchenPlanner(props, ref) {
 
   // fade in animation for canvas when switching perspective
   useGSAP(() => {
-    if (is3D) {
+    if (is3D || !is3D) {
       gsap.fromTo(
         container.current,
         { opacity: 0 },
