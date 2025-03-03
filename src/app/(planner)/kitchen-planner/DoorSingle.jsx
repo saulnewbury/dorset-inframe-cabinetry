@@ -10,8 +10,8 @@ export default function DoorDouble({ casing, thick, depth }) {
       <mesh castShadow receiveShadow>
         <boxGeometry args={[width, height, depth / 2]} />
         <meshStandardMaterial color='#F9F9F9' />
-        <Edges linewidth={1} threshold={15} color={'black'} />
-        <Outlines thickness={0.01} color={'black'} />
+        <Edges linewidth={1} threshold={15} color={'gray'} />
+        <Outlines thickness={0.01} color={'gray'} />
       </mesh>
       <DoorHandle
         len={-height / 16}

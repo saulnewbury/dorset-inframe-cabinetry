@@ -115,8 +115,8 @@ function Door3D({ style, len, offset, width, option }) {
                 args={[sideLeft, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial color='white' />
-              <Edges linewidth={1} threshold={15} color={'black'} />
-              <Outlines thickness={0.01} color={'black'} />
+              <Edges linewidth={1} threshold={15} color={'gray'} />
+              <Outlines thickness={0.01} color={'gray'} />
             </mesh>
           ) : i < 2 ? (
             <mesh
@@ -130,8 +130,8 @@ function Door3D({ style, len, offset, width, option }) {
                 args={[sideRight, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial />
-              <Edges linewidth={1} threshold={15} color={'black'} />
-              <Outlines thickness={0.01} color={'black'} />
+              <Edges linewidth={1} threshold={15} color={'gray'} />
+              <Outlines thickness={0.01} color={'gray'} />
             </mesh>
           ) : (
             <mesh
@@ -145,8 +145,8 @@ function Door3D({ style, len, offset, width, option }) {
                 args={[top, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial />
-              <Edges linewidth={1} threshold={15} color={'black'} />
-              <Outlines thickness={0.01} color={'black'} />
+              <Edges linewidth={1} threshold={15} color={'gray'} />
+              <Outlines thickness={0.01} color={'gray'} />
             </mesh>
           )
         )}
@@ -164,8 +164,8 @@ function Door3D({ style, len, offset, width, option }) {
                 args={[sideStopLeft, { depth: sd, bevelEnabled: false }]}
               />
               <meshStandardMaterial />
-              <Edges linewidth={1} threshold={15} color={'black'} />
-              <Outlines thickness={0.01} color={'black'} />
+              <Edges linewidth={1} threshold={15} color={'gray'} />
+              <Outlines thickness={0.01} color={'gray'} />
             </mesh>
           ) : i < 2 ? (
             <mesh
@@ -179,8 +179,8 @@ function Door3D({ style, len, offset, width, option }) {
                 args={[sideStopRight, { depth: sd, bevelEnabled: false }]}
               />
               <meshStandardMaterial />
-              <Edges linewidth={1} threshold={15} color={'black'} />
-              <Outlines thickness={0.01} color={'black'} />
+              <Edges linewidth={1} threshold={15} color={'gray'} />
+              <Outlines thickness={0.01} color={'gray'} />
             </mesh>
           ) : (
             <mesh
@@ -194,8 +194,8 @@ function Door3D({ style, len, offset, width, option }) {
                 args={[topStop, { depth: sd, bevelEnabled: false }]}
               />
               <meshStandardMaterial />
-              <Edges linewidth={1} threshold={15} color={'black'} />
-              <Outlines thickness={0.01} color={'black'} />
+              <Edges linewidth={1} threshold={15} color={'gray'} />
+              <Outlines thickness={0.01} color={'gray'} />
             </mesh>
           )
         )}
