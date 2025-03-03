@@ -29,9 +29,7 @@ export default function WindowSashDouble({
                   <extrudeGeometry
                     args={[sashSide, { depth: d / 2, bevelEnabled: false }]}
                   />
-                  <meshStandardMaterial
-                  // color={color}
-                  />
+                  <meshStandardMaterial />
                   <Edges linewidth={1} threshold={15} color={'gray'} />
                   <Outlines thickness={0.01} color={'gray'} />
                 </mesh>
@@ -40,9 +38,7 @@ export default function WindowSashDouble({
                   <extrudeGeometry
                     args={[sashHead, { depth: d / 2, bevelEnabled: false }]}
                   />
-                  <meshStandardMaterial
-                  // color={color}
-                  />
+                  <meshStandardMaterial />
                   <Edges linewidth={1} threshold={15} color={'gray'} />
                   <Outlines thickness={0.01} color={'gray'} />
                 </mesh>
