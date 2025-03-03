@@ -11,7 +11,7 @@ import Button from '@/components/Button'
 
 import { plannerMenu } from '@/lib/data/menu'
 
-export default function NavDesktop() {
+export default function NavConfigurator({ openList }) {
   const [openConfirmation, setOpenConfirmation] = useState(false)
   const pathname = usePathname()
 
@@ -53,7 +53,10 @@ export default function NavDesktop() {
             <span className='mr-[5px]'>Login</span>
             <SvgIcon shape='login' />
           </span> */}
-          <span className='inline-block relative cursor-pointer mr-[30px]'>
+          <span
+            className='inline-block relative cursor-pointer mr-[30px]'
+            onClick={openList}
+          >
             <SvgIcon shape='list' />
             <div className='w-[0.9rem] h-[0.9rem] bg-[black] rounded-full absolute bottom-[4px] -right-[7px] flex justify-center items-center'>
               <span className='text-[#ffffff] text-[0.5rem] font-bold'>25</span>

@@ -1,10 +1,11 @@
 'use client'
 import { useState } from 'react'
-
-import Dialog from '../Dialog'
-import Sidebar from '../Sidebar'
 import { useContext, useEffect } from 'react'
 import { CanvasContext } from '@/context'
+
+// Components
+import Dialog from '../Dialog'
+import Sidebar from '../Sidebar'
 
 export default function Page() {
   const [open, setOpen] = useState(false)

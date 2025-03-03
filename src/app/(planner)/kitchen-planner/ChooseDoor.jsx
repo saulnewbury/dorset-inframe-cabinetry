@@ -33,39 +33,47 @@ export default function ChooseDoor({ onClose = () => {} }) {
           />
         ))}
       </div>
-      {/* Side of handle */}
-      <p>
-        <span className='text-gray-400'>Handle:</span>{' '}
-        <select value={handle} onChange={(e) => setHandle(e.target.value)}>
-          <option value='left'>Left</option>
-          <option value='right'>Right</option>
-        </select>
-      </p>
-      {/* Direction of opening */}
-      <p>
-        <span className='text-gray-400'>Opening:</span>{' '}
-        <select value={opens} onChange={(e) => setOpens(e.target.value)}>
-          <option value='out'>Out</option>
-          <option value='in'>In</option>
-        </select>
-      </p>
-      {/* Width */}
-      <p>
-        <span className='text-gray-400'>Width (m):</span>{' '}
-        <input
-          type='number'
-          min='0.5'
-          step='0.1'
-          value={width.toFixed(2)}
-          onChange={(e) => setWidth(parseFloat(e.target.value))}
-          className='w-14'
-        />
-      </p>
-      {/* Initial wall */}
-      <p className='text-gray-400'>Select wall:</p>
-      <p>
-        <SelectWall value={wall} onChange={setWall} />
-      </p>
+      <div className='flex mt-[2rem] mb-[2rem]'>
+        {/* left */}
+        <div className='inline-block mr-[2rem]'>
+          {/* Initial wall */}
+          <p className='text-gray-400 mb-[1rem]'>Select wall:</p>
+          <p>
+            <SelectWall value={wall} onChange={setWall} />
+          </p>
+        </div>
+        {/* Right */}
+        <div className='inline-block'>
+          {/* Side of handle */}
+          <p className='mb-[1rem] mt-[4rem]'>
+            <span className='text-gray-400'>Handle:</span>{' '}
+            <select value={handle} onChange={(e) => setHandle(e.target.value)}>
+              <option value='left'>Left</option>
+              <option value='right'>Right</option>
+            </select>
+          </p>
+          {/* Direction of opening */}
+          <p className='mb-[1rem]'>
+            <span className='text-gray-400'>Opening:</span>{' '}
+            <select value={opens} onChange={(e) => setOpens(e.target.value)}>
+              <option value='out'>Out</option>
+              <option value='in'>In</option>
+            </select>
+          </p>
+          {/* Width */}
+          <p className='mb-[1rem]'>
+            <span className='text-gray-400'>Width (m):</span>{' '}
+            <input
+              type='number'
+              min='0.5'
+              step='0.1'
+              value={width.toFixed(2)}
+              onChange={(e) => setWidth(parseFloat(e.target.value))}
+              className='w-14'
+            />
+          </p>
+        </div>
+      </div>
       {/* Submit button */}
       <Button primary disabled={!style}>
         Submit
