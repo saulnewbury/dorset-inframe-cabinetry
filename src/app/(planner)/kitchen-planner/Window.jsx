@@ -144,10 +144,6 @@ function Window3D({ style, len, offset, width, option }) {
               opp={opp}
               color='#eee'
             />
-            <mesh>
-              <boxGeometry args={[w, height, d]} />
-              <meshStandardMaterial color='#eee' />
-            </mesh>
           </>
         )}
 

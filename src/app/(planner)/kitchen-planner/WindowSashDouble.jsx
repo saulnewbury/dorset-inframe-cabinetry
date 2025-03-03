@@ -2,6 +2,8 @@
 
 import { Shape, Vector2 } from 'three'
 
+import { Outlines, Edges } from '@react-three/drei'
+
 export default function WindowSashDouble({
   len,
   width,
@@ -30,6 +32,8 @@ export default function WindowSashDouble({
                   <meshStandardMaterial
                   // color={color}
                   />
+                  <Edges linewidth={1} threshold={15} color={'gray'} />
+                  <Outlines thickness={0.01} color={'gray'} />
                 </mesh>
               ) : (
                 <mesh key={i} position={s.pos} rotation={s.rotation}>
@@ -39,6 +43,8 @@ export default function WindowSashDouble({
                   <meshStandardMaterial
                   // color={color}
                   />
+                  <Edges linewidth={1} threshold={15} color={'gray'} />
+                  <Outlines thickness={0.01} color={'gray'} />
                 </mesh>
               )
             )}
@@ -47,10 +53,10 @@ export default function WindowSashDouble({
       })}
 
       <mesh>
-        <boxGeometry args={[w, len, d]} />
-        <meshStandardMaterial
-        // color={color}
-        />
+        <boxGeometry args={[w, len - w * 2, d]} />
+        <meshStandardMaterial />
+        <Edges linewidth={1} threshold={15} color={'gray'} />
+        <Outlines thickness={0.01} color={'gray'} />
       </mesh>
     </>
   )
@@ -59,8 +65,8 @@ export default function WindowSashDouble({
     const l = sash[2].len
     return new Shape([
       new Vector2(-l / 2 + w, -w / 2),
-      new Vector2(-l / 2 + opp, w / 2),
-      new Vector2(l / 2 - opp, w / 2),
+      new Vector2(-l / 2 + opp * 2, w / 2),
+      new Vector2(l / 2 - opp * 2, w / 2),
       new Vector2(l / 2 - w, -w / 2)
     ])
   }
