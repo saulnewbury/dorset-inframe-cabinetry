@@ -1,3 +1,4 @@
+import { Edges, Outlines } from '@react-three/drei'
 import React from 'react'
 import DoorHandle from './DoorHandle'
 
@@ -9,6 +10,8 @@ export default function DoorDouble({ casing, thick, depth }) {
       <mesh castShadow receiveShadow>
         <boxGeometry args={[width, height, depth / 2]} />
         <meshStandardMaterial color='#F9F9F9' />
+        <Edges linewidth={1} threshold={15} color={'black'} />
+        <Outlines thickness={0.01} color={'black'} />
       </mesh>
       <DoorHandle
         len={-height / 16}

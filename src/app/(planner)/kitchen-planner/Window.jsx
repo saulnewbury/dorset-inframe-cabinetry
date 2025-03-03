@@ -1,6 +1,7 @@
 'use client'
 import { useContext, useMemo } from 'react'
 import { BufferGeometry, Vector3, TextureLoader, Vector2, Shape } from 'three'
+import { Outlines, Edges } from '@react-three/drei'
 
 import { useLoader } from '@react-three/fiber'
 
@@ -105,6 +106,8 @@ function Window3D({ style, len, offset, width, option }) {
                 args={[jamb, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial color='#eee' />
+              <Edges linewidth={1} threshold={15} color={'black'} />
+              <Outlines thickness={0.01} color={'black'} />
             </mesh>
           ) : (
             <mesh key={i} position={f.pos} rotation={f.rotation}>
@@ -112,6 +115,8 @@ function Window3D({ style, len, offset, width, option }) {
                 args={[head, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial color='#eee' />
+              <Edges linewidth={1} threshold={15} color={'black'} />
+              <Outlines thickness={0.01} color={'black'} />
             </mesh>
           )
         )}
