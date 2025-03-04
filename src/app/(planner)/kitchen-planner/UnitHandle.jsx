@@ -6,10 +6,11 @@ import {
   Vector2
 } from 'three'
 
+import { Edges } from '@react-three/drei'
 const handleMaterial = new MeshStandardMaterial({
   color: 'lightgray',
-  metalness: 0.5,
-  roughness: 0,
+  // metalness: 0.5,
+  // roughness: 0,
   side: DoubleSide
 })
 
@@ -29,6 +30,8 @@ export default function UnitHandle({ position }) {
       material={handleMaterial}
       rotation-x={Math.PI / 2}
       position={position}
-    />
+    >
+      <Edges linewidth={1} threshold={15} color={'gray'} />
+    </mesh>
   )
 }

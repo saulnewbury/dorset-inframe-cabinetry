@@ -39,7 +39,6 @@ export default function DoorHandle({ len, width, depth, orientation }) {
           <cylinderGeometry args={[handleRad, handleRad, handleShaft]} />
           <meshStandardMaterial color='lightgrey' />
           <Edges linewidth={1} threshold={15} color={'gray'} />
-          <Outlines thickness={0.01} color={'gray'} />
         </mesh>
       </group>
 
@@ -54,15 +53,13 @@ export default function DoorHandle({ len, width, depth, orientation }) {
         <mesh position-y={0.05}>
           <cylinderGeometry args={[0.05, 0.05, 0.0001]} />
           <meshStandardMaterial color='lightgrey' />
-          <Edges linewidth={2} threshold={15} color={'gray'} />
-          <Outlines thickness={0.01} color={'gray'} />
+          <Edges linewidth={1} threshold={15} color={'gray'} />
         </mesh>
         {/* Lever */}
         <mesh>
           <cylinderGeometry args={[handleRad, handleRad, 0.1]} />
           <meshStandardMaterial color='lightgrey' />
-          <Edges linewidth={2} threshold={15} color={'gray'} />
-          <Outlines thickness={0.01} color={'gray'} />
+          <Edges linewidth={1} threshold={15} color={'gray'} />
         </mesh>
         {/* Shaft */}
         <mesh
@@ -73,8 +70,7 @@ export default function DoorHandle({ len, width, depth, orientation }) {
         >
           <cylinderGeometry args={[handleRad, handleRad, handleShaft]} />
           <meshStandardMaterial color='lightgrey' />
-          <Edges linewidth={2} threshold={15} color={'gray'} />
-          <Outlines thickness={0.01} color={'gray'} />
+          <Edges linewidth={1} threshold={15} color={'gray'} />
         </mesh>
       </group>
     </>

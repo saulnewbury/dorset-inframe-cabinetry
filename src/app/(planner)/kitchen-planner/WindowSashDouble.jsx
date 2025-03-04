@@ -31,7 +31,6 @@ export default function WindowSashDouble({
                   />
                   <meshStandardMaterial />
                   <Edges linewidth={1} threshold={15} color={'gray'} />
-                  <Outlines thickness={0.01} color={'gray'} />
                 </mesh>
               ) : (
                 <mesh key={i} position={s.pos} rotation={s.rotation}>
@@ -40,7 +39,6 @@ export default function WindowSashDouble({
                   />
                   <meshStandardMaterial />
                   <Edges linewidth={1} threshold={15} color={'gray'} />
-                  <Outlines thickness={0.01} color={'gray'} />
                 </mesh>
               )
             )}
@@ -52,7 +50,6 @@ export default function WindowSashDouble({
         <boxGeometry args={[w, len - w * 2, d]} />
         <meshStandardMaterial />
         <Edges linewidth={1} threshold={15} color={'gray'} />
-        <Outlines thickness={0.01} color={'gray'} />
       </mesh>
     </>
   )

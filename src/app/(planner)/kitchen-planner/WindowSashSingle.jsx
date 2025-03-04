@@ -26,7 +26,6 @@ export default function WindowSashSingle({
             />
             <meshStandardMaterial color={color} />
             <Edges linewidth={1} threshold={15} color={'gray'} />
-            <Outlines thickness={0.01} color={'gray'} />
           </mesh>
         ) : (
           <mesh key={i} position={s.pos} rotation={s.rotation}>
@@ -35,7 +34,6 @@ export default function WindowSashSingle({
             />
             <meshStandardMaterial color={color} />
             <Edges linewidth={1} threshold={15} color={'gray'} />
-            <Outlines thickness={0.01} color={'gray'} />
           </mesh>
         )
       )}

@@ -107,7 +107,6 @@ function Window3D({ style, len, offset, width, option }) {
               />
               <meshStandardMaterial color='#eee' />
               <Edges linewidth={1} threshold={15} color={'gray'} />
-              <Outlines thickness={0.01} color={'gray'} />
             </mesh>
           ) : (
             <mesh key={i} position={f.pos} rotation={f.rotation}>
@@ -116,7 +115,6 @@ function Window3D({ style, len, offset, width, option }) {
               />
               <meshStandardMaterial color='#eee' />
               <Edges linewidth={1} threshold={15} color={'gray'} />
-              <Outlines thickness={0.01} color={'gray'} />
             </mesh>
           )
         )}
