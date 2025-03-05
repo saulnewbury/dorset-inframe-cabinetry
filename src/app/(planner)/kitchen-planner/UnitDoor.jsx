@@ -121,6 +121,7 @@ function Beading({ w, h, t, position }) {
         args={[
           shape,
           {
+            bevelSegments: 2,
             depth: 0.00018,
             bevelEnabled: true,
             bevelSize: 0.005,
@@ -128,7 +129,7 @@ function Beading({ w, h, t, position }) {
           }
         ]}
       />
-      <Edges linewidth={1} threshold={0} color={'gray'} />
+      {/* <Edges linewidth={1} threshold={0} color={'gray'} /> */}
     </mesh>
   )
 }

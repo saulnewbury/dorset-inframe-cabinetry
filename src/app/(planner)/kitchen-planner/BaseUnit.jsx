@@ -25,11 +25,13 @@ export default function BaseUnit({
   thick = 18,
   style = ''
 }) {
-  const wtMap = useLoader(TextureLoader, wtTexture.src)
+  // const wtMap = useLoader(TextureLoader, wtTexture.src)
   const w = width / 1000
   const h = height / 1000
   const d = depth / 1000
   const t = thick / 1000
+
+  console.log('STYLE:', style)
 
   // Calculate positions of 'feet':
   const feet = useMemo(() => {
@@ -79,18 +81,18 @@ export default function BaseUnit({
         <Edges linewidth={1} threshold={15} color={'gray'} />
       </mesh>
       {/* Shelf/shelves */}
-      {/* {shelves.map((side, s) => {
+      {shelves.map((side, s) => {
         const px = shelves.length > 1 ? [-w / 4, w / 4][s] : 0
         return side.map((y, n) => (
           <mesh
             key={['l-', 'r-'][s] + n}
             material={carcassMaterial}
-            position={[px, y + 0.1, -0.05]}
+            position={[px, y + 0.1, d * 0.03]}
           >
-            <boxGeometry args={[w / shelves.length, 0.01, d - 0.1]} />
+            <boxGeometry args={[w * 0.9, 0.01, d - d * 0.03]} />
           </mesh>
         ))
-      })} */}
+      })}
       {/* Front brace */}
       {/* <mesh
         material={carcassMaterial}
@@ -122,10 +124,10 @@ export default function BaseUnit({
       {/* Door(s), drawers & handles */}
       <UnitFront {...{ w, h, d, style }} />
       {/* Worktop */}
-      <mesh position={[0, h + 0.1 + 0.015, 0.025]}>
-        <boxGeometry args={[w, 0.03, d + 0.1]} />
-        <meshStandardMaterial />
-        <Edges linewidth={1} threshold={15} color={'gray'} />
+      <mesh position={[0, h + 0.1 + 0.015, 0.034]}>
+        <boxGeometry args={[w, 0.03, d + t * 3 + 0.015]} />
+        <meshStandardMaterial color='lightblue' />
+        {/* <Edges linewidth={1} threshold={15} color={'gray'} /> */}
       </mesh>
     </group>
   )
