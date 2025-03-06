@@ -15,7 +15,7 @@ export default function DoorPanel({
   frameInset = 4, // Frame inset in mm
   holeInset = 65, // Distance from edge to hole in mm
   mouldingWidth = 9, // Width of the moulding in mm
-  splitDoors = true, // Whether to split each door into two
+  doorStyle = 'fourDoors', // "single", "split" (2 doors), or "fourDoors"
   splitGap = 2 // Gap between split doors in mm
 }) {
   // Convert dimensions from mm to meters
@@ -127,12 +127,149 @@ export default function DoorPanel({
       const panelHeight =
         hole.top - hole.bottom - 2 * mouldingWidthM - doorGapAtBottomM
 
-      // Create panel and door geometry
+      // Extrude settings for panel
+      const extrudeSettings = {
+        steps: 1,
+        depth: pt,
+        bevelEnabled: false
+      }
 
-      // Create panel and door geometry
-      if (splitDoors) {
-        // For split doors, create two separate panels and doors
+      // Create panel and door geometry based on door style
+      if (doorStyle === 'fourDoors') {
+        // For four doors, create a 2x2 grid of doors
 
+        // Calculate dimensions for quarter panels
+        // Horizontal split
+        const panelHalfWidth = panelWidth / 2 - splitGapM / 2
+        // Vertical split
+        const panelHalfHeight = panelHeight / 2 - splitGapM / 2
+
+        // Calculate positions for each quadrant
+        const positions = [
+          {
+            x: -panelWidth / 4 - splitGapM / 4,
+            y: panelHeight / 4 + splitGapM / 4
+          }, // Top-left
+          {
+            x: panelWidth / 4 + splitGapM / 4,
+            y: panelHeight / 4 + splitGapM / 4
+          }, // Top-right
+          {
+            x: -panelWidth / 4 - splitGapM / 4,
+            y: -panelHeight / 4 - splitGapM / 4
+          }, // Bottom-left
+          {
+            x: panelWidth / 4 + splitGapM / 4,
+            y: -panelHeight / 4 - splitGapM / 4
+          } // Bottom-right
+        ]
+
+        // Door dimensions for each quadrant
+        const doorQuarterWidth = doorWidth / 2 - splitGapM / 2
+        const doorQuarterHeight = doorHeight / 2 - splitGapM / 2
+
+        // Function to create a panel shape with hole
+        const createQuarterPanelShape = () => {
+          const panelShape = new THREE.Shape()
+          // Create panel shape
+          panelShape.moveTo(
+            -panelHalfWidth / 2,
+            -panelHalfHeight / 2 + doorGapAtBottomM / 2
+          )
+          panelShape.lineTo(
+            panelHalfWidth / 2,
+            -panelHalfHeight / 2 + doorGapAtBottomM / 2
+          )
+          panelShape.lineTo(
+            panelHalfWidth / 2,
+            panelHalfHeight / 2 + doorGapAtBottomM / 2
+          )
+          panelShape.lineTo(
+            -panelHalfWidth / 2,
+            panelHalfHeight / 2 + doorGapAtBottomM / 2
+          )
+          panelShape.lineTo(
+            -panelHalfWidth / 2,
+            -panelHalfHeight / 2 + doorGapAtBottomM / 2
+          )
+
+          // Create hole with inset (adjusted for quarter panel)
+          const scaledHoleInset = Math.min(
+            holeInsetM,
+            panelHalfWidth / 4,
+            panelHalfHeight / 4
+          )
+
+          const holeShape = new THREE.Path()
+          holeShape.moveTo(
+            -panelHalfWidth / 2 + scaledHoleInset,
+            -panelHalfHeight / 2 + scaledHoleInset + doorGapAtBottomM / 2
+          )
+          holeShape.lineTo(
+            panelHalfWidth / 2 - scaledHoleInset,
+            -panelHalfHeight / 2 + scaledHoleInset + doorGapAtBottomM / 2
+          )
+          holeShape.lineTo(
+            panelHalfWidth / 2 - scaledHoleInset,
+            panelHalfHeight / 2 - scaledHoleInset + doorGapAtBottomM / 2
+          )
+          holeShape.lineTo(
+            -panelHalfWidth / 2 + scaledHoleInset,
+            panelHalfHeight / 2 - scaledHoleInset + doorGapAtBottomM / 2
+          )
+          holeShape.lineTo(
+            -panelHalfWidth / 2 + scaledHoleInset,
+            -panelHalfHeight / 2 + scaledHoleInset + doorGapAtBottomM / 2
+          )
+
+          panelShape.holes.push(holeShape)
+          return panelShape
+        }
+
+        return (
+          <group key={`door-group-${index}`}>
+            {/* Create four panel and door combinations */}
+            {positions.map((pos, quadrantIndex) => (
+              <group key={`quadrant-${index}-${quadrantIndex}`}>
+                {/* Panel with hole */}
+                <mesh
+                  position={[
+                    doorX + pos.x,
+                    doorY + pos.y + doorGapAtBottomM / 2,
+                    depth / 2 - pt + doorThicknessM
+                  ]}
+                >
+                  <extrudeGeometry
+                    args={[createQuarterPanelShape(), extrudeSettings]}
+                  />
+                  <meshStandardMaterial color='white' side={THREE.DoubleSide} />
+                  <Edges threshold={5} color='gray' />
+                </mesh>
+
+                {/* Door front */}
+                <mesh
+                  position={[
+                    doorX + pos.x,
+                    doorY + pos.y,
+                    depth / 2 + doorThicknessM / 2 - 0.001
+                  ]}
+                >
+                  <boxGeometry
+                    args={[
+                      doorQuarterWidth,
+                      doorQuarterHeight,
+                      doorThicknessM / 2
+                    ]}
+                  />
+                  <meshStandardMaterial color='white' />
+                  <Edges threshold={5} color='gray' />
+                </mesh>
+              </group>
+            ))}
+          </group>
+        )
+      } else if (doorStyle === 'split') {
+        // Original split doors code (2 doors side by side)
         // Calculate dimensions for split panels
         const panelHalfWidth = panelWidth / 2 - splitGapM / 2
 
@@ -230,13 +367,6 @@ export default function DoorPanel({
         )
         rightPanelShape.holes.push(rightHoleShape)
 
-        // Extrude settings
-        const extrudeSettings = {
-          steps: 1,
-          depth: pt,
-          bevelEnabled: false
-        }
-
         // Positions for split panels and doors
         const leftX = doorX - panelWidth / 4 - splitGapM / 4
         const rightX = doorX + panelWidth / 4 + splitGapM / 4
@@ -296,7 +426,7 @@ export default function DoorPanel({
           </group>
         )
       } else {
-        // Standard single panel with hole and door
+        // Original single door code
         // Create panel shape for this specific door
         const panelShape = new THREE.Shape()
         // Position the panel slightly higher to create the gap at the bottom
@@ -346,13 +476,6 @@ export default function DoorPanel({
 
         // Add hole to panel shape
         panelShape.holes.push(holeShape)
-
-        // Extrude settings
-        const extrudeSettings = {
-          steps: 1,
-          depth: pt,
-          bevelEnabled: false
-        }
 
         return (
           <group key={`door-group-${index}`}>

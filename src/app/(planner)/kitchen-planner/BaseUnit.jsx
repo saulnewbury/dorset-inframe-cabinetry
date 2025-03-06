@@ -19,7 +19,7 @@ export default function BaseUnit({
   carcassHeight = 759 * 1.5, // 723 + 36
   carcassInnerWidth = 264 * 2,
   panelThickness = 18,
-  numHoles = 4,
+  numHoles = 1,
   type = 'door',
   style = ''
 }) {
