@@ -20,7 +20,7 @@ export default function BaseUnit({
   carcassInnerWidth = 264 * 2,
   panelThickness = 18,
   numHoles = 1,
-  type = 'door',
+  type = { name: 'door', style: 'fourDoors' },
   style = ''
 }) {
   const height = carcassHeight / 1000
@@ -45,7 +45,7 @@ export default function BaseUnit({
         panelThickness={panelThickness}
         numHoles={numHoles}
       />
-      {type === 'drawer' && (
+      {type.name === 'drawer' && (
         <DrawerPanel
           carcassDepth={carcassDepth}
           carcassHeight={carcassHeight}
@@ -54,13 +54,14 @@ export default function BaseUnit({
           numHoles={numHoles}
         />
       )}
-      {type === 'door' && (
+      {type.name === 'door' && (
         <DoorPanel
           carcassDepth={carcassDepth}
           carcassHeight={carcassHeight}
           carcassInnerWidth={carcassInnerWidth}
           panelThickness={panelThickness}
           numHoles={numHoles}
+          doorStyle={type.style}
         />
       )}
       {/* Left Side Panel */}
