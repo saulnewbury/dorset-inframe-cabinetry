@@ -6,8 +6,6 @@ export default function DrawerPanel({
   carcassHeight,
   panelThickness,
   carcassInnerWidth,
-  carcassOuterWidth = 300,
-  frameThickness = 50,
   numHoles = 4,
   dividerThickness = 18,
   drawerThickness = 18, // Thickness of the drawer front in mm

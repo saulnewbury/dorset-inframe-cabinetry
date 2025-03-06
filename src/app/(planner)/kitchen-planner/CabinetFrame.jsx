@@ -8,7 +8,6 @@ export default function CabinetFrame({
   panelThickness,
   carcassInnerWidth,
   numHoles,
-
   frameThickness = 50,
   dividerThickness = 18
 }) {

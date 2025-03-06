@@ -5,6 +5,7 @@ import { Edges } from '@react-three/drei'
 import CabinetFrame from './CabinetFrame'
 import CabinetMoulding from './CabinetMoulding'
 import DrawerPanel from './DrawerPanel'
+import DoorPanel from './DoorPanel'
 
 // Materials for parts of unit:
 
@@ -15,9 +16,11 @@ import DrawerPanel from './DrawerPanel'
 
 export default function BaseUnit({
   carcassDepth = 575, // carcassDepth is 527 + 30 + 18
-  carcassHeight = 759, // 723 + 36
+  carcassHeight = 759 * 1.5, // 723 + 36
   carcassInnerWidth = 264 * 1.5,
   panelThickness = 18,
+  numHoles = 3,
+  type = 'door',
   style = ''
 }) {
   const height = carcassHeight / 1000
@@ -33,22 +36,33 @@ export default function BaseUnit({
         carcassHeight={carcassHeight}
         carcassInnerWidth={carcassInnerWidth}
         panelThickness={panelThickness}
-        numHoles={4}
+        numHoles={numHoles}
       />
       <CabinetMoulding
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={carcassInnerWidth}
         panelThickness={panelThickness}
-        numHoles={4}
+        numHoles={numHoles}
       />
-      <DrawerPanel
-        carcassDepth={carcassDepth}
-        carcassHeight={carcassHeight}
-        carcassInnerWidth={carcassInnerWidth}
-        panelThickness={panelThickness}
-        numHoles={4}
-      />
+      {type === 'drawer' && (
+        <DrawerPanel
+          carcassDepth={carcassDepth}
+          carcassHeight={carcassHeight}
+          carcassInnerWidth={carcassInnerWidth}
+          panelThickness={panelThickness}
+          numHoles={numHoles}
+        />
+      )}
+      {type === 'door' && (
+        <DoorPanel
+          carcassDepth={carcassDepth}
+          carcassHeight={carcassHeight}
+          carcassInnerWidth={carcassInnerWidth}
+          panelThickness={panelThickness}
+          numHoles={numHoles}
+        />
+      )}
       {/* Left Side Panel */}
       <mesh position={[-distance / 2, height / 2, 0]}>
         <boxGeometry args={[thickness, height, depth]} />
