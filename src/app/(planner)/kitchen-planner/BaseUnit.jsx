@@ -17,9 +17,9 @@ import DoorPanel from './DoorPanel'
 export default function BaseUnit({
   carcassDepth = 575, // carcassDepth is 527 + 30 + 18
   carcassHeight = 759 * 1.5, // 723 + 36
-  carcassInnerWidth = 264 * 1.5,
+  carcassInnerWidth = 264 * 2,
   panelThickness = 18,
-  numHoles = 3,
+  numHoles = 4,
   type = 'door',
   style = ''
 }) {

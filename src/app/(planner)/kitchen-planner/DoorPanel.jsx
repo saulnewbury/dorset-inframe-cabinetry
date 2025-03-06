@@ -14,13 +14,16 @@ export default function DoorPanel({
   mouldingSize = 4, // Moulding size in mm
   frameInset = 4, // Frame inset in mm
   holeInset = 65, // Distance from edge to hole in mm
-  mouldingWidth = 9 // Width of the moulding in mm
+  mouldingWidth = 9, // Width of the moulding in mm
+  splitDoors = true, // Whether to split each door into two
+  splitGap = 2 // Gap between split doors in mm
 }) {
   // Convert dimensions from mm to meters
   const frameHeight = carcassHeight + 26.2
   const pt = panelThickness / 1000
   const height = frameHeight / 1000
   const depth = carcassDepth / 1000
+  const width = carcassInnerWidth / 1000
   const hOffset = carcassHeight / 1000 - frameHeight / 1000
   const doorThicknessM = doorThickness / 1000
   const doorGapM = doorGap / 1000
@@ -29,6 +32,8 @@ export default function DoorPanel({
   const dividerThicknessM = dividerThickness / 1000
   const holeInsetM = holeInset / 1000
   const mouldingWidthM = mouldingWidth / 1000
+  const splitGapM = splitGap / 1000
+  const doorGapAtBottomM = 2 / 1000 // 2mm gap at bottom in meters
 
   const holeHeight = carcassHeight / 1000 - 9 / 1000
   const holeWidth = carcassInnerWidth / 1000
@@ -119,83 +124,262 @@ export default function DoorPanel({
       // Calculate panel dimensions (smaller than the door area, accounting for moulding)
       const panelWidth = hole.right - hole.left - 2 * mouldingWidthM
       // Adjust panel height to leave a 2mm gap at the bottom
-      const doorGapAtBottomM = 2 / 1000 // 2mm gap at bottom in meters
       const panelHeight =
         hole.top - hole.bottom - 2 * mouldingWidthM - doorGapAtBottomM
 
-      // Create panel shape for this specific door
-      const panelShape = new THREE.Shape()
-      // Position the panel slightly higher to create the gap at the bottom
-      panelShape.moveTo(
-        -panelWidth / 2,
-        -panelHeight / 2 + doorGapAtBottomM / 2
-      )
-      panelShape.lineTo(panelWidth / 2, -panelHeight / 2 + doorGapAtBottomM / 2)
-      panelShape.lineTo(panelWidth / 2, panelHeight / 2 + doorGapAtBottomM / 2)
-      panelShape.lineTo(-panelWidth / 2, panelHeight / 2 + doorGapAtBottomM / 2)
-      panelShape.lineTo(
-        -panelWidth / 2,
-        -panelHeight / 2 + doorGapAtBottomM / 2
-      )
+      // Create panel and door geometry
 
-      // Create hole shape (65mm from the edge)
-      const holeShape = new THREE.Path()
-      holeShape.moveTo(
-        -panelWidth / 2 + holeInsetM,
-        -panelHeight / 2 + holeInsetM + doorGapAtBottomM / 2
-      )
-      holeShape.lineTo(
-        panelWidth / 2 - holeInsetM,
-        -panelHeight / 2 + holeInsetM + doorGapAtBottomM / 2
-      )
-      holeShape.lineTo(
-        panelWidth / 2 - holeInsetM,
-        panelHeight / 2 - holeInsetM + doorGapAtBottomM / 2
-      )
-      holeShape.lineTo(
-        -panelWidth / 2 + holeInsetM,
-        panelHeight / 2 - holeInsetM + doorGapAtBottomM / 2
-      )
-      holeShape.lineTo(
-        -panelWidth / 2 + holeInsetM,
-        -panelHeight / 2 + holeInsetM + doorGapAtBottomM / 2
-      )
+      // Create panel and door geometry
+      if (splitDoors) {
+        // For split doors, create two separate panels and doors
 
-      // Add hole to panel shape
-      panelShape.holes.push(holeShape)
+        // Calculate dimensions for split panels
+        const panelHalfWidth = panelWidth / 2 - splitGapM / 2
 
-      // Extrude settings
-      const extrudeSettings = {
-        steps: 1,
-        depth: pt,
-        bevelEnabled: false
+        // Left panel
+        const leftPanelShape = new THREE.Shape()
+        leftPanelShape.moveTo(
+          -panelHalfWidth / 2,
+          -panelHeight / 2 + doorGapAtBottomM / 2
+        )
+        leftPanelShape.lineTo(
+          panelHalfWidth / 2,
+          -panelHeight / 2 + doorGapAtBottomM / 2
+        )
+        leftPanelShape.lineTo(
+          panelHalfWidth / 2,
+          panelHeight / 2 + doorGapAtBottomM / 2
+        )
+        leftPanelShape.lineTo(
+          -panelHalfWidth / 2,
+          panelHeight / 2 + doorGapAtBottomM / 2
+        )
+        leftPanelShape.lineTo(
+          -panelHalfWidth / 2,
+          -panelHeight / 2 + doorGapAtBottomM / 2
+        )
+
+        // Left panel hole - maintain 65mm inset on all sides
+        const leftHoleShape = new THREE.Path()
+        leftHoleShape.moveTo(
+          -panelHalfWidth / 2 + holeInsetM,
+          -panelHeight / 2 + holeInsetM + doorGapAtBottomM / 2
+        )
+        leftHoleShape.lineTo(
+          panelHalfWidth / 2 - holeInsetM,
+          -panelHeight / 2 + holeInsetM + doorGapAtBottomM / 2
+        )
+        leftHoleShape.lineTo(
+          panelHalfWidth / 2 - holeInsetM,
+          panelHeight / 2 - holeInsetM + doorGapAtBottomM / 2
+        )
+        leftHoleShape.lineTo(
+          -panelHalfWidth / 2 + holeInsetM,
+          panelHeight / 2 - holeInsetM + doorGapAtBottomM / 2
+        )
+        leftHoleShape.lineTo(
+          -panelHalfWidth / 2 + holeInsetM,
+          -panelHeight / 2 + holeInsetM + doorGapAtBottomM / 2
+        )
+        leftPanelShape.holes.push(leftHoleShape)
+
+        // Right panel
+        const rightPanelShape = new THREE.Shape()
+        rightPanelShape.moveTo(
+          -panelHalfWidth / 2,
+          -panelHeight / 2 + doorGapAtBottomM / 2
+        )
+        rightPanelShape.lineTo(
+          panelHalfWidth / 2,
+          -panelHeight / 2 + doorGapAtBottomM / 2
+        )
+        rightPanelShape.lineTo(
+          panelHalfWidth / 2,
+          panelHeight / 2 + doorGapAtBottomM / 2
+        )
+        rightPanelShape.lineTo(
+          -panelHalfWidth / 2,
+          panelHeight / 2 + doorGapAtBottomM / 2
+        )
+        rightPanelShape.lineTo(
+          -panelHalfWidth / 2,
+          -panelHeight / 2 + doorGapAtBottomM / 2
+        )
+
+        // Right panel hole - maintain 65mm inset on all sides
+        const rightHoleShape = new THREE.Path()
+        rightHoleShape.moveTo(
+          -panelHalfWidth / 2 + holeInsetM,
+          -panelHeight / 2 + holeInsetM + doorGapAtBottomM / 2
+        )
+        rightHoleShape.lineTo(
+          panelHalfWidth / 2 - holeInsetM,
+          -panelHeight / 2 + holeInsetM + doorGapAtBottomM / 2
+        )
+        rightHoleShape.lineTo(
+          panelHalfWidth / 2 - holeInsetM,
+          panelHeight / 2 - holeInsetM + doorGapAtBottomM / 2
+        )
+        rightHoleShape.lineTo(
+          -panelHalfWidth / 2 + holeInsetM,
+          panelHeight / 2 - holeInsetM + doorGapAtBottomM / 2
+        )
+        rightHoleShape.lineTo(
+          -panelHalfWidth / 2 + holeInsetM,
+          -panelHeight / 2 + holeInsetM + doorGapAtBottomM / 2
+        )
+        rightPanelShape.holes.push(rightHoleShape)
+
+        // Extrude settings
+        const extrudeSettings = {
+          steps: 1,
+          depth: pt,
+          bevelEnabled: false
+        }
+
+        // Positions for split panels and doors
+        const leftX = doorX - panelWidth / 4 - splitGapM / 4
+        const rightX = doorX + panelWidth / 4 + splitGapM / 4
+
+        // Calculate door dimensions
+        const doorHalfWidth = doorWidth / 2 - splitGapM / 2
+
+        return (
+          <group key={`door-group-${index}`}>
+            {/* Left panel */}
+            <mesh
+              position={[
+                leftX,
+                doorY + doorGapAtBottomM / 2,
+                depth / 2 - pt + doorThicknessM
+              ]}
+            >
+              <extrudeGeometry args={[leftPanelShape, extrudeSettings]} />
+              <meshStandardMaterial color='white' side={THREE.DoubleSide} />
+              <Edges threshold={5} color='gray' />
+            </mesh>
+
+            {/* Left door */}
+            <mesh
+              position={[leftX, doorY, depth / 2 + doorThicknessM / 2 - 0.001]}
+            >
+              <boxGeometry
+                args={[doorHalfWidth, doorHeight, doorThicknessM / 2]}
+              />
+              <meshStandardMaterial color='white' />
+              <Edges threshold={5} color='gray' />
+            </mesh>
+
+            {/* Right panel */}
+            <mesh
+              position={[
+                rightX,
+                doorY + doorGapAtBottomM / 2,
+                depth / 2 - pt + doorThicknessM
+              ]}
+            >
+              <extrudeGeometry args={[rightPanelShape, extrudeSettings]} />
+              <meshStandardMaterial color='white' side={THREE.DoubleSide} />
+              <Edges threshold={5} color='gray' />
+            </mesh>
+
+            {/* Right door */}
+            <mesh
+              position={[rightX, doorY, depth / 2 + doorThicknessM / 2 - 0.001]}
+            >
+              <boxGeometry
+                args={[doorHalfWidth, doorHeight, doorThicknessM / 2]}
+              />
+              <meshStandardMaterial color='white' />
+              <Edges threshold={5} color='gray' />
+            </mesh>
+          </group>
+        )
+      } else {
+        // Standard single panel with hole and door
+        // Create panel shape for this specific door
+        const panelShape = new THREE.Shape()
+        // Position the panel slightly higher to create the gap at the bottom
+        panelShape.moveTo(
+          -panelWidth / 2,
+          -panelHeight / 2 + doorGapAtBottomM / 2
+        )
+        panelShape.lineTo(
+          panelWidth / 2,
+          -panelHeight / 2 + doorGapAtBottomM / 2
+        )
+        panelShape.lineTo(
+          panelWidth / 2,
+          panelHeight / 2 + doorGapAtBottomM / 2
+        )
+        panelShape.lineTo(
+          -panelWidth / 2,
+          panelHeight / 2 + doorGapAtBottomM / 2
+        )
+        panelShape.lineTo(
+          -panelWidth / 2,
+          -panelHeight / 2 + doorGapAtBottomM / 2
+        )
+
+        // Create hole shape (65mm from the edge)
+        const holeShape = new THREE.Path()
+        holeShape.moveTo(
+          -panelWidth / 2 + holeInsetM,
+          -panelHeight / 2 + holeInsetM + doorGapAtBottomM / 2
+        )
+        holeShape.lineTo(
+          panelWidth / 2 - holeInsetM,
+          -panelHeight / 2 + holeInsetM + doorGapAtBottomM / 2
+        )
+        holeShape.lineTo(
+          panelWidth / 2 - holeInsetM,
+          panelHeight / 2 - holeInsetM + doorGapAtBottomM / 2
+        )
+        holeShape.lineTo(
+          -panelWidth / 2 + holeInsetM,
+          panelHeight / 2 - holeInsetM + doorGapAtBottomM / 2
+        )
+        holeShape.lineTo(
+          -panelWidth / 2 + holeInsetM,
+          -panelHeight / 2 + holeInsetM + doorGapAtBottomM / 2
+        )
+
+        // Add hole to panel shape
+        panelShape.holes.push(holeShape)
+
+        // Extrude settings
+        const extrudeSettings = {
+          steps: 1,
+          depth: pt,
+          bevelEnabled: false
+        }
+
+        return (
+          <group key={`door-group-${index}`}>
+            {/* Individual panel with hole */}
+            <mesh
+              position={[
+                doorX,
+                doorY + doorGapAtBottomM / 2,
+                depth / 2 - pt + doorThicknessM
+              ]}
+            >
+              <extrudeGeometry args={[panelShape, extrudeSettings]} />
+              <meshStandardMaterial color='white' side={THREE.DoubleSide} />
+              <Edges threshold={5} color='gray' />
+            </mesh>
+
+            {/* Single door front */}
+            <mesh
+              position={[doorX, doorY, depth / 2 + doorThicknessM / 2 - 0.001]}
+            >
+              <boxGeometry args={[doorWidth, doorHeight, doorThicknessM / 2]} />
+              <meshStandardMaterial color='white' />
+              <Edges threshold={5} color='gray' />
+            </mesh>
+          </group>
+        )
       }
-
-      return (
-        <group key={`door-group-${index}`}>
-          {/* Individual panel with hole */}
-          <mesh
-            position={[
-              doorX,
-              doorY + doorGapAtBottomM / 2,
-              depth / 2 - pt + doorThicknessM
-            ]}
-          >
-            <extrudeGeometry args={[panelShape, extrudeSettings]} />
-            <meshStandardMaterial color='white' side={THREE.DoubleSide} />
-            <Edges threshold={5} color='gray' />
-          </mesh>
-
-          {/* Door front */}
-          <mesh
-            position={[doorX, doorY, depth / 2 + doorThicknessM / 2 - 0.001]}
-          >
-            <boxGeometry args={[doorWidth, doorHeight, doorThicknessM / 2]} />
-            <meshStandardMaterial color='white' />
-            <Edges threshold={5} color='gray' />
-          </mesh>
-        </group>
-      )
     })
   }
 
