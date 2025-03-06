@@ -42,12 +42,16 @@ export default function UnitDoor({
   return (
     <group position={[position[0], position[1], position[2] + t]}>
       <mesh position-z={t}>
-        <boxGeometry args={[dw - 0.009, dh - 0.009, t / 2]} />
+        <boxGeometry args={[dw - 0.009, dh - 0.009, t / 2 + 0.003]} />
         <meshStandardMaterial />
         <Edges linewidth={1} threshold={15} color={'gray'} />
       </mesh>
-      <DoorPanels w={w / px.length} h={h} position={[x, 0, t - t / 2]} t={t} />
-      <Beading w={w / px.length} h={h} position={[x, 0, 0 + 0.02]} t={t} />
+      <DoorPanels
+        w={w / px.length}
+        h={h}
+        position={[x, 0, t - t / 2 + 0.005]}
+        t={t}
+      />
 
       <UnitHandle
         position={[
@@ -70,17 +74,17 @@ function DoorPanels({ w, h, t, position }) {
   const pw = 0.065 // panel width
 
   const shape = new Shape()
-    .moveTo(-w / 2 + t + t / 2, -h / 2)
-    .lineTo(w / 2 - t - t / 2, -h / 2)
+    .moveTo(-w / 2 + t + t / 2, -h / 2 + t * 0.7)
+    .lineTo(w / 2 - t - t / 2, -h / 2 + t * 0.7)
     .lineTo(w / 2 - t - t / 2, h / 2 - t - t / 2)
     .lineTo(-w / 2 + t + t / 2, h / 2 - t - t / 2)
     .closePath()
   shape.holes.push(
     new Shape()
-      .moveTo(0.02 - w / 2 + pw, 0.022 - h / 2 + pw)
+      .moveTo(0.02 - w / 2 + pw, 0.022 - h / 2 + pw * 0.8)
       .lineTo(0.02 - w / 2 + pw, h / 2 - 0.02 - pw)
       .lineTo(w / 2 - 0.02 - pw, h / 2 - 0.02 - pw)
-      .lineTo(w / 2 - 0.02 - pw, 0.022 - h / 2 + pw)
+      .lineTo(w / 2 - 0.02 - pw, 0.022 - h / 2 + pw * 0.8)
       .closePath()
   )
 
@@ -89,47 +93,6 @@ function DoorPanels({ w, h, t, position }) {
       <extrudeGeometry args={[shape, { depth: 0.018, bevelEnabled: false }]} />
       <Edges linewidth={1} threshold={15} color={'gray'} />
       {/* <meshNormalMaterial /> */}
-    </mesh>
-  )
-}
-
-function Beading({ w, h, t, position }) {
-  const [model] = useContext(ModelContext)
-  const frontMaterial = useMemo(
-    () => new MeshStandardMaterial({ color: model.colour }),
-    [model.colour]
-  )
-
-  const shape = new Shape()
-    .moveTo(-w / 2 + t + t * 0.4, -h / 2 + t / 2 + t * 0.01)
-    .lineTo(w / 2 - t - t * 0.4, -h / 2 + t / 2 + t * 0.01)
-    .lineTo(w / 2 - t - t * 0.4, h / 2 - t - t / 3)
-    .lineTo(-w / 2 + t + t * 0.4, h / 2 - t - t / 3)
-    .closePath()
-  shape.holes.push(
-    new Shape()
-      .moveTo(-w / 2 + t + t / 2, -h / 2 + t - t / 3)
-      .lineTo(w / 2 - t - t / 2, -h / 2 + t - t / 3)
-      .lineTo(w / 2 - t - t / 2, h / 2 - t - t / 2)
-      .lineTo(-w / 2 + t + t / 2, h / 2 - t - t / 2)
-      .closePath()
-  )
-
-  return (
-    <mesh material={frontMaterial} position={position}>
-      <extrudeGeometry
-        args={[
-          shape,
-          {
-            bevelSegments: 2,
-            depth: 0.00018,
-            bevelEnabled: true,
-            bevelSize: 0.005,
-            bevelThickness: 0.01
-          }
-        ]}
-      />
-      {/* <Edges linewidth={1} threshold={0} color={'gray'} /> */}
     </mesh>
   )
 }

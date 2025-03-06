@@ -1,87 +1,98 @@
+'use client'
+
 import { useContext, useMemo } from 'react'
+import { Edges } from '@react-three/drei'
 import {
   BatchedMesh,
-  Matrix4,
-  ExtrudeGeometry,
   BoxGeometry,
+  EdgesGeometry,
+  ExtrudeGeometry,
+  LineBasicMaterial,
+  LineSegments,
+  Matrix4,
   Shape,
   MeshStandardMaterial
 } from 'three'
-import { ModelContext } from '@/model/context'
 
+import { ModelContext } from '@/model/context'
 import UnitHandle from './UnitHandle'
 
 /**
- * Component to render a drawer-type front, with a handle. Uses a similar model
- * to that for a door.
+ * Component to render a door with a handle (left or right). Uses a batched
+ * mesh to optimise drawing of the various parts, all of which use the same
+ * material. Added gray lines using EdgesGeometry for better visual definition.
  */
-export default function UnitDrawer({ dw, dh, position }) {
+export default function UnitDrawer({
+  w,
+  h,
+  d,
+  x,
+  px,
+  dw,
+  dh,
+  handle = 'left',
+  position
+}) {
+  const [model] = useContext(ModelContext)
+
+  const t = 0.018
+  const bvw = dw >= 0.4 ? 0.08 : 0.05
+  const bvh = 0.08
+
+  return (
+    <group position={[position[0], position[1], position[2] + t]}>
+      <mesh position-z={t}>
+        <boxGeometry args={[dw - 0.009, dh - 0.009, t / 2 + 0.003]} />
+        <meshStandardMaterial />
+        <Edges linewidth={1} threshold={15} color={'gray'} />
+      </mesh>
+      <DoorPanels
+        w={w / px.length}
+        h={h}
+        position={[x, 0, t - t / 2 + 0.005]}
+        t={t}
+      />
+
+      <UnitHandle
+        position={[
+          handle === 'left' ? (bvw - dw) / 2 : (dw - bvw) / 2,
+          0,
+          0.03
+        ]}
+      />
+    </group>
+  )
+}
+
+function DoorPanels({ w, h, t, position }) {
   const [model] = useContext(ModelContext)
   const frontMaterial = useMemo(
     () => new MeshStandardMaterial({ color: model.colour }),
     [model.colour]
   )
-  const drawerMesh = useMemo(() => {
-    const mesh = new BatchedMesh(5, 1000, 10, frontMaterial)
 
-    const base = mesh.addGeometry(
-      new BoxGeometry(dw - 0.04, dh - 0.04, 0.01).toNonIndexed()
-    )
-    const edge = mesh.addGeometry(
-      new ExtrudeGeometry(
-        new Shape()
-          .moveTo(-0.04, 0.005 - dh / 2)
-          .lineTo(0.04, 0.005 - dh / 2)
-          .lineTo(0.04, dh / 2 - 0.005)
-          .lineTo(-0.04, dh / 2 - 0.005)
-          .closePath(),
-        {
-          depth: 0,
-          bevelEnabled: true,
-          bevelThickness: 0.005,
-          bevelSize: 0.005,
-          bevelsegments: 4
-        }
-      )
-    )
-    const band = mesh.addGeometry(
-      new ExtrudeGeometry(
-        new Shape()
-          .moveTo(0.08 - dw / 2, -0.02)
-          .lineTo(dw / 2 - 0.08, -0.02)
-          .lineTo(dw / 2 - 0.08, 0.02)
-          .lineTo(0.08 - dw / 2, 0.02)
-          .closePath(),
-        {
-          depth: 0,
-          bevelEnabled: true,
-          bevelThickness: 0.005,
-          bevelSize: 0.005,
-          bevelsegments: 4
-        }
-      )
-    )
+  const pw = 0.065 // panel width
 
-    mesh.addInstance(base)
-    const edgeLeft = mesh.addInstance(edge)
-    const edgeRight = mesh.addInstance(edge)
-    const bandTop = mesh.addInstance(band)
-    const bandBottom = mesh.addInstance(band)
-
-    const r = new Matrix4()
-
-    mesh.setMatrixAt(edgeLeft, r.clone().setPosition(0.045 - dw / 2, 0, 0.005))
-    mesh.setMatrixAt(edgeRight, r.clone().setPosition(dw / 2 - 0.045, 0, 0.005))
-    mesh.setMatrixAt(bandTop, r.clone().setPosition(0, dh / 2 - 0.025, 0.005))
-    mesh.setMatrixAt(bandBottom, r.setPosition(0, 0.025 - dh / 2, 0.005))
-
-    return mesh
-  }, [dw, dh])
+  const shape = new Shape()
+    .moveTo(-w / 2 + t + t / 2, -h / 2 + t * 0.7)
+    .lineTo(w / 2 - t - t / 2, -h / 2 + t * 0.7)
+    .lineTo(w / 2 - t - t / 2, h / 2 - t - t / 2)
+    .lineTo(-w / 2 + t + t / 2, h / 2 - t - t / 2)
+    .closePath()
+  shape.holes.push(
+    new Shape()
+      .moveTo(0.02 - w / 2 + pw, 0.022 - h / 2 + pw * 0.8)
+      .lineTo(0.02 - w / 2 + pw, h / 2 - 0.02 - pw)
+      .lineTo(w / 2 - 0.02 - pw, h / 2 - 0.02 - pw)
+      .lineTo(w / 2 - 0.02 - pw, 0.022 - h / 2 + pw * 0.8)
+      .closePath()
+  )
 
   return (
-    <group position={position}>
-      <primitive object={drawerMesh} />
-      <UnitHandle position={[0, dh / 2 - 0.03, 0.01]} />
-    </group>
+    <mesh material={frontMaterial} position={position}>
+      <extrudeGeometry args={[shape, { depth: 0.018, bevelEnabled: false }]} />
+      <Edges linewidth={1} threshold={15} color={'gray'} />
+      {/* <meshNormalMaterial /> */}
+    </mesh>
   )
 }

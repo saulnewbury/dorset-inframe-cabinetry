@@ -30,8 +30,8 @@ const Dialog = forwardRef(
              ** It is set as state at page.js level via child (SideBar.jsx)
              ** callback function handleContent.
              */}
-
             <Body onClose={closeContentBox} />
+
             {/* {content.name === 'Electricity' && <Items items={content.items} />} */}
             {/* {!content.items ? (
             <Body onClose={closeContentBox} />
