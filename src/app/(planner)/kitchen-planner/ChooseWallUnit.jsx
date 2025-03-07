@@ -1,6 +1,8 @@
 import { useContext, useState } from 'react'
 import { ModelContext } from '@/model/context'
 
+import Button from '@/components/Button'
+
 import one_door from '@/assets/units/wall/1-door.jpg'
 import two_door from '@/assets/units/wall/2-door.jpg'
 
@@ -35,12 +37,9 @@ export default function ChooseWallUnit({ onClose = () => {} }) {
       </p>
       {/* Submit button */}
       <p>
-        <button
-          type="submit"
-          className="bg-blue-700 text-white rounded-md px-2 py-1 disabled:bg-gray-400"
-        >
-          Submit
-        </button>
+        <Button primary disabled={!width}>
+          Add
+        </Button>
       </p>
     </form>
   )
