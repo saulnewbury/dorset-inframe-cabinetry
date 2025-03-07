@@ -10,6 +10,7 @@ export default function CabinetMoulding({
   panelThickness,
   frameThickness = 50,
   numHoles = 4,
+  ratios = null, // New parameter for custom ratios
   dividerThickness = 18,
   mouldingSize = 0.001, // 4mm x 4mm default moulding size
   mouldingRadius = 0.8, // radius for rounding the moulding (half of mouldingSize by default)
@@ -32,7 +33,7 @@ export default function CabinetMoulding({
   const holeWidth = carcassInnerWidth / 1000
   const holeYOffset = pt
 
-  // Calculate hole boundaries based on numHoles
+  // Calculate hole boundaries based on numHoles and ratios
   const holeBoundaries = useMemo(() => {
     const boundaries = []
 
@@ -49,10 +50,35 @@ export default function CabinetMoulding({
         left: -holeWidth / 2,
         right: holeWidth / 2
       })
+    } else if (ratios && ratios.length === numHoles) {
+      // Custom ratios provided
+      const sumRatios = ratios.reduce((sum, ratio) => sum + ratio, 0)
+
+      // Calculate available height after accounting for dividers
+      const numDividers = numHoles - 1
+      const availableHeight = totalHoleHeight - numDividers * dividerThicknessM
+
+      // Create hole boundaries based on custom ratios
+      let currentBottom = holeBottom
+
+      for (let i = 0; i < numHoles; i++) {
+        // Calculate the current hole height based on its ratio
+        const currentHoleHeight = (ratios[i] / sumRatios) * availableHeight
+        const currentTop = currentBottom + currentHoleHeight
+
+        boundaries.push({
+          bottom: currentBottom,
+          top: currentTop,
+          left: -holeWidth / 2,
+          right: holeWidth / 2
+        })
+
+        currentBottom = currentTop + dividerThicknessM
+      }
     } else if (numHoles === 3) {
       // Special case for 3 holes with ratio 8321 : 8312 : 4925
-      const ratios = [8321, 8312, 4925]
-      const sumRatios = ratios.reduce((sum, ratio) => sum + ratio, 0)
+      const defaultRatios = [8321, 8312, 4925]
+      const sumRatios = defaultRatios.reduce((sum, ratio) => sum + ratio, 0)
 
       // Calculate available height after accounting for dividers
       const numDividers = numHoles - 1
@@ -63,7 +89,8 @@ export default function CabinetMoulding({
 
       for (let i = 0; i < numHoles; i++) {
         // Calculate the current hole height based on its ratio
-        const currentHoleHeight = (ratios[i] / sumRatios) * availableHeight
+        const currentHoleHeight =
+          (defaultRatios[i] / sumRatios) * availableHeight
         const currentTop = currentBottom + currentHoleHeight
 
         boundaries.push({
@@ -98,7 +125,15 @@ export default function CabinetMoulding({
     }
 
     return boundaries
-  }, [holeHeight, holeWidth, holeYOffset, numHoles, dividerThicknessM, pt])
+  }, [
+    holeHeight,
+    holeWidth,
+    holeYOffset,
+    numHoles,
+    dividerThicknessM,
+    pt,
+    ratios
+  ])
 
   // Frame component for a single hole
   const HoleMoulding = ({ hole }) => {

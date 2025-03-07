@@ -11,6 +11,7 @@ export function SplitDoors({
   pt,
   doorThicknessM,
   doorGapAtBottomM,
+  doorGapM, // This prop is already included
   doorWidth,
   doorHeight,
   panelWidth,

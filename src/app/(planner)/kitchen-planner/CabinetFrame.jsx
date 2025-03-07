@@ -8,6 +8,7 @@ export default function CabinetFrame({
   panelThickness,
   carcassInnerWidth,
   numHoles,
+  ratios = null, // New parameter for custom ratios
   frameThickness = 50,
   dividerThickness = 18
 }) {
@@ -44,13 +45,38 @@ export default function CabinetFrame({
     const holeTop = holeHeight / 2 + holeYOffset - pt
     const totalHoleHeight = holeTop - holeBottom
 
-    // Create holes based on numHoles
+    // Create holes based on numHoles and ratios
     if (numHoles === 1) {
       addSingleHole(panelShape, holeWidth, holeBottom, holeTop)
+    } else if (ratios && ratios.length === numHoles) {
+      // Custom ratios provided
+      const sumRatios = ratios.reduce((sum, ratio) => sum + ratio, 0)
+
+      // Calculate available height after accounting for dividers
+      const numDividers = numHoles - 1
+      const availableHeight = totalHoleHeight - numDividers * dividerThicknessM
+
+      // Create hole boundaries based on custom ratios
+      const boundaries = []
+      let currentBottom = holeBottom
+
+      for (let i = 0; i < numHoles; i++) {
+        // Calculate the current hole height based on its ratio
+        const currentHoleHeight = (ratios[i] / sumRatios) * availableHeight
+        const currentTop = currentBottom + currentHoleHeight
+
+        boundaries.push({ bottom: currentBottom, top: currentTop })
+        currentBottom = currentTop + dividerThicknessM
+      }
+
+      // Create hole for each boundary
+      boundaries.forEach(({ bottom, top }) => {
+        addHole(panelShape, holeWidth, bottom, top)
+      })
     } else if (numHoles === 3) {
       // Special case for 3 holes with ratio 8321 : 8312 : 4925
-      const ratios = [8321, 8312, 4925]
-      const sumRatios = ratios.reduce((sum, ratio) => sum + ratio, 0)
+      const defaultRatios = [8321, 8312, 4925]
+      const sumRatios = defaultRatios.reduce((sum, ratio) => sum + ratio, 0)
 
       // Calculate available height after accounting for dividers
       const numDividers = numHoles - 1
@@ -62,7 +88,8 @@ export default function CabinetFrame({
 
       for (let i = 0; i < numHoles; i++) {
         // Calculate the current hole height based on its ratio
-        const currentHoleHeight = (ratios[i] / sumRatios) * availableHeight
+        const currentHoleHeight =
+          (defaultRatios[i] / sumRatios) * availableHeight
         const currentTop = currentBottom + currentHoleHeight
 
         boundaries.push({ bottom: currentBottom, top: currentTop })
@@ -109,7 +136,8 @@ export default function CabinetFrame({
     holeYOffset,
     numHoles,
     dividerThicknessM,
-    pt
+    pt,
+    ratios
   ])
 
   // Helper function to add a single hole

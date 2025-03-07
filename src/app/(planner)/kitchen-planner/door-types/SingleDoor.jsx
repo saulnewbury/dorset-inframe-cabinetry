@@ -10,6 +10,7 @@ export function SingleDoor({
   depth,
   pt,
   doorThicknessM,
+  doorGapM, // Added this missing prop
   doorGapAtBottomM,
   doorWidth,
   doorHeight,

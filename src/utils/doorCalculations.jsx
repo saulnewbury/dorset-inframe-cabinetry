@@ -1,7 +1,7 @@
 // utils/doorCalculations.js
 
 /**
- * Calculate door boundaries for each hole based on the number of holes
+ * Calculate door boundaries for each hole based on the number of holes and optional custom ratios
  * @param {Object} params - Parameters for calculating door boundaries
  * @returns {Array} Array of hole boundary objects
  */
@@ -11,7 +11,8 @@ export function calculateDoorBoundaries({
   holeWidth,
   holeYOffset,
   dividerThicknessM,
-  pt
+  pt,
+  ratios = null // New parameter for custom ratios
 }) {
   const boundaries = []
 
@@ -28,10 +29,35 @@ export function calculateDoorBoundaries({
       left: -holeWidth / 2,
       right: holeWidth / 2
     })
-  } else if (numHoles === 3) {
-    // Special case for 3 holes with ratio 8321 : 8312 : 4925
-    const ratios = [8321, 8312, 4925]
+  } else if (ratios && ratios.length === numHoles) {
+    // Custom ratios provided for any number of holes
     const sumRatios = ratios.reduce((sum, ratio) => sum + ratio, 0)
+
+    // Calculate available height after accounting for dividers
+    const numDividers = numHoles - 1
+    const availableHeight = totalHoleHeight - numDividers * dividerThicknessM
+
+    // Create hole boundaries based on custom ratios
+    let currentBottom = holeBottom
+
+    for (let i = 0; i < numHoles; i++) {
+      // Calculate the current hole height based on its ratio
+      const currentHoleHeight = (ratios[i] / sumRatios) * availableHeight
+      const currentTop = currentBottom + currentHoleHeight
+
+      boundaries.push({
+        bottom: currentBottom,
+        top: currentTop,
+        left: -holeWidth / 2,
+        right: holeWidth / 2
+      })
+
+      currentBottom = currentTop + dividerThicknessM
+    }
+  } else if (numHoles === 3) {
+    // Default ratios for 3 holes: 8321 : 8312 : 4925
+    const defaultRatios = [8321, 8312, 4925]
+    const sumRatios = defaultRatios.reduce((sum, ratio) => sum + ratio, 0)
 
     // Calculate available height after accounting for dividers
     const numDividers = numHoles - 1
@@ -42,7 +68,7 @@ export function calculateDoorBoundaries({
 
     for (let i = 0; i < numHoles; i++) {
       // Calculate the current hole height based on its ratio
-      const currentHoleHeight = (ratios[i] / sumRatios) * availableHeight
+      const currentHoleHeight = (defaultRatios[i] / sumRatios) * availableHeight
       const currentTop = currentBottom + currentHoleHeight
 
       boundaries.push({
@@ -94,7 +120,6 @@ export function createPanelShape({
   const panelShape = new THREE.Shape()
 
   // Create outer shape with proper gap adjustment
-  // Note: We adjust the bottom edge up by doorGapAtBottom
   panelShape.moveTo(-width / 2, -height / 2 + doorGapAtBottom)
   panelShape.lineTo(width / 2, -height / 2 + doorGapAtBottom)
   panelShape.lineTo(width / 2, height / 2)
