@@ -5,6 +5,7 @@ import { Edges } from '@react-three/drei'
 import CabinetFrame from './CabinetFrame'
 import CabinetMoulding from './CabinetMoulding'
 import FrontPanels from './FrontPanels'
+import Feet from './Feet'
 
 // const panelConfig = [
 //   {
@@ -38,7 +39,7 @@ export default function BaseUnit({
   const panelRatios = panelConfig.map((panel) => panel.ratio || 1)
 
   return (
-    <group position-y={0.1}>
+    <group position-y={0.0265 + 0.104}>
       <CabinetFrame
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
@@ -83,6 +84,8 @@ export default function BaseUnit({
         <meshStandardMaterial color='white' />
         <Edges color='gray' renderOrder={1000} />
       </mesh>
+
+      <Feet />
     </group>
   )
 }
