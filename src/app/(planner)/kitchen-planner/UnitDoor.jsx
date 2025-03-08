@@ -75,7 +75,7 @@ export default function UnitDoor({ dw, dh, handle = 'left', position }) {
 
     mesh.setMatrixAt(
       edgeLeft,
-      r.clone().setPosition(0.05 - (dw - bvw) / 2, 0, 0.005)
+      r.clone().setPosition(0.005 - (dw - bvw) / 2, 0, 0.005)
     )
     mesh.setMatrixAt(
       edgeRight,
