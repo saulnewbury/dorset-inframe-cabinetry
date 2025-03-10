@@ -16,8 +16,16 @@ export function FourDoors({
   panelWidth,
   panelHeight,
   holeInsetM,
-  splitGapM
+  splitGapM,
+  verticalRatio = [1, 1], // Default 1:1 ratio for top:bottom sections
+  horizontalRatio = [1, 1] // Default 1:1 ratio for left:right sections
 }) {
+  // Extract ratio values
+  const [topRatio, bottomRatio] = verticalRatio
+  const [leftRatio, rightRatio] = horizontalRatio
+  const verticalTotalRatio = topRatio + bottomRatio
+  const horizontalTotalRatio = leftRatio + rightRatio
+
   // Extrude settings
   const extrudeSettings = {
     steps: 1,
@@ -25,14 +33,30 @@ export function FourDoors({
     bevelEnabled: false
   }
 
+  // Calculate the available width and height after accounting for gaps
+  // For the vertical split between top and bottom sections, use zero gap to eliminate the excessive gap
+  const availableWidth = panelWidth - splitGapM
+  const availableHeight = panelHeight - doorGapAtBottomM // Remove the split gap entirely for height
+
+  // Calculate effective door dimensions accounting for gaps
+  // Eliminate the vertical split gap completely
+  const effectiveDoorWidth = doorWidth - 2 * doorGapM - splitGapM
+  const effectiveDoorHeight = doorHeight - 2 * doorGapM // No split gap for vertical separation
+
   // Function to create a panel shape with hole for each quadrant
   const createQuarterPanelShape = (quadrant) => {
-    // Calculate dimensions for the quadrant
-    const quarterWidth = panelWidth / 2 - splitGapM / 2
-    const quarterHeight = panelHeight / 2 - splitGapM / 2
+    // Determine if this is a left or right panel
+    const isLeftPanel = quadrant === 0 || quadrant === 2
+    // Determine if this is a top or bottom panel
+    const isTopPanel = quadrant === 0 || quadrant === 1
 
-    // Determine if this is a bottom panel (needs gap adjustment)
-    const isBottomPanel = quadrant === 2 || quadrant === 3
+    // Calculate dimensions for the quadrant based on ratios
+    const widthRatio = isLeftPanel ? leftRatio : rightRatio
+    const heightRatio = isTopPanel ? topRatio : bottomRatio
+
+    // Make doors taller by removing the vertical split gap
+    const quarterWidth = (availableWidth * widthRatio) / horizontalTotalRatio
+    const quarterHeight = (availableHeight * heightRatio) / verticalTotalRatio
 
     // Create the panel shape
     const panelShape = new THREE.Shape()
@@ -40,17 +64,17 @@ export function FourDoors({
     // Create panel outline
     panelShape.moveTo(
       -quarterWidth / 2,
-      -quarterHeight / 2 + (isBottomPanel ? doorGapAtBottomM : 0)
+      -quarterHeight / 2 + (!isTopPanel ? doorGapAtBottomM : 0)
     )
     panelShape.lineTo(
       quarterWidth / 2,
-      -quarterHeight / 2 + (isBottomPanel ? doorGapAtBottomM : 0)
+      -quarterHeight / 2 + (!isTopPanel ? doorGapAtBottomM : 0)
     )
     panelShape.lineTo(quarterWidth / 2, quarterHeight / 2)
     panelShape.lineTo(-quarterWidth / 2, quarterHeight / 2)
     panelShape.lineTo(
       -quarterWidth / 2,
-      -quarterHeight / 2 + (isBottomPanel ? doorGapAtBottomM : 0)
+      -quarterHeight / 2 + (!isTopPanel ? doorGapAtBottomM : 0)
     )
 
     // Calculate proportionally scaled hole inset (avoid too large insets for small panels)
@@ -66,13 +90,13 @@ export function FourDoors({
       -quarterWidth / 2 + scaledHoleInset,
       -quarterHeight / 2 +
         scaledHoleInset +
-        (isBottomPanel ? doorGapAtBottomM : 0)
+        (!isTopPanel ? doorGapAtBottomM : 0)
     )
     holeShape.lineTo(
       quarterWidth / 2 - scaledHoleInset,
       -quarterHeight / 2 +
         scaledHoleInset +
-        (isBottomPanel ? doorGapAtBottomM : 0)
+        (!isTopPanel ? doorGapAtBottomM : 0)
     )
     holeShape.lineTo(
       quarterWidth / 2 - scaledHoleInset,
@@ -86,67 +110,102 @@ export function FourDoors({
       -quarterWidth / 2 + scaledHoleInset,
       -quarterHeight / 2 +
         scaledHoleInset +
-        (isBottomPanel ? doorGapAtBottomM : 0)
+        (!isTopPanel ? doorGapAtBottomM : 0)
     )
 
     // Add the hole to the panel shape
     panelShape.holes.push(holeShape)
 
-    return panelShape
+    return {
+      shape: panelShape,
+      width: quarterWidth,
+      height: quarterHeight,
+      isTopPanel
+    }
   }
 
-  // Define quadrant positions
-  // 0: top-left, 1: top-right, 2: bottom-left, 3: bottom-right
+  // Calculate quadrant positions based on ratios
   const getQuadrantPosition = (quadrant) => {
-    const horizontalOffset = panelWidth / 4 + splitGapM / 4
-    const verticalOffset = panelHeight / 4 + splitGapM / 4
+    // Calculate dimensions for top and bottom sections
+    const topHeight = (availableHeight * topRatio) / verticalTotalRatio
+    const bottomHeight = (availableHeight * bottomRatio) / verticalTotalRatio
+
+    // Calculate dimensions for left and right sections
+    const leftWidth = (availableWidth * leftRatio) / horizontalTotalRatio
+    const rightWidth = (availableWidth * rightRatio) / horizontalTotalRatio
+
+    // Calculate the vertical adjustment to align with the cabinet frame
+    // We need to account for the doorGapAtBottomM at the bottom
+    // and eliminate the vertical split gap completely
+    const verticalSplitGap = 0 // No gap between top and bottom sections
+    const totalHeight = topHeight + bottomHeight + verticalSplitGap
+    const verticalOffset = doorGapAtBottomM / 2
+
+    // Calculate center points based on the asymmetric layout
+    const leftCenterX = -(leftWidth / 2 + splitGapM / 2)
+    const rightCenterX = rightWidth / 2 + splitGapM / 2
+
+    // Adjust the vertical centers - make top and bottom sections directly touch
+    const topCenterY = panelHeight / 2 - topHeight / 2 - verticalOffset
+    const bottomCenterY = -(panelHeight / 2) + bottomHeight / 2 - verticalOffset
 
     switch (quadrant) {
       case 0: // top-left
         return {
-          x: -horizontalOffset,
-          y: verticalOffset
+          x: leftCenterX,
+          y: topCenterY
         }
       case 1: // top-right
         return {
-          x: horizontalOffset,
-          y: verticalOffset
+          x: rightCenterX,
+          y: topCenterY
         }
       case 2: // bottom-left
         return {
-          x: -horizontalOffset,
-          y: -verticalOffset
+          x: leftCenterX,
+          y: bottomCenterY
         }
       case 3: // bottom-right
         return {
-          x: horizontalOffset,
-          y: -verticalOffset
+          x: rightCenterX,
+          y: bottomCenterY
         }
       default:
         return { x: 0, y: 0 }
     }
   }
 
-  // Calculate door dimensions
-  const getDoorDimensions = () => {
-    // Account for gaps on both sides of the door
-    const effectiveDoorWidth = doorWidth - 2 * doorGapM
-    const effectiveDoorHeight = doorHeight - 2 * doorGapM
+  // Calculate door dimensions for each quadrant
+  const getDoorDimensions = (quadrant) => {
+    // Determine if this is a left or right door
+    const isLeftDoor = quadrant === 0 || quadrant === 2
+    // Determine if this is a top or bottom door
+    const isTopDoor = quadrant === 0 || quadrant === 1
+
+    // Calculate dimensions based on ratios
+    const widthRatio = isLeftDoor ? leftRatio : rightRatio
+    const heightRatio = isTopDoor ? topRatio : bottomRatio
+
+    const doorQuarterWidth =
+      (effectiveDoorWidth * widthRatio) / horizontalTotalRatio
+    const doorQuarterHeight =
+      (effectiveDoorHeight * heightRatio) / verticalTotalRatio
 
     return {
-      quarterWidth: effectiveDoorWidth / 2 - splitGapM / 2,
-      quarterHeight: effectiveDoorHeight / 2 - splitGapM / 2
+      width: doorQuarterWidth,
+      height: doorQuarterHeight
     }
   }
 
   // Create quadrants array for mapping
   const quadrants = [0, 1, 2, 3]
-  const doorDimensions = getDoorDimensions()
 
   return (
     <group>
       {quadrants.map((quadrant) => {
+        const panelData = createQuarterPanelShape(quadrant)
         const pos = getQuadrantPosition(quadrant)
+        const doorDimensions = getDoorDimensions(quadrant)
         const isBottomPanel = quadrant === 2 || quadrant === 3
 
         return (
@@ -159,9 +218,7 @@ export function FourDoors({
                 depth / 2 - pt + doorThicknessM
               ]}
             >
-              <extrudeGeometry
-                args={[createQuarterPanelShape(quadrant), extrudeSettings]}
-              />
+              <extrudeGeometry args={[panelData.shape, extrudeSettings]} />
               <meshStandardMaterial color='white' side={THREE.DoubleSide} />
               <Edges threshold={5} color='gray' />
             </mesh>
@@ -176,8 +233,8 @@ export function FourDoors({
             >
               <boxGeometry
                 args={[
-                  doorDimensions.quarterWidth,
-                  doorDimensions.quarterHeight,
+                  doorDimensions.width,
+                  doorDimensions.height,
                   doorThicknessM / 2
                 ]}
               />

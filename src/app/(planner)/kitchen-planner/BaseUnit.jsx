@@ -16,6 +16,8 @@ import Feet from './Feet'
 //   color: 'white', // Optional: You could add color options
 //   orientation: 'horizontal' | 'vertical', // Optional: For split doors, specifies orientation
 //   doorRatio: [1, 1], // Optional: For split doors, specifies the ratio between sections
+//   verticalRatio: [1, 1], // Optional: For fourDoors, specifies ratio between top and bottom
+//   horizontalRatio: [1, 1], // Optional: For fourDoors, specifies ratio between left and right
 //   // Additional properties as needed for future extensions
 // }
 
@@ -25,13 +27,20 @@ export default function BaseUnit({
   carcassInnerWidth = 264 * 2,
   panelThickness = 18,
   panelConfig = [
-    { type: 'door', style: 'single', ratio: 1 },
+    // { type: 'door', style: 'single', ratio: 2 },
+    // {
+    //   type: 'door',
+    //   style: 'split',
+    //   ratio: 1,
+    //   orientation: 'horizontal',
+    //   doorRatio: [1, 1]
+    // },
     {
       type: 'door',
-      style: 'split',
-      ratio: 1,
-      orientation: 'vertical',
-      doorRatio: [1, 1.5]
+      style: 'fourDoors',
+      ratio: 2,
+      verticalRatio: [1, 2], // Top section twice as tall as bottom section
+      horizontalRatio: [1, 1] // Equal left and right widths
     }
   ]
 }) {

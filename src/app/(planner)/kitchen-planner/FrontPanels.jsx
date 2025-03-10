@@ -79,7 +79,9 @@ export default function FrontPanels({
                 doorStyle={config.style || 'single'}
                 doorConfig={{
                   orientation: config.orientation || 'horizontal',
-                  ratio: config.doorRatio || [1, 1]
+                  ratio: config.doorRatio || [1, 1],
+                  verticalRatio: config.verticalRatio || [1, 1],
+                  horizontalRatio: config.horizontalRatio || [1, 1]
                 }}
               />
             )

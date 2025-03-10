@@ -19,7 +19,12 @@ export default function DoorPanel({
   doorConfig = {} // Additional door configuration options
 }) {
   // Extract door configuration options
-  const { orientation = 'horizontal', ratio = [1, 1] } = doorConfig
+  const {
+    orientation = 'horizontal',
+    ratio = [1, 1],
+    verticalRatio = [1, 1],
+    horizontalRatio = [1, 1]
+  } = doorConfig
 
   // Convert dimensions from mm to meters
   const pt = panelThickness / 1000
@@ -63,7 +68,13 @@ export default function DoorPanel({
   // Render appropriate door type based on doorStyle
   switch (doorStyle) {
     case 'fourDoors':
-      return <FourDoors {...doorProps} />
+      return (
+        <FourDoors
+          {...doorProps}
+          verticalRatio={verticalRatio}
+          horizontalRatio={horizontalRatio}
+        />
+      )
     case 'split':
       return (
         <SplitDoors {...doorProps} orientation={orientation} ratio={ratio} />
