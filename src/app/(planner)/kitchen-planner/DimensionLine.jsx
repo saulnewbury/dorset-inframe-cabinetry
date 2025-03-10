@@ -1,9 +1,13 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { wt } from '@/const'
 import { Html } from '@react-three/drei'
-import { Text } from 'troika-three-text'
+import { Text, configureTextBuilder } from 'troika-three-text'
 import { BufferGeometry, Vector2 } from 'three'
 import { extend, useThree } from '@react-three/fiber'
+
+configureTextBuilder({
+  useWorker: false
+})
 
 extend({ Text }, () => {})
 
@@ -54,20 +58,20 @@ export default function DimensionLine({
   return (
     <group position={[0, 3, (-wt * 3) / 1.5]} rotation-x={Math.PI / -2}>
       <line geometry={buffer}>
-        <lineBasicMaterial color='#6B6B6B' />
+        <lineBasicMaterial color="#6B6B6B" />
       </line>
       <mesh rotation-z={isFlip ? Math.PI : 0} position-z={0.01}>
         <planeGeometry args={[0.8, 0.3]} />
-        <meshBasicMaterial color='#fff' toneMapped={false} />
+        <meshBasicMaterial color="#fff" toneMapped={false} />
       </mesh>
       <text
         ref={troikaMesh}
         text={value.toFixed(2) + 'm'}
-        color='black'
+        color="black"
         fontSize={hover ? 0.17 : 0.16}
         position-y={isFlip ? -wt / 1.3 : wt / 1.3}
         position-z={0.02}
-        anchorX='center'
+        anchorX="center"
         rotation-z={isFlip ? Math.PI : 0}
         onClick={() => setEdit(true)}
         onPointerOver={() => {
@@ -87,21 +91,21 @@ export default function DimensionLine({
             onSubmit={changeLength}
           >
             {/* <span>Set length:</span> */}
-            <div className='border-solid border-b-[1px] border-black  mb-[10px] px-[2px]'>
+            <div className="border-solid border-b-[1px] border-black  mb-[10px] px-[2px]">
               <input
                 ref={input}
-                type='number'
-                step='0.01'
-                min='1.00'
-                max='9.99'
+                type="number"
+                step="0.01"
+                min="1.00"
+                max="9.99"
                 defaultValue={value.toFixed(2)}
                 required
-                className='invalid:text-red-600 bg-[transparent]  '
+                className="invalid:text-red-600 bg-[transparent]  "
               />
             </div>
             <button
-              type='submit'
-              className='bg-darkBlue w-[100%] text-base text-white px-[1rem] py-[.5rem]'
+              type="submit"
+              className="bg-darkBlue w-[100%] text-base text-white px-[1rem] py-[.5rem]"
             >
               Ok
             </button>
