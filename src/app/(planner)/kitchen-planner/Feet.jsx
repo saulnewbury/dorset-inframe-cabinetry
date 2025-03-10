@@ -25,12 +25,12 @@ const feet = [
 
 export default function Feet() {
   return (
-    <group position-y={-0.065}>
-      {feet.map((f) => (
-        <group position-x={f.x} position-z={f.z}>
+    <group position-y={-0.0652}>
+      {feet.map((f, idx) => (
+        <group key={idx} position-x={f.x} position-z={f.z}>
           {/* Foot inner shaft */}
           <mesh>
-            <cylinderGeometry args={[0.015, 0.015, 0.104 + 0.0265, 25]} />
+            <cylinderGeometry args={[0.015, 0.015, 0.104 + 0.026, 25]} />
             <Edges color='gray' renderOrder={1000} threshold={1} />
           </mesh>
           {/* Foot shaft upper and lower */}

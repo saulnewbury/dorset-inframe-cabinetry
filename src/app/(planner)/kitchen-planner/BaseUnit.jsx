@@ -38,8 +38,13 @@ export default function BaseUnit({
   // Extract ratios from panelConfig if available
   const panelRatios = panelConfig.map((panel) => panel.ratio || 1)
 
+  //  0.0265 is the distance from carcass to the bottom of the frame
+  //  0.104 is the distance from the bottom of the frame to floor
+  //  0.0265 + 0.104 is the amount to lift the unit up ('Feet' make up the gap).
+  const baseUnitPositionY = 0.0265 + 0.104
+
   return (
-    <group position-y={0.0265 + 0.104}>
+    <group position-y={baseUnitPositionY}>
       <CabinetFrame
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
