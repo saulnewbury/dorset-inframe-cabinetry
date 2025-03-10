@@ -31,20 +31,24 @@ export default function Feet({ carcassInnerWidth, carcassDepth }) {
           {/* Foot inner shaft */}
           <mesh>
             <cylinderGeometry args={[0.015, 0.015, 0.104 + 0.026, 25]} />
+            <meshStandardMaterial color='#777777' />
             <Edges color='gray' renderOrder={1000} threshold={1} />
           </mesh>
           {/* Foot shaft upper and lower */}
           <mesh position-y={-0.065 + 0.08}>
             <cylinderGeometry args={[0.02, 0.02, 0.099, 25]} />
+            <meshStandardMaterial color='#777777' />
             <Edges color='gray' renderOrder={1000} threshold={1} />
           </mesh>
           <mesh position-y={-0.065 + 0.01}>
             <cylinderGeometry args={[0.02, 0.02, 0.02, 25]} />
+            <meshStandardMaterial color='#777777' />
             <Edges color='gray' renderOrder={1000} threshold={1} />
           </mesh>
           {/* Foot base */}
           <mesh position-y={-0.065 + 0.01 / 2}>
             <cylinderGeometry args={[0.035, 0.035, 0.01, 32]} />
+            <meshStandardMaterial color='#777777' />
             <Edges color='gray' renderOrder={1000} />
           </mesh>
         </group>

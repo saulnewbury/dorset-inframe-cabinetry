@@ -23,25 +23,25 @@ import Feet from './Feet'
 
 export default function BaseUnit({
   carcassDepth = 575 * 1, // carcassDepth is 527 + 30 + 18
-  carcassHeight = 759 * 1, // 723 + 36
-  carcassInnerWidth = 264,
+  carcassHeight = 759, // 723 + 36
+  carcassInnerWidth = 264 * 2.3,
   panelThickness = 18,
   panelConfig = [
-    // { type: 'door', style: 'single', ratio: 2 },
+    {
+      type: 'oven'
+    }
+    // {
+    //   type: 'drawer',
+
+    //   ratio: 1
+    // }
     // {
     //   type: 'door',
-    //   style: 'split',
-    //   ratio: 1,
-    //   orientation: 'horizontal',
-    //   doorRatio: [1, 1]
-    // },
-    {
-      type: 'door',
-      style: 'fourDoors',
-      ratio: 2,
-      verticalRatio: [1, 2], // Top section twice as tall as bottom section
-      horizontalRatio: [1, 1] // Equal left and right widths
-    }
+    //   style: 'fourDoors',
+    //   ratio: 2,
+    //   verticalRatio: [1, 2], // Top section twice as tall as bottom section
+    //   horizontalRatio: [1, 1] // Equal left and right widths
+    // }
   ]
 }) {
   const height = carcassHeight / 1000

@@ -2,6 +2,7 @@
 import React, { useMemo } from 'react'
 import DoorPanel from './DoorPanel'
 import DrawerPanel from './DrawerPanel'
+import Oven from './panels/Oven'
 import { calculateDoorBoundaries } from '@/utils/doorCalculations'
 
 export default function FrontPanels({
@@ -68,6 +69,13 @@ export default function FrontPanels({
           case 'drawer':
             return (
               <DrawerPanel
+                {...commonProps}
+                drawerHandleType={config.handleType || 'bar'}
+              />
+            )
+          case 'oven':
+            return (
+              <Oven
                 {...commonProps}
                 drawerHandleType={config.handleType || 'bar'}
               />
