@@ -7,17 +7,17 @@ import CabinetMoulding from './CabinetMoulding'
 import FrontPanels from './FrontPanels'
 import Feet from './Feet'
 
-// const panelConfig = [
-//   {
-//     type: 'door' | 'drawer', // Required: The type of panel
-//     style: 'single' | 'split' | 'fourDoors', // Required for door type only: The door style
-//     ratio: 8321, // Optional: The relative size ratio of this panel
-//     handleType: 'bar' | 'knob', // Optional: For drawers, specifies handle style
-//     color: 'white' // Optional: You could add color options
-//     // Additional properties as needed for future extensions
-//   }
-//   // More panel configurations...
-// ]
+// Updated panelConfig options
+// {
+//   type: 'door' | 'drawer', // Required: The type of panel
+//   style: 'single' | 'split' | 'fourDoors', // Required for door type only: The door style
+//   ratio: 1, // Optional: The relative size ratio of this panel section
+//   handleType: 'bar' | 'knob', // Optional: For drawers, specifies handle style
+//   color: 'white', // Optional: You could add color options
+//   orientation: 'horizontal' | 'vertical', // Optional: For split doors, specifies orientation
+//   doorRatio: [1, 1], // Optional: For split doors, specifies the ratio between sections
+//   // Additional properties as needed for future extensions
+// }
 
 export default function BaseUnit({
   carcassDepth = 575, // carcassDepth is 527 + 30 + 18
@@ -25,8 +25,14 @@ export default function BaseUnit({
   carcassInnerWidth = 264 * 2,
   panelThickness = 18,
   panelConfig = [
-    { type: 'door', style: 'single', ratio: 2 },
-    { type: 'door', style: 'split', ratio: 1 }
+    { type: 'door', style: 'single', ratio: 1 },
+    {
+      type: 'door',
+      style: 'split',
+      ratio: 1,
+      orientation: 'vertical',
+      doorRatio: [1, 1.5]
+    }
   ]
 }) {
   const height = carcassHeight / 1000

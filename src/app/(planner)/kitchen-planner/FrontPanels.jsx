@@ -77,6 +77,10 @@ export default function FrontPanels({
               <DoorPanel
                 {...commonProps}
                 doorStyle={config.style || 'single'}
+                doorConfig={{
+                  orientation: config.orientation || 'horizontal',
+                  ratio: config.doorRatio || [1, 1]
+                }}
               />
             )
           // Here you can add more panel types in the future

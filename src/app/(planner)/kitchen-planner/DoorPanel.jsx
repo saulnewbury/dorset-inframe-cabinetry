@@ -15,8 +15,12 @@ export default function DoorPanel({
   holeInset = 65,
   mouldingWidth = 9,
   doorStyle = 'split', // "single", "split", or "fourDoors"
-  splitGap = 2
+  splitGap = 2,
+  doorConfig = {} // Additional door configuration options
 }) {
+  // Extract door configuration options
+  const { orientation = 'horizontal', ratio = [1, 1] } = doorConfig
+
   // Convert dimensions from mm to meters
   const pt = panelThickness / 1000
   const depth = carcassDepth / 1000
@@ -61,7 +65,9 @@ export default function DoorPanel({
     case 'fourDoors':
       return <FourDoors {...doorProps} />
     case 'split':
-      return <SplitDoors {...doorProps} />
+      return (
+        <SplitDoors {...doorProps} orientation={orientation} ratio={ratio} />
+      )
     case 'single':
     default:
       return <SingleDoor {...doorProps} />
