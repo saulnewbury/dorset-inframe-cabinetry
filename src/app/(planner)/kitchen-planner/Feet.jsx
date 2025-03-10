@@ -4,26 +4,45 @@ import { Edges } from '@react-three/drei'
 
 import React from 'react'
 
-const feet = [
-  {
-    x: 0.2,
-    z: 0.2
-  },
-  {
-    x: -0.2,
-    z: 0.2
-  },
-  {
-    x: 0.2,
-    z: -0.2
-  },
-  {
-    x: -0.2,
-    z: -0.2
-  }
-]
+// const feet = [
+//   {
+//     x: 0.2,
+//     z: 0.2
+//   },
+//   {
+//     x: -0.2,
+//     z: 0.2
+//   },
+//   {
+//     x: 0.2,
+//     z: -0.2
+//   },
+//   {
+//     x: -0.2,
+//     z: -0.2
+//   }
+// ]
 
-export default function Feet() {
+export default function Feet({ carcassInnerWidth, carcassDepth }) {
+  const feet = [
+    {
+      x: carcassInnerWidth / 2500,
+      z: carcassDepth / 1000 / 2 - 0.12
+    },
+    {
+      x: -carcassInnerWidth / 2500,
+      z: carcassDepth / 1000 / 2 - 0.12
+    },
+    {
+      x: carcassInnerWidth / 2500,
+      z: -carcassDepth / 1000 / 2 + 0.1
+    },
+    {
+      x: -carcassInnerWidth / 2500,
+      z: -carcassDepth / 1000 / 2 + 0.1
+    }
+  ]
+
   return (
     <group position-y={-0.0652}>
       {feet.map((f, idx) => (

@@ -7,7 +7,7 @@ import CabinetMoulding from './CabinetMoulding'
 import FrontPanels from './FrontPanels'
 import Feet from './Feet'
 
-// Updated panelConfig options
+// panelConfig options
 // {
 //   type: 'door' | 'drawer', // Required: The type of panel
 //   style: 'single' | 'split' | 'fourDoors', // Required for door type only: The door style
@@ -22,9 +22,9 @@ import Feet from './Feet'
 // }
 
 export default function BaseUnit({
-  carcassDepth = 575, // carcassDepth is 527 + 30 + 18
-  carcassHeight = 759 * 1.5, // 723 + 36
-  carcassInnerWidth = 264 * 2,
+  carcassDepth = 575 * 1, // carcassDepth is 527 + 30 + 18
+  carcassHeight = 759 * 1, // 723 + 36
+  carcassInnerWidth = 264 * 4,
   panelThickness = 18,
   panelConfig = [
     // { type: 'door', style: 'single', ratio: 2 },
@@ -105,7 +105,7 @@ export default function BaseUnit({
         <Edges color='gray' renderOrder={1000} />
       </mesh>
 
-      <Feet />
+      <Feet carcassInnerWidth={carcassInnerWidth} carcassDepth={carcassDepth} />
     </group>
   )
 }
