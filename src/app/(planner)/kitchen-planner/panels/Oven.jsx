@@ -12,7 +12,7 @@ export default function Oven({
   mouldingSize = 4, // Moulding size in mm
   frameInset = 4, // Frame inset in mm
   ovenHandleType = 'bar', // Optional handle type
-  type = 'glass'
+  type = 'single'
 }) {
   // Convert dimensions from mm to meters
   const pt = panelThickness / 1000
@@ -109,7 +109,7 @@ export default function Oven({
         </>
       )}
 
-      {type === 'glass' && (
+      {type === 'single' && (
         <mesh position-y={-cpanel / 2}>
           <boxGeometry
             args={[ovenWidth, ovenHeight - cpanel, ovenThicknessM]}
