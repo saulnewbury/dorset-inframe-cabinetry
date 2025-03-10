@@ -4,41 +4,22 @@ import { Edges } from '@react-three/drei'
 
 import React from 'react'
 
-// const feet = [
-//   {
-//     x: 0.2,
-//     z: 0.2
-//   },
-//   {
-//     x: -0.2,
-//     z: 0.2
-//   },
-//   {
-//     x: 0.2,
-//     z: -0.2
-//   },
-//   {
-//     x: -0.2,
-//     z: -0.2
-//   }
-// ]
-
 export default function Feet({ carcassInnerWidth, carcassDepth }) {
   const feet = [
     {
-      x: carcassInnerWidth / 2500,
+      x: carcassInnerWidth / 3050,
       z: carcassDepth / 1000 / 2 - 0.12
     },
     {
-      x: -carcassInnerWidth / 2500,
+      x: -carcassInnerWidth / 3050,
       z: carcassDepth / 1000 / 2 - 0.12
     },
     {
-      x: carcassInnerWidth / 2500,
+      x: carcassInnerWidth / 3050,
       z: -carcassDepth / 1000 / 2 + 0.1
     },
     {
-      x: -carcassInnerWidth / 2500,
+      x: -carcassInnerWidth / 3050,
       z: -carcassDepth / 1000 / 2 + 0.1
     }
   ]

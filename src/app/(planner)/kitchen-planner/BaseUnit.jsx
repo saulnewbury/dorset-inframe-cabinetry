@@ -24,7 +24,7 @@ import Feet from './Feet'
 export default function BaseUnit({
   carcassDepth = 575 * 1, // carcassDepth is 527 + 30 + 18
   carcassHeight = 759 * 1, // 723 + 36
-  carcassInnerWidth = 264 * 4,
+  carcassInnerWidth = 264,
   panelThickness = 18,
   panelConfig = [
     // { type: 'door', style: 'single', ratio: 2 },
