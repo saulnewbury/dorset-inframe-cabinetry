@@ -1,6 +1,8 @@
 // OvenPanel.jsx
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Edges } from '@react-three/drei'
+import * as THREE from 'three'
+import { createPanelShape } from '@/utils/doorCalculations'
 
 export default function Oven({
   boundary, // Single boundary object
@@ -12,7 +14,7 @@ export default function Oven({
   mouldingSize = 4, // Moulding size in mm
   frameInset = 4, // Frame inset in mm
   ovenHandleType = 'bar', // Optional handle type
-  type = 'single'
+  type = 'single' // Changed default from 'glass' to 'single'
 }) {
   // Convert dimensions from mm to meters
   const pt = panelThickness / 1000
@@ -41,8 +43,48 @@ export default function Oven({
     { x: ovenWidth / 2 - 0.134 }
   ]
 
+  // Using createPanelShape from doorCalculations instead of a custom function
+  // Function kept as fallback in case doorCalculations doesn't provide all needed features
+  const createOvenFrontShape = (width, height, borderWidth) => {
+    // Try to use the shared utility function first
+    try {
+      return createPanelShape({
+        THREE,
+        width,
+        height,
+        holeInset: borderWidth,
+        doorGapAtBottom: 0 // No bottom gap needed for oven
+      })
+    } catch (error) {
+      // Fallback to custom implementation if the imported function doesn't work
+      console.warn('Using fallback shape creation for oven:', error)
+
+      const shape = new THREE.Shape()
+
+      // Outer rectangle (full dimensions)
+      shape.moveTo(-width / 2, -height / 2)
+      shape.lineTo(width / 2, -height / 2)
+      shape.lineTo(width / 2, height / 2)
+      shape.lineTo(-width / 2, height / 2)
+      shape.lineTo(-width / 2, -height / 2)
+
+      // Inner rectangle (creating the depression)
+      const innerShape = new THREE.Path()
+      innerShape.moveTo(-width / 2 + borderWidth, -height / 2 + borderWidth)
+      innerShape.lineTo(width / 2 - borderWidth, -height / 2 + borderWidth)
+      innerShape.lineTo(width / 2 - borderWidth, height / 2 - borderWidth)
+      innerShape.lineTo(-width / 2 + borderWidth, height / 2 - borderWidth)
+      innerShape.lineTo(-width / 2 + borderWidth, -height / 2 + borderWidth)
+
+      // Add the inner shape as a hole
+      shape.holes.push(innerShape)
+
+      return shape
+    }
+  }
+
   // Handle rendering based on oven type
-  const renderOvenHandle = () => {
+  const renderOvenHandle = (y) => {
     // This could be expanded to support different handle types
     if (ovenHandleType === 'bar') {
       // Bar handle dimensions
@@ -53,7 +95,8 @@ export default function Oven({
 
       return (
         <mesh
-          position={[0, ovenHeight - 0.6, ovenThicknessM / 2 + handleOffset]}
+          // position={[0, ovenHeight - 0.6, ovenThicknessM / 2 + handleOffset]}
+          position={[0, y, ovenThicknessM / 2 + handleOffset]}
         >
           <boxGeometry args={[handleWidth, handleHeight, handleDepth]} />
           <meshStandardMaterial color='#777777' />
@@ -92,7 +135,7 @@ export default function Oven({
               <meshStandardMaterial color='white' />
               <Edges threshold={5} color='gray' />
             </mesh>
-            {renderOvenHandle()}
+            {renderOvenHandle(ovenHeight - 0.6)}
           </group>
           <group
             position-y={(ovenHeight - doubleOvenCompartments * 3) / 2 - cpanel}
@@ -104,19 +147,40 @@ export default function Oven({
               <meshStandardMaterial color='white' />
               <Edges threshold={5} color='gray' />
             </mesh>
-            {renderOvenHandle()}
+            {renderOvenHandle(ovenHeight - 0.6)}
           </group>
         </>
       )}
 
+      {/* Updated 'single' type with box and extruded geometries */}
       {type === 'single' && (
-        <mesh position-y={-cpanel / 2}>
-          <boxGeometry
-            args={[ovenWidth, ovenHeight - cpanel, ovenThicknessM]}
-          />
-          <meshStandardMaterial color='white' />
-          <Edges threshold={5} color='gray' />
-        </mesh>
+        <group position-y={-cpanel / 2} position-z={-ovenThicknessM / 2}>
+          <mesh position-y={-cpanel / 2} position-z={ovenThicknessM / 2}>
+            <boxGeometry
+              args={[ovenWidth, ovenHeight - cpanel, ovenThicknessM / 2]}
+            />
+            <meshStandardMaterial color='white' />
+            <Edges threshold={5} color='gray' />
+          </mesh>
+          <mesh>
+            <extrudeGeometry
+              args={[
+                createOvenFrontShape(
+                  ovenWidth,
+                  ovenHeight - cpanel,
+                  85 / 1000 // 75mm border in meters
+                ),
+                {
+                  depth: ovenThicknessM,
+                  bevelEnabled: false
+                }
+              ]}
+            />
+            <meshStandardMaterial color='white' />
+            <Edges threshold={5} color='gray' />
+          </mesh>
+          {renderOvenHandle(ovenHeight - 0.44)}
+        </group>
       )}
 
       {/* cpanel */}
