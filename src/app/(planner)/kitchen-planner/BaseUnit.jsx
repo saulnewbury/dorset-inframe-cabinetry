@@ -5,6 +5,7 @@ import { Edges } from '@react-three/drei'
 import CabinetFrame from './CabinetFrame'
 import CabinetMoulding from './CabinetMoulding'
 import FrontPanels from './FrontPanels'
+import SinkBasin from './sink-basin/SinkBasin'
 import Feet from './Feet'
 
 // panelConfig options
@@ -25,24 +26,24 @@ import Feet from './Feet'
 
 export default function BaseUnit({
   carcassDepth = 575 * 1, // carcassDepth is 527 + 30 + 18
-  carcassHeight = 759, // 723 + 36
+  carcassHeight = 759 * 1, // 723 + 36
   carcassInnerWidth = 264 * 2.3,
   panelThickness = 18,
   panelConfig = [
     // { type: 'door', style: 'single', ratio: 2 },
-    // {
-    //   type: 'door',
-    //   style: 'split',
-    //   ratio: 1,
-    //   orientation: 'horizontal',
-    //   doorRatio: [1, 1]
-    // },
     {
-      type: 'oven',
-      ovenType: 'double',
-      ratio: 3,
-      compartmentRatio: [2, 3]
+      type: 'door',
+      style: 'split',
+      ratio: 1,
+      orientation: 'horizontal',
+      doorRatio: [1, 1]
     }
+    // {
+    //   type: 'oven',
+    //   ovenType: 'double',
+    //   ratio: 3,
+    //   compartmentRatio: [1, 2]
+    // }
   ]
 }) {
   const height = carcassHeight / 1000
@@ -107,6 +108,12 @@ export default function BaseUnit({
       </mesh>
 
       <Feet carcassInnerWidth={carcassInnerWidth} carcassDepth={carcassDepth} />
+
+      <SinkBasin
+        carcassDepth={carcassDepth}
+        carcassHeight={carcassHeight}
+        carcassInnerWidth={carcassInnerWidth}
+      />
     </group>
   )
 }
