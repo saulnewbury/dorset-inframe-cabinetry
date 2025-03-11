@@ -77,7 +77,9 @@ export default function FrontPanels({
             return (
               <Oven
                 {...commonProps}
-                drawerHandleType={config.handleType || 'bar'}
+                type={config.ovenType || 'single'}
+                ovenHandleType={config.handleType || 'bar'}
+                compartmentRatio={config.compartmentRatio || [2, 3]}
               />
             )
           case 'door':

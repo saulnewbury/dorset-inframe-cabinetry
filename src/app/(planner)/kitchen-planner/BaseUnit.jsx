@@ -9,15 +9,17 @@ import Feet from './Feet'
 
 // panelConfig options
 // {
-//   type: 'door' | 'drawer', // Required: The type of panel
+//   type: 'door' | 'drawer' | 'oven', // Required: The type of panel
 //   style: 'single' | 'split' | 'fourDoors', // Required for door type only: The door style
+//   ovenType: 'single' | 'double' | 'compact', // Required for oven type only: The oven style
 //   ratio: 1, // Optional: The relative size ratio of this panel section
-//   handleType: 'bar' | 'knob', // Optional: For drawers, specifies handle style
+//   handleType: 'bar' | 'knob', // Optional: For drawers/ovens, specifies handle style
 //   color: 'white', // Optional: You could add color options
 //   orientation: 'horizontal' | 'vertical', // Optional: For split doors, specifies orientation
 //   doorRatio: [1, 1], // Optional: For split doors, specifies the ratio between sections
 //   verticalRatio: [1, 1], // Optional: For fourDoors, specifies ratio between top and bottom
 //   horizontalRatio: [1, 1], // Optional: For fourDoors, specifies ratio between left and right
+//   compartmentRatio: [2, 3], // Optional: For double ovens, specifies ratio between compartments
 //   // Additional properties as needed for future extensions
 // }
 
@@ -27,21 +29,20 @@ export default function BaseUnit({
   carcassInnerWidth = 264 * 2.3,
   panelThickness = 18,
   panelConfig = [
-    {
-      type: 'oven'
-    }
-    // {
-    //   type: 'drawer',
-
-    //   ratio: 1
-    // }
+    // { type: 'door', style: 'single', ratio: 2 },
     // {
     //   type: 'door',
-    //   style: 'fourDoors',
-    //   ratio: 2,
-    //   verticalRatio: [1, 2], // Top section twice as tall as bottom section
-    //   horizontalRatio: [1, 1] // Equal left and right widths
-    // }
+    //   style: 'split',
+    //   ratio: 1,
+    //   orientation: 'horizontal',
+    //   doorRatio: [1, 1]
+    // },
+    {
+      type: 'oven',
+      ovenType: 'double',
+      ratio: 3,
+      compartmentRatio: [2, 3]
+    }
   ]
 }) {
   const height = carcassHeight / 1000
