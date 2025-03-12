@@ -2,6 +2,7 @@ import React from 'react'
 
 export default function Worktop({
   shim,
+  shimDivisor,
   depth,
   thickness,
   distance,
@@ -9,27 +10,39 @@ export default function Worktop({
   height,
   sink = true
 }) {
-  // const shim = depth / 5
-
-  const x = 0
-  const y = height + 0.015
-  // const z = sink ? -depth / 2 + 0.02 : 0.02
-  const z = sink ? 0 : 0.0
-
-  const h = 0.03
   const w = distance + thickness * 2
-  const d = sink ? depth / 8 : depth + 0.1
+  const d = depth + 0.05
 
   return (
-    <group position-z={0.005}>
-      <mesh position={[x, y, -depth / 2 + shim / 2]}>
-        <boxGeometry args={[w, h, shim]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-      <mesh position={[x, y, z]}>
-        <boxGeometry args={[w, h, depth]} />
-        <meshStandardMaterial color='black' />
-      </mesh>
+    <group position-z={shimDivisor / 100 - 0.015}>
+      {sink ? (
+        <>
+          {/* Back */}
+          <mesh position={[0, height + 0.015, -d / 2 + shim / 2]}>
+            <boxGeometry args={[w, 0.03, shim]} />
+            <meshStandardMaterial color={color} />
+          </mesh>
+          {/* Front */}
+          <mesh position={[0, height + 0.015, depth / 2 - 0.015]}>
+            <boxGeometry args={[w, 0.03, 0.08]} />
+            <meshStandardMaterial color={color} />
+          </mesh>
+          {/* Sides */}
+          <mesh position={[w / 2 - 0.027 / 2, height + 0.015, 0]}>
+            <boxGeometry args={[0.027, 0.03, d]} />
+            <meshStandardMaterial color={color} />
+          </mesh>
+          <mesh position={[-w / 2 + 0.027 / 2, height + 0.015, 0]}>
+            <boxGeometry args={[0.027, 0.03, d]} />
+            <meshStandardMaterial color={color} />
+          </mesh>
+        </>
+      ) : (
+        <mesh position={[0, height + 0.015, 0]}>
+          <boxGeometry args={[w, 0.03, depth]} />
+          <meshStandardMaterial color={color} />
+        </mesh>
+      )}
     </group>
   )
 }

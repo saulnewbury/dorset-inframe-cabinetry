@@ -55,8 +55,9 @@ export default function BaseUnit({
   const distance = carcassInnerWidth / 1000 // inside (300 outside)
   const backInset = 30 / 1000
 
+  const shimDivisor = 3.8
   const sinkDepth = (carcassDepth * 0.75) / 1000
-  const shim = sinkDepth / 3
+  const shim = sinkDepth / shimDivisor
 
   // Extract ratios from panelConfig if available
   const panelRatios = panelConfig.map((panel) => panel.ratio || 1)
@@ -138,13 +139,15 @@ export default function BaseUnit({
       {/* Worktop */}
       {baseUnit && (
         <Worktop
-          // sink={sink}
+          sink={sink}
           shim={shim}
+          shimDivisor={shimDivisor}
           distance={distance}
           thickness={thickness}
-          depth={depth + 0.075}
+          depth={depth}
           height={height}
-          color='lightblue'
+          // color='lightblue'
+          color={'#777777'}
         />
       )}
     </group>
