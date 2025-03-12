@@ -6,6 +6,7 @@ import CabinetFrame from './CabinetFrame'
 import CabinetMoulding from './CabinetMoulding'
 import FrontPanels from './FrontPanels'
 import SinkBasin from './sink-basin/SinkBasin'
+import Worktop from './Worktop'
 import Feet from './Feet'
 
 // panelConfig options
@@ -25,6 +26,8 @@ import Feet from './Feet'
 // }
 
 export default function BaseUnit({
+  baseUnit = true,
+  sink = true,
   carcassDepth = 575 * 1, // carcassDepth is 527 + 30 + 18
   carcassHeight = 759 * 1, // 723 + 36
   carcassInnerWidth = 264 * 2.3,
@@ -51,6 +54,9 @@ export default function BaseUnit({
   const thickness = panelThickness / 1000
   const distance = carcassInnerWidth / 1000 // inside (300 outside)
   const backInset = 30 / 1000
+
+  const sinkDepth = (carcassDepth * 0.75) / 1000
+  const shim = sinkDepth / 3
 
   // Extract ratios from panelConfig if available
   const panelRatios = panelConfig.map((panel) => panel.ratio || 1)
@@ -107,13 +113,40 @@ export default function BaseUnit({
         <Edges color='gray' renderOrder={1000} />
       </mesh>
 
+      {/* Back Panel */}
+      <mesh
+        rotation-y={Math.PI * 0.5}
+        position={[0, height / 2, -depth / 2 + backInset + thickness / 2]}
+      >
+        <boxGeometry args={[thickness, height, distance - thickness]} />
+        <meshStandardMaterial color='white' />
+        <Edges color='gray' renderOrder={1000} />
+      </mesh>
+
+      {/* Feet */}
       <Feet carcassInnerWidth={carcassInnerWidth} carcassDepth={carcassDepth} />
 
-      <SinkBasin
-        carcassDepth={carcassDepth}
-        carcassHeight={carcassHeight}
-        carcassInnerWidth={carcassInnerWidth}
-      />
+      {/* Sink */}
+      {sink && (
+        <SinkBasin
+          depth={sinkDepth}
+          carcassHeight={carcassHeight}
+          carcassInnerWidth={carcassInnerWidth}
+        />
+      )}
+
+      {/* Worktop */}
+      {baseUnit && (
+        <Worktop
+          // sink={sink}
+          shim={shim}
+          distance={distance}
+          thickness={thickness}
+          depth={depth + 0.075}
+          height={height}
+          color='lightblue'
+        />
+      )}
     </group>
   )
 }

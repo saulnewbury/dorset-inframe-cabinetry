@@ -5,7 +5,7 @@ import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
 const SinkBasin = ({
-  carcassDepth,
+  depth,
   carcassInnerWidth,
   carcassHeight,
   cornerRadius = 20 / 1000,
@@ -17,12 +17,11 @@ const SinkBasin = ({
   metalness = 0.2,
   roughness = 0.5,
   rotation = [-Math.PI / 2, 0, 0],
-  doubleBasin = true, // Option to create a double basin
-  dividerWidth = 0 / 1000 // Width of divider between basins (40mm default)
+  doubleBasin = true // Option to create a double basin
 }) => {
   // Convert dimensions to meters and apply adjustments
   const width = carcassInnerWidth / 1000 - 0.018
-  const depth = (carcassDepth * 0.8) / 1000
+
   const height = 200 / 1000
   const y = carcassHeight / 1000
 
@@ -78,15 +77,17 @@ const SinkBasin = ({
     }
 
     if (doubleBasin) {
-      // Calculate dimensions for two basins
-      const basinWidth = width / 2
+      // Calculate dimensions for two basins in ratio 2:3
+      const totalRatio = 2 + 3 // 5 parts total
+      const leftBasinWidth = (width * 2) / totalRatio // 2/5 of total width
+      const rightBasinWidth = (width * 3) / totalRatio // 3/5 of total width
 
-      // Create left basin hole
-      const leftHole = createLeftHole(0, basinWidth)
+      // Create left basin hole (smaller basin)
+      const leftHole = createLeftHole(0, leftBasinWidth)
       outerShape.holes.push(leftHole)
 
-      // Create right basin hole
-      const rightHole = createRightHole(basinWidth, basinWidth)
+      // Create right basin hole (larger basin)
+      const rightHole = createRightHole(leftBasinWidth, rightBasinWidth)
       outerShape.holes.push(rightHole)
     } else {
       // Create single basin hole
@@ -98,15 +99,16 @@ const SinkBasin = ({
       depth: height,
       bevelEnabled: false
     })
-  }, [width, depth, height, cornerRadius, edgeWidth, doubleBasin, dividerWidth])
+  }, [width, depth, height, cornerRadius, edgeWidth, doubleBasin, 0])
 
   // Calculate positions
   const depthOffset = depth * 0.1
-  const basinPosition = [-width / 2, y - height, depth / 2 + depthOffset]
-  const basePanelPosition = [0, y - (height + baseGap) + 0.03, depthOffset]
+
+  const basinPosition = [-width / 2, y - height, +depth]
+  const basePanelPosition = [0, y - (height + baseGap) + 0.03, depth / 2]
 
   return (
-    <group position-z={-0.1}>
+    <group position-z={-depth / 2 + edgeWidth * 2}>
       <mesh rotation={rotation} position={basinPosition} geometry={geometry}>
         <meshStandardMaterial
           color={color}
