@@ -8,7 +8,7 @@ export default function Worktop({
   distance,
   color,
   height,
-  sink = true
+  sink = false
 }) {
   const w = distance + thickness * 2
   const d = depth + 0.05
@@ -39,7 +39,7 @@ export default function Worktop({
         </>
       ) : (
         <mesh position={[0, height + 0.015, 0]}>
-          <boxGeometry args={[w, 0.03, depth]} />
+          <boxGeometry args={[w, 0.03, d]} />
           <meshStandardMaterial color={color} />
         </mesh>
       )}

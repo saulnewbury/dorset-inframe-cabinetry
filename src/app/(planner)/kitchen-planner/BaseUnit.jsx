@@ -27,7 +27,7 @@ import Feet from './Feet'
 
 export default function BaseUnit({
   baseUnit = true,
-  sink = true,
+  sink = 'null', // null | 'regular' | 'belfast'
   carcassDepth = 575 * 1, // carcassDepth is 527 + 30 + 18
   carcassHeight = 759 * 1, // 723 + 36
   carcassInnerWidth = 264 * 2.3,
@@ -137,7 +137,7 @@ export default function BaseUnit({
       )}
 
       {/* Worktop */}
-      {baseUnit && (
+      {((baseUnit && sink !== 'belfast') || sink === null) && (
         <Worktop
           sink={sink}
           shim={shim}
