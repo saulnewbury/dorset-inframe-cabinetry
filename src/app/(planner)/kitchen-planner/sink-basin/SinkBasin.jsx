@@ -16,7 +16,9 @@ const SinkBasin = ({
   baseGap = 9 / 1000,
   metalness = 0.2,
   roughness = 0.5,
-  rotation = [-Math.PI / 2, 0, 0]
+  rotation = [-Math.PI / 2, 0, 0],
+  doubleBasin = true, // Option to create a double basin
+  dividerWidth = 0 / 1000 // Width of divider between basins (40mm default)
 }) => {
   // Convert dimensions to meters and apply adjustments
   const width = carcassInnerWidth / 1000 - 0.018
@@ -27,7 +29,6 @@ const SinkBasin = ({
   // Create the sink basin geometry
   const geometry = useMemo(() => {
     const outerShape = new THREE.Shape()
-    const innerHole = new THREE.Path()
 
     // Create outer shape with rounded corners
     outerShape.moveTo(cornerRadius, 0)
@@ -47,31 +48,57 @@ const SinkBasin = ({
       false
     )
 
-    // Create inner hole with matching rounded corners
-    innerHole.moveTo(cornerRadius + edgeWidth, edgeWidth)
-    innerHole.lineTo(width - cornerRadius - edgeWidth, edgeWidth)
-    innerHole.arc(0, cornerRadius, cornerRadius, -Math.PI / 2, 0, false)
-    innerHole.lineTo(width - edgeWidth, depth - cornerRadius - edgeWidth)
-    innerHole.arc(-cornerRadius, 0, cornerRadius, 0, Math.PI / 2, false)
-    innerHole.lineTo(cornerRadius + edgeWidth, depth - edgeWidth)
-    innerHole.arc(0, -cornerRadius, cornerRadius, Math.PI / 2, Math.PI, false)
-    innerHole.lineTo(edgeWidth, cornerRadius + edgeWidth)
-    innerHole.arc(
-      cornerRadius,
-      0,
-      cornerRadius,
-      Math.PI,
-      (Math.PI * 3) / 2,
-      false
-    )
+    // Function to create a hole with rounded corners
+    const createLeftHole = (x, w) => {
+      const hole = new THREE.Path()
+      hole.moveTo(x + cornerRadius + edgeWidth, edgeWidth)
+      hole.lineTo(x + w - cornerRadius - edgeWidth / 2, edgeWidth)
+      hole.arc(0, cornerRadius, cornerRadius, -Math.PI / 2, 0, false)
+      hole.lineTo(x + w - edgeWidth / 2, depth - cornerRadius - edgeWidth)
+      hole.arc(-cornerRadius, 0, cornerRadius, 0, Math.PI / 2, false)
+      hole.lineTo(x + cornerRadius + edgeWidth, depth - edgeWidth)
+      hole.arc(0, -cornerRadius, cornerRadius, Math.PI / 2, Math.PI, false)
+      hole.lineTo(x + edgeWidth, cornerRadius + edgeWidth)
+      hole.arc(cornerRadius, 0, cornerRadius, Math.PI, (Math.PI * 3) / 2, false)
+      return hole
+    }
 
-    outerShape.holes.push(innerHole)
+    const createRightHole = (x, w) => {
+      const hole = new THREE.Path()
+      hole.moveTo(x + cornerRadius, edgeWidth)
+      hole.lineTo(x + w - cornerRadius - edgeWidth, edgeWidth)
+      hole.arc(0, cornerRadius, cornerRadius, -Math.PI / 2, 0, false)
+      hole.lineTo(x + w - edgeWidth, depth - cornerRadius - edgeWidth)
+      hole.arc(-cornerRadius, 0, cornerRadius, 0, Math.PI / 2, false)
+      hole.lineTo(x + cornerRadius + edgeWidth / 2, depth - edgeWidth)
+      hole.arc(0, -cornerRadius, cornerRadius, Math.PI / 2, Math.PI, false)
+      hole.lineTo(x + edgeWidth / 2, cornerRadius + edgeWidth)
+      hole.arc(cornerRadius, 0, cornerRadius, Math.PI, (Math.PI * 3) / 2, false)
+      return hole
+    }
+
+    if (doubleBasin) {
+      // Calculate dimensions for two basins
+      const basinWidth = width / 2
+
+      // Create left basin hole
+      const leftHole = createLeftHole(0, basinWidth)
+      outerShape.holes.push(leftHole)
+
+      // Create right basin hole
+      const rightHole = createRightHole(basinWidth, basinWidth)
+      outerShape.holes.push(rightHole)
+    } else {
+      // Create single basin hole
+      const singleHole = createHole(0, width)
+      outerShape.holes.push(singleHole)
+    }
 
     return new THREE.ExtrudeGeometry(outerShape, {
       depth: height,
       bevelEnabled: false
     })
-  }, [width, depth, height, cornerRadius, edgeWidth])
+  }, [width, depth, height, cornerRadius, edgeWidth, doubleBasin, dividerWidth])
 
   // Calculate positions
   const depthOffset = depth * 0.1
@@ -79,7 +106,7 @@ const SinkBasin = ({
   const basePanelPosition = [0, y - (height + baseGap) + 0.03, depthOffset]
 
   return (
-    <group position-y={0.0}>
+    <group position-z={-0.1}>
       <mesh rotation={rotation} position={basinPosition} geometry={geometry}>
         <meshStandardMaterial
           color={color}
