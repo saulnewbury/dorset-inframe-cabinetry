@@ -5,18 +5,15 @@ import { Edges } from '@react-three/drei'
 export default function DrawerPanel({
   boundary, // Single boundary object
   carcassDepth,
-  carcassHeight,
   panelThickness,
-  drawerThickness = 18, // Thickness of the drawer front in mm
   drawerGap = 2, // Gap between drawer and moulding frame in mm
   mouldingSize = 4, // Moulding size in mm
   frameInset = 4, // Frame inset in mm
   drawerHandleType = 'bar' // Optional handle type
 }) {
   // Convert dimensions from mm to meters
-  const pt = panelThickness / 1000
+
   const depth = carcassDepth / 1000
-  const drawerThicknessM = drawerThickness / 1000
   const drawerGapM = drawerGap / 1000
   const mouldingSizeM = mouldingSize / 1000
   const frameInsetM = frameInset / 1000
@@ -42,7 +39,7 @@ export default function DrawerPanel({
 
       return (
         <mesh
-          position={[0, -drawerHeight / 4, drawerThicknessM / 2 + handleOffset]}
+          position={[0, -drawerHeight / 4, panelThickness / 2 + handleOffset]}
         >
           <boxGeometry args={[handleWidth, handleHeight, handleDepth]} />
           <meshStandardMaterial color='#777777' />
@@ -58,11 +55,11 @@ export default function DrawerPanel({
 
   return (
     <group
-      position={[drawerX, drawerY, depth / 2 + drawerThicknessM / 2 - 0.001]}
+      position={[drawerX, drawerY, depth / 2 + panelThickness / 2 - 0.001]}
     >
       {/* Drawer front */}
       <mesh>
-        <boxGeometry args={[drawerWidth, drawerHeight, drawerThicknessM]} />
+        <boxGeometry args={[drawerWidth, drawerHeight, panelThickness]} />
         <meshStandardMaterial color='white' />
         <Edges threshold={5} color='gray' />
       </mesh>

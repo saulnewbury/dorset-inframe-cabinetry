@@ -9,25 +9,24 @@ export default function CabinetFrame({
   carcassInnerWidth,
   numHoles,
   ratios = null, // New parameter for custom ratios
-  frameThickness = 50,
   dividerThickness = 18
 }) {
   // Convert dimensions from mm to meters
   const carcassOuterWidth = carcassInnerWidth + 36
   const frameHeight = carcassHeight + 26.2
 
+  const frameThickness = 50 / 1000
   const width = carcassOuterWidth / 1000
-  const pt = panelThickness / 1000
-  const thickness = frameThickness / 1000
+
   const height = frameHeight / 1000
   const depth = carcassDepth / 1000
   const hOffset = carcassHeight / 1000 - frameHeight / 1000
-  const zOffset = thickness - pt
+  const zOffset = frameThickness - panelThickness
   const dividerThicknessM = dividerThickness / 1000
 
   const holeHeight = carcassHeight / 1000 - 9 / 1000
   const holeWidth = carcassInnerWidth / 1000
-  const holeYOffset = pt
+  const holeYOffset = panelThickness
 
   // Create panel shape with holes
   const shape = useMemo(() => {
@@ -42,7 +41,7 @@ export default function CabinetFrame({
 
     // Define hole boundaries
     const holeBottom = -holeHeight / 2 + holeYOffset
-    const holeTop = holeHeight / 2 + holeYOffset - pt
+    const holeTop = holeHeight / 2 + holeYOffset - panelThickness
     const totalHoleHeight = holeTop - holeBottom
 
     // Create holes based on numHoles and ratios
@@ -136,7 +135,7 @@ export default function CabinetFrame({
     holeYOffset,
     numHoles,
     dividerThicknessM,
-    pt,
+    panelThickness,
     ratios
   ])
 
@@ -168,7 +167,7 @@ export default function CabinetFrame({
         args={[
           shape,
           {
-            depth: thickness,
+            depth: frameThickness,
             bevelEnabled: false
           }
         ]}

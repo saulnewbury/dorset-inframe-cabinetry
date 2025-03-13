@@ -8,8 +8,7 @@ export function SplitDoors({
   doorX,
   doorY,
   depth,
-  pt,
-  doorThicknessM,
+  panelThickness,
   doorGapAtBottomM,
   doorGapM,
   doorWidth,
@@ -21,6 +20,8 @@ export function SplitDoors({
   orientation = 'horizontal', // 'horizontal' or 'vertical'
   ratio = [1, 1] // Default 1:1 ratio for split doors
 }) {
+  // panelThickness = 18 / 1000
+
   // Extract ratio values
   const [ratio1, ratio2] = ratio
   const totalRatio = ratio1 + ratio2
@@ -85,7 +86,7 @@ export function SplitDoors({
   // Extrude settings
   const extrudeSettings = {
     steps: 1,
-    depth: pt,
+    depth: panelThickness,
     bevelEnabled: false
   }
 
@@ -110,7 +111,9 @@ export function SplitDoors({
   return (
     <group>
       {/* First panel and door */}
-      <mesh position={[pos1X, pos1Y, depth / 2 - pt + doorThicknessM]}>
+      <mesh
+        position={[pos1X, pos1Y, depth / 2 - panelThickness + panelThickness]}
+      >
         <extrudeGeometry args={[panel1Shape, extrudeSettings]} />
         <meshStandardMaterial color='white' side={THREE.DoubleSide} />
         <Edges threshold={5} color='gray' />
@@ -120,16 +123,18 @@ export function SplitDoors({
         position={[
           pos1X,
           pos1Y - (orientation === 'vertical' ? 0 : doorGapAtBottomM / 2),
-          depth / 2 + doorThicknessM / 2 - 0.001
+          depth / 2 + panelThickness / 2 - 0.001
         ]}
       >
-        <boxGeometry args={[door1Width, door1Height, doorThicknessM / 2]} />
+        <boxGeometry args={[door1Width, door1Height, panelThickness / 2]} />
         <meshStandardMaterial color='white' />
         <Edges threshold={5} color='gray' />
       </mesh>
 
       {/* Second panel and door */}
-      <mesh position={[pos2X, pos2Y, depth / 2 - pt + doorThicknessM]}>
+      <mesh
+        position={[pos2X, pos2Y, depth / 2 - panelThickness + panelThickness]}
+      >
         <extrudeGeometry args={[panel2Shape, extrudeSettings]} />
         <meshStandardMaterial color='white' side={THREE.DoubleSide} />
         <Edges threshold={5} color='gray' />
@@ -139,10 +144,10 @@ export function SplitDoors({
         position={[
           pos2X,
           pos2Y - (orientation === 'vertical' ? 0 : doorGapAtBottomM / 2),
-          depth / 2 + doorThicknessM / 2 - 0.001
+          depth / 2 + panelThickness / 2 - 0.001
         ]}
       >
-        <boxGeometry args={[door2Width, door2Height, doorThicknessM / 2]} />
+        <boxGeometry args={[door2Width, door2Height, panelThickness / 2]} />
         <meshStandardMaterial color='white' />
         <Edges threshold={5} color='gray' />
       </mesh>

@@ -3,7 +3,7 @@
 import { Edges } from '@react-three/drei'
 
 // Components
-import CabinetFrame from './CabinetFrame'
+import BaseCabinetFrame from './BaseCabinetFrame'
 import CabinetMoulding from './CabinetMoulding'
 import FrontPanels from './FrontPanels'
 import SinkBasin from './sink-basin/SinkBasin'
@@ -34,20 +34,21 @@ import Feet from './Feet'
 
 // (574 carcassDepth is 527 + 30 + 18)
 
-export default function BaseUnit({
-  baseUnit = true,
+export default function Cabinet({
+  baseUnit = false,
   // basin = { type: 'belfast', height: 220, depth: 455, doubleBasin: true },
   basin = null,
-  carcassDepth = 575, //
-  carcassHeight = 759, // 723 + 36
+  // carcassDepth = 575, // base
+  carcassDepth = 282, // wall and island units
+  // carcassHeight = 759, // base cabinet
+  carcassHeight = 720, // wall cabinet
   carcassInnerWidth = 564,
-  panelThickness = 18,
   panelConfig = [
     {
       type: 'door',
-      style: 'split',
-      ratio: 1,
-      orientation: 'horizontal',
+      ovenType: 'compact',
+      // ratio: 1,
+      // orientation: 'horizontal',
       doorRatio: [1, 1]
     }
   ]
@@ -58,7 +59,7 @@ export default function BaseUnit({
   // Carcass
   const height = carcassHeight / 1000
   const depth = carcassDepth / 1000
-  const thickness = panelThickness / 1000
+  const panelThickness = 18 / 1000
   const distance = carcassInnerWidth / 1000 // inside (300 outside)
   const backInset = 30 / 1000
 
@@ -70,14 +71,17 @@ export default function BaseUnit({
   // Extract ratios from panelConfig if available
   const panelRatios = panelConfig.map((panel) => panel.ratio || 1)
 
+  //  Set height for Base Units and Wall Units
   //  0.0265 is the distance from carcass to the bottom of the frame
   //  0.104 is the distance from the bottom of the frame to floor
   //  0.0265 + 0.104 is the amount to lift the unit up ('Feet' make up the gap).
-  const baseUnitPositionY = 0.0265 + 0.104
+  const baseUnitPositionY = baseUnit
+    ? 0.0265 + 0.104
+    : 0.0265 + 0.104 + carcassHeight / 1000 + 0.49
 
   return (
     <group position-y={baseUnitPositionY}>
-      <CabinetFrame
+      <BaseCabinetFrame
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={carcassInnerWidth}
@@ -103,21 +107,21 @@ export default function BaseUnit({
 
       {/* Left Side Panel */}
       <mesh position={[-distance / 2, height / 2, 0]}>
-        <boxGeometry args={[thickness, height, depth]} />
+        <boxGeometry args={[panelThickness, height, depth]} />
         <meshStandardMaterial color='white' />
         <Edges color='gray' renderOrder={1000} />
       </mesh>
 
       {/* Right Side Panel */}
       <mesh position={[distance / 2, height / 2, 0]}>
-        <boxGeometry args={[thickness, height, depth]} />
+        <boxGeometry args={[panelThickness, height, depth]} />
         <meshStandardMaterial color='white' />
         <Edges color='gray' renderOrder={1000} />
       </mesh>
 
       {/* Bottom Panel */}
-      <mesh position={[0, thickness / 2, backInset / 2]}>
-        <boxGeometry args={[distance, thickness, depth - backInset]} />
+      <mesh position={[0, panelThickness / 2, backInset / 2]}>
+        <boxGeometry args={[distance, panelThickness, depth - backInset]} />
         <meshStandardMaterial color='white' />
         <Edges color='gray' renderOrder={1000} />
       </mesh>
@@ -125,15 +129,29 @@ export default function BaseUnit({
       {/* Back Panel */}
       <mesh
         rotation-y={Math.PI * 0.5}
-        position={[0, height / 2, -depth / 2 + backInset + thickness / 2]}
+        position={[0, height / 2, -depth / 2 + backInset + panelThickness / 2]}
       >
-        <boxGeometry args={[thickness, height, distance - thickness]} />
+        <boxGeometry
+          args={[panelThickness, height, distance - panelThickness]}
+        />
         <meshStandardMaterial color='white' />
         <Edges color='gray' renderOrder={1000} />
       </mesh>
 
-      {/* Feet */}
-      <Feet carcassInnerWidth={carcassInnerWidth} carcassDepth={carcassDepth} />
+      {/* Top Panel */}
+      {!baseUnit && (
+        <mesh position={[0, height - panelThickness / 2, backInset / 2]}>
+          <boxGeometry
+            args={[
+              distance - panelThickness,
+              panelThickness,
+              depth - backInset
+            ]}
+          />
+          <meshStandardMaterial color='white' />
+          <Edges color='gray' renderOrder={1000} />
+        </mesh>
+      )}
 
       {/* Sink */}
       {basin && (
@@ -147,17 +165,24 @@ export default function BaseUnit({
         />
       )}
 
-      {/* Worktop */}
+      {/* Worktop and Feet*/}
       {baseUnit && (
-        <Worktop
-          basin={basin}
-          distance={distance}
-          thickness={thickness}
-          depth={depth}
-          height={height}
-          // color='lightblue'
-          color={'#777777'}
-        />
+        <>
+          <Worktop
+            basin={basin}
+            distance={distance}
+            thickness={panelThickness}
+            depth={depth}
+            height={height}
+            // color='lightblue'
+            color={'#777777'}
+          />
+
+          <Feet
+            carcassInnerWidth={carcassInnerWidth}
+            carcassDepth={carcassDepth}
+          />
+        </>
       )}
     </group>
   )

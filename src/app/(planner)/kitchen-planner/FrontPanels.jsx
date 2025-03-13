@@ -14,15 +14,11 @@ export default function FrontPanels({
 }) {
   // Convert dimensions from mm to meters
   const frameHeight = carcassHeight + 26.2
-  const pt = panelThickness / 1000
   const height = frameHeight / 1000
   const hOffset = carcassHeight / 1000 - frameHeight / 1000
-  const dividerThickness = 18 // Default divider thickness in mm
-  const dividerThicknessM = dividerThickness / 1000
-
   const holeHeight = carcassHeight / 1000 - 9 / 1000
   const holeWidth = carcassInnerWidth / 1000
-  const holeYOffset = pt
+  const holeYOffset = panelThickness
 
   // Extract ratios from panelConfig if available
   const ratios = panelConfig.map((panel) => panel.ratio || 1)
@@ -35,8 +31,8 @@ export default function FrontPanels({
         holeHeight,
         holeWidth,
         holeYOffset,
-        dividerThicknessM,
-        pt,
+        panelThickness,
+        panelThickness,
         ratios: ratios.length === panelConfig.length ? ratios : null
       }),
     [
@@ -44,8 +40,8 @@ export default function FrontPanels({
       holeHeight,
       holeWidth,
       holeYOffset,
-      dividerThicknessM,
-      pt,
+      panelThickness,
+      panelThickness,
       ratios
     ]
   )
@@ -57,7 +53,6 @@ export default function FrontPanels({
 
         // Common props for all panel types
         const commonProps = {
-          key: `panel-${index}`,
           boundary,
           carcassDepth,
           carcassHeight,
@@ -69,6 +64,7 @@ export default function FrontPanels({
           case 'drawer':
             return (
               <DrawerPanel
+                key={`panel-${panelConfig.type}`}
                 {...commonProps}
                 drawerHandleType={config.handleType || 'bar'}
               />
@@ -76,6 +72,7 @@ export default function FrontPanels({
           case 'oven':
             return (
               <Oven
+                key={`panel-${panelConfig.type}`}
                 {...commonProps}
                 type={config.ovenType || 'single'}
                 ovenHandleType={config.handleType || 'bar'}
@@ -85,6 +82,7 @@ export default function FrontPanels({
           case 'door':
             return (
               <DoorPanel
+                key={`panel-${panelConfig.type}`}
                 {...commonProps}
                 doorStyle={config.style || 'single'}
                 doorConfig={{

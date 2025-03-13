@@ -11,14 +11,14 @@ export function calculateDoorBoundaries({
   holeWidth,
   holeYOffset,
   dividerThicknessM,
-  pt,
+  panelThickness,
   ratios = null // New parameter for custom ratios
 }) {
   const boundaries = []
 
   // Define hole boundaries
   const holeBottom = -holeHeight / 2 + holeYOffset
-  const holeTop = holeHeight / 2 + holeYOffset - pt
+  const holeTop = holeHeight / 2 + holeYOffset - panelThickness
   const totalHoleHeight = holeTop - holeBottom
 
   if (numHoles === 1) {

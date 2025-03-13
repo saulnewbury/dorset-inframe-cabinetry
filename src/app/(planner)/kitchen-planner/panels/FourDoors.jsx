@@ -7,8 +7,7 @@ export function FourDoors({
   doorX,
   doorY,
   depth,
-  pt,
-  doorThicknessM,
+  panelThickness,
   doorGapAtBottomM,
   doorGapM,
   doorWidth,
@@ -29,7 +28,7 @@ export function FourDoors({
   // Extrude settings
   const extrudeSettings = {
     steps: 1,
-    depth: pt,
+    depth: panelThickness,
     bevelEnabled: false
   }
 
@@ -215,7 +214,7 @@ export function FourDoors({
               position={[
                 doorX + pos.x,
                 doorY + pos.y,
-                depth / 2 - pt + doorThicknessM
+                depth / 2 - panelThickness + panelThickness
               ]}
             >
               <extrudeGeometry args={[panelData.shape, extrudeSettings]} />
@@ -228,14 +227,14 @@ export function FourDoors({
               position={[
                 doorX + pos.x,
                 doorY + pos.y - (isBottomPanel ? doorGapAtBottomM / 2 : 0),
-                depth / 2 + doorThicknessM / 2 - 0.001
+                depth / 2 + panelThickness / 2 - 0.001
               ]}
             >
               <boxGeometry
                 args={[
                   doorDimensions.width,
                   doorDimensions.height,
-                  doorThicknessM / 2
+                  panelThickness / 2
                 ]}
               />
               <meshStandardMaterial color='white' />

@@ -8,9 +8,8 @@ export function SingleDoor({
   doorX,
   doorY,
   depth,
-  pt,
-  doorThicknessM,
-  doorGapM, // Added this missing prop
+  panelThickness,
+  doorGapM,
   doorGapAtBottomM,
   doorWidth,
   doorHeight,
@@ -30,14 +29,16 @@ export function SingleDoor({
   // Extrude settings
   const extrudeSettings = {
     steps: 1,
-    depth: pt,
+    depth: panelThickness,
     bevelEnabled: false
   }
 
   return (
     <group>
       {/* Individual panel with hole */}
-      <mesh position={[doorX, doorY, depth / 2 - pt + doorThicknessM]}>
+      <mesh
+        position={[doorX, doorY, depth / 2 - panelThickness + panelThickness]}
+      >
         <extrudeGeometry args={[panelShape, extrudeSettings]} />
         <meshStandardMaterial color='white' side={THREE.DoubleSide} />
         <Edges threshold={5} color='gray' />
@@ -48,11 +49,11 @@ export function SingleDoor({
         position={[
           doorX,
           doorY - doorGapAtBottomM / 2,
-          depth / 2 + doorThicknessM / 2 - 0.001
+          depth / 2 + panelThickness / 2 - 0.001
         ]}
       >
         <boxGeometry
-          args={[doorWidth - 2 * doorGapM, doorHeight, doorThicknessM / 2]}
+          args={[doorWidth - 2 * doorGapM, doorHeight, panelThickness / 2]}
         />
         <meshStandardMaterial color='white' />
         <Edges threshold={5} color='gray' />

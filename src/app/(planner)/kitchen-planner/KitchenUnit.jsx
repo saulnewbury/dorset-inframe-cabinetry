@@ -11,7 +11,7 @@ import { baseUnitStyles as unitStyles } from '@/model/itemStyles'
 import { wt } from '@/const'
 
 import ItemInfo from './ItemInfo'
-import BaseUnit from './BaseUnit'
+import Cabinet from './Cabinet'
 
 // Drag handle for openings:
 import dragHandle from '@/assets/icons/general-handle.svg'
@@ -76,7 +76,7 @@ export default function KitchenUnit({
           </>
         )}
         {type === 'base' ? (
-          <BaseUnit width={width} style={style} />
+          <Cabinet width={width} style={style} />
         ) : (
           <WallUnit width={width} />
         )}

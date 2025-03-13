@@ -8,7 +8,6 @@ export default function DoorPanel({
   boundary, // Single boundary object
   carcassDepth,
   panelThickness,
-  doorThickness = 18,
   doorGap = 2,
   mouldingSize = 4,
   frameInset = 4,
@@ -27,9 +26,7 @@ export default function DoorPanel({
   } = doorConfig
 
   // Convert dimensions from mm to meters
-  const pt = panelThickness / 1000
   const depth = carcassDepth / 1000
-  const doorThicknessM = doorThickness / 1000
   const doorGapM = doorGap / 1000
   const mouldingSizeM = mouldingSize / 1000
   const frameInsetM = frameInset / 1000
@@ -53,8 +50,7 @@ export default function DoorPanel({
     doorX,
     doorY,
     depth,
-    pt,
-    doorThicknessM,
+    panelThickness,
     doorGapAtBottomM,
     doorGapM,
     doorWidth,
@@ -64,6 +60,8 @@ export default function DoorPanel({
     holeInsetM,
     splitGapM
   }
+
+  console.log('door panel ', panelThickness)
 
   // Render appropriate door type based on doorStyle
   switch (doorStyle) {
