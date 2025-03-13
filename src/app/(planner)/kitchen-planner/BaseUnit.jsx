@@ -2,6 +2,7 @@
 
 import { Edges } from '@react-three/drei'
 
+// Components
 import CabinetFrame from './CabinetFrame'
 import CabinetMoulding from './CabinetMoulding'
 import FrontPanels from './FrontPanels'
@@ -25,15 +26,21 @@ import Feet from './Feet'
 //   // Additional properties as needed for future extensions
 // }
 
+// basin options
+// {
+//   type: null | 'regular' | 'belfast'
+// }
+
+// (574 carcassDepth is 527 + 30 + 18)
+
 export default function BaseUnit({
   baseUnit = true,
-  sink = 'belfast', // null | 'regular' | 'belfast'
-  carcassDepth = 575 * 1, // carcassDepth is 527 + 30 + 18
+  basin = { type: 'belfast', depth: 0.445, height: 0.22, width: 0.6 },
+  carcassDepth = 575, //
   carcassHeight = 759 * 1, // 723 + 36
   carcassInnerWidth = 264 * 2.3,
   panelThickness = 18,
   panelConfig = [
-    // { type: 'door', style: 'single', ratio: 2 },
     {
       type: 'door',
       style: 'split',
@@ -41,23 +48,19 @@ export default function BaseUnit({
       orientation: 'horizontal',
       doorRatio: [1, 1]
     }
-    // {
-    //   type: 'oven',
-    //   ovenType: 'double',
-    //   ratio: 3,
-    //   compartmentRatio: [1, 2]
-    // }
   ]
 }) {
+  // Carcass
   const height = carcassHeight / 1000
   const depth = carcassDepth / 1000
   const thickness = panelThickness / 1000
   const distance = carcassInnerWidth / 1000 // inside (300 outside)
   const backInset = 30 / 1000
 
-  const shimDivisor = 3.8
-  const sinkDepth = (carcassDepth * 0.75) / 1000
-  const shim = sinkDepth / shimDivisor
+  // Basin
+  const basinDepth = 455 / 1000
+  const basinHeight = 220 / 1000
+  const basinWidth = distance - 0.018
 
   // Extract ratios from panelConfig if available
   const panelRatios = panelConfig.map((panel) => panel.ratio || 1)
@@ -128,20 +131,21 @@ export default function BaseUnit({
       <Feet carcassInnerWidth={carcassInnerWidth} carcassDepth={carcassDepth} />
 
       {/* Sink */}
-      {sink && (
+      {basin && (
         <SinkBasin
-          depth={sinkDepth}
+          basin={basin}
+          depth={basinDepth}
+          height={basinHeight}
+          width={basinWidth}
           carcassHeight={carcassHeight}
-          carcassInnerWidth={carcassInnerWidth}
+          carcassDepth={depth}
         />
       )}
 
       {/* Worktop */}
       {baseUnit && (
         <Worktop
-          sink={sink}
-          shim={shim}
-          shimDivisor={shimDivisor}
+          basin={basin}
           distance={distance}
           thickness={thickness}
           depth={depth}

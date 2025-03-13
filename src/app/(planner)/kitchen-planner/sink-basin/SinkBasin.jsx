@@ -5,25 +5,26 @@ import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
 const SinkBasin = ({
+  basin,
   depth,
-  carcassInnerWidth,
+  width,
+  height,
   carcassHeight,
-  cornerRadius = 20 / 1000,
-  edgeWidth = 20 / 1000,
-  color = '#eeeeee',
-  baseColor = '#d3d3d3',
-  baseThickness = 18 / 1000,
-  baseGap = 9 / 1000,
-  metalness = 0.2,
-  roughness = 0.5,
-  rotation = [-Math.PI / 2, 0, 0],
-  doubleBasin = true // Option to create a double basin
+  carcassDepth,
+  doubleBasin = true, // Option to create a double basin
+  color
 }) => {
-  // Convert dimensions to meters and apply adjustments
-  const width = carcassInnerWidth / 1000 - 0.018
+  const baseThickness = 18 / 1000
+  const baseGap = 9 / 1000
+  const metalness = 0.2
+  const roughness = 0.5
+  const rotation = [-Math.PI / 2, 0, 0]
+  const cornerRadius = 20 / 1000
+  const edgeWidth = 20 / 1000
 
-  const height = 200 / 1000
   const y = carcassHeight / 1000
+
+  // if (basin === 'belfast') width += 0.036
 
   // Create the sink basin geometry
   const geometry = useMemo(() => {
@@ -102,13 +103,12 @@ const SinkBasin = ({
   }, [width, depth, height, cornerRadius, edgeWidth, doubleBasin, 0])
 
   // Calculate positions
-  const depthOffset = depth * 0.1
 
-  const basinPosition = [-width / 2, y - height, +depth]
-  const basePanelPosition = [0, y - (height + baseGap) + 0.03, depth / 2]
+  const basinPosition = [-width / 2, y - height, +depth / 2]
+  const basePanelPosition = [0, y - (height + baseGap) + 0.03, 0]
 
   return (
-    <group position-z={-depth / 2 + edgeWidth * 2}>
+    <group position-z={edgeWidth / 2 + 0.018}>
       <mesh rotation={rotation} position={basinPosition} geometry={geometry}>
         <meshStandardMaterial
           color={color}
@@ -120,8 +120,8 @@ const SinkBasin = ({
       </mesh>
 
       <mesh position={basePanelPosition} rotation={rotation}>
-        <boxGeometry args={[width, depth - 0.03, baseThickness]} />
-        <meshStandardMaterial color={baseColor} />
+        <boxGeometry args={[width, depth - 0.003, baseThickness]} />
+        <meshStandardMaterial color={color} />
       </mesh>
     </group>
   )
