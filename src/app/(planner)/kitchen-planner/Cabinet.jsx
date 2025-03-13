@@ -35,18 +35,18 @@ import Feet from './Feet'
 // (574 carcassDepth is 527 + 30 + 18)
 
 export default function Cabinet({
-  baseUnit = false,
-  // basin = { type: 'belfast', height: 220, depth: 455, doubleBasin: true },
-  basin = null,
-  // carcassDepth = 575, // base
-  carcassDepth = 282, // wall and island units
+  baseUnit = true,
+  basin = { type: 'belfast', height: 220, depth: 455, doubleBasin: true },
+  // basin = null,
+  carcassDepth = 575, // base
+  // carcassDepth = 282, // wall and island units
   // carcassHeight = 759, // base cabinet
   carcassHeight = 720, // wall cabinet
   carcassInnerWidth = 564,
   panelConfig = [
     {
       type: 'door',
-      ovenType: 'compact',
+      // ovenType: 'compact',
       // ratio: 1,
       // orientation: 'horizontal',
       doorRatio: [1, 1]

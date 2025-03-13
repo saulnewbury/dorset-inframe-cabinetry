@@ -7,26 +7,19 @@ import { createPanelShape } from '@/utils/doorCalculations'
 export default function Oven({
   boundary, // Single boundary object
   carcassDepth,
-  carcassHeight,
   panelThickness,
-  ovenThickness = 18, // Thickness of the oven front in mm
-  ovenGap = 2, // Gap between oven and moulding frame in mm
-  mouldingSize = 4, // Moulding size in mm
-  frameInset = 4, // Frame inset in mm
+  ovenGap = 2 / 1000, // Gap between oven and moulding frame in mm
+  mouldingSize = 4 / 1000, // Moulding size in mm
   ovenHandleType = 'bar', // Optional handle type
   type = 'double', // Changed default from 'glass' to 'single'
   compartmentRatio = [2, 3] // Ratio between compartments for double oven (default 1:1)
 }) {
   // Convert dimensions from mm to meters
-  const pt = panelThickness / 1000
+  const frameInset = 4 / 1000 // Frame inset in mm
   const depth = carcassDepth / 1000
-  const ovenThicknessM = ovenThickness / 1000
-  const ovenGapM = ovenGap / 1000
-  const mouldingSizeM = mouldingSize / 1000
-  const frameInsetM = frameInset / 1000
 
   // Calculate oven dimensions with appropriate gaps
-  const totalInset = frameInsetM + mouldingSizeM + ovenGapM
+  const totalInset = frameInset + mouldingSize + ovenGap
   const ovenWidth = boundary.right - boundary.left - 2 * totalInset
   const ovenHeight = boundary.top - boundary.bottom - 2 * totalInset
 
@@ -108,7 +101,7 @@ export default function Oven({
           position={[
             0,
             compartmentHight / 2 - 0.05,
-            ovenThicknessM / 2 + handleOffset
+            panelThickness / 2 + handleOffset
           ]}
         >
           <boxGeometry args={[handleWidth, handleHeight, handleDepth]} />
@@ -124,13 +117,13 @@ export default function Oven({
   }
 
   return (
-    <group position={[ovenX, ovenY, depth / 2 + ovenThicknessM / 2 - 0.001]}>
+    <group position={[ovenX, ovenY, depth / 2 + panelThickness / 2 - 0.001]}>
       {/* Oven front */}
       {type === 'compact' && (
         <group>
           <mesh position-y={-cpanel / 2}>
             <boxGeometry
-              args={[ovenWidth, ovenHeight - cpanel, ovenThicknessM]}
+              args={[ovenWidth, ovenHeight - cpanel, panelThickness]}
             />
             <meshStandardMaterial color='white' />
             <Edges threshold={5} color='gray' />
@@ -147,7 +140,7 @@ export default function Oven({
           >
             <mesh>
               <boxGeometry
-                args={[ovenWidth, topCompartmentHeight, ovenThicknessM]}
+                args={[ovenWidth, topCompartmentHeight, panelThickness]}
               />
               <meshStandardMaterial color='white' />
               <Edges threshold={5} color='gray' />
@@ -163,7 +156,7 @@ export default function Oven({
           >
             <mesh>
               <boxGeometry
-                args={[ovenWidth, bottomCompartmentHeight, ovenThicknessM]}
+                args={[ovenWidth, bottomCompartmentHeight, panelThickness]}
               />
               <meshStandardMaterial color='white' />
               <Edges threshold={5} color='gray' />
@@ -175,10 +168,10 @@ export default function Oven({
 
       {/* Updated 'single' type with box and extruded geometries */}
       {type === 'single' && (
-        <group position-y={-cpanel / 2} position-z={-ovenThicknessM / 2}>
-          <mesh position-y={-cpanel / 2} position-z={ovenThicknessM / 2}>
+        <group position-y={-cpanel / 2} position-z={-panelThickness / 2}>
+          <mesh position-y={-cpanel / 2} position-z={panelThickness / 2}>
             <boxGeometry
-              args={[ovenWidth, ovenHeight - cpanel, ovenThicknessM / 2]}
+              args={[ovenWidth, ovenHeight - cpanel, panelThickness / 2]}
             />
             <meshStandardMaterial color='white' />
             <Edges threshold={5} color='gray' />
@@ -192,7 +185,7 @@ export default function Oven({
                   75 / 1000 // 75mm border in meters
                 ),
                 {
-                  depth: ovenThicknessM,
+                  depth: panelThickness,
                   bevelEnabled: false
                 }
               ]}
@@ -208,14 +201,14 @@ export default function Oven({
       <group position={[0, ovenHeight / 2 - cpanel / 2, 0]}>
         {/* panel */}
         <mesh>
-          <boxGeometry args={[ovenWidth, cpanel, ovenThicknessM]} />
+          <boxGeometry args={[ovenWidth, cpanel, panelThickness]} />
           <meshStandardMaterial color='white' />
           <Edges threshold={5} color='gray' />
         </mesh>
         {/* Digital display */}
         <mesh>
           <boxGeometry
-            args={[ovenWidth / 5, cpanel / 3, ovenThicknessM * 1.1]}
+            args={[ovenWidth / 5, cpanel / 3, panelThickness * 1.1]}
           />
           <meshStandardMaterial color='white' />
           <Edges threshold={5} color='gray' />

@@ -22,12 +22,12 @@ export default function Worktop({
 
   const backShim =
     basin?.type === 'belfast'
-      ? d - 0.05 - basinDepth + 0.02 + 0.05
+      ? d - 0.05 - basinDepth + 0.025 + 0.05
       : d - 0.05 - basinDepth + 0.02
   const frontShim = 0.05 + 0.02
   const sideShim =
     basin?.type === 'belfast'
-      ? thickness + 0.02
+      ? thickness + 0.01
       : thickness + 0.02 + thickness / 2
 
   return (
