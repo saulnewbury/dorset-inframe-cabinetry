@@ -11,7 +11,7 @@ const SinkBasin = ({
   height,
   carcassHeight,
   carcassDepth,
-  doubleBasin = true, // Option to create a double basin
+  doubleBasin = false, // Option to create a double basin
   color
 }) => {
   const baseThickness = 18 / 1000
@@ -77,6 +77,21 @@ const SinkBasin = ({
       return hole
     }
 
+    // Function to create a single hole with rounded corners
+    const createHole = (x, w) => {
+      const hole = new THREE.Path()
+      hole.moveTo(x + cornerRadius + edgeWidth, edgeWidth)
+      hole.lineTo(x + w - cornerRadius - edgeWidth, edgeWidth)
+      hole.arc(0, cornerRadius, cornerRadius, -Math.PI / 2, 0, false)
+      hole.lineTo(x + w - edgeWidth, depth - cornerRadius - edgeWidth)
+      hole.arc(-cornerRadius, 0, cornerRadius, 0, Math.PI / 2, false)
+      hole.lineTo(x + cornerRadius + edgeWidth, depth - edgeWidth)
+      hole.arc(0, -cornerRadius, cornerRadius, Math.PI / 2, Math.PI, false)
+      hole.lineTo(x + edgeWidth, cornerRadius + edgeWidth)
+      hole.arc(cornerRadius, 0, cornerRadius, Math.PI, (Math.PI * 3) / 2, false)
+      return hole
+    }
+
     if (doubleBasin) {
       // Calculate dimensions for two basins in ratio 2:3
       const totalRatio = 2 + 3 // 5 parts total
@@ -100,10 +115,9 @@ const SinkBasin = ({
       depth: height,
       bevelEnabled: false
     })
-  }, [width, depth, height, cornerRadius, edgeWidth, doubleBasin, 0])
+  }, [width, depth, height, cornerRadius, edgeWidth, doubleBasin])
 
   // Calculate positions
-
   const basinPosition = [-width / 2, y - height, +depth / 2]
   const basePanelPosition = [0, y - (height + baseGap) + 0.03, 0]
 
