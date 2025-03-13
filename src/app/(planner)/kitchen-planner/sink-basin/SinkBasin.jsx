@@ -4,16 +4,7 @@ import React, { useMemo } from 'react'
 import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
-const SinkBasin = ({
-  basin,
-  depth,
-  width,
-  height,
-  carcassHeight,
-  carcassDepth,
-  doubleBasin = false, // Option to create a double basin
-  color
-}) => {
+const SinkBasin = ({ basin, depth, width, height, carcassHeight, color }) => {
   const baseThickness = 18 / 1000
   const baseGap = 9 / 1000
   const metalness = 0.2
@@ -93,7 +84,7 @@ const SinkBasin = ({
       return hole
     }
 
-    if (doubleBasin) {
+    if (basin.doubleBasin) {
       // Calculate dimensions for two basins in ratio 2:3
       const totalRatio = 2 + 3 // 5 parts total
       const leftBasinWidth = (width * 2) / totalRatio // 2/5 of total width
@@ -116,17 +107,21 @@ const SinkBasin = ({
       depth: height,
       bevelEnabled: false
     })
-  }, [width, depth, height, cornerRadius, edgeWidth, doubleBasin])
+  }, [width, depth, height, cornerRadius, edgeWidth, basin.doubleBasin])
 
   // Calculate positions
   const basinPosition = [-width / 2, y - height, +depth / 2]
   const basePanelPosition = [0, y - (height + baseGap) + 0.03, 0]
   const zPosStandard = edgeWidth / 2 + 0.018
   const zPosBelfast = edgeWidth / 2 + 0.018 + 0.05
-  const z = basin.type === 'belfast' ? zPosBelfast : zPosStandard
 
   return (
-    <group position-z={z} position-y={height}>
+    <group
+      position-z={basin.type === 'belfast' ? zPosBelfast : zPosStandard}
+      position-y={
+        basin.type === 'belfast' ? height : height - basin.height / 1000
+      }
+    >
       <mesh rotation={rotation} position={basinPosition} geometry={geometry}>
         <meshStandardMaterial
           color={color}

@@ -7,26 +7,26 @@ export default function Worktop({
   distance,
   color,
   overhang = 0.02,
-  basin = false
+  basin = null
 }) {
   const w = distance + thickness * 2
   const d = depth + thickness
-  const basinDepth = basin.depth / 1000
-  const basinHeight = basin.height / 1000
+  const basinDepth = basin?.depth / 1000
+  const basinHeight = basin?.height / 1000
 
-  if (basin.type === 'belfast') height += basinHeight
+  if (basin?.type === 'belfast') height += basinHeight
 
   // 0.05 frame depth
   // 0.02 basin wall depth
   // 0.03 worktop thickness
 
   const backShim =
-    basin.type === 'belfast'
+    basin?.type === 'belfast'
       ? d - 0.05 - basinDepth + 0.02 + 0.05
-      : d - 0.05 - basinDepth + 0.01
+      : d - 0.05 - basinDepth + 0.02
   const frontShim = 0.05 + 0.02
   const sideShim =
-    basin.type === 'belfast'
+    basin?.type === 'belfast'
       ? thickness + 0.02
       : thickness + 0.02 + thickness / 2
 

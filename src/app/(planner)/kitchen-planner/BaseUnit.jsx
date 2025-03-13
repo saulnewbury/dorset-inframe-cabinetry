@@ -28,14 +28,16 @@ import Feet from './Feet'
 
 // basin options
 // {
-//   type: null | 'regular' | 'belfast'
+//   type: 'standard' | 'belfast'
+//   doubleBasin: bool
 // }
 
 // (574 carcassDepth is 527 + 30 + 18)
 
 export default function BaseUnit({
   baseUnit = true,
-  basin = { type: 'belfast', height: 220, depth: 455 },
+  // basin = { type: 'belfast', height: 220, depth: 455, doubleBasin: true },
+  basin = null,
   carcassDepth = 575, //
   carcassHeight = 759, // 723 + 36
   carcassInnerWidth = 564,
@@ -50,8 +52,8 @@ export default function BaseUnit({
     }
   ]
 }) {
-  // adapt cabinet height to accomodate basin on top
-  if (basin.height) carcassHeight -= basin.height
+  // Adapt cabinet height to accomodate basin on top
+  if (basin?.type === 'belfast') carcassHeight -= basin.height
 
   // Carcass
   const height = carcassHeight / 1000
@@ -62,7 +64,7 @@ export default function BaseUnit({
 
   // Basin
   const basinDepth = 455 / 1000
-  const basinHeight = basin.height / 1000
+  const basinHeight = basin?.height / 1000
   const basinWidth = distance - 0.018
 
   // Extract ratios from panelConfig if available
