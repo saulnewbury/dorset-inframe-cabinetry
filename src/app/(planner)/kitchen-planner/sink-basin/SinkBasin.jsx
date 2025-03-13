@@ -24,7 +24,8 @@ const SinkBasin = ({
 
   const y = carcassHeight / 1000
 
-  // if (basin === 'belfast') width += 0.036
+  // Make belfast sink the entire width of the cabinet
+  if (basin.type === 'belfast') width += 0.036 + 0.018
 
   // Create the sink basin geometry
   const geometry = useMemo(() => {
@@ -120,9 +121,12 @@ const SinkBasin = ({
   // Calculate positions
   const basinPosition = [-width / 2, y - height, +depth / 2]
   const basePanelPosition = [0, y - (height + baseGap) + 0.03, 0]
+  const zPosStandard = edgeWidth / 2 + 0.018
+  const zPosBelfast = edgeWidth / 2 + 0.018 + 0.05
+  const z = basin.type === 'belfast' ? zPosBelfast : zPosStandard
 
   return (
-    <group position-z={edgeWidth / 2 + 0.018}>
+    <group position-z={z} position-y={height}>
       <mesh rotation={rotation} position={basinPosition} geometry={geometry}>
         <meshStandardMaterial
           color={color}
@@ -134,7 +138,7 @@ const SinkBasin = ({
       </mesh>
 
       <mesh position={basePanelPosition} rotation={rotation}>
-        <boxGeometry args={[width, depth - 0.003, baseThickness]} />
+        <boxGeometry args={[width - 0.012, depth - 0.012, baseThickness]} />
         <meshStandardMaterial color={color} />
       </mesh>
     </group>

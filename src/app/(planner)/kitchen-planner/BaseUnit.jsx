@@ -35,10 +35,10 @@ import Feet from './Feet'
 
 export default function BaseUnit({
   baseUnit = true,
-  basin = { type: 'belfast', depth: 0.445, height: 0.22, width: 0.6 },
+  basin = { type: 'belfast', height: 220, depth: 455 },
   carcassDepth = 575, //
-  carcassHeight = 759 * 1, // 723 + 36
-  carcassInnerWidth = 264 * 2.3,
+  carcassHeight = 759, // 723 + 36
+  carcassInnerWidth = 564,
   panelThickness = 18,
   panelConfig = [
     {
@@ -50,6 +50,9 @@ export default function BaseUnit({
     }
   ]
 }) {
+  // adapt cabinet height to accomodate basin on top
+  if (basin.height) carcassHeight -= basin.height
+
   // Carcass
   const height = carcassHeight / 1000
   const depth = carcassDepth / 1000
@@ -59,7 +62,7 @@ export default function BaseUnit({
 
   // Basin
   const basinDepth = 455 / 1000
-  const basinHeight = 220 / 1000
+  const basinHeight = basin.height / 1000
   const basinWidth = distance - 0.018
 
   // Extract ratios from panelConfig if available
