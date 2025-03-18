@@ -3,7 +3,7 @@
 import { Edges } from '@react-three/drei'
 
 // Components
-import BaseCabinetFrame from './BaseCabinetFrame'
+import BaseCabinetFrame from './CabinetFrame'
 import CabinetMoulding from './CabinetMoulding'
 import FrontPanels from './FrontPanels'
 import SinkBasin from './sink-basin/SinkBasin'
@@ -36,8 +36,8 @@ import Feet from './Feet'
 
 export default function Cabinet({
   baseUnit = true,
-  basin = { type: 'belfast', height: 220, depth: 455, doubleBasin: true },
-  // basin = null,
+  // basin = { type: 'belfast', height: 220, depth: 455, doubleBasin: true },
+  basin = null,
   carcassDepth = 575, // base
   // carcassDepth = 282, // wall and island units
   // carcassHeight = 759, // base cabinet
