@@ -38,7 +38,7 @@ export default function Cabinet({
   // basin = null,
   carcassDepth = 0.575,
   carcassHeight = 0.759,
-  carcassInnerWidth = 0.564,
+  carcassInnerWidth = 0.564 * 1.5,
   panelThickness = 0.018,
   panelConfig = [
     // {
