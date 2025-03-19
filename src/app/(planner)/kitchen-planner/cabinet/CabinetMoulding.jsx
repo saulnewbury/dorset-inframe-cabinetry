@@ -6,32 +6,23 @@ export default function CabinetMoulding({
   carcassDepth,
   carcassHeight,
   carcassInnerWidth,
-  carcassOuterWidth = 300,
   panelThickness,
-  frameThickness = 50,
   numHoles = 4,
   ratios = null, // New parameter for custom ratios
-  dividerThickness = 18,
-  mouldingSize = 0.001, // 4mm x 4mm default moulding size
-  mouldingRadius = 0.8, // radius for rounding the moulding (half of mouldingSize by default)
-  frameInset = 4 // 4mm inset for the frame
+  dividerThickness = 0.018,
+  mouldingSize = 0.001 / 1000, // 4mm x 4mm default moulding size
+  mouldingRadius = 0.8 / 1000, // radius for rounding the moulding (half of mouldingSize by default)
+  frameInset = 0.004 // 4mm inset for the frame
 }) {
   // Convert dimensions from mm to meters
-  const frameHeight = carcassHeight + 26.2
-  const pt = panelThickness / 1000
-  const thickness = frameThickness / 1000
-  const height = frameHeight / 1000
-  const depth = carcassDepth / 1000
-  const hOffset = carcassHeight / 1000 - frameHeight / 1000
-  const zOffset = thickness - pt
-  const dividerThicknessM = dividerThickness / 1000
-  const mouldingSizeM = mouldingSize / 1000
-  const mouldingRadiusM = mouldingRadius / 1000
-  const frameInsetM = frameInset / 1000 // Convert frame inset from mm to meters
 
-  const holeHeight = carcassHeight / 1000 - 9 / 1000
-  const holeWidth = carcassInnerWidth / 1000
-  const holeYOffset = pt
+  const height = carcassHeight + 0.0262
+  const depth = carcassDepth
+  const hOffset = carcassHeight - height
+
+  const holeHeight = carcassHeight - 0.009
+  const holeWidth = carcassInnerWidth
+  const holeYOffset = panelThickness
 
   // Calculate hole boundaries based on numHoles and ratios
   const holeBoundaries = useMemo(() => {
@@ -39,7 +30,7 @@ export default function CabinetMoulding({
 
     // Define hole boundaries
     const holeBottom = -holeHeight / 2 + holeYOffset
-    const holeTop = holeHeight / 2 + holeYOffset - pt
+    const holeTop = holeHeight / 2 + holeYOffset - panelThickness
     const totalHoleHeight = holeTop - holeBottom
 
     if (numHoles === 1) {
@@ -56,7 +47,7 @@ export default function CabinetMoulding({
 
       // Calculate available height after accounting for dividers
       const numDividers = numHoles - 1
-      const availableHeight = totalHoleHeight - numDividers * dividerThicknessM
+      const availableHeight = totalHoleHeight - numDividers * dividerThickness
 
       // Create hole boundaries based on custom ratios
       let currentBottom = holeBottom
@@ -73,7 +64,7 @@ export default function CabinetMoulding({
           right: holeWidth / 2
         })
 
-        currentBottom = currentTop + dividerThicknessM
+        currentBottom = currentTop + dividerThickness
       }
     } else if (numHoles === 3) {
       // Special case for 3 holes with ratio 8321 : 8312 : 4925
@@ -82,7 +73,7 @@ export default function CabinetMoulding({
 
       // Calculate available height after accounting for dividers
       const numDividers = numHoles - 1
-      const availableHeight = totalHoleHeight - numDividers * dividerThicknessM
+      const availableHeight = totalHoleHeight - numDividers * dividerThickness
 
       // Create hole boundaries based on ratios
       let currentBottom = holeBottom
@@ -100,12 +91,12 @@ export default function CabinetMoulding({
           right: holeWidth / 2
         })
 
-        currentBottom = currentTop + dividerThicknessM
+        currentBottom = currentTop + dividerThickness
       }
     } else {
       // Multiple holes with dividers (equal size)
       const numDividers = numHoles - 1
-      const availableHeight = totalHoleHeight - numDividers * dividerThicknessM
+      const availableHeight = totalHoleHeight - numDividers * dividerThickness
       const singleHoleHeight = availableHeight / numHoles
 
       let currentBottom = holeBottom
@@ -120,7 +111,7 @@ export default function CabinetMoulding({
           right: holeWidth / 2
         })
 
-        currentBottom = currentTop + dividerThicknessM
+        currentBottom = currentTop + dividerThickness
       }
     }
 
@@ -130,8 +121,8 @@ export default function CabinetMoulding({
     holeWidth,
     holeYOffset,
     numHoles,
-    dividerThicknessM,
-    pt,
+    dividerThickness,
+    panelThickness,
     ratios
   ])
 
@@ -139,10 +130,10 @@ export default function CabinetMoulding({
   const HoleMoulding = ({ hole }) => {
     const frameShape = useMemo(() => {
       // Calculate dimensions with the 4mm inset applied
-      const frameWidth = hole.right - hole.left - 2 * frameInsetM
-      const frameHeight = hole.top - hole.bottom - 2 * frameInsetM
+      const frameWidth = hole.right - hole.left - 2 * frameInset
+      const frameHeight = hole.top - hole.bottom - 2 * frameInset
 
-      // Create outer shape that's inset by frameInsetM on all sides
+      // Create outer shape that's inset by frameInset on all sides
       const outerShape = new THREE.Shape()
       outerShape.moveTo(0, 0)
       outerShape.lineTo(frameWidth, 0)
@@ -154,16 +145,16 @@ export default function CabinetMoulding({
       const innerShape = new THREE.Shape()
 
       // Draw the inner rectangle with rounded corners
-      innerShape.moveTo(mouldingSizeM, mouldingSizeM)
+      innerShape.moveTo(mouldingSize, mouldingSize)
 
       // Bottom-left to bottom-right
-      innerShape.lineTo(frameWidth - mouldingSizeM, mouldingSizeM)
+      innerShape.lineTo(frameWidth - mouldingSize, mouldingSize)
 
       // Bottom-right to top-right
-      innerShape.lineTo(frameWidth - mouldingSizeM, frameHeight - mouldingSizeM)
+      innerShape.lineTo(frameWidth - mouldingSize, frameHeight - mouldingSize)
 
       // Top-right to top-left
-      innerShape.lineTo(mouldingSizeM, frameHeight - mouldingSizeM)
+      innerShape.lineTo(mouldingSize, frameHeight - mouldingSize)
 
       // Close the shape
       innerShape.closePath()
@@ -172,18 +163,18 @@ export default function CabinetMoulding({
       outerShape.holes.push(innerShape)
 
       return outerShape
-    }, [hole, frameInsetM])
+    }, [hole, frameInset])
 
     return (
-      <mesh position={[hole.left + frameInsetM, hole.bottom + frameInsetM, 0]}>
+      <mesh position={[hole.left + frameInset, hole.bottom + frameInset, 0]}>
         <extrudeGeometry
           args={[
             frameShape,
             {
               depth: 0.018, // 18mm depth
               bevelEnabled: true,
-              bevelThickness: mouldingRadiusM * 6,
-              bevelSize: mouldingRadiusM * 6,
+              bevelThickness: mouldingRadius * 6,
+              bevelSize: mouldingRadius * 6,
               bevelSegments: 12,
               bevelOffset: 0
             }

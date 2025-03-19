@@ -9,25 +9,18 @@ export default function CabinetFrame({
   carcassInnerWidth,
   numHoles,
   ratios = null, // New parameter for custom ratios
-  frameThickness = 50,
-  dividerThickness = 18
+  frameThickness = 0.05,
+  dividerThickness = 0.018
 }) {
-  // Convert dimensions from mm to meters
-  const carcassOuterWidth = carcassInnerWidth + 36
-  const frameHeight = carcassHeight + 26.2
+  const width = carcassInnerWidth + 0.036
+  const height = carcassHeight + 0.0262
+  const depth = carcassDepth
+  const hOffset = carcassHeight - height
+  const zOffset = frameThickness - panelThickness
 
-  const width = carcassOuterWidth / 1000
-  const pt = panelThickness / 1000
-  const thickness = frameThickness / 1000
-  const height = frameHeight / 1000
-  const depth = carcassDepth / 1000
-  const hOffset = carcassHeight / 1000 - frameHeight / 1000
-  const zOffset = thickness - pt
-  const dividerThicknessM = dividerThickness / 1000
-
-  const holeHeight = carcassHeight / 1000 - 9 / 1000
-  const holeWidth = carcassInnerWidth / 1000
-  const holeYOffset = pt
+  const holeHeight = carcassHeight - 0.009
+  const holeWidth = carcassInnerWidth
+  const holeYOffset = panelThickness
 
   // Create panel shape with holes
   const shape = useMemo(() => {
@@ -42,7 +35,7 @@ export default function CabinetFrame({
 
     // Define hole boundaries
     const holeBottom = -holeHeight / 2 + holeYOffset
-    const holeTop = holeHeight / 2 + holeYOffset - pt
+    const holeTop = holeHeight / 2 + holeYOffset - panelThickness
     const totalHoleHeight = holeTop - holeBottom
 
     // Create holes based on numHoles and ratios
@@ -54,7 +47,7 @@ export default function CabinetFrame({
 
       // Calculate available height after accounting for dividers
       const numDividers = numHoles - 1
-      const availableHeight = totalHoleHeight - numDividers * dividerThicknessM
+      const availableHeight = totalHoleHeight - numDividers * dividerThickness
 
       // Create hole boundaries based on custom ratios
       const boundaries = []
@@ -66,7 +59,7 @@ export default function CabinetFrame({
         const currentTop = currentBottom + currentHoleHeight
 
         boundaries.push({ bottom: currentBottom, top: currentTop })
-        currentBottom = currentTop + dividerThicknessM
+        currentBottom = currentTop + dividerThickness
       }
 
       // Create hole for each boundary
@@ -80,7 +73,7 @@ export default function CabinetFrame({
 
       // Calculate available height after accounting for dividers
       const numDividers = numHoles - 1
-      const availableHeight = totalHoleHeight - numDividers * dividerThicknessM
+      const availableHeight = totalHoleHeight - numDividers * dividerThickness
 
       // Create hole boundaries based on ratios
       const boundaries = []
@@ -93,7 +86,7 @@ export default function CabinetFrame({
         const currentTop = currentBottom + currentHoleHeight
 
         boundaries.push({ bottom: currentBottom, top: currentTop })
-        currentBottom = currentTop + dividerThicknessM
+        currentBottom = currentTop + dividerThickness
       }
 
       // Create hole for each boundary
@@ -103,7 +96,7 @@ export default function CabinetFrame({
     } else {
       // Calculate dimensions for multiple holes with equal sizes
       const numDividers = numHoles - 1
-      const availableHeight = totalHoleHeight - numDividers * dividerThicknessM
+      const availableHeight = totalHoleHeight - numDividers * dividerThickness
       const singleHoleHeight = availableHeight / numHoles
 
       // Create hole boundaries
@@ -113,7 +106,7 @@ export default function CabinetFrame({
       for (let i = 0; i < numHoles; i++) {
         const currentTop = currentBottom + singleHoleHeight
         boundaries.push({ bottom: currentBottom, top: currentTop })
-        currentBottom = currentTop + dividerThicknessM
+        currentBottom = currentTop + dividerThickness
       }
 
       // Adjust the last top boundary to match exactly
@@ -135,8 +128,8 @@ export default function CabinetFrame({
     holeHeight,
     holeYOffset,
     numHoles,
-    dividerThicknessM,
-    pt,
+    dividerThickness,
+    panelThickness,
     ratios
   ])
 
@@ -168,7 +161,7 @@ export default function CabinetFrame({
         args={[
           shape,
           {
-            depth: thickness,
+            depth: frameThickness,
             bevelEnabled: false
           }
         ]}

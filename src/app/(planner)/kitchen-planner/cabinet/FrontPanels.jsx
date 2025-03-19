@@ -13,15 +13,15 @@ export default function FrontPanels({
   panelConfig
 }) {
   // Convert dimensions from mm to meters
-  const frameHeight = carcassHeight + 26.2
-  const pt = panelThickness / 1000
-  const height = frameHeight / 1000
-  const hOffset = carcassHeight / 1000 - frameHeight / 1000
-  const dividerThickness = 18 // Default divider thickness in mm
-  const dividerThicknessM = dividerThickness / 1000
+  const frameHeight = carcassHeight + 0.0262
+  const pt = panelThickness
+  const height = frameHeight
+  const hOffset = carcassHeight - frameHeight
+  const dividerThickness = 0.018 // Default divider thickness in mm
+  const dividerThicknessM = dividerThickness
 
-  const holeHeight = carcassHeight / 1000 - 9 / 1000
-  const holeWidth = carcassInnerWidth / 1000
+  const holeHeight = carcassHeight - 0.09
+  const holeWidth = carcassInnerWidth
   const holeYOffset = pt
 
   // Extract ratios from panelConfig if available

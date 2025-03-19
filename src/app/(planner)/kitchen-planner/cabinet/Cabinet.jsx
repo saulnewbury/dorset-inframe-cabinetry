@@ -36,12 +36,12 @@ import Feet from './Feet'
 
 export default function Cabinet({
   baseUnit = true,
-  basin = { type: 'belfast', height: 220, depth: 455, doubleBasin: true },
-  // basin = null,
-  carcassDepth = 575, //
-  carcassHeight = 759, // 723 + 36
-  carcassInnerWidth = 564,
-  panelThickness = 18,
+  // basin = { type: 'belfast', height: 220, depth: 455, doubleBasin: true },
+  basin = null,
+  carcassDepth = 0.575, //
+  carcassHeight = 0.759, // 723 + 36
+  carcassInnerWidth = 0.564,
+  panelThickness = 0.018,
   panelConfig = [
     {
       type: 'door',
@@ -56,11 +56,11 @@ export default function Cabinet({
   if (basin?.type === 'belfast') carcassHeight -= basin.height
 
   // Carcass
-  const height = carcassHeight / 1000
-  const depth = carcassDepth / 1000
-  const thickness = panelThickness / 1000
-  const distance = carcassInnerWidth / 1000 // inside (300 outside)
-  const backInset = 30 / 1000
+  const height = carcassHeight
+  const depth = carcassDepth
+  const thickness = panelThickness
+  const distance = carcassInnerWidth
+  const backInset = 0.03
 
   // Basin
   const basinDepth = 455 / 1000

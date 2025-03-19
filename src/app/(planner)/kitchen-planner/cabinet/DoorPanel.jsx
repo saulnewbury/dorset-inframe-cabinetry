@@ -8,14 +8,14 @@ export default function DoorPanel({
   boundary, // Single boundary object
   carcassDepth,
   panelThickness,
-  doorThickness = 18,
-  doorGap = 2,
-  mouldingSize = 4,
-  frameInset = 4,
-  holeInset = 65,
-  mouldingWidth = 9,
+  doorThickness = 0.018,
+  doorGap = 0.002,
+  mouldingSize = 0.004,
+  frameInset = 0.004,
+  holeInset = 0.065,
+  mouldingWidth = 0.009,
   doorStyle = 'split', // "single", "split", or "fourDoors"
-  splitGap = 2,
+  splitGap = 0.002,
   doorConfig = {} // Additional door configuration options
 }) {
   // Extract door configuration options
@@ -27,16 +27,16 @@ export default function DoorPanel({
   } = doorConfig
 
   // Convert dimensions from mm to meters
-  const pt = panelThickness / 1000
-  const depth = carcassDepth / 1000
-  const doorThicknessM = doorThickness / 1000
-  const doorGapM = doorGap / 1000
-  const mouldingSizeM = mouldingSize / 1000
-  const frameInsetM = frameInset / 1000
-  const holeInsetM = holeInset / 1000
-  const mouldingWidthM = mouldingWidth / 1000
-  const splitGapM = splitGap / 1000
-  const doorGapAtBottomM = 2 / 1000 // 2mm gap at bottom in meters
+  const pt = panelThickness
+  const depth = carcassDepth
+  const doorThicknessM = doorThickness
+  const doorGapM = doorGap
+  const mouldingSizeM = mouldingSize
+  const frameInsetM = frameInset
+  const holeInsetM = holeInset
+  const mouldingWidthM = mouldingWidth
+  const splitGapM = splitGap
+  const doorGapAtBottomM = 0.002
 
   // Common calculations for all door types
   const totalInset = frameInsetM + mouldingSizeM + doorGapM
