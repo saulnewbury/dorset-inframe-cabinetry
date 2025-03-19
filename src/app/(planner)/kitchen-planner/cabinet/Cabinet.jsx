@@ -41,18 +41,18 @@ export default function Cabinet({
   carcassInnerWidth = 0.564 * 1.5,
   panelThickness = 0.018,
   panelConfig = [
-    // {
-    //   type: 'drawer',
-
-    //   ratio: 2,
-    //   orientation: 'horizontal',
-    //   doorRatio: [1, 2]
-    // }
     {
-      type: 'oven',
-      ovenType: 'compact',
-      ratio: 2
+      type: 'door',
+      style: 'split',
+      ratio: 2,
+      orientation: 'horizontal'
+      // doorRatio: [1, 2]
     }
+    // {
+    //   type: 'oven',
+    //   ovenType: 'compact',
+    //   ratio: 2
+    // }
   ]
 }) {
   // Adapt cabinet height to accommodate basin on top

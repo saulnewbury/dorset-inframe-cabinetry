@@ -8,22 +8,19 @@ export default function CabinetFrame({
   panelThickness,
   carcassInnerWidth,
   numHoles,
-  ratios = null, // Parameter for custom ratios
-  frameThickness = 0.05,
-  dividerThickness = 0.018
+  ratios = null, // Custom ratios
+  dividerThickness = 0.018,
+  bottomFrameThickness = 0.08, // In meters (default 50mm)
+  frameThickness = 0.05 // Made this a parameter instead of hardcoded value
 }) {
   // Calculate dimensions
-  const carcassOuterWidth = carcassInnerWidth + 0.036
-  const frameHeight = carcassHeight + 0.0262
-
-  const width = carcassOuterWidth
-  const height = frameHeight
-  const hOffset = carcassHeight - frameHeight
+  const width = carcassInnerWidth + 0.036
+  const height = carcassHeight + 0.0262 + (bottomFrameThickness - 0.045)
+  const hOffset = carcassHeight - height
   const zOffset = frameThickness - panelThickness
 
   const holeHeight = carcassHeight - 0.009
-  const holeWidth = carcassInnerWidth
-  const holeYOffset = panelThickness
+  const holeYOffset = panelThickness + (bottomFrameThickness - 0.045) / 2
 
   // Create panel shape with holes
   const shape = useMemo(() => {
@@ -43,7 +40,7 @@ export default function CabinetFrame({
 
     // Create holes based on numHoles and ratios
     if (numHoles === 1) {
-      addSingleHole(panelShape, holeWidth, holeBottom, holeTop)
+      addHole(panelShape, carcassInnerWidth, holeBottom, holeTop)
     } else if (ratios && ratios.length === numHoles) {
       // Custom ratios provided
       const sumRatios = ratios.reduce((sum, ratio) => sum + ratio, 0)
@@ -67,7 +64,7 @@ export default function CabinetFrame({
 
       // Create hole for each boundary
       boundaries.forEach(({ bottom, top }) => {
-        addHole(panelShape, holeWidth, bottom, top)
+        addHole(panelShape, carcassInnerWidth, bottom, top)
       })
     } else if (numHoles === 3) {
       // Special case for 3 holes with ratio 8321 : 8312 : 4925
@@ -94,10 +91,10 @@ export default function CabinetFrame({
 
       // Create hole for each boundary
       boundaries.forEach(({ bottom, top }) => {
-        addHole(panelShape, holeWidth, bottom, top)
+        addHole(panelShape, carcassInnerWidth, bottom, top)
       })
     } else {
-      // Multiple holes with dividers (equal size)
+      // Calculate dimensions for multiple holes with equal sizes
       const numDividers = numHoles - 1
       const availableHeight = totalHoleHeight - numDividers * dividerThickness
       const singleHoleHeight = availableHeight / numHoles
@@ -119,7 +116,7 @@ export default function CabinetFrame({
 
       // Create hole for each boundary
       boundaries.forEach(({ bottom, top }) => {
-        addHole(panelShape, holeWidth, bottom, top)
+        addHole(panelShape, carcassInnerWidth, bottom, top)
       })
     }
 
@@ -127,7 +124,7 @@ export default function CabinetFrame({
   }, [
     width,
     height,
-    holeWidth,
+    carcassInnerWidth,
     holeHeight,
     holeYOffset,
     numHoles,
@@ -135,17 +132,6 @@ export default function CabinetFrame({
     panelThickness,
     ratios
   ])
-
-  // Helper function to add a single hole
-  function addSingleHole(shape, width, bottom, top) {
-    const holeShape = new THREE.Shape()
-    holeShape.moveTo(-width / 2, bottom)
-    holeShape.lineTo(width / 2, bottom)
-    holeShape.lineTo(width / 2, top)
-    holeShape.lineTo(-width / 2, top)
-    holeShape.closePath()
-    shape.holes.push(holeShape)
-  }
 
   // Helper function to add a hole with specified boundaries
   function addHole(shape, width, bottom, top) {
