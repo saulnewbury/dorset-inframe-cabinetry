@@ -37,12 +37,13 @@ import Feet from './Feet'
 
 export default function Cabinet({
   baseUnit = true,
-  underCounter = { door: false },
+  // underCounter = { door: false },
+  underCounter = false,
   // basin = { type: 'belfast', height: 0.22, depth: 0.455, doubleBasin: true },
   basin = null,
-  carcassDepth = 0.575,
+  carcassDepth = 0.575 * 1,
   carcassHeight = 0.759,
-  carcassInnerWidth = 0.564,
+  carcassInnerWidth = 0.564 * 2,
   panelThickness = 0.018,
   panelConfig = [
     {
@@ -112,7 +113,7 @@ export default function Cabinet({
         </>
       )}
 
-      {underCounter?.door && (
+      {(!underCounter || underCounter?.door) && (
         <FrontPanels
           carcassDepth={carcassDepth}
           carcassHeight={carcassHeight}
@@ -123,6 +124,7 @@ export default function Cabinet({
       )}
 
       <Carcass
+        underCounter={underCounter}
         distance={distance}
         carcassHeight={carcassHeight}
         carcassDepth={carcassDepth}
