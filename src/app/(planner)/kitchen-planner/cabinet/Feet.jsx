@@ -23,13 +23,15 @@ export default function Feet({ carcassInnerWidth, carcassDepth }) {
     }
   ]
 
+  const baseCarcassToFloor = 0.104 + 0.026 // = 0.13
+
   return (
-    <group position-y={-0.0652}>
+    <group position-y={-baseCarcassToFloor / 2 - 0.0002}>
       {feet.map((f, idx) => (
         <group key={idx} position-x={f.x} position-z={f.z}>
           {/* Foot inner shaft */}
           <mesh>
-            <cylinderGeometry args={[0.015, 0.015, 0.104 + 0.026, 25]} />
+            <cylinderGeometry args={[0.015, 0.015, baseCarcassToFloor, 25]} />
             <meshStandardMaterial color='#777777' />
             <Edges color='gray' renderOrder={1000} threshold={1} />
           </mesh>

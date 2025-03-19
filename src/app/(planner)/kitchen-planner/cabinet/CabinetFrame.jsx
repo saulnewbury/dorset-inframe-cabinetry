@@ -10,8 +10,8 @@ export default function CabinetFrame({
   numHoles,
   ratios = null, // Custom ratios
   dividerThickness = 0.018,
-  bottomFrameThickness = 0.08, // In meters (default 50mm)
-  frameThickness = 0.05 // Made this a parameter instead of hardcoded value
+  frameThickness = 0.05, // Made this a parameter instead of hardcoded value
+  bottomFrameThickness = 0.05 // In meters (default 50mm)
 }) {
   // Calculate dimensions
   const width = carcassInnerWidth + 0.036
