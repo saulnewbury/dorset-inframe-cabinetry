@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react'
 import DoorPanel from './DoorPanel'
 import DrawerPanel from './DrawerPanel'
-import Oven from './panels/Oven'
+import Oven from './Oven'
 import { calculateDoorBoundaries } from '@/utils/doorCalculations'
 
 export default function FrontPanels({

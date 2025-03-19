@@ -11,7 +11,7 @@ import { baseUnitStyles as unitStyles } from '@/model/itemStyles'
 import { wt } from '@/const'
 
 import ItemInfo from './ItemInfo'
-import BaseUnit from './BaseUnit'
+import Cabinet from './cabinet/Cabinet'
 
 // Drag handle for openings:
 import dragHandle from '@/assets/icons/general-handle.svg'
@@ -19,7 +19,6 @@ import dragHandle from '@/assets/icons/general-handle.svg'
 import ic_delete from '@/assets/icons/trash.svg'
 
 import { hoverMaterial } from '@/materials'
-import WallUnit from './WallUnit'
 
 /**
  * Component to render a kitchen unit (at present, only base units and wall units).
@@ -75,11 +74,7 @@ export default function KitchenUnit({
             <InfoPanel ref={info} {...{ id, type, width, style }} />
           </>
         )}
-        {type === 'base' ? (
-          <BaseUnit width={width} style={style} />
-        ) : (
-          <WallUnit width={width} />
-        )}
+        {type === 'base' && <Cabinet width={width} style={style} />}
       </group>
       {(showHandle || dragging) && (
         <DragControls

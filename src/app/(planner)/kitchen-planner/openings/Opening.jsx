@@ -6,10 +6,10 @@ import clsx from 'clsx'
 import { ModelContext } from '@/model/context'
 import { doorStyles, windowStyles } from '@/model/itemStyles'
 
-import Arch from './Arch'
+import Arch from '../Arch'
 import Door from './Door'
 import Window from './Window'
-import ItemInfo from './ItemInfo'
+import ItemInfo from '../ItemInfo'
 
 import { useAppState } from '@/appState'
 

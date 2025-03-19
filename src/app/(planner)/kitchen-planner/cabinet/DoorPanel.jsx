@@ -1,8 +1,8 @@
 // DoorPanel.jsx
 import React from 'react'
-import { SingleDoor } from './panels/SingleDoor'
-import { SplitDoors } from './panels/SplitDoors'
-import { FourDoors } from './panels/FourDoors'
+import { SingleDoor } from './SingleDoor'
+import { SplitDoors } from './SplitDoors'
+import { FourDoors } from './FourDoors'
 
 export default function DoorPanel({
   boundary, // Single boundary object

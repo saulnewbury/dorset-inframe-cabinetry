@@ -6,7 +6,7 @@ import { Edges } from '@react-three/drei'
 import CabinetFrame from './CabinetFrame'
 import CabinetMoulding from './CabinetMoulding'
 import FrontPanels from './FrontPanels'
-import SinkBasin from './sink-basin/SinkBasin'
+import SinkBasin from './SinkBasin'
 import Worktop from './Worktop'
 import Feet from './Feet'
 
@@ -34,10 +34,10 @@ import Feet from './Feet'
 
 // (574 carcassDepth is 527 + 30 + 18)
 
-export default function BaseUnit({
+export default function Cabinet({
   baseUnit = true,
-  // basin = { type: 'belfast', height: 220, depth: 455, doubleBasin: true },
-  basin = null,
+  basin = { type: 'belfast', height: 220, depth: 455, doubleBasin: true },
+  // basin = null,
   carcassDepth = 575, //
   carcassHeight = 759, // 723 + 36
   carcassInnerWidth = 564,
@@ -47,8 +47,8 @@ export default function BaseUnit({
       type: 'door',
       style: 'split',
       ratio: 1,
-      orientation: 'horizontal',
-      doorRatio: [1, 1]
+      orientation: 'vertical',
+      doorRatio: [1, 2]
     }
   ]
 }) {
@@ -132,8 +132,16 @@ export default function BaseUnit({
         <Edges color='gray' renderOrder={1000} />
       </mesh>
 
-      {/* Feet */}
-      <Feet carcassInnerWidth={carcassInnerWidth} carcassDepth={carcassDepth} />
+      {/* Top Panel */}
+      {!baseUnit && (
+        <mesh position={[0, height - thickness / 2, backInset / 2]}>
+          <boxGeometry
+            args={[distance - thickness, thickness, depth - backInset]}
+          />
+          <meshStandardMaterial color='white' />
+          <Edges color='gray' renderOrder={1000} />
+        </mesh>
+      )}
 
       {/* Sink */}
       {basin && (
@@ -147,17 +155,24 @@ export default function BaseUnit({
         />
       )}
 
-      {/* Worktop */}
+      {/* Worktop and Feet*/}
       {baseUnit && (
-        <Worktop
-          basin={basin}
-          distance={distance}
-          thickness={thickness}
-          depth={depth}
-          height={height}
-          // color='lightblue'
-          color={'#777777'}
-        />
+        <>
+          <Worktop
+            basin={basin}
+            distance={distance}
+            thickness={thickness}
+            depth={depth}
+            height={height}
+            // color='lightblue'
+            color={'#777777'}
+          />
+
+          <Feet
+            carcassInnerWidth={carcassInnerWidth}
+            carcassDepth={carcassDepth}
+          />
+        </>
       )}
     </group>
   )

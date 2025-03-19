@@ -1,14 +1,14 @@
 import placeholderA from '@/lib/images/placeholder-a.jpg'
 import placeholderB from '@/lib/images/placeholder-b.jpg'
 
-import ChooseFloorPlan from '@/app/(planner)/kitchen-planner/ChooseFloorPlan'
-import ChooseDoor from '@/app/(planner)/kitchen-planner/ChooseDoor'
-import ChooseWindow from '@/app/(planner)/kitchen-planner/ChooseWindow'
-import ChooseArch from '@/app/(planner)/kitchen-planner/ChooseArch'
-import ChooseBaseUnit from '@/app/(planner)/kitchen-planner/ChooseBaseUnit'
-import ChooseWallUnit from '@/app/(planner)/kitchen-planner/ChooseWallUnit'
-import ChooseAddWall from '@/app/(planner)/kitchen-planner/ChooseAddWall'
-import ChooseColours from '@/app/(planner)/kitchen-planner/ChooseColours'
+import ChooseFloorPlan from '@/app/(planner)/kitchen-planner/dialog/ChooseFloorPlan'
+import ChooseDoor from '@/app/(planner)/kitchen-planner/dialog/ChooseDoor'
+import ChooseWindow from '@/app/(planner)/kitchen-planner/dialog/ChooseWindow'
+import ChooseArch from '@/app/(planner)/kitchen-planner/dialog/ChooseArch'
+import ChooseBaseUnit from '@/app/(planner)/kitchen-planner/dialog/ChooseBaseUnit'
+import ChooseWallUnit from '@/app/(planner)/kitchen-planner/dialog/ChooseWallUnit'
+import ChooseAddWall from '@/app/(planner)/kitchen-planner/dialog/ChooseAddWall'
+import ChooseColours from '@/app/(planner)/kitchen-planner/dialog/ChooseColours'
 
 export const defineYourSpace = [
   {

@@ -8,7 +8,7 @@ import { ModelContext } from '@/model/context'
 import { wt, wh } from '@/const'
 
 import DimensionLine from './DimensionLine'
-import Opening from './Opening'
+import Opening from './openings/Opening'
 
 import { hoverMaterial } from '@/materials'
 
