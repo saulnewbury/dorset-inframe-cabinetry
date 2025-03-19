@@ -5,7 +5,9 @@ import { Edges } from '@react-three/drei'
 // Components
 import Carcass from './Carcass'
 import CabinetFrame from './CabinetFrame'
+import CabinetFrameThreeSided from './CabinetFrameThreeSided'
 import CabinetMoulding from './CabinetMoulding'
+import CabinetMouldingThreeSided from './CabinetMouldingThreeSided'
 import FrontPanels from './FrontPanels'
 import SinkBasin from './SinkBasin'
 import Worktop from './Worktop'
@@ -35,12 +37,12 @@ import Feet from './Feet'
 
 export default function Cabinet({
   baseUnit = true,
-  underCounter = {},
+  underCounter = { door: false },
   // basin = { type: 'belfast', height: 0.22, depth: 0.455, doubleBasin: true },
   basin = null,
   carcassDepth = 0.575,
   carcassHeight = 0.759,
-  carcassInnerWidth = 0.564 * 1.5,
+  carcassInnerWidth = 0.564,
   panelThickness = 0.018,
   panelConfig = [
     {
@@ -70,23 +72,45 @@ export default function Cabinet({
 
   return (
     <group position-y={baseUnitPositionY}>
-      <CabinetFrame
-        carcassDepth={carcassDepth}
-        carcassHeight={carcassHeight}
-        carcassInnerWidth={carcassInnerWidth}
-        panelThickness={panelThickness}
-        numHoles={panelConfig.length}
-        ratios={panelRatios}
-      />
-
-      <CabinetMoulding
-        carcassDepth={carcassDepth}
-        carcassHeight={carcassHeight}
-        carcassInnerWidth={carcassInnerWidth}
-        panelThickness={panelThickness}
-        numHoles={panelConfig.length}
-        ratios={panelRatios}
-      />
+      {underCounter && !underCounter.door ? (
+        <>
+          <CabinetFrameThreeSided
+            carcassDepth={carcassDepth}
+            carcassHeight={carcassHeight}
+            carcassInnerWidth={carcassInnerWidth}
+            panelThickness={panelThickness}
+            numHoles={panelConfig.length}
+            ratios={panelRatios}
+          />
+          <CabinetMouldingThreeSided
+            carcassDepth={carcassDepth}
+            carcassHeight={carcassHeight}
+            carcassInnerWidth={carcassInnerWidth}
+            panelThickness={panelThickness}
+            numHoles={panelConfig.length}
+            ratios={panelRatios}
+          />
+        </>
+      ) : (
+        <>
+          <CabinetFrame
+            carcassDepth={carcassDepth}
+            carcassHeight={carcassHeight}
+            carcassInnerWidth={carcassInnerWidth}
+            panelThickness={panelThickness}
+            numHoles={panelConfig.length}
+            ratios={panelRatios}
+          />
+          <CabinetMoulding
+            carcassDepth={carcassDepth}
+            carcassHeight={carcassHeight}
+            carcassInnerWidth={carcassInnerWidth}
+            panelThickness={panelThickness}
+            numHoles={panelConfig.length}
+            ratios={panelRatios}
+          />
+        </>
+      )}
 
       {underCounter?.door && (
         <FrontPanels

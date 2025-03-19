@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
 export default function CabinetMoulding({
+  underCounter,
   carcassDepth,
   carcassHeight,
   carcassInnerWidth,
