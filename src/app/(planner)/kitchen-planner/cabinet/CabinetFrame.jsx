@@ -8,14 +8,17 @@ export default function CabinetFrame({
   panelThickness,
   carcassInnerWidth,
   numHoles,
-  ratios = null, // New parameter for custom ratios
+  ratios = null, // Parameter for custom ratios
   frameThickness = 0.05,
   dividerThickness = 0.018
 }) {
-  const width = carcassInnerWidth + 0.036
-  const height = carcassHeight + 0.0262
-  const depth = carcassDepth
-  const hOffset = carcassHeight - height
+  // Calculate dimensions
+  const carcassOuterWidth = carcassInnerWidth + 0.036
+  const frameHeight = carcassHeight + 0.0262
+
+  const width = carcassOuterWidth
+  const height = frameHeight
+  const hOffset = carcassHeight - frameHeight
   const zOffset = frameThickness - panelThickness
 
   const holeHeight = carcassHeight - 0.009
@@ -94,7 +97,7 @@ export default function CabinetFrame({
         addHole(panelShape, holeWidth, bottom, top)
       })
     } else {
-      // Calculate dimensions for multiple holes with equal sizes
+      // Multiple holes with dividers (equal size)
       const numDividers = numHoles - 1
       const availableHeight = totalHoleHeight - numDividers * dividerThickness
       const singleHoleHeight = availableHeight / numHoles
@@ -156,7 +159,7 @@ export default function CabinetFrame({
   }
 
   return (
-    <mesh position={[0, height / 2 + hOffset, depth / 2 - zOffset]}>
+    <mesh position={[0, height / 2 + hOffset, carcassDepth / 2 - zOffset]}>
       <extrudeGeometry
         args={[
           shape,

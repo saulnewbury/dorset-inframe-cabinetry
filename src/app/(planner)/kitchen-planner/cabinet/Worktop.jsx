@@ -11,15 +11,12 @@ export default function Worktop({
 }) {
   const w = distance + thickness * 2
   const d = depth + thickness
-  const basinDepth = basin?.depth / 1000
-  const basinHeight = basin?.height / 1000
+  const basinDepth = basin?.depth
+  const basinHeight = basin?.height
 
   if (basin?.type === 'belfast') height += basinHeight
 
-  // 0.05 frame depth
-  // 0.02 basin wall depth
-  // 0.03 worktop thickness
-
+  // Calculate shim measurements
   const backShim =
     basin?.type === 'belfast'
       ? d - 0.05 - basinDepth + 0.025 + 0.05

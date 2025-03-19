@@ -12,17 +12,14 @@ export default function FrontPanels({
   panelThickness,
   panelConfig
 }) {
-  // Convert dimensions from mm to meters
+  // Calculated values
   const frameHeight = carcassHeight + 0.0262
-  const pt = panelThickness
-  const height = frameHeight
+  const dividerThickness = 0.018 // Default divider thickness in meters
   const hOffset = carcassHeight - frameHeight
-  const dividerThickness = 0.018 // Default divider thickness in mm
-  const dividerThicknessM = dividerThickness
 
-  const holeHeight = carcassHeight - 0.09
+  const holeHeight = carcassHeight - 0.009
   const holeWidth = carcassInnerWidth
-  const holeYOffset = pt
+  const holeYOffset = panelThickness
 
   // Extract ratios from panelConfig if available
   const ratios = panelConfig.map((panel) => panel.ratio || 1)
@@ -35,8 +32,8 @@ export default function FrontPanels({
         holeHeight,
         holeWidth,
         holeYOffset,
-        dividerThicknessM,
-        pt,
+        dividerThickness,
+        panelThickness,
         ratios: ratios.length === panelConfig.length ? ratios : null
       }),
     [
@@ -44,14 +41,14 @@ export default function FrontPanels({
       holeHeight,
       holeWidth,
       holeYOffset,
-      dividerThicknessM,
-      pt,
+      dividerThickness,
+      panelThickness,
       ratios
     ]
   )
 
   return (
-    <group position={[0, height / 2 + hOffset, 0]}>
+    <group position={[0, frameHeight / 2 + hOffset, 0]}>
       {boundaries.map((boundary, index) => {
         const config = panelConfig[index]
 

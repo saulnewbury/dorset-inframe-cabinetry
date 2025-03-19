@@ -9,15 +9,15 @@ export function SplitDoors({
   doorY,
   depth,
   pt,
-  doorThicknessM,
-  doorGapAtBottomM,
-  doorGapM,
+  doorThickness,
+  doorGapAtBottom,
+  doorGap,
   doorWidth,
   doorHeight,
   panelWidth,
   panelHeight,
-  holeInsetM,
-  splitGapM,
+  holeInset,
+  splitGap,
   orientation = 'horizontal', // 'horizontal' or 'vertical'
   ratio = [1, 1] // Default 1:1 ratio for split doors
 }) {
@@ -32,16 +32,16 @@ export function SplitDoors({
 
   if (orientation === 'horizontal') {
     // Horizontal split (side by side)
-    panel1Width = (panelWidth * ratio1) / totalRatio - splitGapM / 2
+    panel1Width = (panelWidth * ratio1) / totalRatio - splitGap / 2
     panel1Height = panelHeight
-    panel2Width = (panelWidth * ratio2) / totalRatio - splitGapM / 2
+    panel2Width = (panelWidth * ratio2) / totalRatio - splitGap / 2
     panel2Height = panelHeight
 
     door1Width =
-      ((doorWidth - 2 * doorGapM) * ratio1) / totalRatio - splitGapM / 2
+      ((doorWidth - 2 * doorGap) * ratio1) / totalRatio - splitGap / 2
     door1Height = doorHeight
     door2Width =
-      ((doorWidth - 2 * doorGapM) * ratio2) / totalRatio - splitGapM / 2
+      ((doorWidth - 2 * doorGap) * ratio2) / totalRatio - splitGap / 2
     door2Height = doorHeight
 
     // Calculate positions
@@ -50,36 +50,36 @@ export function SplitDoors({
     const leftPanelCenterOffset = -(totalWidth / 2) + panel1Width / 2
     const rightPanelCenterOffset = totalWidth / 2 - panel2Width / 2
 
-    pos1X = midpoint + leftPanelCenterOffset + splitGapM / 4
+    pos1X = midpoint + leftPanelCenterOffset + splitGap / 4
     pos1Y = doorY
-    pos2X = midpoint + rightPanelCenterOffset - splitGapM / 4
+    pos2X = midpoint + rightPanelCenterOffset - splitGap / 4
     pos2Y = doorY
   } else {
     // Vertical split (top and bottom)
-    panel1Width = panelWidth - doorGapM * 2
-    panel1Height = (panelHeight * ratio1) / totalRatio - splitGapM / 2
-    panel2Width = panelWidth - doorGapM * 2
-    panel2Height = (panelHeight * ratio2) / totalRatio - splitGapM / 2
+    panel1Width = panelWidth - doorGap * 2
+    panel1Height = (panelHeight * ratio1) / totalRatio - splitGap / 2
+    panel2Width = panelWidth - doorGap * 2
+    panel2Height = (panelHeight * ratio2) / totalRatio - splitGap / 2
 
-    door1Width = doorWidth - (2 * doorGapM) / 2
+    door1Width = doorWidth - (2 * doorGap) / 2
     door1Height =
-      ((doorHeight - 2 * doorGapM) * ratio1) / totalRatio - splitGapM / 2
-    door2Width = doorWidth - (2 * doorGapM) / 2
+      ((doorHeight - 2 * doorGap) * ratio1) / totalRatio - splitGap / 2
+    door2Width = doorWidth - (2 * doorGap) / 2
     door2Height =
-      ((doorHeight - 2 * doorGapM) * ratio2) / totalRatio - splitGapM / 2
+      ((doorHeight - 2 * doorGap) * ratio2) / totalRatio - splitGap / 2
 
     // Calculate positions
     const midpoint = doorY
     const totalHeight = panelHeight
     const topPanelCenterOffset = totalHeight / 2 - panel1Height / 2
     const bottomPanelCenterOffset =
-      -(totalHeight / 2) + panel2Height / 2 - splitGapM
+      -(totalHeight / 2) + panel2Height / 2 - splitGap
 
     pos1X = doorX
-    pos1Y = midpoint + topPanelCenterOffset - splitGapM / 4
+    pos1Y = midpoint + topPanelCenterOffset - splitGap / 4
     pos2X = doorX
     pos2Y =
-      midpoint + bottomPanelCenterOffset + splitGapM / 4 + doorGapAtBottomM / 2
+      midpoint + bottomPanelCenterOffset + splitGap / 4 + doorGapAtBottom / 2
   }
 
   // Extrude settings
@@ -94,23 +94,23 @@ export function SplitDoors({
     THREE,
     width: panel1Width,
     height: panel1Height,
-    holeInset: holeInsetM,
-    doorGapAtBottom: orientation === 'vertical' ? 0 : doorGapAtBottomM
+    holeInset: holeInset,
+    doorGapAtBottom: orientation === 'vertical' ? 0 : doorGapAtBottom
   })
 
   const panel2Shape = createPanelShape({
     THREE,
     width: panel2Width,
     height: panel2Height,
-    holeInset: holeInsetM,
+    holeInset: holeInset,
     doorGapAtBottom:
-      orientation === 'vertical' ? doorGapAtBottomM : doorGapAtBottomM
+      orientation === 'vertical' ? doorGapAtBottom : doorGapAtBottom
   })
 
   return (
     <group>
       {/* First panel and door */}
-      <mesh position={[pos1X, pos1Y, depth / 2 - pt + doorThicknessM]}>
+      <mesh position={[pos1X, pos1Y, depth / 2 - pt + doorThickness]}>
         <extrudeGeometry args={[panel1Shape, extrudeSettings]} />
         <meshStandardMaterial color='white' side={THREE.DoubleSide} />
         <Edges threshold={5} color='gray' />
@@ -119,17 +119,17 @@ export function SplitDoors({
       <mesh
         position={[
           pos1X,
-          pos1Y - (orientation === 'vertical' ? 0 : doorGapAtBottomM / 2),
-          depth / 2 + doorThicknessM / 2 - 0.001
+          pos1Y - (orientation === 'vertical' ? 0 : doorGapAtBottom / 2),
+          depth / 2 + doorThickness / 2 - 0.001
         ]}
       >
-        <boxGeometry args={[door1Width, door1Height, doorThicknessM / 2]} />
+        <boxGeometry args={[door1Width, door1Height, doorThickness / 2]} />
         <meshStandardMaterial color='white' />
         <Edges threshold={5} color='gray' />
       </mesh>
 
       {/* Second panel and door */}
-      <mesh position={[pos2X, pos2Y, depth / 2 - pt + doorThicknessM]}>
+      <mesh position={[pos2X, pos2Y, depth / 2 - pt + doorThickness]}>
         <extrudeGeometry args={[panel2Shape, extrudeSettings]} />
         <meshStandardMaterial color='white' side={THREE.DoubleSide} />
         <Edges threshold={5} color='gray' />
@@ -138,11 +138,11 @@ export function SplitDoors({
       <mesh
         position={[
           pos2X,
-          pos2Y - (orientation === 'vertical' ? 0 : doorGapAtBottomM / 2),
-          depth / 2 + doorThicknessM / 2 - 0.001
+          pos2Y - (orientation === 'vertical' ? 0 : doorGapAtBottom / 2),
+          depth / 2 + doorThickness / 2 - 0.001
         ]}
       >
-        <boxGeometry args={[door2Width, door2Height, doorThicknessM / 2]} />
+        <boxGeometry args={[door2Width, door2Height, doorThickness / 2]} />
         <meshStandardMaterial color='white' />
         <Edges threshold={5} color='gray' />
       </mesh>

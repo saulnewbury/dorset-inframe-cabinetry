@@ -7,22 +7,14 @@ export default function DrawerPanel({
   carcassDepth,
   carcassHeight,
   panelThickness,
-  drawerThickness = 18, // Thickness of the drawer front in mm
-  drawerGap = 2, // Gap between drawer and moulding frame in mm
-  mouldingSize = 4, // Moulding size in mm
-  frameInset = 4, // Frame inset in mm
+  drawerThickness = 0.018, // Thickness of the drawer front in meters
+  drawerGap = 0.002, // Gap between drawer and moulding frame in meters
+  mouldingSize = 0.004, // Moulding size in meters
+  frameInset = 0.004, // Frame inset in meters
   drawerHandleType = 'bar' // Optional handle type
 }) {
-  // Convert dimensions from mm to meters
-  const pt = panelThickness / 1000
-  const depth = carcassDepth / 1000
-  const drawerThicknessM = drawerThickness / 1000
-  const drawerGapM = drawerGap / 1000
-  const mouldingSizeM = mouldingSize / 1000
-  const frameInsetM = frameInset / 1000
-
   // Calculate drawer dimensions with appropriate gaps
-  const totalInset = frameInsetM + mouldingSizeM + drawerGapM
+  const totalInset = frameInset + mouldingSize + drawerGap
   const drawerWidth = boundary.right - boundary.left - 2 * totalInset
   const drawerHeight = boundary.top - boundary.bottom - 2 * totalInset
 
@@ -42,7 +34,7 @@ export default function DrawerPanel({
 
       return (
         <mesh
-          position={[0, -drawerHeight / 4, drawerThicknessM / 2 + handleOffset]}
+          position={[0, -drawerHeight / 4, drawerThickness / 2 + handleOffset]}
         >
           <boxGeometry args={[handleWidth, handleHeight, handleDepth]} />
           <meshStandardMaterial color='#777777' />
@@ -52,17 +44,20 @@ export default function DrawerPanel({
     }
 
     // Could add more handle types here
-
     return null
   }
 
   return (
     <group
-      position={[drawerX, drawerY, depth / 2 + drawerThicknessM / 2 - 0.001]}
+      position={[
+        drawerX,
+        drawerY,
+        carcassDepth / 2 + drawerThickness / 2 - 0.001
+      ]}
     >
       {/* Drawer front */}
       <mesh>
-        <boxGeometry args={[drawerWidth, drawerHeight, drawerThicknessM]} />
+        <boxGeometry args={[drawerWidth, drawerHeight, drawerThickness]} />
         <meshStandardMaterial color='white' />
         <Edges threshold={5} color='gray' />
       </mesh>

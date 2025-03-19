@@ -5,18 +5,19 @@ import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
 const SinkBasin = ({ basin, depth, width, height, carcassHeight, color }) => {
-  const baseThickness = 18 / 1000
-  const baseGap = 9 / 1000
+  const baseThickness = 0.018
+  const baseGap = 0.009
   const metalness = 0.2
   const roughness = 0.5
   const rotation = [-Math.PI / 2, 0, 0]
-  const cornerRadius = 20 / 1000
-  const edgeWidth = 20 / 1000
+  const cornerRadius = 0.02
+  const edgeWidth = 0.02
 
-  const y = carcassHeight / 1000
+  const y = carcassHeight
 
   // Make belfast sink the entire width of the cabinet
-  if (basin.type === 'belfast') width += 0.036 + 0.018
+  // ('* 0.5' shaves a little off to improve strange visal effect)
+  if (basin.type === 'belfast') width += 0.036 + 0.018 * 0.5
 
   // Create the sink basin geometry
   const geometry = useMemo(() => {
@@ -118,9 +119,7 @@ const SinkBasin = ({ basin, depth, width, height, carcassHeight, color }) => {
   return (
     <group
       position-z={basin.type === 'belfast' ? zPosBelfast : zPosStandard}
-      position-y={
-        basin.type === 'belfast' ? height : height - basin.height / 1000
-      }
+      position-y={basin.type === 'belfast' ? height : height - basin.height}
     >
       <mesh rotation={rotation} position={basinPosition} geometry={geometry}>
         <meshStandardMaterial

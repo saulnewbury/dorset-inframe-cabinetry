@@ -1,26 +1,25 @@
 'use client'
 
 import { Edges } from '@react-three/drei'
-
 import React from 'react'
 
 export default function Feet({ carcassInnerWidth, carcassDepth }) {
   const feet = [
     {
-      x: carcassInnerWidth / 3050,
-      z: carcassDepth / 1000 / 2 - 0.12
+      x: carcassInnerWidth / 3.05,
+      z: carcassDepth / 2 - 0.12
     },
     {
-      x: -carcassInnerWidth / 3050,
-      z: carcassDepth / 1000 / 2 - 0.12
+      x: -carcassInnerWidth / 3.05,
+      z: carcassDepth / 2 - 0.12
     },
     {
-      x: carcassInnerWidth / 3050,
-      z: -carcassDepth / 1000 / 2 + 0.1
+      x: carcassInnerWidth / 3.05,
+      z: -carcassDepth / 2 + 0.1
     },
     {
-      x: -carcassInnerWidth / 3050,
-      z: -carcassDepth / 1000 / 2 + 0.1
+      x: -carcassInnerWidth / 3.05,
+      z: -carcassDepth / 2 + 0.1
     }
   ]
 

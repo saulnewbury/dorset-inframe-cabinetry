@@ -26,43 +26,32 @@ export default function DoorPanel({
     horizontalRatio = [1, 1]
   } = doorConfig
 
-  // Convert dimensions from mm to meters
-  const pt = panelThickness
-  const depth = carcassDepth
-  const doorThicknessM = doorThickness
-  const doorGapM = doorGap
-  const mouldingSizeM = mouldingSize
-  const frameInsetM = frameInset
-  const holeInsetM = holeInset
-  const mouldingWidthM = mouldingWidth
-  const splitGapM = splitGap
-  const doorGapAtBottomM = 0.002
-
-  // Common calculations for all door types
-  const totalInset = frameInsetM + mouldingSizeM + doorGapM
+  // Calculate dimensions
+  const doorGapAtBottom = 0.002 // 2mm gap at bottom
+  const totalInset = frameInset + mouldingSize + doorGap
   const doorWidth = boundary.right - boundary.left - 2 * totalInset
   const doorHeight =
-    boundary.top - boundary.bottom - 2 * totalInset - doorGapAtBottomM
+    boundary.top - boundary.bottom - 2 * totalInset - doorGapAtBottom
   const doorX = (boundary.left + boundary.right) / 2
   const doorY = (boundary.bottom + boundary.top) / 2
-  const panelWidth = boundary.right - boundary.left - 2 * mouldingWidthM
-  const panelHeight = boundary.top - boundary.bottom - 2 * mouldingWidthM
+  const panelWidth = boundary.right - boundary.left - 2 * mouldingWidth
+  const panelHeight = boundary.top - boundary.bottom - 2 * mouldingWidth
 
   // Common props for all door types
   const doorProps = {
     doorX,
     doorY,
-    depth,
-    pt,
-    doorThicknessM,
-    doorGapAtBottomM,
-    doorGapM,
+    depth: carcassDepth,
+    pt: panelThickness,
+    doorThickness,
+    doorGapAtBottom,
+    doorGap,
     doorWidth,
     doorHeight,
     panelWidth,
     panelHeight,
-    holeInsetM,
-    splitGapM
+    holeInset,
+    splitGap
   }
 
   // Render appropriate door type based on doorStyle

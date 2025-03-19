@@ -10,15 +10,15 @@ export function calculateDoorBoundaries({
   holeHeight,
   holeWidth,
   holeYOffset,
-  dividerThicknessM,
-  pt,
-  ratios = null // New parameter for custom ratios
+  dividerThickness,
+  panelThickness,
+  ratios = null // Parameter for custom ratios
 }) {
   const boundaries = []
 
   // Define hole boundaries
   const holeBottom = -holeHeight / 2 + holeYOffset
-  const holeTop = holeHeight / 2 + holeYOffset - pt
+  const holeTop = holeHeight / 2 + holeYOffset - panelThickness
   const totalHoleHeight = holeTop - holeBottom
 
   if (numHoles === 1) {
@@ -35,7 +35,7 @@ export function calculateDoorBoundaries({
 
     // Calculate available height after accounting for dividers
     const numDividers = numHoles - 1
-    const availableHeight = totalHoleHeight - numDividers * dividerThicknessM
+    const availableHeight = totalHoleHeight - numDividers * dividerThickness
 
     // Create hole boundaries based on custom ratios
     let currentBottom = holeBottom
@@ -52,7 +52,7 @@ export function calculateDoorBoundaries({
         right: holeWidth / 2
       })
 
-      currentBottom = currentTop + dividerThicknessM
+      currentBottom = currentTop + dividerThickness
     }
   } else if (numHoles === 3) {
     // Default ratios for 3 holes: 8321 : 8312 : 4925
@@ -61,7 +61,7 @@ export function calculateDoorBoundaries({
 
     // Calculate available height after accounting for dividers
     const numDividers = numHoles - 1
-    const availableHeight = totalHoleHeight - numDividers * dividerThicknessM
+    const availableHeight = totalHoleHeight - numDividers * dividerThickness
 
     // Create hole boundaries based on ratios
     let currentBottom = holeBottom
@@ -78,12 +78,12 @@ export function calculateDoorBoundaries({
         right: holeWidth / 2
       })
 
-      currentBottom = currentTop + dividerThicknessM
+      currentBottom = currentTop + dividerThickness
     }
   } else {
     // Multiple holes with dividers (equal size)
     const numDividers = numHoles - 1
-    const availableHeight = totalHoleHeight - numDividers * dividerThicknessM
+    const availableHeight = totalHoleHeight - numDividers * dividerThickness
     const singleHoleHeight = availableHeight / numHoles
 
     let currentBottom = holeBottom
@@ -98,7 +98,7 @@ export function calculateDoorBoundaries({
         right: holeWidth / 2
       })
 
-      currentBottom = currentTop + dividerThicknessM
+      currentBottom = currentTop + dividerThickness
     }
   }
 

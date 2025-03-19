@@ -7,18 +7,19 @@ export default function CabinetMoulding({
   carcassHeight,
   carcassInnerWidth,
   panelThickness,
+  frameThickness = 0.05,
   numHoles = 4,
-  ratios = null, // New parameter for custom ratios
+  ratios = null, // Parameter for custom ratios
   dividerThickness = 0.018,
-  mouldingSize = 0.001 / 1000, // 4mm x 4mm default moulding size
-  mouldingRadius = 0.8 / 1000, // radius for rounding the moulding (half of mouldingSize by default)
-  frameInset = 0.004 // 4mm inset for the frame
+  mouldingSize = 0.004,
+  mouldingRadius = 0.0008, // radius for rounding the moulding
+  frameInset = 0.004 // inset for the frame
 }) {
-  // Convert dimensions from mm to meters
-
-  const height = carcassHeight + 0.0262
-  const depth = carcassDepth
-  const hOffset = carcassHeight - height
+  // Calculate dimensions
+  const frameHeight = carcassHeight + 0.0262
+  const height = frameHeight
+  const hOffset = carcassHeight - frameHeight
+  const zOffset = frameThickness - panelThickness
 
   const holeHeight = carcassHeight - 0.009
   const holeWidth = carcassInnerWidth
@@ -129,7 +130,7 @@ export default function CabinetMoulding({
   // Frame component for a single hole
   const HoleMoulding = ({ hole }) => {
     const frameShape = useMemo(() => {
-      // Calculate dimensions with the 4mm inset applied
+      // Calculate dimensions with the inset applied
       const frameWidth = hole.right - hole.left - 2 * frameInset
       const frameHeight = hole.top - hole.bottom - 2 * frameInset
 
@@ -188,7 +189,7 @@ export default function CabinetMoulding({
 
   // Create all moulding frames
   return (
-    <group position={[0, height / 2 + hOffset, depth / 2 - 0.005]}>
+    <group position={[0, height / 2 + hOffset, carcassDepth / 2 - 0.005]}>
       {holeBoundaries.map((hole, holeIndex) => (
         <HoleMoulding key={`frame-${holeIndex}`} hole={hole} />
       ))}
