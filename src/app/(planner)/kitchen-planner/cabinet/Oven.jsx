@@ -7,8 +7,6 @@ import { createPanelShape } from '@/utils/doorCalculations'
 export default function Oven({
   boundary, // Single boundary object
   carcassDepth,
-  carcassHeight,
-  panelThickness,
   ovenThickness = 0.018, // Thickness of the oven front in meters
   ovenGap = 0.002, // Gap between oven and moulding frame in meters
   mouldingSize = 0.004, // Moulding size in meters

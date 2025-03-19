@@ -5,8 +5,6 @@ import { Edges } from '@react-three/drei'
 export default function DrawerPanel({
   boundary, // Single boundary object
   carcassDepth,
-  carcassHeight,
-  panelThickness,
   drawerThickness = 0.018, // Thickness of the drawer front in meters
   drawerGap = 0.002, // Gap between drawer and moulding frame in meters
   mouldingSize = 0.004, // Moulding size in meters

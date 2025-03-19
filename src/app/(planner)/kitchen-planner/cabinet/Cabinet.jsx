@@ -33,9 +33,9 @@ import Feet from './Feet'
 // }
 
 export default function Cabinet({
-  baseUnit = true,
-  basin = { type: 'belfast', height: 0.22, depth: 0.455, doubleBasin: true },
-  // basin = null,
+  baseUnit = false,
+  // basin = { type: 'belfast', height: 0.22, depth: 0.455, doubleBasin: true },
+  basin = null,
   carcassDepth = 0.575,
   carcassHeight = 0.759,
   carcassInnerWidth = 0.564 * 1.5,
