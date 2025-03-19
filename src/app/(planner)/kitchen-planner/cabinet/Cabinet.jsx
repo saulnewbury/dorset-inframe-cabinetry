@@ -137,7 +137,7 @@ export default function Cabinet({
       </mesh>
 
       {/* Top Panel */}
-      {!baseUnit && (
+      {(!baseUnit || basin) && (
         <mesh position={[0, carcassHeight - panelThickness / 2, backInset / 2]}>
           <boxGeometry
             args={[

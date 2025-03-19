@@ -4,7 +4,14 @@ import React, { useMemo } from 'react'
 import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
-const SinkBasin = ({ basin, depth, width, height, carcassHeight, color }) => {
+const SinkBasin = ({
+  basin = null,
+  depth,
+  width,
+  height,
+  carcassHeight,
+  color
+}) => {
   const baseThickness = 0.018
   const baseGap = 0.009
   const metalness = 0.2
