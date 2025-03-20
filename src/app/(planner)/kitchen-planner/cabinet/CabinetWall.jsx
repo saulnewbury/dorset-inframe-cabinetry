@@ -5,9 +5,6 @@ import Carcass from './Carcass'
 import Frame from './Frame'
 import Moulding from './Moulding'
 import FrontPanels from './FrontPanels'
-import SinkBasin from './SinkBasin'
-import Worktop from './Worktop'
-import Feet from './Feet'
 
 // panelConfig options
 // {
@@ -25,16 +22,8 @@ import Feet from './Feet'
 //   // Additional properties as needed for future extensions
 // }
 
-// basin options
-// {
-//   type: 'standard' | 'belfast'
-//   doubleBasin: bool
-// }
-
-export default function Cabinet({
-  baseUnit = true,
-  basin = { type: 'belfast', height: 0.22, depth: 0.455, doubleBasin: true }, // {} || null
-  carcassDepth = 0.575 * 1,
+export default function CabinetWall({
+  carcassDepth = 0.575,
   carcassHeight = 0.759,
   carcassInnerWidth = 0.564,
   panelThickness = 0.018,
@@ -45,16 +34,13 @@ export default function Cabinet({
     }
   ]
 }) {
-  // Adapt cabinet height to accommodate basin on top
-  if (basin?.type === 'belfast') carcassHeight -= basin.height
+  // Frame
+  const bottomFrameThickness = 0.05
 
   // Carcass
   const backInset = 0.03
   const distance = carcassInnerWidth // inside width
   const baseCarcassToFloor = 0.104 + 0.026 // = 0.13
-
-  // Basin
-  const basinWidth = distance - 0.018
 
   // Extract ratios from panelConfig if available
   const panelRatios = panelConfig.map((panel) => panel.ratio || 1)
@@ -63,7 +49,7 @@ export default function Cabinet({
   const baseUnitPositionY = 0.0265 + 0.104
 
   return (
-    <group position-y={baseUnitPositionY}>
+    <group position-y={baseUnitPositionY + 0.7852}>
       <Frame
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
@@ -71,6 +57,7 @@ export default function Cabinet({
         panelThickness={panelThickness}
         numHoles={panelConfig.length}
         ratios={panelRatios}
+        bottomFrameThickness={bottomFrameThickness}
       />
       <Moulding
         carcassDepth={carcassDepth}
@@ -96,40 +83,8 @@ export default function Cabinet({
         panelThickness={panelThickness}
         baseCarcassToFloor={baseCarcassToFloor}
         backInset={backInset}
-        baseUnit={true}
-        basin={basin}
+        baseUnit={false}
       />
-
-      {/* Sink */}
-      {basin && (
-        <SinkBasin
-          basin={basin}
-          depth={basin.depth}
-          height={basin.height}
-          width={basinWidth}
-          carcassHeight={carcassHeight}
-          carcassDepth={carcassDepth}
-        />
-      )}
-
-      {/* Worktop and Feet*/}
-      {baseUnit && (
-        <Feet
-          carcassInnerWidth={carcassInnerWidth}
-          carcassDepth={carcassDepth}
-        />
-      )}
-
-      {baseUnit && (
-        <Worktop
-          basin={basin}
-          distance={distance}
-          thickness={panelThickness}
-          depth={carcassDepth}
-          height={carcassHeight}
-          color={'#777777'}
-        />
-      )}
     </group>
   )
 }

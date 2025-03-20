@@ -2,15 +2,14 @@ import React from 'react'
 import { Edges } from '@react-three/drei'
 
 // Components
-import CabinetFrame from './Frame'
-import CabinetMoulding from './Moulding'
+import Frame from './Frame'
+import Moulding from './Moulding'
 import Carcass from './Carcass'
 import Feet from './Feet'
 import Worktop from './Worktop'
 import CornerDoor from './CornerDoor'
 
 export default function CabinetCorner({
-  baseUnit = true,
   underCounter = false,
   carcassDepth = 0.575,
   carcassHeight = 0.759,
@@ -24,9 +23,6 @@ export default function CabinetCorner({
     }
   ]
 }) {
-  // Frame
-  const bottomFrameThickness = 0.045
-
   // Carcass
   const backInset = 0.03
   const distance = carcassInnerWidth // inside width
@@ -69,7 +65,7 @@ export default function CabinetCorner({
         <Edges threshold={15} color='gray' />
       </mesh>
 
-      <CabinetFrame
+      <Frame
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={interiorOpeningWidth}
@@ -80,7 +76,7 @@ export default function CabinetCorner({
         openingOrientation={openingOrientation}
       />
 
-      <CabinetMoulding
+      <Moulding
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={interiorOpeningWidth}
@@ -108,7 +104,7 @@ export default function CabinetCorner({
         panelThickness={panelThickness}
         baseCarcassToFloor={baseCarcassToFloor}
         backInset={backInset}
-        baseUnit={baseUnit}
+        baseUnit={true}
       />
 
       <Feet carcassInnerWidth={carcassInnerWidth} carcassDepth={carcassDepth} />
