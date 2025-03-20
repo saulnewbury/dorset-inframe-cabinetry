@@ -1,4 +1,5 @@
 import React from 'react'
+import { Edges } from '@react-three/drei'
 
 // Components
 import CabinetFrame from './CabinetFrame'
@@ -15,8 +16,9 @@ export default function CabinetCorner({
   carcassHeight = 0.759,
   carcassInnerWidth = 0.964,
   interiorOpeningWidth = 0.5835,
+  bottomFrameThickness = 0.05,
   panelThickness = 0.018,
-  openingOrientation = 'left',
+  openingOrientation = 'right',
   panelConfig = [
     {
       type: 'door'
@@ -34,8 +36,37 @@ export default function CabinetCorner({
   // Base unit position - the distance from carcass to floor
   const baseUnitPositionY = 0.0265 + 0.104
 
+  // const coverPanelWidth = interiorOpeningWidth - 0.009 * 20
+  const coverPanelWidth = carcassInnerWidth - interiorOpeningWidth - 0.018
+
+  const panelOffset =
+    openingOrientation === 'left'
+      ? -carcassInnerWidth / 2 + coverPanelWidth / 2 - panelThickness / 4
+      : carcassInnerWidth / 2 - coverPanelWidth / 2 + panelThickness / 4
+
+  const yOffset = bottomFrameThickness - 0.018 - 0.0009
+
   return (
     <group position-y={baseUnitPositionY}>
+      {/* cover panel */}
+      <mesh
+        position={[
+          panelOffset,
+          carcassHeight / 2 - yOffset / 2,
+          carcassDepth / 2 + 0.009
+        ]}
+      >
+        <boxGeometry
+          args={[
+            coverPanelWidth + panelThickness / 2,
+            carcassHeight + yOffset,
+            panelThickness
+          ]}
+        />
+        <meshStandardMaterial color='white' />
+        <Edges threshold={15} color='gray' />
+      </mesh>
+
       <CabinetFrame
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
