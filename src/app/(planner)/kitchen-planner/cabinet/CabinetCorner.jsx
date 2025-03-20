@@ -16,7 +16,7 @@ export default function CabinetCorner({
   carcassHeight = 0.759,
   carcassInnerWidth = 0.964,
   interiorOpeningWidth = 0.5835,
-  bottomFrameThickness = 0.05,
+  bottomFrameThickness = 0.045,
   panelThickness = 0.018,
   openingOrientation = 'right',
   panelConfig = [
@@ -44,7 +44,7 @@ export default function CabinetCorner({
       ? -carcassInnerWidth / 2 + coverPanelWidth / 2 - panelThickness / 4
       : carcassInnerWidth / 2 - coverPanelWidth / 2 + panelThickness / 4
 
-  const yOffset = bottomFrameThickness - 0.018 - 0.0009
+  const yOffset = bottomFrameThickness - 0.018 + 0.0042
 
   return (
     <group position-y={baseUnitPositionY}>
