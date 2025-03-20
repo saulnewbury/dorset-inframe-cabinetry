@@ -10,7 +10,7 @@ export default function Carcass({
   backInset,
   baseUnit,
   basin,
-  underCounter = true
+  underCounter = false
 }) {
   // Undercounter
   const offsetY = underCounter ? baseCarcassToFloor : 0
