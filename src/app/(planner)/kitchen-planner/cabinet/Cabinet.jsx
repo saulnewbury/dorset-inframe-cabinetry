@@ -37,18 +37,18 @@ export default function Cabinet({
   carcassHeight = 0.759,
   carcassInnerWidth = 0.564,
   panelThickness = 0.018,
-  basinConfig = {
-    type: 'belfast',
-    height: 0.22,
-    depth: 0.455,
-    doubleBasin: true
-  }, // {} || null
   panelConfig = [
     {
       type: 'door',
       style: 'single'
     }
-  ]
+  ],
+  basinConfig = {
+    type: 'belfast',
+    height: 0.22,
+    depth: 0.455,
+    doubleBasin: true
+  } // {} || null
 }) {
   // Adapt cabinet height to accommodate basinConfig on top
   if (basinConfig?.type === 'belfast') carcassHeight -= basinConfig.height
