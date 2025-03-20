@@ -11,7 +11,9 @@ export default function CabinetFrame({
   ratios = null, // Custom ratios
   dividerThickness = 0.018,
   frameThickness = 0.05, // Made this a parameter instead of hardcoded value
-  bottomFrameThickness = 0.05 // In meters (default 50mm)
+  bottomFrameThickness = 0.05, // In meters (default 50mm)
+  fullInnerWidth = 0, // only applicable to corner cabinet
+  openingOrientation = false // only applicable to corner cabinet
 }) {
   // Calculate dimensions
   const width = carcassInnerWidth + 0.036
@@ -144,8 +146,19 @@ export default function CabinetFrame({
     shape.holes.push(holeShape)
   }
 
+  const offset =
+    openingOrientation === 'left'
+      ? fullInnerWidth / 2 - carcassInnerWidth / 2
+      : -fullInnerWidth / 2 + carcassInnerWidth / 2
+
   return (
-    <mesh position={[0, height / 2 + hOffset, carcassDepth / 2 - zOffset]}>
+    <mesh
+      position={[
+        openingOrientation ? offset : 0,
+        height / 2 + hOffset,
+        carcassDepth / 2 - zOffset
+      ]}
+    >
       <extrudeGeometry
         args={[
           shape,

@@ -48,9 +48,7 @@ export default function Cabinet({
   panelConfig = [
     {
       type: 'door',
-      style: 'split',
-      ratio: 2,
-      orientation: 'horizontal'
+      style: 'single'
     }
   ]
 }) {

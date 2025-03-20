@@ -14,7 +14,9 @@ export default function CabinetMoulding({
   dividerThickness = 0.018,
   mouldingSize = 0.004,
   mouldingRadius = 0.0008, // radius for rounding the moulding
-  frameInset = 0.004 // inset for the frame
+  frameInset = 0.004, // inset for the frame
+  openingOrientation = false, // Only applies to corner cabinets
+  fullInnerWidth = 0 // Only applies to corner cabinets
 }) {
   // Calculate dimensions
   const frameHeight = carcassHeight + 0.0262
@@ -188,9 +190,20 @@ export default function CabinetMoulding({
     )
   }
 
+  const offset =
+    openingOrientation === 'left'
+      ? fullInnerWidth / 2 - carcassInnerWidth / 2
+      : -fullInnerWidth / 2 + carcassInnerWidth / 2
+
   // Create all moulding frames
   return (
-    <group position={[0, height / 2 + hOffset, carcassDepth / 2 - 0.005]}>
+    <group
+      position={[
+        openingOrientation ? offset : 0,
+        height / 2 + hOffset,
+        carcassDepth / 2 - 0.005
+      ]}
+    >
       {holeBoundaries.map((hole, holeIndex) => (
         <HoleMoulding key={`frame-${holeIndex}`} hole={hole} />
       ))}
