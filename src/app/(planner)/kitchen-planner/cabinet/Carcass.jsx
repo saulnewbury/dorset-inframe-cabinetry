@@ -14,7 +14,7 @@ export default function Carcass({
 }) {
   // Undercounter
   const offsetY = underCounter ? baseCarcassToFloor : 0
-  const offsetZ = underCounter ? 0.05 - 0.018 : 0
+  const offsetZ = underCounter ? 0.05 - 0.051 : 0
 
   return (
     <>
@@ -45,7 +45,7 @@ export default function Carcass({
           args={[
             panelThickness,
             carcassHeight + offsetY,
-            carcassDepth - offsetZ
+            carcassDepth + offsetZ
           ]}
         />
         <meshStandardMaterial color='white' />
