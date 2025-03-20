@@ -2,8 +2,8 @@ import React from 'react'
 import { Edges } from '@react-three/drei'
 
 // Components
-import CabinetFrame from './CabinetFrame'
-import CabinetMoulding from './CabinetMoulding'
+import CabinetFrame from './Frame'
+import CabinetMoulding from './Moulding'
 import Carcass from './Carcass'
 import Feet from './Feet'
 import Worktop from './Worktop'

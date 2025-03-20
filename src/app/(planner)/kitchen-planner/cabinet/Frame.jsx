@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
-export default function CabinetFrame({
+export default function Frame({
   carcassDepth,
   carcassHeight,
   panelThickness,

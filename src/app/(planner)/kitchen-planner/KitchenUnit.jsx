@@ -13,6 +13,7 @@ import { wt } from '@/const'
 import ItemInfo from './ItemInfo'
 import Cabinet from './cabinet/Cabinet'
 import CabinetCorner from './cabinet/CabinetCorner'
+import CabinetUnderCounter from './cabinet/CabinetUnderCounter'
 
 // Drag handle for openings:
 import dragHandle from '@/assets/icons/general-handle.svg'
@@ -76,7 +77,8 @@ export default function KitchenUnit({
           </>
         )}
         {/* {type === 'base' && <Cabinet width={width} style={style} />} */}
-        {type === 'base' && <CabinetCorner width={width} style={style} />}
+        {/* {type === 'base' && <CabinetCorner width={width} style={style} />} */}
+        {type === 'base' && <CabinetUnderCounter width={width} style={style} />}
       </group>
       {(showHandle || dragging) && (
         <DragControls
