@@ -14,15 +14,14 @@ export default function CabinetUnderCounter({
   carcassDepth = 0.575,
   carcassHeight = 0.759,
   carcassInnerWidth = 0.564,
-  panelThickness = 0.018,
   panelConfig = [
     {
-      type: 'door', // door | none
-      style: 'single'
+      type: 'none' // door | none
     }
   ]
 }) {
   // Carcass
+  const panelThickness = 0.018
   const backInset = 0.03
   const distance = carcassInnerWidth // inside width
   const baseCarcassToFloor = 0.104 + 0.026 // = 0.13

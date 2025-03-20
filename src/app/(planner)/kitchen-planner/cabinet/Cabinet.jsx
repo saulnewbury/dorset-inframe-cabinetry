@@ -32,15 +32,16 @@ import Feet from './Feet'
 // }
 
 export default function Cabinet({
+  tall = false,
   baseUnit = true,
-  carcassDepth = 0.575 * 1,
+  carcassDepth = 0.575,
   carcassHeight = 0.759,
   carcassInnerWidth = 0.564,
-  panelThickness = 0.018,
   panelConfig = [
     {
       type: 'door',
-      style: 'single'
+      style: 'split',
+      color: 'white'
     }
   ],
   basinConfig = {
@@ -48,12 +49,14 @@ export default function Cabinet({
     height: 0.22,
     depth: 0.455,
     doubleBasin: true
-  } // {} || null
+  }
+  // basinConfig = null
 }) {
   // Adapt cabinet height to accommodate basinConfig on top
   if (basinConfig?.type === 'belfast') carcassHeight -= basinConfig.height
 
   // Carcass
+  const panelThickness = 0.018
   const backInset = 0.03
   const distance = carcassInnerWidth // inside width
   const baseCarcassToFloor = 0.104 + 0.026 // = 0.13
@@ -101,7 +104,7 @@ export default function Cabinet({
         panelThickness={panelThickness}
         baseCarcassToFloor={baseCarcassToFloor}
         backInset={backInset}
-        baseUnit={true}
+        baseUnit={!tall}
         basin={basinConfig}
       />
 
@@ -125,7 +128,7 @@ export default function Cabinet({
         />
       )}
 
-      {baseUnit && (
+      {!tall && baseUnit && (
         <Worktop
           basin={basinConfig}
           distance={distance}

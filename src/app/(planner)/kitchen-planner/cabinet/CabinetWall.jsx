@@ -26,11 +26,11 @@ export default function CabinetWall({
   carcassDepth = 0.575,
   carcassHeight = 0.759,
   carcassInnerWidth = 0.564,
-  panelThickness = 0.018,
   panelConfig = [
     {
       type: 'door',
-      style: 'single'
+      style: 'single',
+      color: 'white'
     }
   ]
 }) {
@@ -38,6 +38,7 @@ export default function CabinetWall({
   const bottomFrameThickness = 0.05
 
   // Carcass
+  const panelThickness = 0.018
   const backInset = 0.03
   const distance = carcassInnerWidth // inside width
   const baseCarcassToFloor = 0.104 + 0.026 // = 0.13
@@ -47,9 +48,14 @@ export default function CabinetWall({
 
   // Base unit position - the distance from carcass to floor
   const baseUnitPositionY = 0.0265 + 0.104
+  const footToTop = 0.7892
+  const worktop = 0.03
+  const worktopToWallUnit = 0.49
 
   return (
-    <group position-y={baseUnitPositionY + 0.7852}>
+    <group
+      position-y={baseUnitPositionY + footToTop + worktop + worktopToWallUnit}
+    >
       <Frame
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}

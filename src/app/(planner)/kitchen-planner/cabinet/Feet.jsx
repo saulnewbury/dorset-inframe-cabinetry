@@ -6,21 +6,20 @@ import React from 'react'
 export default function Feet({ carcassInnerWidth, carcassDepth }) {
   const feet = [
     {
-      // x: carcassInnerWidth / 3.05,
       x: carcassInnerWidth / 2 - 0.08,
-      z: carcassDepth / 2 - 0.12
+      z: carcassDepth / 2 - 0.07
     },
     {
       x: -carcassInnerWidth / 2 + 0.08,
-      z: carcassDepth / 2 - 0.12
+      z: carcassDepth / 2 - 0.07
     },
     {
       x: carcassInnerWidth / 2 - 0.08,
-      z: -carcassDepth / 2 + 0.1
+      z: -carcassDepth / 2 + 0.07
     },
     {
       x: -carcassInnerWidth / 2 + 0.08,
-      z: -carcassDepth / 2 + 0.1
+      z: -carcassDepth / 2 + 0.07
     }
   ]
 
