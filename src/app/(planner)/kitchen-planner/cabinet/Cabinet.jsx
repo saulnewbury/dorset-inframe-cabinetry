@@ -25,7 +25,7 @@ import Feet from './Feet'
 //   // Additional properties as needed for future extensions
 // }
 
-// basin options
+// basinConfig options
 // {
 //   type: 'standard' | 'belfast'
 //   doubleBasin: bool
@@ -33,11 +33,16 @@ import Feet from './Feet'
 
 export default function Cabinet({
   baseUnit = true,
-  basin = { type: 'belfast', height: 0.22, depth: 0.455, doubleBasin: true }, // {} || null
   carcassDepth = 0.575 * 1,
   carcassHeight = 0.759,
   carcassInnerWidth = 0.564,
   panelThickness = 0.018,
+  basinConfig = {
+    type: 'belfast',
+    height: 0.22,
+    depth: 0.455,
+    doubleBasin: true
+  }, // {} || null
   panelConfig = [
     {
       type: 'door',
@@ -45,15 +50,15 @@ export default function Cabinet({
     }
   ]
 }) {
-  // Adapt cabinet height to accommodate basin on top
-  if (basin?.type === 'belfast') carcassHeight -= basin.height
+  // Adapt cabinet height to accommodate basinConfig on top
+  if (basinConfig?.type === 'belfast') carcassHeight -= basinConfig.height
 
   // Carcass
   const backInset = 0.03
   const distance = carcassInnerWidth // inside width
   const baseCarcassToFloor = 0.104 + 0.026 // = 0.13
 
-  // Basin
+  // basinConfig
   const basinWidth = distance - 0.018
 
   // Extract ratios from panelConfig if available
@@ -97,15 +102,15 @@ export default function Cabinet({
         baseCarcassToFloor={baseCarcassToFloor}
         backInset={backInset}
         baseUnit={true}
-        basin={basin}
+        basin={basinConfig}
       />
 
       {/* Sink */}
-      {basin && (
+      {basinConfig && (
         <SinkBasin
-          basin={basin}
-          depth={basin.depth}
-          height={basin.height}
+          basin={basinConfig}
+          depth={basinConfig.depth}
+          height={basinConfig.height}
           width={basinWidth}
           carcassHeight={carcassHeight}
           carcassDepth={carcassDepth}
@@ -122,7 +127,7 @@ export default function Cabinet({
 
       {baseUnit && (
         <Worktop
-          basin={basin}
+          basin={basinConfig}
           distance={distance}
           thickness={panelThickness}
           depth={carcassDepth}
