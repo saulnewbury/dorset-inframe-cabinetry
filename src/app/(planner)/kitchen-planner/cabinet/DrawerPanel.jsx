@@ -32,7 +32,11 @@ export default function DrawerPanel({
 
       return (
         <mesh
-          position={[0, -drawerHeight / 4, drawerThickness / 2 + handleOffset]}
+          position={[
+            0,
+            drawerHeight / 2 - 0.05,
+            drawerThickness / 2 + handleOffset
+          ]}
         >
           <boxGeometry args={[handleWidth, handleHeight, handleDepth]} />
           <meshStandardMaterial color='#777777' />
