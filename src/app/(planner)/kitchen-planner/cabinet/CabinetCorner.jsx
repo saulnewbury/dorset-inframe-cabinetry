@@ -12,19 +12,21 @@ import CornerDoor from './CornerDoor'
 export default function CabinetCorner({
   baseUnit = true,
   underCounter = false,
-  carcassDepth = 0.575 * 1,
+  carcassDepth = 0.575,
   carcassHeight = 0.759,
   carcassInnerWidth = 0.964,
   interiorOpeningWidth = 0.5835,
-  bottomFrameThickness = 0.045,
   panelThickness = 0.018,
-  openingOrientation = 'right',
+  openingOrientation = 'left',
   panelConfig = [
     {
       type: 'door'
     }
   ]
 }) {
+  // Frame
+  const bottomFrameThickness = 0.045
+
   // Carcass
   const backInset = 0.03
   const distance = carcassInnerWidth // inside width
@@ -92,7 +94,7 @@ export default function CabinetCorner({
       <CornerDoor
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
-        carcassInnerWidth={interiorOpeningWidth} // width of the door area (interiorCarcass)
+        carcassInnerWidth={interiorOpeningWidth}
         panelThickness={panelThickness}
         fullInnerWidth={carcassInnerWidth}
         openingOrientation={openingOrientation}

@@ -77,8 +77,8 @@ export default function KitchenUnit({
           </>
         )}
         {/* {type === 'base' && <Cabinet width={width} style={style} />} */}
-        {/* {type === 'base' && <CabinetCorner width={width} style={style} />} */}
-        {type === 'base' && <CabinetUnderCounter width={width} style={style} />}
+        {type === 'base' && <CabinetCorner width={width} style={style} />}
+        {/* {type === 'base' && <CabinetUnderCounter width={width} style={style} />} */}
       </group>
       {(showHandle || dragging) && (
         <DragControls

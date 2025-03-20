@@ -2,10 +2,10 @@
 
 // Components
 import Carcass from './Carcass'
-import CabinetFrame from './Frame'
-import CabinetFrameThreeSided from './FrameThreeSides'
-import CabinetMoulding from './Moulding'
-import CabinetMouldingThreeSided from './MouldingThreeSides'
+import Frame from './Frame'
+import FrameThreeSided from './FrameThreeSides'
+import Moulding from './Moulding'
+import MouldingThreeSided from './MouldingThreeSides'
 import FrontPanels from './FrontPanels'
 import Worktop from './Worktop'
 
@@ -35,7 +35,7 @@ export default function CabinetUnderCounter({
 
   return (
     <group position-y={baseUnitPositionY}>
-      <CabinetFrameThreeSided
+      <FrameThreeSided
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={carcassInnerWidth}
@@ -45,7 +45,7 @@ export default function CabinetUnderCounter({
       />
 
       {panelConfig[0].type !== 'door' && (
-        <CabinetMouldingThreeSided
+        <MouldingThreeSided
           carcassDepth={carcassDepth}
           carcassHeight={carcassHeight}
           carcassInnerWidth={carcassInnerWidth}
@@ -57,7 +57,7 @@ export default function CabinetUnderCounter({
 
       {panelConfig[0].type === 'door' && (
         <>
-          <CabinetFrame
+          <Frame
             carcassDepth={carcassDepth}
             carcassHeight={carcassHeight}
             carcassInnerWidth={carcassInnerWidth}
@@ -65,7 +65,7 @@ export default function CabinetUnderCounter({
             numHoles={panelConfig.length}
             ratios={panelRatios}
           />
-          <CabinetMoulding
+          <Moulding
             carcassDepth={carcassDepth}
             carcassHeight={carcassHeight}
             carcassInnerWidth={carcassInnerWidth}
