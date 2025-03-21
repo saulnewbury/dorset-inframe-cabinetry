@@ -42,6 +42,8 @@ export function updateModel(state, action) {
  * Saves the (new) model to browser local storage.
  */
 function saveState(state) {
+  console.log(state)
+  if (!state) debugger
   try {
     if (keepCopy)
       window.localStorage.setItem('dorset-model', JSON.stringify(state))
@@ -59,7 +61,10 @@ function saveState(state) {
  */
 export function loadState(initial, action) {
   try {
-    return JSON.parse(window.localStorage.getItem('dorset-model'))
+    const saved = window.localStorage.getItem('dorset-model')
+    let state
+    if (saved) state = JSON.parse(saved)
+    return state ?? loadModel(initial, action)
   } catch (err) {
     return loadModel(initial, action)
   }
