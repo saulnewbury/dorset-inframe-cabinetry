@@ -77,8 +77,8 @@ export default function KitchenUnit({
             <InfoPanel ref={info} {...{ id, type, width, style }} />
           </>
         )}
-        {/* {type === 'base' && <Cabinet width={width} style={style} />} */}
-        {type === 'base' && <CabinetCorner width={width} style={style} />}
+        {type === 'base' && <Cabinet width={width} style={style} />}
+        {/* {type === 'corner' && <CabinetCorner width={width} style={style} />} */}
         {/* {type === 'underCounter' && <CabinetUnderCounter width={width} style={style} />} */}
         {/* {type === 'wall' && <CabinetWall width={width} style={style} />} */}
       </group>

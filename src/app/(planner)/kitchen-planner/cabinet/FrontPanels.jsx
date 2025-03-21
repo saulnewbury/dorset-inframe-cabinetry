@@ -54,7 +54,6 @@ export default function FrontPanels({
 
         // Common props for all panel types
         const commonProps = {
-          key: `panel-${index}`,
           boundary,
           carcassDepth,
           carcassHeight,
@@ -66,6 +65,7 @@ export default function FrontPanels({
           case 'drawer':
             return (
               <DrawerPanel
+                key={`panel-${index}`}
                 {...commonProps}
                 drawerHandleType={config.handleType || 'bar'}
               />
@@ -73,6 +73,7 @@ export default function FrontPanels({
           case 'oven':
             return (
               <Oven
+                key={`panel-${index}`}
                 {...commonProps}
                 type={config.ovenType || 'single'}
                 ovenHandleType={config.handleType || 'bar'}
@@ -82,6 +83,7 @@ export default function FrontPanels({
           case 'door':
             return (
               <DoorPanel
+                key={`panel-${index}`}
                 {...commonProps}
                 doorStyle={config.style || 'single'}
                 doorConfig={{

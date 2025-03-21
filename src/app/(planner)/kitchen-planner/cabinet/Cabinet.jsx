@@ -32,24 +32,27 @@ import Feet from './Feet'
 // }
 
 export default function Cabinet({
-  tall = false,
+  tall = true,
   baseUnit = true,
   carcassDepth = 0.575,
-  carcassHeight = 0.759,
-  carcassInnerWidth = 0.564,
+  carcassHeight = 2.001,
+  carcassInnerWidth = 0.764,
+  basinConfig = null,
   panelConfig = [
     {
       type: 'door',
-      style: 'split',
+      style: 'fourDoors',
+      orientation: 'vertical',
+      verticalRatio: [60, 40],
       color: 'white'
     }
-  ],
-  basinConfig = {
-    type: 'belfast',
-    height: 0.22,
-    depth: 0.455,
-    doubleBasin: true
-  }
+  ]
+  // basinConfig = {
+  //   type: 'belfast',
+  //   height: 0.22,
+  //   depth: 0.455,
+  //   doubleBasin: true
+  // }
   // basinConfig = null
 }) {
   // Adapt cabinet height to accommodate basinConfig on top
