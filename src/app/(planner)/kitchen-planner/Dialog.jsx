@@ -4,26 +4,25 @@ import SvgIcon from '@/components/SvgIcon.jsx'
 
 const Dialog = forwardRef(
   ({ closeContentBox, content, Body, fullWidth }, ref) => {
-    console.log(Body)
     return (
-      <div className='fixed z-[100] flex h-[100vh] w-[100vw] top-0 left-0 bg-overlay px-[98px] py-[40px]'>
+      <div className="fixed z-[100] flex h-[100vh] w-[100vw] top-0 left-0 bg-overlay px-[98px] py-[40px]">
         {/* <div className='bg-white w-full h-full relative'> */}
         <div
           className={`bg-white h-full relative ${fullWidth ? 'w-full' : ''}`}
         >
           <button
             onClick={closeContentBox}
-            className='cursor-pointer w-[max-content] h-[max-content] absolute right-[2.5rem] top-[2rem] z-[900]'
-            type='button'
+            className="cursor-pointer w-[max-content] h-[max-content] absolute right-[2.5rem] top-[2rem] z-[900]"
+            type="button"
           >
-            <SvgIcon shape='close' />
+            <SvgIcon shape="close" />
           </button>
           <div
             className={`gutter-left h-full relative overflow-scroll ${
               fullWidth ? '' : 'pr-[200px]'
             }`}
           >
-            <h2 className='py-[2rem] text-[18px]'>{content.heading}</h2>
+            <h2 className="py-[2rem] text-[18px]">{content.heading}</h2>
 
             {/*
              ** Body is a component from sidebar.js (data).

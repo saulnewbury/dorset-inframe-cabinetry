@@ -46,93 +46,338 @@ export const windowStyles = [
 
 export const baseUnitStyles = {
   300: [
-    { id: 'door', title: 'Single door', image: base_600_door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   350: [
-    { id: 'door', title: 'Single door', image: base_600_door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   400: [
-    { id: 'door', title: 'Single door', image: base_600_door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   450: [
-    { id: 'door', title: 'Single door', image: base_600_door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   500: [
-    { id: 'door', title: 'Single door', image: base_600_door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   550: [
-    { id: 'door', title: 'Single door', image: base_600_door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   600: [
-    { id: 'door', title: 'Single door', image: base_600_door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   650: [
-    { id: 'door:door', title: 'Double door', image: base_600_door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    { id: 'door:door', title: 'Double door', image: base_600_door, price: 80 },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   700: [
-    { id: 'door:door', title: 'Double door', image: base_600_door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    { id: 'door:door', title: 'Double door', image: base_600_door, price: 80 },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   750: [
-    { id: 'door:door', title: 'Double door', image: base_600_door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    { id: 'door:door', title: 'Double door', image: base_600_door, price: 80 },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   800: [
-    { id: 'door:door', title: 'Double door', image: base_600_door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    { id: 'door:door', title: 'Double door', image: base_600_door, price: 80 },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   850: [
-    { id: 'door:door', title: 'Double door', image: base_1000_2door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    {
+      id: 'door:door',
+      title: 'Double door',
+      image: base_1000_2door,
+      price: 80
+    },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   900: [
-    { id: 'door:door', title: 'Double door', image: base_1000_2door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    {
+      id: 'door:door',
+      title: 'Double door',
+      image: base_1000_2door,
+      price: 80
+    },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   950: [
-    { id: 'door:door', title: 'Double door', image: base_1000_2door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    {
+      id: 'door:door',
+      title: 'Double door',
+      image: base_1000_2door,
+      price: 80
+    },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ],
   1000: [
-    { id: 'door:door', title: 'Double door', image: base_1000_2door },
-    { id: '2-drawer', title: 'Two drawers', image: base_600_2drawer },
-    { id: '3-drawer', title: 'Three drawers', image: base_600_3drawer },
-    { id: '4-drawer', title: 'Four drawers', image: base_600_4drawer }
+    {
+      id: 'door:door',
+      title: 'Double door',
+      image: base_1000_2door,
+      price: 80
+    },
+    {
+      id: '2-drawer',
+      title: 'Two drawers',
+      image: base_600_2drawer,
+      price: 80
+    },
+    {
+      id: '3-drawer',
+      title: 'Three drawers',
+      image: base_600_3drawer,
+      price: 80
+    },
+    {
+      id: '4-drawer',
+      title: 'Four drawers',
+      image: base_600_4drawer,
+      price: 80
+    }
   ]
 }

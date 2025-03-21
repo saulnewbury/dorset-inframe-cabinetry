@@ -12,9 +12,12 @@ export const initialState = {
   colour: '#ffffff'
 }
 
+let keepCopy = true
+
 const wrap = (a, n, s) => (s ? a[n] : a[(n + a.length) % a.length])
 
 const actions = {
+  loadState,
   loadModel,
   setScheme,
   addSegment,
@@ -32,7 +35,34 @@ const actions = {
 
 export function updateModel(state, action) {
   const reducer = actions[action.id]
-  return reducer ? reducer(state, action) : state
+  return reducer ? saveState(reducer(state, action)) : state
+}
+
+/**
+ * Saves the (new) model to browser local storage.
+ */
+function saveState(state) {
+  try {
+    if (keepCopy)
+      window.localStorage.setItem('dorset-model', JSON.stringify(state))
+  } catch (err) {
+    console.log('Local storage disabled', err)
+    keepCopy = false
+  }
+  return state
+}
+
+/**
+ * Loads or sets an initial state. If a saved model is found in browser
+ * local storage then that is read and parsed, otherwise an 'empty' state
+ * is returned.
+ */
+export function loadState(initial, action) {
+  try {
+    return JSON.parse(window.localStorage.getItem('dorset-model'))
+  } catch (err) {
+    return loadModel(initial, action)
+  }
 }
 
 /**

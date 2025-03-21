@@ -199,6 +199,11 @@ export const defineYourSpace = [
         //     ]
         //   }
         // ]
+      },
+      {
+        name: 'Wall units',
+        heading: 'Choose a wall unit',
+        component: ChooseWallUnit
       }
       // {
       //   name: 'Electricity',
