@@ -16,6 +16,8 @@ import CabinetCorner from './cabinet/CabinetCorner'
 import CabinetUnderCounter from './cabinet/CabinetUnderCounter'
 import CabinetWall from './cabinet/CabinetWall'
 
+import DimensionLine from './DimensionLine'
+
 // Drag handle for openings:
 import dragHandle from '@/assets/icons/general-handle.svg'
 
@@ -46,6 +48,8 @@ export default function KitchenUnit({
   const [dragging, setDragging] = useState(false)
   const info = useRef()
 
+  console.log('hello ', width)
+
   const size = new Vector3(
     width / 1000,
     height / 1000 + 0.02,
@@ -75,12 +79,20 @@ export default function KitchenUnit({
               <planeGeometry args={[size.x, size.z]} />
             </mesh>
             <InfoPanel ref={info} {...{ id, type, width, style }} />
+            <DimensionLine
+              from={0}
+              to={0.764 + 0.036}
+              value={0.818}
+              depth={0.575}
+              cab={true}
+            />
           </>
         )}
-        {type === 'base' && <Cabinet width={width} style={style} />}
+        {type === 'base' && <Cabinet cabinetInnerWidth={0.764} style={style} />}
         {/* {type === 'corner' && <CabinetCorner width={width} style={style} />} */}
         {/* {type === 'underCounter' && <CabinetUnderCounter width={width} style={style} />} */}
         {/* {type === 'wall' && <CabinetWall width={width} style={style} />} */}
+        {/* 0.764 + 0.054 */}
       </group>
       {(showHandle || dragging) && (
         <DragControls

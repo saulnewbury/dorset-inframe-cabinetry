@@ -1,3 +1,8 @@
+/**
+ * This component uses conditional logic to provides dimension
+ * lines for both walls and cabinets.
+ */
+
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { wt } from '@/const'
 import { Html } from '@react-three/drei'
@@ -12,8 +17,10 @@ configureTextBuilder({
 extend({ Text }, () => {})
 
 export default function DimensionLine({
+  depth,
   from,
   to,
+  cab = false,
   value,
   isFlip = false,
   onChange = () => {}
@@ -55,23 +62,34 @@ export default function DimensionLine({
     return () => window.removeEventListener('click', clickOutside)
   }, [isEdit])
 
+  // Offset for cabinet dimension lines
+  const xOffsetForCabinet = cab ? -to / 2 : 0
+  const zOffsetForCabinet = cab ? depth + 0.15 : 0
+  const offsetText = cab ? -0.15 : 0
   return (
-    <group position={[0, 3, (-wt * 3) / 1.5]} rotation-x={Math.PI / -2}>
+    <group
+      position={[xOffsetForCabinet, 3, (-wt * 3) / 1.5 + zOffsetForCabinet]}
+      rotation-x={Math.PI / -2}
+    >
       <line geometry={buffer}>
-        <lineBasicMaterial color="#6B6B6B" />
+        <lineBasicMaterial color='#6B6B6B' />
       </line>
-      <mesh rotation-z={isFlip ? Math.PI : 0} position-z={0.01}>
-        <planeGeometry args={[0.8, 0.3]} />
-        <meshBasicMaterial color="#fff" toneMapped={false} />
-      </mesh>
+      {!cab && (
+        <mesh rotation-z={isFlip ? Math.PI : 0} position-z={0.01}>
+          <planeGeometry args={[0.8, 0.3]} />
+          <meshBasicMaterial color={'#fff'} toneMapped={false} />
+        </mesh>
+      )}
       <text
         ref={troikaMesh}
-        text={value.toFixed(2) + 'm'}
-        color="black"
-        fontSize={hover ? 0.17 : 0.16}
-        position-y={isFlip ? -wt / 1.3 : wt / 1.3}
+        text={cab ? value : value.toFixed(2) + 'm'}
+        color={'black'}
+        // color={cab ? 'gray' : 'black'}
+        fontSize={cab ? 0.1 : hover ? 0.17 : 0.16}
+        position-y={isFlip ? -wt / 1.3 + offsetText : wt / 1.3 + offsetText}
         position-z={0.02}
-        anchorX="center"
+        position-x={cab ? -xOffsetForCabinet : 0}
+        anchorX='center'
         rotation-z={isFlip ? Math.PI : 0}
         onClick={() => setEdit(true)}
         onPointerOver={() => {
@@ -83,7 +101,7 @@ export default function DimensionLine({
           setHover(false)
         }}
       />
-      {isEdit && (
+      {!cab && isEdit && (
         <Html position={[0, wt, 0]}>
           <form
             ref={form}
@@ -91,21 +109,21 @@ export default function DimensionLine({
             onSubmit={changeLength}
           >
             {/* <span>Set length:</span> */}
-            <div className="border-solid border-b-[1px] border-black  mb-[10px] px-[2px]">
+            <div className='border-solid border-b-[1px] border-black  mb-[10px] px-[2px]'>
               <input
                 ref={input}
-                type="number"
-                step="0.01"
-                min="1.00"
-                max="9.99"
+                type='number'
+                step='0.01'
+                min='1.00'
+                max='9.99'
                 defaultValue={value.toFixed(2)}
                 required
-                className="invalid:text-red-600 bg-[transparent]  "
+                className='invalid:text-red-600 bg-[transparent]  '
               />
             </div>
             <button
-              type="submit"
-              className="bg-darkBlue w-[100%] text-base text-white px-[1rem] py-[.5rem]"
+              type='submit'
+              className='bg-darkBlue w-[100%] text-base text-white px-[1rem] py-[.5rem]'
             >
               Ok
             </button>
@@ -125,24 +143,3 @@ export default function DimensionLine({
     setEdit(false)
   }
 }
-
-//  <form
-//             onSubmit={handleSubmit}
-//             ref={input}
-//             className={`bg-[#e9e9e9] p-[1rem] text-[16px] shadow-[0px_.1px_5px_rgba(0,0,0,0.2)] w-[max-content] h-[max-content] hover:shadow-[0px_.1px_5px_rgba(0,0,0,0.2)]`}
-//           >
-//             <div className='border-solid border-b-[1px] border-black  mb-[10px] px-[2px]'>
-//               <input
-//                 className='bg-[transparent] w-[max-content] max-w-[3rem]'
-//                 defaultValue={value}
-//               />
-//               <span className='text-[10px]'>mm</span>
-//             </div>
-//             <button
-//               type='submit'
-//               className='bg-darkBlue w-[100%] text-base text-white px-[1rem] py-[.5rem]'
-//             >
-//               Apply
-//             </button>
-//           </form>
-// </Html>
