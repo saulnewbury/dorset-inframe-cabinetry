@@ -1,12 +1,5 @@
 'use client'
-import {
-  useState,
-  useImperativeHandle,
-  forwardRef,
-  useRef,
-  useReducer,
-  useEffect
-} from 'react'
+import { useState, useImperativeHandle, forwardRef, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
@@ -16,8 +9,9 @@ import Camera from './Camera'
 import ViewControls from './ViewControls'
 
 import { useAppState } from '@/appState'
-
 import { AppContext } from '@/context'
+
+import { useScreenshot } from '@/lib/helpers/useScreenshot'
 
 export default forwardRef(function KitchenPlanner(props, ref) {
   const { is3D, set3D } = useAppState()
@@ -74,6 +68,7 @@ export default forwardRef(function KitchenPlanner(props, ref) {
     []
   )
 
+  const { takeScreenshot, SceneCapture } = useScreenshot(3840, 2160)
   return (
     <AppContext.Provider value={is3D}>
       <div
@@ -82,9 +77,23 @@ export default forwardRef(function KitchenPlanner(props, ref) {
           show ? '' : 'opacity-0'
         } w-full h-full fixed`}
       >
-        <Canvas frameloop='demand' shadows>
+        <Canvas
+          frameloop='demand'
+          shadows
+          style={{
+            height: '70%',
+            width: '70%',
+            backgroundColor: '#ffffff',
+            marginTop: '6rem',
+            marginLeft: '37px',
+            border: 'solid',
+            borderColor: 'rgb(229, 231, 235)',
+            borderWidth: '1px'
+          }}
+        >
           <Camera is3D={is3D} />
           <Experience is3D={is3D} />
+          <SceneCapture />
         </Canvas>
         <div
           ref={overlay}
@@ -92,6 +101,9 @@ export default forwardRef(function KitchenPlanner(props, ref) {
         ></div>
       </div>
       <ViewControls changePerspective={(bool) => set3D(bool)} is3D={is3D} />
+      <div className='absolute bottom-3'>
+        <button onClick={takeScreenshot}>Take Screenshot</button>
+      </div>
     </AppContext.Provider>
   )
 })

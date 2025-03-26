@@ -16,33 +16,6 @@ import { baseUnitStyles } from '@/model/itemStyles'
 import single from '@/lib/images/example-cabinet-single-door.jpg'
 import double from '@/lib/images/example-cabinet-double-door.jpg'
 
-const items = [
-  {
-    image: single,
-    info: {
-      category: 'Base Cabinet',
-      desc: 'Two Doors',
-      width: 80,
-      height: 80,
-      price: 30.0
-    },
-    multiple: 2,
-    total: 60.0
-  },
-  {
-    image: double,
-    info: {
-      category: 'Base Cabinet',
-      desc: 'Two Doors',
-      width: 80,
-      height: 80,
-      price: 30.0
-    },
-    multiple: 2,
-    total: 60.0
-  }
-]
-
 export default function Layout({ children }) {
   const [ref, setRef] = useState({})
   const kitchenPlanner = useRef()
