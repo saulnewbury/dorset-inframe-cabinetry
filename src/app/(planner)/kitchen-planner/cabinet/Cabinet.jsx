@@ -47,13 +47,6 @@ export default function Cabinet({
       color: 'white'
     }
   ]
-  // basinConfig = {
-  //   type: 'belfast',
-  //   height: 0.22,
-  //   depth: 0.455,
-  //   doubleBasin: true
-  // }
-  // basinConfig = null
 }) {
   // Adapt cabinet height to accommodate basinConfig on top
   if (basinConfig?.type === 'belfast') carcassHeight -= basinConfig.height
