@@ -38,20 +38,20 @@ export default forwardRef(function KitchenPlanner(props, ref) {
       })
       setRefreshed(true)
     }
-    if (is3D || !is3D) {
+    if (is3D || !is3D || shrink || !shrink) {
       gsap.fromTo(
         container.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.8 }
+        { opacity: 1, duration: 0.8, delay: 0.04 }
       )
     } else {
       gsap.fromTo(
         container.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.01 }
+        { opacity: 1, duration: 0.01, delay: 0.04 }
       )
     }
-  }, [is3D])
+  }, [is3D, shrink])
 
   // show only on relavent pages
   useImperativeHandle(
@@ -66,9 +66,11 @@ export default forwardRef(function KitchenPlanner(props, ref) {
         },
         shrinkCanvas: () => {
           setCanvasShrink(true)
+          setShow(true)
         },
         restoreCanvas: () => {
           setCanvasShrink(false)
+          setShow(true)
         }
       }
     },
@@ -94,7 +96,7 @@ export default forwardRef(function KitchenPlanner(props, ref) {
         ref={container}
         className={`canvas-container ${
           show ? '' : 'opacity-0'
-        } w-full h-full fixed`}
+        }  w-full h-full fixed`}
       >
         <Canvas frameloop='demand' shadows style={shrink ? style : ''}>
           <Camera is3D={is3D} />
