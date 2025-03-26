@@ -7,7 +7,7 @@ import { AppContext } from '@/appState'
 import { ModelContext } from '@/model/context'
 import { useAppState } from '@/appState'
 
-import { baseUnitStyles as unitStyles } from '@/model/itemStyles'
+import { baseUnitStyles, tallUnitStyles } from '@/model/itemStyles'
 import { wt } from '@/const'
 
 import ItemInfo from './ItemInfo'
@@ -35,6 +35,7 @@ export default function KitchenUnit({
   width,
   depth,
   height,
+  variant,
   style,
   pos,
   rotation,
@@ -47,8 +48,6 @@ export default function KitchenUnit({
   const [model, dispatch] = useContext(ModelContext)
   const [dragging, setDragging] = useState(false)
   const info = useRef()
-
-  console.log('hello ', width)
 
   const size = new Vector3(
     width / 1000,
@@ -78,7 +77,7 @@ export default function KitchenUnit({
             >
               <planeGeometry args={[size.x, size.z]} />
             </mesh>
-            <InfoPanel ref={info} {...{ id, type, width, style }} />
+            <InfoPanel ref={info} {...{ id, type, width, variant, style }} />
             <DimensionLine
               from={0}
               to={0.764 + 0.036}
@@ -88,10 +87,17 @@ export default function KitchenUnit({
             />
           </>
         )}
-        {type === 'base' && <Cabinet cabinetInnerWidth={0.764} style={style} />}
+        {type === 'base' && <BaseUnit {...{ width, variant, style }} />}
+        {type === 'tall' && <TallUnit {...{ width, variant, style }} />}
         {/* {type === 'corner' && <CabinetCorner width={width} style={style} />} */}
         {/* {type === 'underCounter' && <CabinetUnderCounter width={width} style={style} />} */}
-        {/* {type === 'wall' && <CabinetWall width={width} style={style} />} */}
+        {type === 'wall' && (
+          <CabinetWall
+            carcassInnerWidth={width / 1000 - 0.036}
+            carcassDepth={0.282}
+            style={style}
+          />
+        )}
         {/* 0.764 + 0.054 */}
       </group>
       {(showHandle || dragging) && (
@@ -108,13 +114,13 @@ export default function KitchenUnit({
           >
             <mesh rotation-x={Math.PI / -2} position-z={0.015}>
               <planeGeometry args={[size.x, size.z]} />
-              <meshStandardMaterial color='#4080bf' transparent opacity={0.6} />
+              <meshStandardMaterial color="#4080bf" transparent opacity={0.6} />
             </mesh>
-            <Html center className='pointer-events-none'>
+            <Html center className="pointer-events-none">
               <img
                 src={dragHandle.src}
-                alt=''
-                className='size-6 max-w-none'
+                alt=""
+                className="size-6 max-w-none"
                 style={{ translate: '-1px 1px' }}
               />
             </Html>
@@ -243,22 +249,29 @@ export default function KitchenUnit({
 const InfoPanel = forwardRef((props, ref) => {
   const [, dispatch] = useContext(ModelContext)
 
-  const style = unitStyles[props.width].find((s) => s.id === props.style)
+  const style =
+    props.type === 'base'
+      ? baseUnitStyles[props.variant].find((s) => s.id === props.style)
+      : props.type === 'tall'
+      ? tallUnitStyles[props.variant].find((s) => s.id === props.style)
+      : ''
   const type = props.type[0].toUpperCase() + props.type.slice(1)
 
   return (
     <ItemInfo ref={ref}>
       <div className={clsx(style && 'flex gap-5 items-start')}>
-        {style && <img src={style.image.src} alt='' className='w-12' />}
+        {style && <img src={style.images[0].src} alt="" className="w-12" />}
         <div>
-          <p>Item: {type}</p>
+          <p>
+            Item: {type} {props.variant?.toLowerCase()}
+          </p>
           {style && <p>Style: {style.title}</p>}
           <p>Width: {props.width}mm</p>
         </div>
       </div>
-      <p className='text-right'>
+      <p className="text-right">
         <button onClick={deleteItem}>
-          <img src={ic_delete.src} alt='Delete' className='size-4' />
+          <img src={ic_delete.src} alt="Delete" className="size-4" />
         </button>
       </p>
     </ItemInfo>
@@ -272,3 +285,35 @@ const InfoPanel = forwardRef((props, ref) => {
 })
 
 InfoPanel.displayName = 'InfoPanel'
+
+function BaseUnit({ width, variant, style }) {
+  const option = baseUnitStyles[variant].find((s) => s.id === style)
+  switch (variant) {
+    case 'Counter only':
+      return (
+        <CabinetUnderCounter
+          {...option.props}
+          carcassInnerWidth={width / 1000 - 0.036}
+        />
+      )
+    case 'For corner':
+      return (
+        <CabinetCorner
+          {...option.props}
+          carcassInnerWidth={width / 1000 + 0.595 - 0.036}
+          interiorOpeningWidth={
+            [0.38, 0.43, 0.48, 0.58][[400, 450, 500, 600].indexOf(width)]
+          }
+        />
+      )
+    default:
+      return (
+        <Cabinet {...option.props} carcassInnerWidth={width / 1000 - 0.036} />
+      )
+  }
+}
+
+function TallUnit({ width, variant, style }) {
+  const option = tallUnitStyles[variant].find((s) => s.id === style)
+  return <Cabinet {...option.props} carcassInnerWidth={width / 1000 - 0.036} />
+}

@@ -14,8 +14,8 @@ export default function ChooseWallUnit({ onClose = () => {} }) {
   return (
     <form onSubmit={selectUnit} className="[&>p]:my-4">
       {/* Width */}
-      <p>
-        <span className="text-gray-400">Width (mm):</span>{' '}
+      <p className="flex gap-4">
+        <span className="text-gray-400">Width (mm):</span>
         <select
           value={width}
           onChange={(ev) => {

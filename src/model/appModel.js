@@ -42,8 +42,6 @@ export function updateModel(state, action) {
  * Saves the (new) model to browser local storage.
  */
 function saveState(state) {
-  console.log(state)
-  if (!state) debugger
   try {
     if (keepCopy)
       window.localStorage.setItem('dorset-model', JSON.stringify(state))
@@ -346,7 +344,7 @@ function deleteOpening(state, { item }) {
 /**
  * Adds a new kitchen unit.
  */
-function addUnit(state, { type, width, style }) {
+function addUnit(state, { type, width, variant, style }) {
   const id = state.units.reduce((id, u) => Math.max(id, u.id), -1) + 1
   return {
     ...state,
@@ -356,6 +354,7 @@ function addUnit(state, { type, width, style }) {
       width,
       depth: type === 'wall' ? 300 : 540,
       height: type === 'base' ? 840 : 2030,
+      variant,
       style,
       pos: new Vector3(0, 0, 0),
       rotation: 0

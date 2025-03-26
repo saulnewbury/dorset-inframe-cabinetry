@@ -49,7 +49,7 @@ export default function Sidebar({
                         <h4 className="text-left font-bold hover:text-[#919191]">
                           {option.name}
                         </h4>
-                        <ul className="hidden group-hover:block">
+                        <ul>
                           {option.variants.map((variant) => (
                             <li
                               className="hover:bg-blue hover:text-lightBlue"

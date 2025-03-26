@@ -4,17 +4,17 @@ import clsx from 'clsx'
 
 import Button from '@/components/Button'
 
-import { baseUnitStyles } from '@/model/itemStyles'
+import { tallUnitStyles } from '@/model/itemStyles'
 import { useMemo } from 'react'
 
-export default function ChooseBaseUnit({
+export default function ChooseTallUnit({
   variant = 'With door',
   onClose = () => {}
 }) {
   const [, dispatch] = useContext(ModelContext)
   const [width, setWidth] = useState(300)
   const [style, setStyle] = useState('')
-  const options = baseUnitStyles[variant]
+  const options = tallUnitStyles[variant]
   const widths = useMemo(
     () => [...new Set(options.map((o) => o.sizes).flat())],
     [options]
@@ -44,7 +44,7 @@ export default function ChooseBaseUnit({
         {options.map(
           (unit) =>
             unit.sizes.includes(width) && (
-              <BaseUnitCard
+              <TallUnitCard
                 key={unit.id}
                 {...unit}
                 price={unit.prices[unit.sizes.indexOf(width)]}
@@ -67,7 +67,7 @@ export default function ChooseBaseUnit({
     ev.preventDefault()
     dispatch({
       id: 'addUnit',
-      type: 'base',
+      type: 'tall',
       variant,
       width,
       style
@@ -76,7 +76,7 @@ export default function ChooseBaseUnit({
   }
 }
 
-function BaseUnitCard({ id, title, price, images, isActive, onClick }) {
+function TallUnitCard({ id, title, price, images, isActive, onClick }) {
   return (
     <button
       type="button"

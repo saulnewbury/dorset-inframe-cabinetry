@@ -6,6 +6,7 @@ import ChooseDoor from '@/app/(planner)/kitchen-planner/dialog/ChooseDoor'
 import ChooseWindow from '@/app/(planner)/kitchen-planner/dialog/ChooseWindow'
 import ChooseArch from '@/app/(planner)/kitchen-planner/dialog/ChooseArch'
 import ChooseBaseUnit from '@/app/(planner)/kitchen-planner/dialog/ChooseBaseUnit'
+import ChooseTallUnit from '@/app/(planner)/kitchen-planner/dialog/ChooseTallUnit'
 import ChooseWallUnit from '@/app/(planner)/kitchen-planner/dialog/ChooseWallUnit'
 import ChooseAddWall from '@/app/(planner)/kitchen-planner/dialog/ChooseAddWall'
 import ChooseColours from '@/app/(planner)/kitchen-planner/dialog/ChooseColours'
@@ -81,7 +82,8 @@ export const defineYourSpace = [
       },
       {
         name: 'Tall units',
-        heading: 'Choose a takk cupboard',
+        heading: 'Choose a tall cupboard',
+        component: ChooseTallUnit,
         variants: ['Storage', 'Pantry', 'High oven', 'Fridge freezer']
       },
       {
