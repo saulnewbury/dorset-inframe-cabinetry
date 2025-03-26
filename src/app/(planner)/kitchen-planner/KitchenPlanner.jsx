@@ -16,6 +16,7 @@ import { useScreenshot } from '@/lib/helpers/useScreenshot'
 export default forwardRef(function KitchenPlanner(props, ref) {
   const { is3D, set3D } = useAppState()
   const [show, setShow] = useState(false)
+  const [shrink, setCanvasShrink] = useState(false)
   const [refreshed, setRefreshed] = useState(false)
 
   const container = useRef()
@@ -62,6 +63,12 @@ export default forwardRef(function KitchenPlanner(props, ref) {
         },
         hideCanvas: () => {
           setShow(false)
+        },
+        shrinkCanvas: () => {
+          setCanvasShrink(true)
+        },
+        restoreCanvas: () => {
+          setCanvasShrink(false)
         }
       }
     },
@@ -69,6 +76,18 @@ export default forwardRef(function KitchenPlanner(props, ref) {
   )
 
   const { takeScreenshot, SceneCapture } = useScreenshot(3840, 2160)
+
+  const style = {
+    height: '70%',
+    width: '70%',
+    backgroundColor: '#ffffff',
+    marginTop: '6rem',
+    marginLeft: '37px',
+    border: 'solid',
+    borderColor: 'rgb(229, 231, 235)',
+    borderWidth: '1px'
+  }
+
   return (
     <AppContext.Provider value={is3D}>
       <div
@@ -77,20 +96,7 @@ export default forwardRef(function KitchenPlanner(props, ref) {
           show ? '' : 'opacity-0'
         } w-full h-full fixed`}
       >
-        <Canvas
-          frameloop='demand'
-          shadows
-          style={{
-            height: '70%',
-            width: '70%',
-            backgroundColor: '#ffffff',
-            marginTop: '6rem',
-            marginLeft: '37px',
-            border: 'solid',
-            borderColor: 'rgb(229, 231, 235)',
-            borderWidth: '1px'
-          }}
-        >
+        <Canvas frameloop='demand' shadows style={shrink ? style : ''}>
           <Camera is3D={is3D} />
           <Experience is3D={is3D} />
           <SceneCapture />
