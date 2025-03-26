@@ -11,6 +11,7 @@ export default function Page() {
   const [open, setOpen] = useState(false)
   const [showContent, setShowContent] = useState(false)
   const [content, setContent] = useState(undefined) // {name, title}
+  const [variant, setVariant] = useState(null)
 
   const ref = useContext(CanvasContext)
 
@@ -28,7 +29,10 @@ export default function Page() {
         open={open}
         showContent={showContent}
         content={content}
-        handleContent={(option) => setContent(option)}
+        handleContent={(option, variant = null) => {
+          setContent(option)
+          setVariant(variant)
+        }}
         handleShowContent={(name) => {
           setShowContent(name)
         }}
@@ -42,6 +46,7 @@ export default function Page() {
         <Dialog
           fullWidth={content.fullWidth ? true : false}
           content={content}
+          variant={variant}
           Body={content.component}
           closeContentBox={() => {
             setShowContent('')

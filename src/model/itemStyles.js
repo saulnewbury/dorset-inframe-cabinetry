@@ -5,11 +5,6 @@ import twinGlass_2pane from '@/assets/doors/twin-glass-2pane.svg'
 import solid_1pane from '@/assets/doors/solid-single.webp'
 import glass_1pane from '@/assets/doors/glass-1pane.svg'
 
-// Window images:
-import single_pane from '@/assets/windows/single.svg'
-import double_pane from '@/assets/windows/double.svg'
-import triple_pane from '@/assets/windows/triple.svg'
-
 import singleWindow from '@/assets/windows/single-sash.webp'
 import doubleWindow from '@/assets/windows/double-sash.webp'
 
@@ -43,341 +38,246 @@ export const windowStyles = [
 /**
  * Options for base units.
  */
+const panels = {
+  '1-door': [{ type: 'door', style: 'single' }],
+  '2-door': [{ type: 'door', style: 'split' }],
+  '2-drawer': [
+    { type: 'drawer', ratio: 2 },
+    { type: 'drawer', ratio: 2 }
+  ],
+  '3-drawer': [
+    { type: 'drawer', ratio: 1 },
+    { type: 'drawer', ratio: 1 },
+    { type: 'drawer', ratio: 2 }
+  ],
+  '4-drawer': [
+    { type: 'drawer', ratio: 1 },
+    { type: 'drawer', ratio: 1 },
+    { type: 'drawer', ratio: 1 },
+    { type: 'drawer', ratio: 1 }
+  ],
+  'oven-single': [
+    { type: 'drawer', ratio: 1.2 },
+    { type: 'oven', ovenType: 'single oven', ratio: 6 }
+  ],
+  'oven-double': [{ type: 'oven', ovenType: 'double oven' }],
+  'oven-compact': [
+    { type: 'oven', ovenType: 'single oven', ratio: 4.5 },
+    { type: 'drawer', ratio: 2.7 }
+  ]
+}
+
+const basins = {
+  'standard-single': [
+    { type: 'standard', height: 220, depth: 455, doubleBasin: false }
+  ],
+  'standard-twin': [
+    { type: 'standard', height: 220, depth: 455, doubleBasin: true }
+  ],
+  'belfast-single': [
+    { type: 'belfast', height: 220, depth: 455, doubleBasin: false }
+  ],
+  'belfast-twin': [
+    { type: 'belfast', height: 220, depth: 455, doubleBasin: true }
+  ]
+}
+
+const baseUnitConfig = {
+  baseUnit: true,
+  tall: false,
+  depth: 575,
+  height: 759
+}
 
 export const baseUnitStyles = {
-  300: [
-    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+  'With door': [
     {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
+      id: 'base:1-door',
+      props: { ...baseUnitConfig, panelConfig: panels['1-door'] },
+      title: 'Base unit with single door',
+      images: [base_600_door],
+      sizes: [300, 350, 400, 450, 500, 550, 600],
+      prices: [80, 80, 80, 80, 80, 80, 80]
     },
     {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
-    },
-    {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
+      id: 'base:2-door',
+      props: { baseUnit: true, tall: false, depth: 575, height: 759 },
+      title: 'Base unit with two doors',
+      images: [base_1000_2door],
+      sizes: [650, 700, 750, 800, 850, 900, 950, 1000],
+      prices: [80, 80, 80, 80, 80, 80, 80, 80]
     }
   ],
-  350: [
-    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+  'With drawers': [
     {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
+      id: 'base:2-drawer',
+      props: { ...baseUnitConfig, panelConfig: panels['2-drawer'] },
+      title: 'Base unit with two deep drawers',
+      images: [base_600_2drawer],
+      sizes: [
+        300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
+        1000
+      ],
+      prices: [80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80]
     },
     {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
+      id: 'base:3-drawer',
+      props: { ...baseUnitConfig, panelConfig: panels['3-drawer'] },
+      title: 'Base unit with two shallow and one deep drawers',
+      images: [base_600_3drawer],
+      sizes: [
+        300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
+        1000
+      ],
+      prices: [80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80]
     },
     {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
+      id: 'base:4-drawer',
+      props: { ...baseUnitConfig, panelConfig: panels['4-drawer'] },
+      title: 'Base unit with four drawers',
+      images: [base_600_4drawer],
+      sizes: [
+        300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
+        1000
+      ],
+      prices: [80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80]
     }
   ],
-  400: [
-    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+  'With sink': [
     {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
+      id: 'base:sink-single',
+      props: {
+        ...baseUnitConfig,
+        panelConfig: panels['1-door'],
+        basinConfig: basins['standard-single']
+      },
+      title: 'Base unit with single basin',
+      images: [base_600_door],
+      sizes: [600],
+      prices: [80]
     },
     {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
+      id: 'base:sink-double',
+      props: {
+        ...baseUnitConfig,
+        panelConfig: panels['1-door'],
+        basinConfig: basins['standard-twin']
+      },
+      title: 'Base unit with double basin',
+      images: [base_600_door],
+      sizes: [800],
+      prices: [80]
     },
     {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
+      id: 'base:belfast-single',
+      props: {
+        ...baseUnitConfig,
+        panelConfig: panels['1-door'],
+        basinConfig: basins['belfast-single']
+      },
+      title: 'Base unit with single Belfast basin',
+      images: [base_600_door],
+      sizes: [600],
+      prices: [80]
+    },
+    {
+      id: 'base:belfast-double',
+      props: {
+        ...baseUnitConfig,
+        panelConfig: panels['1-door'],
+        basinConfig: basins['belfast-twin']
+      },
+      title: 'Base unit with double Belfast basin',
+      images: [base_600_door],
+      sizes: [800],
+      prices: [80]
     }
   ],
-  450: [
-    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+  'For oven': [
     {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
+      id: 'base:oven-double',
+      props: { ...baseUnitConfig, panelConfig: panels['oven-double'] },
+      title: 'Double oven',
+      images: [base_600_door],
+      sizes: [600],
+      prices: [80]
     },
     {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
+      id: 'base:oven-single',
+      props: { ...baseUnitConfig, panelConfig: panels['oven-single'] },
+      title: 'Single oven',
+      images: [base_600_door],
+      sizes: [600],
+      prices: [80]
     },
     {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
+      id: 'base:oven-compact',
+      props: { ...baseUnitConfig, panelConfig: panels['oven-compact'] },
+      title: 'Compact oven',
+      images: [base_600_door],
+      sizes: [600],
+      prices: [80]
     }
   ],
-  500: [
-    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+  'For dishwasher': [
     {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
-    },
-    {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
-    },
-    {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
+      id: 'base:dishwasher',
+      props: { ...baseUnitConfig, depth: 282, panelConfig: panels['1-door'] },
+      title: 'Shallow unit for island',
+      images: [base_600_door],
+      sizes: [600],
+      prices: [80]
     }
   ],
-  550: [
-    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+  'For bin': [
     {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
-    },
-    {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
-    },
-    {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
+      id: 'base:bin',
+      props: { ...baseUnitConfig, panelConfig: panels['1-door'] },
+      title: 'Base unit for waste bin',
+      images: [base_600_door],
+      sizes: [400, 450, 500, 600],
+      prices: [80, 80, 80, 80]
     }
   ],
-  600: [
-    { id: 'door', title: 'Single door', image: base_600_door, price: 80 },
+  'For corner': [
     {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
+      id: 'base:corner-left',
+      props: { openingOrientation: 'left', panelConfig: panels['1-door'] },
+      title: 'Corner unit (opening left)',
+      images: [base_600_door],
+      sizes: [400, 450, 500, 600],
+      prices: [80, 80, 80, 80]
     },
     {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
-    },
-    {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
+      id: 'base:corner-right',
+      props: { openingOrientation: 'right', panelConfig: panels['1-door'] },
+      title: 'Corner unit (opening right)',
+      images: [base_600_door],
+      sizes: [400, 450, 500, 600],
+      prices: [80, 80, 80, 80]
     }
   ],
-  650: [
-    { id: 'door:door', title: 'Double door', image: base_600_door, price: 80 },
+  'Counter only': [
     {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
-    },
-    {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
-    },
-    {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
+      id: 'base:counter-only',
+      props: { openingOrientation: 'left', panelConfig: panels['1-door'] },
+      title: 'Counter only',
+      images: [base_600_door],
+      sizes: [
+        300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
+        1000
+      ],
+      prices: [80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80]
     }
   ],
-  700: [
-    { id: 'door:door', title: 'Double door', image: base_600_door, price: 80 },
+  Shallow: [
     {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
-    },
-    {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
-    },
-    {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
-    }
-  ],
-  750: [
-    { id: 'door:door', title: 'Double door', image: base_600_door, price: 80 },
-    {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
-    },
-    {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
-    },
-    {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
-    }
-  ],
-  800: [
-    { id: 'door:door', title: 'Double door', image: base_600_door, price: 80 },
-    {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
-    },
-    {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
-    },
-    {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
-    }
-  ],
-  850: [
-    {
-      id: 'door:door',
-      title: 'Double door',
-      image: base_1000_2door,
-      price: 80
-    },
-    {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
-    },
-    {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
-    },
-    {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
-    }
-  ],
-  900: [
-    {
-      id: 'door:door',
-      title: 'Double door',
-      image: base_1000_2door,
-      price: 80
-    },
-    {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
-    },
-    {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
-    },
-    {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
-    }
-  ],
-  950: [
-    {
-      id: 'door:door',
-      title: 'Double door',
-      image: base_1000_2door,
-      price: 80
-    },
-    {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
-    },
-    {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
-    },
-    {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
-    }
-  ],
-  1000: [
-    {
-      id: 'door:door',
-      title: 'Double door',
-      image: base_1000_2door,
-      price: 80
-    },
-    {
-      id: '2-drawer',
-      title: 'Two drawers',
-      image: base_600_2drawer,
-      price: 80
-    },
-    {
-      id: '3-drawer',
-      title: 'Three drawers',
-      image: base_600_3drawer,
-      price: 80
-    },
-    {
-      id: '4-drawer',
-      title: 'Four drawers',
-      image: base_600_4drawer,
-      price: 80
+      id: 'base:shallow',
+      props: { ...baseUnitConfig, depth: 282, panelConfig: panels['1-door'] },
+      title: 'Shallow unit for island',
+      images: [base_600_door],
+      sizes: [300, 350, 400, 450, 500, 550, 600],
+      prices: [80, 80, 80, 80, 80, 80, 80]
     }
   ]
 }

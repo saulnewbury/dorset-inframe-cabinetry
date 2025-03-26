@@ -1,26 +1,36 @@
-import { useContext, useState } from 'react'
+import { useContext, useLayoutEffect, useState } from 'react'
 import { ModelContext } from '@/model/context'
 import clsx from 'clsx'
 
 import Button from '@/components/Button'
 
-import { baseUnitStyles as styles } from '@/model/itemStyles'
+import { baseUnitStyles } from '@/model/itemStyles'
+import { useMemo } from 'react'
 
-const widths = Object.keys(styles)
-
-export default function ChooseBaseUnit({ onClose = () => {} }) {
+export default function ChooseBaseUnit({
+  variant = 'With door',
+  onClose = () => {}
+}) {
   const [, dispatch] = useContext(ModelContext)
   const [width, setWidth] = useState(300)
   const [style, setStyle] = useState('')
+  const options = baseUnitStyles[variant]
+  const widths = useMemo(
+    () => [...new Set(options.map((o) => o.sizes).flat())],
+    [options]
+  )
+  useLayoutEffect(() => {
+    setWidth(widths[0])
+  }, [widths])
   return (
-    <form onSubmit={selectUnit} className='[&>p]:my-4'>
+    <form onSubmit={selectUnit} className="[&>p]:my-4">
       {/* Width */}
       <p>
-        <span className='text-gray-400'>Width (mm):</span>{' '}
+        <span className="text-gray-400">Width (mm):</span>{' '}
         <select
           value={width}
           onChange={(ev) => {
-            setWidth(ev.target.value)
+            setWidth(parseInt(ev.target.value))
             setStyle('')
           }}
         >
@@ -30,16 +40,20 @@ export default function ChooseBaseUnit({ onClose = () => {} }) {
         </select>
       </p>
       {/* Styles */}
-      <p className='flex wrap gap-5'>
-        {(styles[width] ?? []).map((unit) => (
-          <BaseUnitButton
-            key={unit.id}
-            {...unit}
-            isActive={style === unit.id}
-            onClick={setStyle}
-          />
-        ))}
-      </p>
+      <div>
+        {options.map(
+          (unit) =>
+            unit.sizes.includes(width) && (
+              <BaseUnitCard
+                key={unit.id}
+                {...unit}
+                price={unit.prices[unit.sizes.indexOf(width)]}
+                isActive={style === unit.id}
+                onClick={setStyle}
+              />
+            )
+        )}
+      </div>
       {/* Submit button */}
       <p>
         <Button primary disabled={!style}>
@@ -54,6 +68,7 @@ export default function ChooseBaseUnit({ onClose = () => {} }) {
     dispatch({
       id: 'addUnit',
       type: 'base',
+      variant,
       width,
       style
     })
@@ -61,18 +76,21 @@ export default function ChooseBaseUnit({ onClose = () => {} }) {
   }
 }
 
-function BaseUnitButton({ id, title, image, isActive, onClick }) {
+function BaseUnitCard({ id, title, price, images, isActive, onClick }) {
   return (
     <button
-      type='button'
+      type="button"
       onClick={() => onClick(id)}
       className={clsx(
-        'w-32 flex flex-col items-center p-3 border-2 rounded-sm',
+        'w-full flex gap-3 items-center p-3 border-2 rounded-md',
         isActive ? 'border-cyan-600' : 'border-transparent'
       )}
     >
-      <img src={image.src} alt='' className='h-32' />
-      <span>{title}</span>
+      <img src={images[0].src} alt="" className="h-20" />
+      <div className="text-left">
+        <p>{title}</p>
+        <p>Price: £{price}</p>
+      </div>
     </button>
   )
 }
