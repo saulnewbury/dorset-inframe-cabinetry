@@ -54,6 +54,7 @@ export default function KitchenUnit({
     height / 1000 + 0.02,
     depth / 1000 + 0.03
   )
+  if (type === 'base' && style.includes('corner')) size.x += 0.595
 
   const showHandle = !is3D && hover?.type === 'unit' && hover.id === id
 
@@ -89,8 +90,6 @@ export default function KitchenUnit({
         )}
         {type === 'base' && <BaseUnit {...{ width, variant, style }} />}
         {type === 'tall' && <TallUnit {...{ width, variant, style }} />}
-        {/* {type === 'corner' && <CabinetCorner width={width} style={style} />} */}
-        {/* {type === 'underCounter' && <CabinetUnderCounter width={width} style={style} />} */}
         {type === 'wall' && (
           <CabinetWall
             carcassInnerWidth={width / 1000 - 0.036}
@@ -98,7 +97,6 @@ export default function KitchenUnit({
             style={style}
           />
         )}
-        {/* 0.764 + 0.054 */}
       </group>
       {(showHandle || dragging) && (
         <DragControls
@@ -208,7 +206,11 @@ export default function KitchenUnit({
       const diag = (unit.width * unit.depth) / 4000000
       const p = ap.findIndex((p) => p.distanceToSquared(unit.pos) < diag)
       if (p < 0) continue
-      const ux = unit.width / 1000
+      const ux =
+        unit.width / 1000 +
+        (unit.type === 'base' && unit.style.includes('corner'))
+          ? 0.595
+          : 0
       const uz = unit.depth / 1000
       switch (p) {
         case 0: // left

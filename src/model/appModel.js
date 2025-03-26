@@ -352,7 +352,7 @@ function addUnit(state, { type, width, variant, style }) {
       id,
       type,
       width,
-      depth: type === 'wall' ? 300 : 540,
+      depth: type === 'wall' ? 300 : style.includes('shallow') ? 282 : 545,
       height: type === 'base' ? 840 : 2030,
       variant,
       style,
