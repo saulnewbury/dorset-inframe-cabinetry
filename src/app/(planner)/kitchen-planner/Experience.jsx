@@ -87,8 +87,11 @@ export default function Experience({ is3D }) {
           RIGHT: THREE.MOUSE.PAN
         }}
         onChange={hideWalls}
+        target={[0, 1, 0]}
       />
-      {/* <axesHelper /> */}
+
+      <axesHelper />
+
       {/* Environment elements */}
       {is3D && <BakeShadows />}
 

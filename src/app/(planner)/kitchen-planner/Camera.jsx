@@ -18,7 +18,7 @@ export default function Camera({ is3D }) {
       cam3d.current.position.set(0, 4, 8)
     } else {
       set({ camera: cam2d.current })
-      cam2d.current.lookAt(0, 0, 0)
+      // cam2d.current.lookAt(0, 0, 0)
       cam2d.current.position.set(0, 50, 0)
     }
   }, [is3D, set])

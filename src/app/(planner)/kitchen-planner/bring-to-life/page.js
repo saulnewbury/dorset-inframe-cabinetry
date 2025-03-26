@@ -1,5 +1,5 @@
 'use client'
 
 export default function Page() {
-  return <div>Bring to life</div>
+  return <div className='h-[100vh] w-full'></div>
 }
