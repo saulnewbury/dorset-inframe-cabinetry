@@ -14,7 +14,6 @@ export default function Camera({ is3D }) {
   const { set } = useThree(({ get, set }) => ({ get, set }))
   const { size } = useThree()
 
-  console.log(size)
   useEffect(() => {
     if (is3D) {
       set({ camera: cam3d.current })
