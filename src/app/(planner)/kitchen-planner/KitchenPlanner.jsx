@@ -7,6 +7,8 @@ import gsap from 'gsap'
 import Experience from './Experience'
 import Camera from './Camera'
 import ViewControls from './ViewControls'
+import Button from '@/components/Button'
+import SvgIcon from '@/components/SvgIcon'
 
 import { useAppState } from '@/appState'
 import { AppContext } from '@/context'
@@ -108,9 +110,16 @@ export default forwardRef(function KitchenPlanner(props, ref) {
           className='absolute bg-[white] w-[100vw] h-[70vw] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]'
         ></div>
       </div>
-      <ViewControls changePerspective={(bool) => set3D(bool)} is3D={is3D} />
-      <div className='absolute bottom-3'>
-        <button onClick={takeScreenshot}>Take Screenshot</button>
+      <ViewControls
+        changePerspective={(bool) => set3D(bool)}
+        is3D={is3D}
+        shrink={shrink}
+      />
+      <div
+        className='absolute top-[110px] left-[50px]'
+        onClick={takeScreenshot}
+      >
+        <SvgIcon classes='w-[35px] h-[35px]' shape='capture' />
       </div>
     </AppContext.Provider>
   )

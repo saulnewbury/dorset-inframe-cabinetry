@@ -2,10 +2,14 @@
 
 import SvgIcon from '@/components/SvgIcon'
 
-export default function ViewControls({ changePerspective, is3D }) {
+export default function ViewControls({
+  changePerspective,
+  is3D,
+  shrink = false
+}) {
   return (
-    <div className='absolute bottom-[40px] w-full flex justify-center'>
-      <div className=''>
+    <div className={`absolute bottom-[40px] w-full flex justify-center`}>
+      <div className={`${shrink ? 'mr-[calc(30%-74px)]' : ''}`}>
         <button
           type='button'
           className={`${
