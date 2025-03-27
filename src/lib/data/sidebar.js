@@ -66,7 +66,7 @@ export const defineYourSpace = [
     options: [
       {
         name: 'Base units',
-        heading: 'Choose a base unit',
+        heading: 'Base unit',
         component: ChooseBaseUnit,
         variants: [
           'For corner',
@@ -82,13 +82,13 @@ export const defineYourSpace = [
       },
       {
         name: 'Tall units',
-        heading: 'Choose a tall cupboard',
+        heading: 'Tall cupboard',
         component: ChooseTallUnit,
-        variants: ['Storage', 'Pantry', 'High oven', 'Fridge freezer']
+        variants: ['Storage', 'Pantry', 'For oven', 'Fridge freezer']
       },
       {
         name: 'Wall cupboards',
-        heading: 'Choose a wall unit',
+        heading: 'Wall unit',
         component: ChooseWallUnit
       }
       // {

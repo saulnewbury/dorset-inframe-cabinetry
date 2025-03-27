@@ -22,8 +22,10 @@ const Dialog = forwardRef(
               fullWidth ? '' : 'pr-[200px]'
             }`}
           >
-            <h2 className="py-[2rem] text-[18px]">{content.heading}</h2>
-            {variant && <p className="mt-[-2rem] pb-[2rem]">{variant}</p>}
+            <h2 className="py-[2rem] text-[18px]">
+              {content.heading}
+              {variant && <span> / {variant}</span>}
+            </h2>
 
             {/*
              ** Body is a component from sidebar.js (data).

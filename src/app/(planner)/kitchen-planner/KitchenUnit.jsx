@@ -54,7 +54,7 @@ export default function KitchenUnit({
     height / 1000 + 0.02,
     depth / 1000 + 0.03
   )
-  if (type === 'base' && style.includes('corner')) size.x += 0.595
+  if (type === 'base' && style.includes('corner')) size.x += 0.295
 
   const showHandle = !is3D && hover?.type === 'unit' && hover.id === id
 
@@ -256,13 +256,14 @@ const InfoPanel = forwardRef((props, ref) => {
       ? baseUnitStyles[props.variant].find((s) => s.id === props.style)
       : props.type === 'tall'
       ? tallUnitStyles[props.variant].find((s) => s.id === props.style)
-      : ''
+      : { id: 'wall' }
   const type = props.type[0].toUpperCase() + props.type.slice(1)
+  const image = `/units/${style.id.replace(':', '-')}-${props.width}-front.webp`
 
   return (
     <ItemInfo ref={ref}>
       <div className={clsx(style && 'flex gap-5 items-start')}>
-        {style && <img src={style.images[0].src} alt="" className="w-12" />}
+        {style && <img src={image} alt="" className="w-12" />}
         <div>
           <p>
             Item: {type} {props.variant?.toLowerCase()}
@@ -302,7 +303,7 @@ function BaseUnit({ width, variant, style }) {
       return (
         <CabinetCorner
           {...option.props}
-          carcassInnerWidth={width / 1000 + 0.595 - 0.036}
+          carcassInnerWidth={width / 1000 + 0.295 - 0.036}
           interiorOpeningWidth={
             [0.38, 0.43, 0.48, 0.58][[400, 450, 500, 600].indexOf(width)]
           }

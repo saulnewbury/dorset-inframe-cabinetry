@@ -1,56 +1,93 @@
 import { useContext, useState } from 'react'
 import { ModelContext } from '@/model/context'
+import clsx from 'clsx'
 
-import Button from '@/components/Button'
-
-import one_door from '@/assets/units/wall/1-door.jpg'
-import two_door from '@/assets/units/wall/2-door.jpg'
-
-const widths = [300, 350, 400, 450, 500, 550, 600, 560, 700, 750, 800]
+import { wallUnitStyles } from '@/model/itemStyles'
 
 export default function ChooseWallUnit({ onClose = () => {} }) {
   const [, dispatch] = useContext(ModelContext)
-  const [width, setWidth] = useState(300)
-  return (
-    <form onSubmit={selectUnit} className="[&>p]:my-4">
-      {/* Width */}
-      <p className="flex gap-4">
-        <span className="text-gray-400">Width (mm):</span>
-        <select
-          value={width}
-          onChange={(ev) => {
-            setWidth(ev.target.value)
-          }}
-        >
-          {widths.map((w) => (
-            <option key={w}>{w}</option>
-          ))}
-        </select>
-      </p>
-      {/* Preview */}
-      <p>
-        <img
-          src={width < 600 ? one_door.src : two_door.src}
-          alt=""
-          className="h-32"
-        />
-      </p>
-      {/* Submit button */}
-      <p>
-        <Button primary disabled={!width}>
-          Add
-        </Button>
-      </p>
-    </form>
+  const [filter, setFilter] = useState('All')
+
+  const options = wallUnitStyles
+  const filterText = new Set(options.map((opt) => opt.filterText))
+  const filtered =
+    filter === 'All'
+      ? options
+      : options.filter((opt) => opt.filterText === filter)
+  const widths = [...new Set(filtered.map((opt) => opt.sizes).flat())].sort(
+    (a, b) => a - b
   )
 
-  function selectUnit(ev) {
-    ev.preventDefault()
+  return (
+    <div className="[&>p]:my-4">
+      {/* Filter */}
+      <p className="flex gap-4">
+        {['All', ...filterText].map((f) => (
+          <button
+            type="button"
+            className={clsx(f === filter && 'border-black border-b-2')}
+            onClick={() => setFilter(f)}
+          >
+            {f}
+          </button>
+        ))}
+      </p>
+      {/* Styles */}
+      <div className="flex flex-wrap gap-4">
+        {widths.map((w) =>
+          filtered
+            .filter((opt) => opt.sizes.includes(w))
+            .map((unit) => (
+              <WallUnitCard
+                key={`${unit.id}-${w}`}
+                {...unit}
+                width={w}
+                onClick={() => selectUnit(unit.id, w)}
+              />
+            ))
+        )}
+      </div>
+    </div>
+  )
+
+  function selectUnit(style, width) {
     dispatch({
       id: 'addUnit',
       type: 'wall',
+      style,
       width
     })
     onClose()
   }
+}
+
+function WallUnitCard({ id, title, width, onClick }) {
+  const [isHover, setHover] = useState(false)
+  const style = id.replace(':', '-')
+  const images = [
+    `/units/${style}/${style}-${width}-front.webp`,
+    `/units/${style}/${style}-${width}-side.webp`
+  ]
+  return (
+    <button
+      type="button"
+      onClick={() => onClick()}
+      className="w-[180px] flex flex-col gap-3 items-center p-3 border-2 rounded-md hover:border-cyan-600 border-transparent"
+    >
+      <div
+        onMouseOver={() => setHover(true)}
+        onMouseOut={() => setHover(false)}
+      >
+        <img
+          src={isHover ? images[1] : images[0]}
+          alt=""
+          className="h-[180px]"
+        />
+      </div>
+      <div className="text-center">
+        <p>{title}</p>
+        <p className="text-sm">w: {width}mm</p>
+      </div>
+    </button>
+  )
 }

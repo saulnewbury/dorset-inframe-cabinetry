@@ -113,8 +113,11 @@ export default function Layout({ children }) {
 
 function baseInfo(unit) {
   const inf = baseUnitStyles[unit.variant].find((s) => s.id === unit.style)
+  const image = `/units/${unit.style.replace(':', '-')}-${
+    unit.width
+  }-front.webp`
   return {
-    image: inf?.images[0],
+    image,
     info: {
       category: 'Base Cabinet',
       desc: inf?.title ?? (+unit.width <= 600 ? 'One door' : 'Two doors'),
@@ -140,8 +143,11 @@ function wallInfo(unit) {
 
 function tallInfo(unit) {
   const inf = tallUnitStyles[unit.variant].find((s) => s.id === unit.style)
+  const image = `/units/${unit.style.replace(':', '-')}-${
+    unit.width
+  }-front.webp`
   return {
-    image: inf?.images[0],
+    image,
     info: {
       category: 'Base Cabinet',
       desc: inf?.title ?? (+unit.width <= 600 ? 'One door' : 'Two doors'),

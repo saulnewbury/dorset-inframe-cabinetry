@@ -8,46 +8,6 @@ import glass_1pane from '@/assets/doors/glass-1pane.svg'
 import singleWindow from '@/assets/windows/single-sash.webp'
 import doubleWindow from '@/assets/windows/double-sash.webp'
 
-// Base unit images:
-import base_600_door from '@/assets/units/base/600/front-base-single-door-600.webp'
-import base_600_door_side from '@/assets/units/base/600/side-base-single-door-600.webp'
-
-import base_600_2drawer from '@/assets/units/base/600/front-base-drawers-double-600.webp'
-import base_600_2drawer_side from '@/assets/units/base/600/side-base-drawers-double-600.webp'
-
-import base_600_3drawer from '@/assets/units/base/600/front-base-drawers-three-600.webp'
-import base_600_3drawer_side from '@/assets/units/base/600/side-base-drawers-three-600.webp'
-
-import base_600_4drawer from '@/assets/units/base/600/front-base-drawers-four-600.webp'
-import base_600_4drawer_side from '@/assets/units/base/600/side-base-drawers-four-600.webp'
-
-import base_1000_2door from '@/assets/units/base/1000/front-base-double-door-1000.webp'
-import base_1000_2door_side from '@/assets/units/base/1000/side-base-double-door-1000.webp'
-
-import base_600_oven from '@/assets/units/base/600/front-base-oven-single-drawer-636.webp'
-import base_600_oven_side from '@/assets/units/base/600/side-base-oven-single-drawer-636.webp'
-
-import base_600_double_oven from '@/assets/units/base/600/front-base-oven-double-636.webp'
-import base_600_double_oven_side from '@/assets/units/base/600/side-base-oven-double-636.webp'
-
-import base_600_compact_oven from '@/assets/units/base/600/front-base-oven-compact-drawer-636.webp'
-import base_600_compact_oven_side from '@/assets/units/base/600/side-base-oven-compact-drawer-636.webp'
-
-import base_600_sink from '@/assets/units/base/600/front-standard-sink-600.webp'
-import base_600_sink_side from '@/assets/units/base/600/side-standard-sink-600.webp'
-
-import base_600_belfast from '@/assets/units/base/600/front-belfast-600.webp'
-import base_600_belfast_side from '@/assets/units/base/600/side-belfast-600.webp'
-
-import base_600_bin from '@/assets/units/base/600/front-bin-600.webp'
-import base_600_bin_side from '@/assets/units/base/600/side-bin-600.webp'
-
-import base_corner_left from '@/assets/units/base/1000/front-base-corner-left-door-1000-583.5.webp'
-import base_corner_left_side from '@/assets/units/base/1000/side-base-corner-left-door-1000-583.5.webp'
-
-import base_corner_right from '@/assets/units/base/1000/front-base-corner-right-door-1000-583.5.webp'
-import base_corner_right_side from '@/assets/units/base/1000/side-base-corner-right-door-1000-583.5.webp'
-
 /**
  * Options for door styles.
  */
@@ -58,9 +18,6 @@ export const doorStyles = [
   { id: 'twin-2pane', title: 'Glass, 2 panel', image: twinGlass_2pane },
   { id: 'glass-1pane', title: 'Glass, 1 panel', image: glass_1pane }
 ]
-
-import base_600_appliance from '@/assets/units/base/600/front-base-under-appliance-636.webp'
-import base_600_appliance_side from '@/assets/units/base/600/side-base-under-appliance-636.webp'
 
 /**
  * Options for window styles.
@@ -82,9 +39,9 @@ const panels = {
     { type: 'drawer', ratio: 2 }
   ],
   '3-drawer': [
-    { type: 'drawer', ratio: 1 },
-    { type: 'drawer', ratio: 1 },
-    { type: 'drawer', ratio: 2 }
+    { type: 'drawer', ratio: 2 },
+    { type: 'drawer', ratio: 2 },
+    { type: 'drawer', ratio: 1 }
   ],
   '4-drawer': [
     { type: 'drawer', ratio: 1 },
@@ -213,15 +170,15 @@ export const baseUnitStyles = {
       id: 'base:1-door',
       props: { ...baseUnitConfig, panelConfig: panels['1-door'] },
       title: 'Base unit with single door',
-      images: [base_600_door, base_600_door_side],
-      sizes: [300, 350, 400, 450, 500, 550, 600],
-      prices: [80, 80, 80, 80, 80, 80, 80]
+      filterText: 'One door',
+      sizes: [250, 300, 350, 400, 450, 500, 550, 600],
+      prices: [80, 80, 80, 80, 80, 80, 80, 80]
     },
     {
       id: 'base:2-door',
-      props: { baseUnit: true, tall: false, depth: 575, height: 759 },
+      props: { ...baseUnitConfig, panelConfig: panels['2-door'] },
       title: 'Base unit with two doors',
-      images: [base_1000_2door, base_1000_2door_side],
+      filterText: 'Two doors',
       sizes: [650, 700, 750, 800, 850, 900, 950, 1000],
       prices: [80, 80, 80, 80, 80, 80, 80, 80]
     }
@@ -231,7 +188,8 @@ export const baseUnitStyles = {
       id: 'base:2-drawer',
       props: { ...baseUnitConfig, panelConfig: panels['2-drawer'] },
       title: 'Base unit with two deep drawers',
-      images: [base_600_2drawer, base_600_2drawer_side],
+      filterText: 'Two drawers',
+      imageBase: 'base-2drawer',
       sizes: [
         300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
         1000
@@ -241,8 +199,9 @@ export const baseUnitStyles = {
     {
       id: 'base:3-drawer',
       props: { ...baseUnitConfig, panelConfig: panels['3-drawer'] },
-      title: 'Base unit with two shallow and one deep drawers',
-      images: [base_600_3drawer, base_600_3drawer_side],
+      title: 'Base unit with one shallow and two deep drawers',
+      filterText: 'Three drawers',
+      imageBase: 'base-3drawer',
       sizes: [
         300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
         1000
@@ -253,7 +212,8 @@ export const baseUnitStyles = {
       id: 'base:4-drawer',
       props: { ...baseUnitConfig, panelConfig: panels['4-drawer'] },
       title: 'Base unit with four drawers',
-      images: [base_600_4drawer, base_600_4drawer_side],
+      filterText: 'Four drawers',
+      imageBase: 'base-4drawer',
       sizes: [
         300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
         1000
@@ -269,9 +229,9 @@ export const baseUnitStyles = {
         panelConfig: panels['1-door'],
         basinConfig: basins['standard-single']
       },
-      title: 'Base unit with single basin',
-      images: [base_600_sink, base_600_sink_side],
-      sizes: [600],
+      title: 'Base unit with standard sink',
+      filterText: 'Single',
+      sizes: [500],
       prices: [80]
     },
     {
@@ -281,8 +241,8 @@ export const baseUnitStyles = {
         panelConfig: panels['1-door'],
         basinConfig: basins['standard-twin']
       },
-      title: 'Base unit with double basin',
-      images: [base_600_door],
+      title: 'Base unit with double sink',
+      filterText: 'Double',
       sizes: [800],
       prices: [80]
     },
@@ -293,8 +253,8 @@ export const baseUnitStyles = {
         panelConfig: panels['1-door'],
         basinConfig: basins['belfast-single']
       },
-      title: 'Base unit with single Belfast basin',
-      images: [base_600_belfast, base_600_belfast_side],
+      title: 'Base unit with Belfast sink',
+      filterText: 'Single',
       sizes: [600],
       prices: [80]
     },
@@ -305,8 +265,8 @@ export const baseUnitStyles = {
         panelConfig: panels['1-door'],
         basinConfig: basins['belfast-twin']
       },
-      title: 'Base unit with double Belfast basin',
-      images: [base_600_door],
+      title: 'Base unit with Belfast double sink',
+      filterText: 'Double',
       sizes: [800],
       prices: [80]
     }
@@ -316,7 +276,6 @@ export const baseUnitStyles = {
       id: 'base:oven-single',
       props: { ...baseUnitConfig, panelConfig: panels['oven-single'] },
       title: 'Single oven',
-      images: [base_600_oven, base_600_oven_side],
       sizes: [636],
       prices: [80]
     },
@@ -324,25 +283,22 @@ export const baseUnitStyles = {
       id: 'base:oven-double',
       props: { ...baseUnitConfig, panelConfig: panels['oven-double'] },
       title: 'Double oven',
-      images: [base_600_double_oven, base_600_double_oven_side],
       sizes: [636],
       prices: [80]
     },
     {
       id: 'base:oven-compact',
       props: { ...baseUnitConfig, panelConfig: panels['oven-compact'] },
-      title: 'Compact oven',
-      images: [base_600_compact_oven, base_600_compact_oven_side],
+      title: 'Compact oven with drawer',
       sizes: [636],
       prices: [80]
     }
   ],
   'For dishwasher': [
     {
-      id: 'base:dishwasher',
+      id: 'base:appliance',
       props: { ...baseUnitConfig, depth: 282, panelConfig: panels['1-door'] },
       title: 'Unit for built-in appliance (e.g. dishwasher)',
-      images: [base_600_appliance, base_600_appliance_side],
       sizes: [636],
       prices: [80]
     }
@@ -352,7 +308,6 @@ export const baseUnitStyles = {
       id: 'base:bin',
       props: { ...baseUnitConfig, panelConfig: panels['1-door'] },
       title: 'Base unit for waste bin',
-      images: [base_600_bin, base_600_bin_side],
       sizes: [400, 450, 500, 600],
       prices: [80, 80, 80, 80]
     }
@@ -365,8 +320,8 @@ export const baseUnitStyles = {
         openingOrientation: 'left',
         panelConfig: panels['1-door']
       },
-      title: 'Corner unit (opening left)',
-      images: [base_corner_left, base_corner_left_side],
+      title: 'Corner unit (door left)',
+      filterText: 'Open left',
       sizes: [400, 450, 500, 600],
       prices: [80, 80, 80, 80]
     },
@@ -377,8 +332,8 @@ export const baseUnitStyles = {
         openingOrientation: 'right',
         panelConfig: panels['1-door']
       },
-      title: 'Corner unit (opening right)',
-      images: [base_corner_right, base_corner_right_side],
+      filterText: 'Open right',
+      title: 'Corner unit (door right)',
       sizes: [400, 450, 500, 600],
       prices: [80, 80, 80, 80]
     }
@@ -388,7 +343,6 @@ export const baseUnitStyles = {
       id: 'base:counter-only',
       props: { ...baseUnitConfig, panelConfig: [{ type: 'none' }] },
       title: 'Counter only',
-      images: [base_600_door],
       sizes: [
         300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
         1000
@@ -404,10 +358,22 @@ export const baseUnitStyles = {
         carcassDepth: 0.282,
         panelConfig: panels['1-door']
       },
-      title: 'Shallow unit for island',
-      images: [base_600_door],
-      sizes: [300, 350, 400, 450, 500, 550, 600],
-      prices: [80, 80, 80, 80, 80, 80, 80]
+      title: 'Shallow unit for island (one door)',
+      filterText: 'One door',
+      sizes: [250, 300, 350, 400, 450, 500, 550, 600],
+      prices: [80, 80, 80, 80, 80, 80, 80, 80]
+    },
+    {
+      id: 'base:shallow-2door',
+      props: {
+        ...baseUnitConfig,
+        carcassDepth: 0.282,
+        panelConfig: panels['2-door']
+      },
+      title: 'Shallow unit for island (two doors)',
+      filterText: 'Two door',
+      sizes: [650, 700, 750, 800, 850, 900, 950, 1000],
+      prices: [80, 80, 80, 80, 80, 80, 80, 80]
     }
   ]
 }
@@ -425,7 +391,7 @@ export const tallUnitStyles = {
       id: 'tall:storage-doors',
       props: { ...tallUnitConfig, panelConfig: panels['tall-doors'] },
       title: 'Tall storage unit with doors',
-      images: [base_600_door],
+      filterText: 'With doors',
       sizes: [300, 400, 500, 600],
       prices: [80, 80, 80, 80]
     },
@@ -433,7 +399,7 @@ export const tallUnitStyles = {
       id: 'tall:storage-drawers',
       props: { ...tallUnitConfig, panelConfig: panels['tall-drawers'] },
       title: 'Tall storage unit with doors and drawers',
-      images: [base_600_door],
+      filterText: 'With drawers',
       sizes: [500, 600],
       prices: [80, 80]
     }
@@ -443,34 +409,30 @@ export const tallUnitStyles = {
       id: 'tall:pantry',
       props: { ...tallUnitConfig, panelConfig: panels['4-doors'] },
       title: 'Tall pantry unit with 4 doors',
-      images: [base_600_door],
       sizes: [800, 900, 1000],
       prices: [80, 80, 80]
     }
   ],
-  'High oven': [
+  'For oven': [
     {
       id: 'tall:oven-single',
       props: { ...tallUnitConfig, panelConfig: panels['tall-oven'] },
       title: 'Tall unit for oven',
-      images: [base_600_door],
-      sizes: [600],
+      sizes: [636],
       prices: [80]
     },
     {
       id: 'tall:oven-double',
       props: { ...tallUnitConfig, panelConfig: panels['tall-oven-double'] },
       title: 'Tall unit for double oven',
-      images: [base_600_door],
-      sizes: [600],
+      sizes: [636],
       prices: [80]
     },
     {
       id: 'tall:oven-compact',
       props: { ...tallUnitConfig, panelConfig: panels['tall-oven-compact'] },
       title: 'Tall unit for compact oven',
-      images: [base_600_door],
-      sizes: [600],
+      sizes: [636],
       prices: [80]
     }
   ],
@@ -479,7 +441,6 @@ export const tallUnitStyles = {
       id: 'tall:fridge-50-50',
       props: { ...tallUnitConfig, panelConfig: panels['50-50'] },
       title: 'Tall unit for fridge-freezer (50-50)',
-      images: [base_600_door],
       sizes: [600],
       prices: [80]
     },
@@ -487,17 +448,41 @@ export const tallUnitStyles = {
       id: 'tall:fridge-60-40',
       props: { ...tallUnitConfig, panelConfig: panels['60-40'] },
       title: 'Tall unit for fridge-freezer (60-40)',
-      images: [base_600_door],
       sizes: [600],
       prices: [80]
     },
     {
-      id: 'tall:fridge-50-50',
+      id: 'tall:fridge-70-30',
       props: { ...tallUnitConfig, panelConfig: panels['70-30'] },
       title: 'Tall unit for fridge-freezer (70-30)',
-      images: [base_600_door],
       sizes: [600],
       prices: [80]
     }
   ]
 }
+
+const wallUnitConfig = {
+  baseUnit: false,
+  tall: false,
+  carcassDepth: 0.282,
+  carcassHeight: 0.759
+}
+
+export const wallUnitStyles = [
+  {
+    id: 'wall:1-door',
+    props: { ...wallUnitConfig, panelConfig: panels['1-door'] },
+    title: 'Wall unit with single door',
+    filterText: 'One door',
+    sizes: [300, 350, 400, 450, 500, 550],
+    prices: [80, 80, 80, 80, 80, 80]
+  },
+  {
+    id: 'wall:2-door',
+    props: { ...wallUnitConfig, panelConfig: panels['2-door'] },
+    title: 'Wall unit with two doors',
+    filterText: 'Two doors',
+    sizes: [600, 650, 700, 750, 800],
+    prices: [80, 80, 80, 80, 80]
+  }
+]

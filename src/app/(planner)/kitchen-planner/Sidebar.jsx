@@ -41,18 +41,19 @@ export default function Sidebar({
 
             {/* Flyout */}
             {open === item.name && (
-              <div className="absolute left-[51px] -top-[10.5px]  min-w-[7rem]">
-                <div className="bg-blueTint flex-col py-[16px] px-[20px] w-full ml-[10px] leading-6">
+              <div className="absolute left-[51px] -top-[10.5px] min-w-[7rem]">
+                <div className="bg-blueTint py-[16px] px-[20px] w-full ml-[10px] leading-6 text-left columns-2 gap-4">
                   {item.options.map((option, idx) => {
                     return Object.hasOwn(option, 'variants') ? (
-                      <div key={idx} className="group">
-                        <h4 className="text-left font-bold hover:text-[#919191]">
+                      <div key={idx} className="group break-inside-avoid">
+                        <h4 className="font-bold hover:text-[#919191]">
                           {option.name}
                         </h4>
                         <ul>
                           {option.variants.map((variant) => (
                             <li
-                              className="hover:bg-blue hover:text-lightBlue"
+                              key={variant}
+                              className="hover:bg-blue hover:text-lightBlue pl-2"
                               onClick={() => {
                                 handleOpen('')
                                 handleShowContent(item.name)
