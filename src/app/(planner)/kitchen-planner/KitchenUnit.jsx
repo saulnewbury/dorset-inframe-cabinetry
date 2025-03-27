@@ -258,12 +258,13 @@ const InfoPanel = forwardRef((props, ref) => {
       ? tallUnitStyles[props.variant].find((s) => s.id === props.style)
       : { id: 'wall' }
   const type = props.type[0].toUpperCase() + props.type.slice(1)
-  const image = `/units/${style.id.replace(':', '-')}-${props.width}-front.webp`
+  const base = style.id.replace(':', '-')
+  const image = `/units/${base}/${base}-${props.width}-front.webp`
 
   return (
     <ItemInfo ref={ref}>
       <div className={clsx(style && 'flex gap-5 items-start')}>
-        {style && <img src={image} alt="" className="w-12" />}
+        {style && <img src={image} alt="" className="w-28" />}
         <div>
           <p>
             Item: {type} {props.variant?.toLowerCase()}
