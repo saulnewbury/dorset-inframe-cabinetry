@@ -115,12 +115,14 @@ export default forwardRef(function KitchenPlanner(props, ref) {
         is3D={is3D}
         shrink={shrink}
       />
-      <div
-        className='absolute top-[110px] left-[50px]'
-        onClick={takeScreenshot}
-      >
-        <SvgIcon classes='w-[35px] h-[35px]' shape='capture' />
-      </div>
+      {shrink && (
+        <div
+          className='absolute top-[110px] left-[50px]'
+          onClick={takeScreenshot}
+        >
+          <SvgIcon classes='w-[35px] h-[35px]' shape='capture' />
+        </div>
+      )}
     </AppContext.Provider>
   )
 })
