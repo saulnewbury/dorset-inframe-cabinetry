@@ -24,6 +24,7 @@ export default function ChooseWallUnit({ onClose = () => {} }) {
       <p className="flex gap-4">
         {['All', ...filterText].map((f) => (
           <button
+            key={f}
             type="button"
             className={clsx(f === filter && 'border-black border-b-2')}
             onClick={() => setFilter(f)}
