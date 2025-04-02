@@ -11,7 +11,7 @@ import ChooseWallUnit from '@/app/(planner)/kitchen-planner/dialog/ChooseWallUni
 import ChooseAddWall from '@/app/(planner)/kitchen-planner/dialog/ChooseAddWall'
 import ChooseColours from '@/app/(planner)/kitchen-planner/dialog/ChooseColours'
 
-export const defineYourSpace = [
+export const defineYourSpaceMenu = [
   {
     name: 'shape',
     options: [
@@ -31,14 +31,6 @@ export const defineYourSpace = [
         heading: 'Add internal wall',
         component: ChooseAddWall
       }
-      // {
-      //   name: 'Add separation area',
-      //   heading: 'Add an area separation'
-      // },
-      // {
-      //   name: 'Add sloped ceiling',
-      //   heading: 'Add a sloped ceiling'
-      // }
     ]
   },
   {
@@ -95,22 +87,6 @@ export const defineYourSpace = [
         component: ChooseWallUnit,
         variants: ['All wall units']
       }
-      // {
-      //   name: 'Electricity',
-      //   heading: 'Electricity',
-      // }
-      // {
-      //   name: 'Heating',
-      //   heading: 'Heating',
-      // },
-      // {
-      //   name: 'Ventilation',
-      //   heading: 'Ventilation',
-      // },
-      // {
-      //   name: 'Fittings',
-      //   heading: 'Fittings',
-      // }
     ]
   }
 ]

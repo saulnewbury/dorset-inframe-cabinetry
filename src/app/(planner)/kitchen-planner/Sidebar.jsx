@@ -2,7 +2,7 @@
 import { Fragment } from 'react'
 import SvgIcon from '@/components/SvgIcon'
 import toTitleCase from '@/lib/helpers/toTitleCase'
-import { defineYourSpace } from '@/lib/data/sidebar'
+import { defineYourSpaceMenu } from '@/lib/data/sidebar'
 
 export default function Sidebar({
   handleOpen,
@@ -13,7 +13,7 @@ export default function Sidebar({
 }) {
   return (
     <div className='text-[12px] gutter fixed h-[max-contnet] w-[max-content] z-[200] top-[120px] left-0 flex flex-col justify-between'>
-      {defineYourSpace.map((item, i) => (
+      {defineYourSpaceMenu.map((item, i) => (
         <Fragment key={i}>
           <button
             type='button'
