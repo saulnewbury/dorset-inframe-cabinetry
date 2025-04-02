@@ -92,7 +92,8 @@ export const defineYourSpace = [
         fullWidth: true,
         name: 'Wall unit',
         heading: 'Wall cupboards',
-        component: ChooseWallUnit
+        component: ChooseWallUnit,
+        variants: ['All wall units']
       }
       // {
       //   name: 'Electricity',
