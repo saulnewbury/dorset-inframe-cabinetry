@@ -10,12 +10,13 @@ import kitchen from '@/lib/images/kitchen1.jpg'
 
 import Footer from '@/components/Footer'
 
-import { homeHeroMarkup } from '@/lib/data/markup.js'
+const markup =
+  '<p class="max-w-[600px] lg:max-w-[706px]">We pride ourselves on delivering affordable high-end, inframe cabinetry, made to last, using materials that are both cost effective and eco-friendly</p>'
 
 export default function Page() {
   return (
     <>
-      <HeroText markup={homeHeroMarkup} />
+      <HeroText markup={markup} />
       <HeroImage src={kitchen} alt='something' />
       <MaterialsWeLove />
       <ProductsMini />

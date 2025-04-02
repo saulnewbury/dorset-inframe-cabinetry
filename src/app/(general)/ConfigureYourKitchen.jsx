@@ -25,9 +25,14 @@ export default function ConfigureYourKitchen({ classes = '' }) {
         </div>
         <div className='absolute top-0 left-0 h-full w-full flex flex-col items-center justify-center '>
           <h1 className='header mb-[2rem]'>Design your kitchen today</h1>
-          <Button href={'/kitchen-planner/define-your-space'}>
-            Kitchen Planner
-          </Button>
+          <div className='flex gap-4'>
+            <Button href={'/kitchen-planner/define-your-space'} primary={true}>
+              Your saved designs
+            </Button>
+            <Button href={'/kitchen-planner/define-your-space'}>
+              Start from scratch
+            </Button>
+          </div>
         </div>
       </div>
     </section>
