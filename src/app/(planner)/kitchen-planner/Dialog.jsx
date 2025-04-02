@@ -1,28 +1,38 @@
-import { forwardRef, useImperativeHandle, useState, useRef } from 'react'
+'use client'
+
+import { useEffect, forwardRef, useRef } from 'react'
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
+
 import SvgIcon from '@/components/SvgIcon.jsx'
 // import Items from './Items'
 
 const Dialog = forwardRef(
   ({ closeContentBox, content, variant, Body, fullWidth }, ref) => {
+    const container = useRef()
+    useGSAP(() => {
+      gsap.from(container.current, { opacity: 0, duration: 0.2 })
+    })
     return (
-      <div className="fixed z-[100] flex h-[100vh] w-[100vw] top-0 left-0 bg-overlay px-[98px] py-[40px]">
+      <div
+        ref={container}
+        className='fixed z-[100] flex h-[100vh] w-[100vw] top-0 left-0 bg-overlay px-[98px] py-[40px]'
+      >
         {/* <div className='bg-white w-full h-full relative'> */}
         <div
           className={`bg-white h-full relative ${fullWidth ? 'w-full' : ''}`}
         >
           <button
             onClick={closeContentBox}
-            className="cursor-pointer w-[max-content] h-[max-content] absolute right-[2.5rem] top-[2rem] z-[900]"
-            type="button"
+            className='cursor-pointer w-[max-content] h-[max-content] absolute right-[2.5rem] top-[2rem] z-[900]'
+            type='button'
           >
-            <SvgIcon shape="close" />
+            <SvgIcon shape='close' />
           </button>
           <div
-            className={`gutter-left h-full relative overflow-scroll ${
-              fullWidth ? '' : 'pr-[200px]'
-            }`}
+            className={`gutter-left h-full relative overflow-scroll gutter-right`}
           >
-            <h2 className="py-[2rem] text-[18px]">
+            <h2 className='py-[2rem] text-[18px]'>
               {content.heading}
               {variant && <span> / {variant}</span>}
             </h2>

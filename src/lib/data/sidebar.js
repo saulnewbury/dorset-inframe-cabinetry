@@ -65,6 +65,7 @@ export const defineYourSpace = [
     name: 'elements',
     options: [
       {
+        fullWidth: true,
         name: 'Base units',
         heading: 'Base unit',
         component: ChooseBaseUnit,
@@ -81,14 +82,16 @@ export const defineYourSpace = [
         ]
       },
       {
+        fullWidth: true,
         name: 'Tall units',
         heading: 'Tall cupboard',
         component: ChooseTallUnit,
         variants: ['Storage', 'Pantry', 'For oven', 'Fridge freezer']
       },
       {
-        name: 'Wall cupboards',
-        heading: 'Wall unit',
+        fullWidth: true,
+        name: 'Wall unit',
+        heading: 'Wall cupboards',
         component: ChooseWallUnit
       }
       // {

@@ -79,13 +79,13 @@ export default function KitchenUnit({
               <planeGeometry args={[size.x, size.z]} />
             </mesh>
             <InfoPanel ref={info} {...{ id, type, width, variant, style }} />
-            <DimensionLine
+            {/* <DimensionLine
               from={0}
               to={0.764 + 0.036}
               value={0.818}
               depth={0.575}
               cab={true}
-            />
+            /> */}
           </>
         )}
         {type === 'base' && <BaseUnit {...{ width, variant, style }} />}
@@ -112,13 +112,13 @@ export default function KitchenUnit({
           >
             <mesh rotation-x={Math.PI / -2} position-z={0.015}>
               <planeGeometry args={[size.x, size.z]} />
-              <meshStandardMaterial color="#4080bf" transparent opacity={0.6} />
+              <meshStandardMaterial color='#4080bf' transparent opacity={0.6} />
             </mesh>
-            <Html center className="pointer-events-none">
+            <Html center className='pointer-events-none'>
               <img
                 src={dragHandle.src}
-                alt=""
-                className="size-6 max-w-none"
+                alt=''
+                className='size-6 max-w-none'
                 style={{ translate: '-1px 1px' }}
               />
             </Html>
@@ -264,7 +264,7 @@ const InfoPanel = forwardRef((props, ref) => {
   return (
     <ItemInfo ref={ref}>
       <div className={clsx(style && 'flex gap-5 items-start')}>
-        {style && <img src={image} alt="" className="w-28" />}
+        {style && <img src={image} alt='' className='w-28' />}
         <div>
           <p>
             Item: {type} {props.variant?.toLowerCase()}
@@ -273,9 +273,9 @@ const InfoPanel = forwardRef((props, ref) => {
           <p>Width: {props.width}mm</p>
         </div>
       </div>
-      <p className="text-right">
+      <p className='text-right'>
         <button onClick={deleteItem}>
-          <img src={ic_delete.src} alt="Delete" className="size-4" />
+          <img src={ic_delete.src} alt='Delete' className='size-4' />
         </button>
       </p>
     </ItemInfo>
