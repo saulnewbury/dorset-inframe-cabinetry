@@ -15,6 +15,7 @@ import slice from '@/lib/icons/slice-fplan.svg'
 import squareDivide from '@/lib/icons/square-divide-fplan.svg'
 import notchDivide from '@/lib/icons/notch-divide-fplan.svg'
 import cornerDivide from '@/lib/icons/corner-divide-fplan.svg'
+import capture from '@/lib/icons/capture.svg'
 
 import wallHandle from '@/lib/icons/wall-handle.svg'
 import wallHandleRight from '@/lib/icons/wall-handle-right.svg'
@@ -46,6 +47,7 @@ const icons = [
   { icon: notchDivide, shape: 'notch-divide' },
   { icon: cornerDivide, shape: 'corner-divide' },
   { icon: tick, shape: 'tick' },
+  { icon: capture, shape: 'capture' },
   { icon: wallHandle, shape: 'wall-handle' },
   { icon: wallHandleRight, shape: 'wall-handle-right' },
   { icon: wallHandleLeft, shape: 'wall-handle-left' },

@@ -12,13 +12,15 @@ export default function Camera({ is3D }) {
   const cam2d = useRef()
 
   const { set } = useThree(({ get, set }) => ({ get, set }))
+  const { size } = useThree()
+
   useEffect(() => {
     if (is3D) {
       set({ camera: cam3d.current })
       cam3d.current.position.set(0, 4, 8)
     } else {
       set({ camera: cam2d.current })
-      cam2d.current.lookAt(0, 0, 0)
+      // cam2d.current.lookAt(0, 0, 0)
       cam2d.current.position.set(0, 50, 0)
     }
   }, [is3D, set])
@@ -32,10 +34,10 @@ export default function Camera({ is3D }) {
         zoom={80}
         near={0}
         far={100}
-        left={window.innerWidth / -2}
-        right={window.innerWidth / 2}
-        top={window.innerHeight / 2}
-        bottom={window.innerHeight / -2}
+        left={size.width / -2}
+        right={size.width / 2}
+        top={size.height / 2}
+        bottom={size.height / -2}
       />
     </>
   )

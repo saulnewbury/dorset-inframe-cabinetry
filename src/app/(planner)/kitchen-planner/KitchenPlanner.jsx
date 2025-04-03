@@ -1,12 +1,5 @@
 'use client'
-import {
-  useState,
-  useImperativeHandle,
-  forwardRef,
-  useRef,
-  useReducer,
-  useEffect
-} from 'react'
+import { useState, useImperativeHandle, forwardRef, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
@@ -14,14 +7,18 @@ import gsap from 'gsap'
 import Experience from './Experience'
 import Camera from './Camera'
 import ViewControls from './ViewControls'
+import Button from '@/components/Button'
+import SvgIcon from '@/components/SvgIcon'
 
 import { useAppState } from '@/appState'
-
 import { AppContext } from '@/context'
+
+import { useScreenshot } from '@/lib/helpers/useScreenshot'
 
 export default forwardRef(function KitchenPlanner(props, ref) {
   const { is3D, set3D } = useAppState()
   const [show, setShow] = useState(false)
+  const [shrink, setCanvasShrink] = useState(false)
   const [refreshed, setRefreshed] = useState(false)
 
   const container = useRef()
@@ -43,20 +40,20 @@ export default forwardRef(function KitchenPlanner(props, ref) {
       })
       setRefreshed(true)
     }
-    if (is3D || !is3D) {
+    if (is3D || !is3D || shrink || !shrink) {
       gsap.fromTo(
         container.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.8 }
+        { opacity: 1, duration: 0.8, delay: 0.04 }
       )
     } else {
       gsap.fromTo(
         container.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.01 }
+        { opacity: 1, duration: 0.01, delay: 0.04 }
       )
     }
-  }, [is3D])
+  }, [is3D, shrink])
 
   // show only on relavent pages
   useImperativeHandle(
@@ -68,11 +65,32 @@ export default forwardRef(function KitchenPlanner(props, ref) {
         },
         hideCanvas: () => {
           setShow(false)
+        },
+        shrinkCanvas: () => {
+          setCanvasShrink(true)
+          setShow(true)
+        },
+        restoreCanvas: () => {
+          setCanvasShrink(false)
+          setShow(true)
         }
       }
     },
     []
   )
+
+  const { takeScreenshot, SceneCapture } = useScreenshot(3840, 2160)
+
+  const style = {
+    height: '70%',
+    width: '70%',
+    backgroundColor: '#ffffff',
+    marginTop: '6rem',
+    marginLeft: '37px',
+    border: 'solid',
+    borderColor: 'rgb(229, 231, 235)',
+    borderWidth: '1px'
+  }
 
   return (
     <AppContext.Provider value={is3D}>
@@ -80,18 +98,31 @@ export default forwardRef(function KitchenPlanner(props, ref) {
         ref={container}
         className={`canvas-container ${
           show ? '' : 'opacity-0'
-        } w-full h-full fixed`}
+        }  w-full h-full fixed`}
       >
-        <Canvas frameloop='demand' shadows>
+        <Canvas frameloop='demand' shadows style={shrink ? style : ''}>
           <Camera is3D={is3D} />
           <Experience is3D={is3D} />
+          <SceneCapture />
         </Canvas>
         <div
           ref={overlay}
           className='absolute bg-[white] w-[100vw] h-[70vw] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]'
         ></div>
       </div>
-      <ViewControls changePerspective={(bool) => set3D(bool)} is3D={is3D} />
+      <ViewControls
+        changePerspective={(bool) => set3D(bool)}
+        is3D={is3D}
+        shrink={shrink}
+      />
+      {shrink && (
+        <div
+          className='absolute top-[110px] left-[50px]'
+          onClick={takeScreenshot}
+        >
+          <SvgIcon classes='w-[35px] h-[35px]' shape='capture' />
+        </div>
+      )}
     </AppContext.Provider>
   )
 })
