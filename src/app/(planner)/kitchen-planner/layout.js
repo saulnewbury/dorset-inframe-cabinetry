@@ -6,6 +6,8 @@ import KitchenPlanner from './KitchenPlanner'
 import NavConfigurator from './NavConfigurator'
 import IntroMessage from './IntroMessage'
 import List from './List'
+import SaveModel from './dialog/SaveModel'
+import SubmitModel from './dialog/SubmitModel'
 
 import { CanvasContext } from '../../../context'
 import PerspectiveContextProvider from './perspectiveContextProvider'
@@ -15,12 +17,19 @@ import {
   tallUnitStyles,
   wallUnitStyles
 } from '@/model/itemStyles'
+import { useSearchParams } from 'next/navigation'
+import VerifyEmail from './dialog/VerifyEmail'
 
 export default function Layout({ children }) {
   const [ref, setRef] = useState({})
   const kitchenPlanner = useRef()
   const [showList, setShowList] = useState()
+  const [showSaveModel, setShowSaveModel] = useState(false)
+  const [showSubmitModel, setShowSubmitModel] = useState(false)
   const [model] = useContext(ModelContext)
+  const search = useSearchParams()
+  const verifyId = search.get('verifyId')
+  const [modelId, setModelId] = useState(verifyId)
 
   const items = useMemo(() => {
     const items = new Map()
@@ -47,6 +56,7 @@ export default function Layout({ children }) {
   }, [model])
 
   const count = items.reduce((ct, item) => ct + item.multiple, 0)
+  const totalPrice = items.reduce((ct, item) => ct + item.total, 0)
 
   useEffect(() => {
     setRef(kitchenPlanner) // give ref to CanvasContext
@@ -57,19 +67,39 @@ export default function Layout({ children }) {
       <PerspectiveContextProvider>
         <NavConfigurator
           count={count}
-          openList={() => {
-            setShowList(true)
-          }}
+          openList={() => setShowList(true)}
+          saveModel={() => setShowSaveModel(true)}
         />
         <CanvasContext.Provider value={ref}>
           <List
             items={items}
             showList={showList}
-            closeList={() => {
-              setShowList(false)
+            closeList={() => setShowList(false)}
+          />
+          <SaveModelDialog
+            show={showSaveModel}
+            count={count}
+            totalPrice={totalPrice}
+            onClose={() => setShowSaveModel(false)}
+            onSubmit={(id) => {
+              setModelId(id)
+              setShowSaveModel(false)
+              setShowSubmitModel(true)
             }}
           />
-          <IntroMessage />
+          <SubmitModelDialog
+            show={showSubmitModel}
+            modelId={modelId}
+            onClose={() => setShowSubmitModel(false)}
+          />
+          <VerifyEmailDialog
+            verifyId={verifyId}
+            onSubmit={(id) => {
+              setModelId(id)
+              setShowSubmitModel(true)
+            }}
+          />
+          <IntroMessage show={!verifyId} />
           <KitchenPlanner ref={kitchenPlanner} />
           {children}
         </CanvasContext.Provider>
@@ -130,4 +160,53 @@ function tallInfo(unit) {
       price: inf.prices[inf.sizes.indexOf(+unit.width)]
     }
   }
+}
+
+function SaveModelDialog({ show, count, totalPrice, onClose, onSubmit }) {
+  return (
+    show && (
+      <div className="bg-[#0000003f] h-[100vh] w-[100vw] absolute z-[500] flex justify-center items-center">
+        <div className="w-[600px] bg-[white] text-xl p-12 relative ">
+          <SaveModel
+            items={count}
+            price={totalPrice}
+            onClose={onClose}
+            onSubmit={onSubmit}
+          />
+        </div>
+      </div>
+    )
+  )
+}
+
+function SubmitModelDialog({ show, modelId, onClose }) {
+  return (
+    show && (
+      <div className="bg-[#0000003f] h-[100vh] w-[100vw] absolute z-[500] flex justify-center items-center">
+        <div className="w-[600px] bg-[white] text-xl p-12 relative ">
+          <SubmitModel modelId={modelId} onClose={onClose} />
+        </div>
+      </div>
+    )
+  )
+}
+
+function VerifyEmailDialog({ verifyId, onSubmit = () => {} }) {
+  const [show, setShow] = useState(!!verifyId)
+  return (
+    show && (
+      <div className="bg-[#0000003f] h-[100vh] w-[100vw] absolute z-[500] flex justify-center items-center">
+        <div className="w-[600px] bg-[white] text-xl p-12 relative ">
+          <VerifyEmail
+            requestId={verifyId}
+            onClose={() => setShow(false)}
+            onSubmit={(id) => {
+              setShow(false)
+              onSubmit(id)
+            }}
+          />
+        </div>
+      </div>
+    )
+  )
 }

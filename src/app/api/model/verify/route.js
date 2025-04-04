@@ -1,8 +1,9 @@
 import { prisma } from '@/lib/database'
 import { scrypt } from 'node:crypto'
-import { base, sendRequestToBusiness } from '../save/routeModule.js'
+import { base } from '../save/route.js'
+import { customError } from '@/lib/custom-error'
 
-const required = ['email', 'password']
+const required = ['email', 'password', 'requestId']
 
 export async function POST(request) {
   try {
@@ -13,7 +14,7 @@ export async function POST(request) {
     if (required.some((key) => !keys.includes(key)))
       throw new Error('Bad request')
 
-    const { email, password } = dto
+    const { email, password, requestId } = dto
 
     // Check that the user has supplied the correct password for the account.
     const {
@@ -40,35 +41,22 @@ export async function POST(request) {
       })
     }
 
-    // Prepare to send emails ...
-    const transport = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      secure: true,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD
-      }
+    // Check that the given request is still pending submission.
+    const model = await prisma.saved.findFirst({
+      where: {
+        id: requestId,
+        user: { email }
+      },
+      select: { submitted: true }
     })
-
-    // Find any models that have not yet been submitted and do that now.
-    const models = await prisma.saved.findMany({
-      where: { email, saved: null },
-      select: { id: true }
-    })
-    if (models.length > 0) {
-      await Promise.all(
-        models.map((m) => sendRequestToBusiness(m.id, transport))
-      )
-    }
 
     // Send a success response.
-    return Request.json({
-      submitted: models.length
+    return Response.json({
+      isVerified: true,
+      canSubmit: model && !model.submitted
     })
   } catch (err) {
     console.log(err)
-    const message = err instanceof Error ? err.message : 'Verify failed'
-    return new Response(message, { status: 400 })
+    return customError(err)
   }
 }

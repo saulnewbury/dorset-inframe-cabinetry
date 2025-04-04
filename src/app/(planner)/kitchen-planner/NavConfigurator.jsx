@@ -11,7 +11,7 @@ import Button from '@/components/Button'
 
 import { plannerMenu } from '@/lib/data/menu'
 
-export default function NavConfigurator({ count = 0, openList }) {
+export default function NavConfigurator({ count = 0, openList, saveModel }) {
   const [openConfirmation, setOpenConfirmation] = useState(false)
   const pathname = usePathname()
 
@@ -53,6 +53,13 @@ export default function NavConfigurator({ count = 0, openList }) {
             <span className='mr-[5px]'>Login</span>
             <SvgIcon shape='login' />
           </span> */}
+          <button
+            className="inline-block relative cursor-pointer mr-[30px]"
+            onClick={saveModel}
+          >
+            <SvgIcon shape="save" />
+          </button>
+
           <button
             className="inline-block relative cursor-pointer mr-[30px]"
             onClick={openList}

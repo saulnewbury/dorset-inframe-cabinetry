@@ -2,9 +2,11 @@ import { prisma } from '@/lib/database'
 import { randomBytes, scrypt } from 'node:crypto'
 import nodemailer from 'nodemailer'
 
+import { siteURL } from '@/lib/siteURL'
+import { customError } from '@/lib/custom-error'
+
 const required = ['name', 'email', 'password', 'modelData']
 export const base = '0ae024030d0993124904e3a5181a5e5d' // md5 'random.upstart.bus'
-const siteURL = 'http://www.dorset-inframe.co.uk'
 
 const EXPIRY_DAYS = 5
 
@@ -14,8 +16,10 @@ export async function POST(request) {
     // the required fields.
     const dto = await request.json()
     const keys = Object.keys(dto)
-    if (required.some((key) => !keys.includes(key)))
+    if (required.some((key) => !keys.includes(key))) {
+      console.log(keys)
       throw new Error('Bad request')
+    }
 
     const { name, email, password, modelData } = dto
 
@@ -24,49 +28,81 @@ export async function POST(request) {
     if (!/^[\w\s\d]*$/.test(name) || !/^[\w\d.@]*$/.test(email))
       throw new Error('Bad data')
 
-    // Create the user - unverified at first.
-    const salt = randomBytes(16).toString('hex')
-    const pwd = await new Promise((resolve, reject) => {
-      scrypt(password, salt + base, 64, (err, buf) => {
-        if (err) reject(err)
-        resolve(buf.toString('hex'))
+    const result = await prisma.$transaction(async (tx) => {
+      // If the model has already been saved, verify that it belongs to this user.
+      if (modelData.id) {
+        const model = await tx.saved.findUnique({
+          where: { id: modelData.id },
+          select: { email: true }
+        })
+        if (!model) delete modelData.id
+        else if (email !== model.email)
+          throw new Error('You are not authorised')
+      }
+
+      // Check if user already exists.
+      const {
+        salt: saltdb,
+        password: pwdb,
+        isVerified
+      } = await tx.user.findUnique({
+        where: { email },
+        select: { salt: true, password: true, isVerified: true }
       })
-    })
-    const {
-      id: userId,
-      isVerified,
-      password: pwdb
-    } = await prisma.user.upsert({
-      where: { email },
-      create: { email, password: pwd, salt, name },
-      update: {},
-      select: { id: true, isVerified: true, password: true }
-    })
 
-    // Check that the password given is the same as last saved.
-    if (pwdb !== pwd) throw new Error('You are not authorised')
+      // Create the user - unverified at first.
+      const salt = saltdb || randomBytes(16).toString('hex')
+      let pwd = await new Promise((resolve, reject) => {
+        scrypt(password, salt + base, 64, (err, buf) => {
+          if (err) reject(err)
+          resolve(buf.toString('hex'))
+        })
+      })
 
-    // Next save the model against that user.
-    const { id: requestId } = await prisma.saved.create({
-      data: { email, modelData },
-      select: { id: true }
+      // If user doesn't yet exist, create the record now.
+      if (!saltdb) {
+        await tx.user.create({
+          data: { email, password: pwd, salt, name }
+        })
+      }
+
+      // Else check that the password given is the same as last saved.
+      else if (pwdb !== pwd) throw new Error('You are not authorised')
+
+      // Next save the model against that user.
+      const { id: modelId, created } = await (modelData.id
+        ? tx.saved.update({
+            where: { id: modelData.id },
+            data: { modelData: JSON.stringify(modelData) },
+            select: { id: true, created: true }
+          })
+        : tx.saved.create({
+            data: { email, modelData: JSON.stringify(modelData) },
+            select: { id: true, created: true }
+          }))
+
+      return { id: modelId, created, isVerified }
     })
 
     // Prepare to send emails ...
     const transport = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
-      secure: true,
+      secure: process.env.SMTP_PORT === '465',
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD
+      },
+      tls: {
+        ciphers: 'SSLv3'
       }
     })
 
     // If the email is not yet verified, send message to ask user to verify.
-    if (!isVerified) {
+    if (!result.isVerified) {
       if (!process.env.SMTP_HOST) console.log('SMTP not configured')
       else {
+        const link = `${siteURL}/kitchen-planner/define-your-space/verifyId=${result.id}`
         await transport.sendMail({
           from: process.env.SMTP_ORIGIN,
           to: `${name}<${email}>`,
@@ -76,16 +112,16 @@ export async function POST(request) {
         Welcome to Dorset Inframe Cabinetry and thank you for your interest.
         
         Please verify your email address at the following URL:
-        ${siteURL}/verify/${id}
+        ${link}
         
         Your model has been saved and will be kept on our server for ${EXPIRY_DAYS}
-        but will then be deleted if your email address has not been verified.`,
+        days but will then be deleted if your email address has not been verified.`,
           html: `<p>Dear ${name},</p>
         <p><b>Welcome to Dorset Inframe Cabinetry</b> and thank you for your interest.</p>
         <p>Please verify your email address at the following URL:<br/>
-        <a href="${siteURL}/verify/${id}">${siteURL}/verify/${id}</a></p>
+        <a href="${link}">${link}</a></p>
         <p>Your model has been saved and will be kept on our server for
-        ${EXPIRY_DAYS} but will then be deleted if your email address has not
+        ${EXPIRY_DAYS} days but will then be deleted if your email address has not
         been verified.</p>`
         })
       }
@@ -93,56 +129,15 @@ export async function POST(request) {
       // And purge any obsolete saves.
       const expired = new Date()
       expired.setDate(expired.getDate() - EXPIRY_DAYS)
-      await prisma.saved.delete({
+      await prisma.saved.deleteMany({
         where: { email, created: { lt: expired } }
       })
     }
 
-    // Otherwise send the request on to the business.
-    else {
-      await sendRequestToBusiness(requestId, transport)
-    }
-
     // Return success.
-    return Response.json({
-      id,
-      isVerified
-    })
+    return Response.json(result)
   } catch (err) {
-    console.log(err)
-    const message = err instanceof Error ? err.message : 'Save failed'
-    return new Response(message, { status: 400 })
+    console.error(err)
+    return customError(err)
   }
-}
-
-/**
- * Shared function (also used on email verification) to send a request for a
- * quote on to the business. Only a link is sent - details can be viewed on the
- * web site.
- * @param {string} id
- * @param {NodeMailerTransport} transport
- * @returns {Promise<void>}
- */
-export async function sendRequestToBusiness(id, transport) {
-  if (!process.env.SMTP_HOST) {
-    console.log('SMTP not configured')
-    return
-  }
-
-  await transport.sendMail({
-    from: process.env.SMTP_ORIGIN,
-    to: process.env.SMTP_MAILBOX,
-    subject: 'New request: ' + id,
-    text: `New request for quote:
-    
-    Go to ${siteURL}/model/view/${id} to view details.`,
-    html: `<p><b>New request for quote:</b></p>
-    <p>Go to ${siteURL}/model/view/${id} to view details.</p>`
-  })
-
-  // Now update the model entry in the database, to show it as 'sent'.
-  await prisma.saved.update({
-    where: { id },
-    data: { submitted: new Date() }
-  })
 }

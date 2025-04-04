@@ -8,6 +8,7 @@ import features from '@/lib/icons/features.svg'
 import openings from '@/lib/icons/openings.svg'
 import elements from '@/lib/icons/elements.svg'
 import close from '@/lib/icons/close.svg'
+import save from '@/lib/icons/save.svg'
 
 import square from '@/lib/icons/square-fplan.svg'
 import notch from '@/lib/icons/notch-fplan.svg'
@@ -57,7 +58,8 @@ const icons = [
   { icon: cornerHandleCircle, shape: 'corner-handle-circle' },
   { icon: icon2d, shape: '2d' },
   { icon: icon3d, shape: '3d' },
-  { icon: pen, shape: 'pen' }
+  { icon: pen, shape: 'pen' },
+  { icon: save, shape: 'save' }
 ]
 
 export default function SvgIcon({ shape = '', alt = undefined, classes = '' }) {
@@ -73,7 +75,7 @@ export default function SvgIcon({ shape = '', alt = undefined, classes = '' }) {
           width={`${item.icon.width}`}
           height={`${item.icon.height}`}
           viewBox={`0 0 ${item.icon.width} ${item.icon.height}`}
-          role='img'
+          role="img"
           aria-label={alt}
         >
           <use href={item.icon.src + '#root'} />

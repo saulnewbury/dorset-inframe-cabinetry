@@ -14,8 +14,10 @@ model saved {
   id        String    @id @default(uuid())
   email     String
   modelData String
-  created   DateTime  @default(now())
+  created   DateTime  @updatedAt
   submitted DateTime?
+  timeframe String?
+  postcode  String?
 
   user user @relation(fields: [email], references: [email])
 }
@@ -23,6 +25,7 @@ model saved {
 model user {
   email      String   @id
   password   String // encrypted
+  salt       String
   name       String
   created    DateTime @default(now())
   isVerified Boolean  @default(false)
