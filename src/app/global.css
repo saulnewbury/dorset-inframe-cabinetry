@@ -29,10 +29,10 @@ svg {
 }
 
 .gutter-right {
-  @apply mr-[20px] sm:mr-[37px];
+  @apply pr-[20px] sm:pr-[37px];
 }
 .gutter-left {
-  @apply ml-[20px] sm:ml-[37px];
+  @apply pl-[20px] sm:pl-[37px];
 }
 
 .indent {

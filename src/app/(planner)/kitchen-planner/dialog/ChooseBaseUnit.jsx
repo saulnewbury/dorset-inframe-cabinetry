@@ -69,34 +69,3 @@ export default function ChooseBaseUnit({
     onClose()
   }
 }
-
-// function BaseUnitCard({ id, title, width, onClick }) {
-//   const [isHover, setHover] = useState(false)
-//   const style = id.replace(':', '-')
-//   const images = [
-//     `/units/${style}/${style}-${width}-front.webp`,
-//     `/units/${style}/${style}-${width}-side.webp`
-//   ]
-//   return (
-//     <button
-//       type='button'
-//       onClick={() => onClick()}
-//       className='w-[180px] flex flex-col gap-3 items-center p-3 border-2 rounded-md hover:border-cyan-600 border-transparent'
-//     >
-//       <div
-//         onMouseOver={() => setHover(true)}
-//         onMouseOut={() => setHover(false)}
-//       >
-//         <img
-//           src={isHover ? images[1] : images[0]}
-//           alt=''
-//           className='h-[180px]'
-//         />
-//       </div>
-//       <div className='text-center'>
-//         <p>{title}</p>
-//         <p className='text-sm'>w: {width}mm</p>
-//       </div>
-//     </button>
-//   )
-// }

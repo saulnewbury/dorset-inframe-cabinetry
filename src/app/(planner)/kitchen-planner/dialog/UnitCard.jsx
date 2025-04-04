@@ -15,10 +15,15 @@ export default function UnitCard({ id, title, width, onClick }) {
       className='flex flex-col items-center'
     >
       <div
+        className='w-full aspect-square overflow-hidden '
         onMouseOver={() => setHover(true)}
         onMouseOut={() => setHover(false)}
       >
-        <img src={isHover ? images[1] : images[0]} alt='' className='' />
+        <img
+          src={isHover ? images[1] : images[0]}
+          alt=''
+          className='w-full h-full  object-center object-cover opacity-75 scale-[1.01]'
+        />
       </div>
       <div className='text-center'>
         <p>{title}</p>

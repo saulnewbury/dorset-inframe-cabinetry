@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import SelectWall from './SelectWall'
 
 import Button from '@/components/Button'
+import CabinetGrid from '@/app/(planner)/kitchen-planner/dialog/CabinetGrid'
 
 import { windowStyles as styles } from '@/model/itemStyles'
 
@@ -21,7 +22,8 @@ export default function ChooseWindow({ onClose = () => {} }) {
     <form onSubmit={selectWindow} className='[&>p]:my-3 text-[14px]'>
       {/* Window style */}
       <p className='text-gray-400'>Choose style:</p>
-      <div className='flex flex-wrap gap-5 mb-5'>
+      {/* <div className='flex flex-wrap gap-5 mb-5'> */}
+      <CabinetGrid>
         {styles.map((s) => (
           <WindowButton
             key={s.id}
@@ -30,7 +32,8 @@ export default function ChooseWindow({ onClose = () => {} }) {
             onClick={chooseStyle}
           />
         ))}
-      </div>
+      </CabinetGrid>
+      {/* </div> */}
       {/* Height (full or normal) */}
       <p>
         <span className='text-gray-400'>Height:</span>{' '}
@@ -103,7 +106,7 @@ function WindowButton({ id, title, image, selected, onClick = () => {} }) {
     <button
       type='button'
       onClick={() => onClick(id)}
-      className='flex flex-col gap-[0.3rem]  border border-lightGrey '
+      className='flex flex-col items-center'
     >
       <img
         src={image.src}
