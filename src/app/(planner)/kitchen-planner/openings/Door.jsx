@@ -68,7 +68,6 @@ function Door2D({ len, offset, width, option, onClick = () => {} }) {
  * scale) on the outside.
  */
 function Door3D({ style, len, offset, width, option }) {
-  console.log(style)
   const height = wh - 0.4
 
   const cw = 0.05
@@ -194,10 +193,10 @@ function Door3D({ style, len, offset, width, option }) {
           )
         )}
         {/* Door */}
-        {style === 'solid-1pane' && (
+        {style === 'single-door' && (
           <DoorSingle casing={casing} thick={wt} depth={sd} />
         )}
-        {style === 'solid-2pane' && (
+        {style === 'double-door' && (
           <DoorDouble casing={casing} thick={wt} depth={sd} />
         )}
       </group>

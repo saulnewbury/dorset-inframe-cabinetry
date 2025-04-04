@@ -3,92 +3,64 @@ import { ModelContext } from '@/model/context'
 import clsx from 'clsx'
 
 import SelectWall from './SelectWall'
-
-import Button from '@/components/Button'
+import CabinetGrid from '@/app/(planner)/kitchen-planner/dialog/CabinetGrid'
+import CabinetGridContainer from './CabinetGridContainer'
 
 import { doorStyles as styles } from '@/model/itemStyles'
 
 /**
- * Dialog body component for choosing an adding a door.
+ * Dialog body component for choosing and adding a door.
  */
 export default function ChooseDoor({ onClose = () => {} }) {
   const [, dispatch] = useContext(ModelContext)
-  const [style, setStyle] = useState()
+  const [wall, setWall] = useState(0)
+  // Keep these states for the dispatch but don't show in UI
   const [opens, setOpens] = useState('out')
   const [handle, setHandle] = useState('left')
-  const [width, setWidth] = useState(1)
-  const [wall, setWall] = useState(0)
+
   return (
-    <form onSubmit={selectDoor} className='[&>p]:my-4'>
-      {/* Types of door */}
-      <p className='text-gray-400'>Choose style:</p>
-      <div className='flex flex-wrap gap-5'>
-        {styles.map((s) => (
-          <DoorButton
-            key={s.id}
-            {...s}
-            opens={opens}
-            selected={style === s.id}
-            onClick={setStyle}
-          />
-        ))}
-      </div>
-      <div className='flex mt-[2rem] mb-[2rem]'>
-        {/* left */}
-        <div className='inline-block mr-[2rem]'>
-          {/* Initial wall */}
-          <p className='text-gray-400 mb-[1rem]'>Select wall:</p>
+    <div className='[&>p]:my-3 text-[14px]'>
+      {/* Width */}
+      <div className='flex py-8 mb-6'>
+        <div className='mr-8 gap-5'>
+          <p className='text-gray-400 mb-6'>Select wall:</p>
+          {/* Wall on which to insert the door */}
           <p>
             <SelectWall value={wall} onChange={setWall} />
           </p>
         </div>
-        {/* Right */}
-        <div className='inline-block'>
-          {/* Side of handle */}
-          <p className='mb-[1rem] mt-[4rem]'>
-            <span className='text-gray-400'>Handle:</span>{' '}
-            <select value={handle} onChange={(e) => setHandle(e.target.value)}>
-              <option value='left'>Left</option>
-              <option value='right'>Right</option>
-            </select>
-          </p>
-          {/* Direction of opening */}
-          <p className='mb-[1rem]'>
-            <span className='text-gray-400'>Opening:</span>{' '}
-            <select value={opens} onChange={(e) => setOpens(e.target.value)}>
-              <option value='out'>Out</option>
-              <option value='in'>In</option>
-            </select>
-          </p>
-          {/* Width */}
-          <p className='mb-[1rem]'>
-            <span className='text-gray-400'>Width (m):</span>{' '}
-            <input
-              type='number'
-              min='0.5'
-              step='0.1'
-              value={width.toFixed(2)}
-              onChange={(e) => setWidth(parseFloat(e.target.value))}
-              className='w-14'
-            />
-          </p>
-        </div>
       </div>
-      {/* Submit button */}
-      <Button primary disabled={!style}>
-        Submit
-      </Button>
-    </form>
+
+      <CabinetGridContainer classes='pb-12'>
+        {/* Door style */}
+        <p className='text-gray-400'>Choose style:</p>
+        <CabinetGrid classes='grid-cols-6'>
+          {styles.map((s) => (
+            <DoorButton
+              key={s.id}
+              {...s}
+              onClick={(styleId) => selectDoor(styleId)}
+            />
+          ))}
+        </CabinetGrid>
+      </CabinetGridContainer>
+    </div>
   )
 
-  function selectDoor(ev) {
-    ev.preventDefault()
+  function selectDoor(styleId) {
+    const selectedStyle = styles.find((s) => s.id === styleId)
+    if (!selectedStyle) return
+
+    // const styleWidth = selectedStyle.width || width
+
+    const styleWidth = selectedStyle.id === 'double-door' ? 1.8 : 1
+
     dispatch({
       id: 'addOpening',
       type: 'door',
-      style,
+      style: styleId,
       option: [handle, opens].join(':'),
-      width,
+      width: styleWidth,
       wall
     })
     onClose()
@@ -96,23 +68,22 @@ export default function ChooseDoor({ onClose = () => {} }) {
 }
 
 /**
- * Component to display a door style option.
+ * Component to display a door style option and allow it to be selected.
  */
-function DoorButton({ id, title, image, opens, selected, onClick = () => {} }) {
+function DoorButton({ id, title, image, onClick = () => {} }) {
   return (
     <button
       type='button'
       onClick={() => onClick(id)}
-      className='flex flex-col gap-[0.3rem]  border border-lightGrey '
+      className='flex flex-col items-center'
     >
-      <img
-        src={image.src}
-        alt=''
-        className={clsx(
-          'h-[200px] hover:border-cyan-500 rounded-sm hover:bg-[#f5f5f5] bg-[#ffffff]',
-          selected ? 'border-blue-700 bg-[#f5f5f5]' : 'border-transparent'
-        )}
-      />
+      <div className='w-full aspect-square overflow-hidden mb-[1rem]'>
+        <img src={image.src} alt='' />
+      </div>
+      <div className='text-center'>
+        <p>{title || 'Door'}</p>
+        <p className='text-sm'>Resizeable</p>
+      </div>
     </button>
   )
 }

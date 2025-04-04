@@ -3,7 +3,7 @@ import ProductsMini from '@/app/(general)/ProductsMini'
 import WeCanSupply from '@/app/(general)/WeCanSupply'
 import Footer from '@/components/Footer'
 
-import image from '@/lib/images/rect/franke-taps.webp'
+import image from '@/lib/images/rect/sink-and-taps-minerva.webp'
 
 const markup =
   'We supply a wide range of taps and sinks from leading manufacturers which are too numerous to mention here. If you would like us to cost your sink and taps please request a call back via the contact form or on submission of your kitchen design and we will endeavour to get you a competitive price.'
@@ -23,7 +23,7 @@ export default function page() {
         markupWidth={80}
         src={image}
         brands={brands}
-        color='#ebedef'
+        color='#eeece9'
       />
       <ProductsMini not='Sinks and taps' gridNum={5} />
       <Footer />

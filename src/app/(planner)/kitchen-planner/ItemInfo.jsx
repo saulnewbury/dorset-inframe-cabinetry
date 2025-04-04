@@ -51,10 +51,10 @@ const ItemInfo = forwardRef(({ children }, ref) => {
 
   useLayoutEffect(() => {
     root.current?.render(
-      <div className="absolute top-24 left-[120px] w-[380px] p-4 border border-gray-200 rounded-md shadow-sm bg-white z-50">
-        <div className="text-right">
+      <div className='absolute top-24 left-[120px] min-w-[380px] p-4 border border-gray-200 rounded-md shadow-sm bg-white z-50'>
+        <div className='text-right'>
           <button onClick={hide}>
-            <img src={ic_close.src} alt="Close" className="size-4" />
+            <img src={ic_close.src} alt='Close' className='size-4' />
           </button>
         </div>
         {children}

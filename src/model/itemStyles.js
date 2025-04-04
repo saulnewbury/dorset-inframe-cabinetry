@@ -1,22 +1,16 @@
 // Door images:
-import solid_2pane from '@/assets/doors/solid-double.webp'
-import topGlass_2pane from '@/assets/doors/top-glass-2pane.svg'
-import twinGlass_2pane from '@/assets/doors/twin-glass-2pane.svg'
-import solid_1pane from '@/assets/doors/solid-single.webp'
-import glass_1pane from '@/assets/doors/glass-1pane.svg'
+import singleDoor from '@/lib/images/openings/single-door.webp'
+import doubleDoor from '@/lib/images/openings/double-door.webp'
 
-import singleWindow from '@/assets/windows/single-sash.webp'
-import doubleWindow from '@/assets/windows/double-sash.webp'
+import singleWindow from '@/lib/images/openings/single-window.webp'
+import doubleWindow from '@/lib/images/openings/double-window.webp'
 
 /**
  * Options for door styles.
  */
 export const doorStyles = [
-  { id: 'solid-1pane', title: 'Solid, 1 panel', image: solid_1pane },
-  { id: 'solid-2pane', title: 'Solid, 2 panel', image: solid_2pane },
-  { id: 'top-2pane', title: 'Glass top, 2 panel', image: topGlass_2pane },
-  { id: 'twin-2pane', title: 'Glass, 2 panel', image: twinGlass_2pane },
-  { id: 'glass-1pane', title: 'Glass, 1 panel', image: glass_1pane }
+  { id: 'single-door', title: 'Solid Door', image: singleDoor },
+  { id: 'double-door', title: 'Double Door', image: doubleDoor }
 ]
 
 /**

@@ -167,8 +167,10 @@ const InfoPanel = forwardRef((props, ref) => {
   return (
     <ItemInfo ref={ref}>
       <div className={clsx(style && 'flex gap-5 items-start')}>
-        {style && <img src={style.image.src} alt='' className='w-12' />}
-        <div>
+        {style && (
+          <img src={style.image.src} alt='' className='w-[150px] border' />
+        )}
+        <div className='item-end'>
           <p>Item: {type}</p>
           {style && <p>Style: {style.title}</p>}
           {opens ? (
@@ -181,9 +183,10 @@ const InfoPanel = forwardRef((props, ref) => {
           <p>Width: {props.width}m</p>
         </div>
       </div>
+
       <p className='text-right'>
         <button onClick={deleteItem}>
-          <img src={ic_delete.src} alt='Delete' className='size-4' />
+          <img src={ic_delete.src} alt='Delete' className='size-6' />
         </button>
       </p>
     </ItemInfo>
