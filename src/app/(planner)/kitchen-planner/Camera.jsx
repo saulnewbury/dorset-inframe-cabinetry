@@ -27,7 +27,13 @@ export default function Camera({ is3D }) {
 
   return (
     <>
-      <PerspectiveCamera ref={cam3d} position={[0, 4, 8]} zoom={0.8} />
+      <PerspectiveCamera
+        ref={cam3d}
+        // position={[0, 4, 8]}
+        position={[0, 4, 100]}
+        // near={0.001}
+        // far={1000}
+      />
       <OrthographicCamera
         ref={cam2d}
         position={[0, 50, 0]}

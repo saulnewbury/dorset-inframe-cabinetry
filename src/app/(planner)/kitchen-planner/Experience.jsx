@@ -71,13 +71,29 @@ export default function Experience({ is3D }) {
     orbitControls.current.reset()
   }, [is3D])
 
+  useEffect(() => {
+    if (orbitControls.current) {
+      const controls = orbitControls.current
+
+      // You can force a different zoom level
+      // controls.minDistance = 0.001
+      controls.maxZoom = 2000 // Try this property as well
+
+      // Update the controls
+      controls.update()
+    }
+  }, [])
+
   return (
     <>
       <OrbitControls
+        ref={orbitControls}
         enableRotate={is3D}
         enablePan={is3D ? true : enablePan && !(dragging ?? hover)}
-        ref={orbitControls}
-        maxPolarAngle={Math.PI / 2.5}
+        minDistance={1.5} //
+        maxDistance={20} // how far out
+        enableZoom={true}
+        maxPolarAngle={Math.PI / 2.1}
         panSpeed={1}
         zoomSpeed={0.5}
         dampingFactor={is3D ? 0.1 : 0.3}

@@ -7,6 +7,11 @@ import shape from '@/lib/icons/shape.svg'
 import features from '@/lib/icons/features.svg'
 import openings from '@/lib/icons/openings.svg'
 import elements from '@/lib/icons/elements.svg'
+import cabinets from '@/lib/icons/cabinets.svg'
+import worktop from '@/lib/icons/worktop.svg'
+import appliances from '@/lib/icons/appliances.svg'
+import yourItems from '@/lib/icons/your-items.svg'
+
 import close from '@/lib/icons/close.svg'
 
 import square from '@/lib/icons/square-fplan.svg'
@@ -15,6 +20,7 @@ import slice from '@/lib/icons/slice-fplan.svg'
 import squareDivide from '@/lib/icons/square-divide-fplan.svg'
 import notchDivide from '@/lib/icons/notch-divide-fplan.svg'
 import cornerDivide from '@/lib/icons/corner-divide-fplan.svg'
+
 import capture from '@/lib/icons/capture.svg'
 
 import wallHandle from '@/lib/icons/wall-handle.svg'
@@ -39,6 +45,10 @@ const icons = [
   { icon: features, shape: 'features' },
   { icon: openings, shape: 'openings' },
   { icon: elements, shape: 'elements' },
+  { icon: cabinets, shape: 'cabinets' },
+  { icon: worktop, shape: 'worktop' },
+  { icon: appliances, shape: 'appliances' },
+  { icon: yourItems, shape: 'your-items' },
   { icon: close, shape: 'close' },
   { icon: square, shape: 'square' },
   { icon: notch, shape: 'notch' },

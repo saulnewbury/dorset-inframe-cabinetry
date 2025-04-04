@@ -7,6 +7,9 @@ import { CanvasContext } from '@/context'
 import Dialog from '../Dialog'
 import Sidebar from '../Sidebar'
 
+// Data
+import { defineYourSpaceMenu } from '@/lib/data/sidebar'
+
 export default function Page() {
   const [open, setOpen] = useState(false)
   const [showContent, setShowContent] = useState(false)
@@ -26,6 +29,7 @@ export default function Page() {
   return (
     <>
       <Sidebar
+        menu={defineYourSpaceMenu}
         open={open}
         showContent={showContent}
         content={content}

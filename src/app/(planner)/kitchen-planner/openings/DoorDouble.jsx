@@ -1,4 +1,5 @@
 import React from 'react'
+import { Edges } from '@react-three/drei'
 
 import DoorHandle from './DoorHandle'
 
@@ -11,6 +12,7 @@ export default function DoorDouble({ casing, thick, depth }) {
         <mesh castShadow receiveShadow>
           <boxGeometry args={[width / 2, height, depth / 2]} />
           <meshStandardMaterial color='#F9F9F9' />
+          <Edges threshold={15} color='gray' />
         </mesh>
         <DoorHandle
           len={-height / 16}

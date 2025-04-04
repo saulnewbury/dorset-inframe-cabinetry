@@ -1,0 +1,14 @@
+<svg width="29" height="27" viewBox="0 0 29 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g id='root'>
+    <line y1="-0.5" x2="11" y2="-0.5" transform="matrix(-1 0 0 1 11 1)" stroke="black"/>
+    <line x1="28.5" y1="20" x2="28.5" y2="26" stroke="black"/>
+    <line y1="-0.5" x2="26.1725" y2="-0.5" transform="matrix(0.687745 0.725953 0.725953 -0.687745 11 0)" stroke="black"/>
+    <line y1="-0.5" x2="29" y2="-0.5" transform="matrix(1 -6.02916e-08 -6.02916e-08 -1 0 19)" stroke="black"/>
+    <line y1="-0.5" x2="29" y2="-0.5" transform="matrix(1 -6.02916e-08 -6.02916e-08 -1 0 26)" stroke="black"/>
+    <line y1="-0.5" x2="11" y2="-0.5" transform="matrix(-1 0 0 1 11 1)" stroke="black"/>
+    <line x1="28.5" y1="20" x2="28.5" y2="26" stroke="black"/>
+    <line y1="-0.5" x2="26.1725" y2="-0.5" transform="matrix(0.687745 0.725953 0.725953 -0.687745 11 0)" stroke="black"/>
+    <line y1="-0.5" x2="29" y2="-0.5" transform="matrix(1 -6.02916e-08 -6.02916e-08 -1 0 19)" stroke="black"/>
+    <line y1="-0.5" x2="29" y2="-0.5" transform="matrix(1 -6.02916e-08 -6.02916e-08 -1 0 26)" stroke="black"/>
+  </g>
+</svg>

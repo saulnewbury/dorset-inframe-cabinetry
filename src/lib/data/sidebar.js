@@ -52,9 +52,12 @@ export const defineYourSpaceMenu = [
         component: ChooseArch
       }
     ]
-  },
+  }
+]
+
+export const makeItYours = [
   {
-    name: 'elements',
+    name: 'cabinets',
     options: [
       {
         fullWidth: true,
@@ -89,4 +92,7 @@ export const defineYourSpaceMenu = [
       }
     ]
   }
+  // {
+  //   name: 'appliances'
+  // }
 ]
