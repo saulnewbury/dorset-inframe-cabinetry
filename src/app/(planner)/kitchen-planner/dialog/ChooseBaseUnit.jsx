@@ -8,6 +8,8 @@ import CabinetGrid from '@/app/(planner)/kitchen-planner/dialog/CabinetGrid'
 import CabinetGridContainer from '@/app/(planner)/kitchen-planner/dialog/CabinetGridContainer'
 import UnitCard from './UnitCard'
 
+const baseHeight = 0.759 // 759mm
+
 export default function ChooseBaseUnit({
   variant = 'With door',
   onClose = () => {}
@@ -24,15 +26,19 @@ export default function ChooseBaseUnit({
   const widths = [...new Set(filtered.map((opt) => opt.sizes).flat())].sort(
     (a, b) => a - b
   )
+  const heights = [
+    ...new Set(filtered.map((opt) => opt.carcassHeight ?? baseHeight).flat())
+  ].sort((a, b) => a - b)
+  console.log(heights)
 
   return (
     <CabinetGridContainer>
       {/* Filter */}
-      <p className='flex gap-4'>
+      <p className="flex gap-4">
         {['All', ...filterText].map((f) => (
           <button
             key={f}
-            type='button'
+            type="button"
             className={clsx(f === filter && 'border-black border-b-2')}
             onClick={() => setFilter(f)}
           >
@@ -42,17 +48,23 @@ export default function ChooseBaseUnit({
       </p>
       {/* Styles */}
       <CabinetGrid>
-        {widths.map((w) =>
-          filtered
-            .filter((opt) => opt.sizes.includes(w))
-            .map((unit) => (
-              <UnitCard
-                key={`${unit.id}-${w}`}
-                {...unit}
-                width={w}
-                onClick={() => selectUnit(unit.id, w)}
-              />
-            ))
+        {heights.map((h) =>
+          widths.map((w) =>
+            filtered
+              .filter(
+                (opt) =>
+                  (opt.carcassHeight ?? baseHeight) === h &&
+                  opt.sizes.includes(w)
+              )
+              .map((unit) => (
+                <UnitCard
+                  key={`${unit.id}-${w}`}
+                  {...unit}
+                  width={w}
+                  onClick={() => selectUnit(unit.id, w)}
+                />
+              ))
+          )
         )}
       </CabinetGrid>
     </CabinetGridContainer>

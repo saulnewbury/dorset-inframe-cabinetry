@@ -229,8 +229,8 @@ export const baseUnitStyles = {
         panelConfig: panels['1-door'],
         basinConfig: basins['standard-single']
       },
-      title: 'Base unit with standard sink',
-      filterText: 'Single',
+      title: 'Base unit with standard single sink',
+      filterText: 'Standard',
       sizes: [500],
       prices: [80]
     },
@@ -242,7 +242,7 @@ export const baseUnitStyles = {
         basinConfig: basins['standard-twin']
       },
       title: 'Base unit with double sink',
-      filterText: 'Double',
+      filterText: 'Standard',
       sizes: [800],
       prices: [80]
     },
@@ -253,8 +253,9 @@ export const baseUnitStyles = {
         panelConfig: panels['1-door'],
         basinConfig: basins['belfast-single']
       },
-      title: 'Base unit with Belfast sink',
-      filterText: 'Single',
+      title: 'Base unit with Belfast single sink',
+      filterText: 'Belfast',
+      carcassHeight: 0.593,
       sizes: [600],
       prices: [80]
     },
@@ -266,7 +267,8 @@ export const baseUnitStyles = {
         basinConfig: basins['belfast-twin']
       },
       title: 'Base unit with Belfast double sink',
-      filterText: 'Double',
+      filterText: 'Belfast',
+      carcassHeight: 0.593,
       sizes: [800],
       prices: [80]
     }
