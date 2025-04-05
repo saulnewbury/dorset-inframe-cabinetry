@@ -93,34 +93,34 @@ const panels = {
     { type: 'door', ratio: 570 }
   ],
   '50-50': [
-    { type: 'door', ratio: 150 },
     {
       type: 'door',
       style: 'split',
       orientation: 'vertical',
       doorRatio: [50, 50],
       ratio: 1780
-    }
+    },
+    { type: 'door', ratio: 150 }
   ],
   '60-40': [
-    { type: 'door', ratio: 150 },
     {
       type: 'door',
       style: 'split',
       orientation: 'vertical',
       doorRatio: [60, 40],
       ratio: 1780
-    }
+    },
+    { type: 'door', ratio: 150 }
   ],
   '70-30': [
-    { type: 'door', ratio: 150 },
     {
       type: 'door',
       style: 'split',
       orientation: 'vertical',
       doorRatio: [70, 30],
       ratio: 1780
-    }
+    },
+    { type: 'door', ratio: 150 }
   ]
 }
 
@@ -232,7 +232,7 @@ export const baseUnitStyles = {
       id: 'base:sink-double',
       props: {
         ...baseUnitConfig,
-        panelConfig: panels['1-door'],
+        panelConfig: panels['2-door'],
         basinConfig: basins['standard-twin']
       },
       title: 'Base unit with double sink',
@@ -257,7 +257,7 @@ export const baseUnitStyles = {
       id: 'base:belfast-double',
       props: {
         ...baseUnitConfig,
-        panelConfig: panels['1-door'],
+        panelConfig: panels['2-door'],
         basinConfig: basins['belfast-twin']
       },
       title: 'Base unit with Belfast double sink',

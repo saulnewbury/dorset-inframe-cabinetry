@@ -49,13 +49,10 @@ export default function CabinetWall({
   // Base unit position - the distance from carcass to floor
   const baseUnitPositionY = 0.0265 + 0.104
   const footToTop = 0.7892
-  const worktop = 0.03
-  const worktopToWallUnit = 0.49
+  const worktopToWallUnit = 0.455
 
   return (
-    <group
-      position-y={baseUnitPositionY + footToTop + worktop + worktopToWallUnit}
-    >
+    <group position-y={baseUnitPositionY + footToTop + worktopToWallUnit}>
       <Frame
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}

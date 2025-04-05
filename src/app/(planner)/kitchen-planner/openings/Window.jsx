@@ -106,7 +106,7 @@ function Window3D({ style, len, offset, width, option }) {
                 args={[jamb, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial color='#eee' />
-              <Edges linewidth={1} threshold={15} color={'gray'} />
+              <Edges linewidth={1} threshold={15} color={'lightgray'} />
             </mesh>
           ) : (
             <mesh key={i} position={f.pos} rotation={f.rotation}>
@@ -114,7 +114,7 @@ function Window3D({ style, len, offset, width, option }) {
                 args={[head, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial color='#eee' />
-              <Edges linewidth={1} threshold={15} color={'gray'} />
+              <Edges linewidth={1} threshold={15} color={'lightgray'} />
             </mesh>
           )
         )}

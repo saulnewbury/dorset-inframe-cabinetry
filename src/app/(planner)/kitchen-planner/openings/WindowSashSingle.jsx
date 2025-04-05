@@ -25,7 +25,7 @@ export default function WindowSashSingle({
               args={[sashSide, { depth: d / 2, bevelEnabled: false }]}
             />
             <meshStandardMaterial color={color} />
-            <Edges linewidth={1} threshold={15} color={'gray'} />
+            <Edges linewidth={1} threshold={15} color={'lightgray'} />
           </mesh>
         ) : (
           <mesh key={i} position={s.pos} rotation={s.rotation}>
@@ -33,7 +33,7 @@ export default function WindowSashSingle({
               args={[sashHead, { depth: d / 2, bevelEnabled: false }]}
             />
             <meshStandardMaterial color={color} />
-            <Edges linewidth={1} threshold={15} color={'gray'} />
+            <Edges linewidth={1} threshold={15} color={'lightgray'} />
           </mesh>
         )
       )}
