@@ -4,13 +4,32 @@ import nodemailer from 'nodemailer'
 import { siteURL } from '@/lib/siteURL'
 import { customError } from '@/lib/custom-error'
 
-const required = ['timeframe', 'postcode']
+const required = ['sessionId', 'timeframe', 'postcode']
+
+const smtpConfig = {
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  secure: process.env.SMTP_PORT === '465',
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD
+  },
+  tls: {
+    ciphers: 'SSLv3'
+  }
+}
 
 /**
  *
  */
 export async function PATCH(request, { params }) {
   try {
+    // Check that email parameters are configured.
+    if (!process.env.SMTP_HOST) {
+      throw new Error('SMTP not configured')
+    }
+
+    // Check required parameters.
     const { modelId: id } = await params
     if (!id) throw new Error('Bad request')
 
@@ -23,48 +42,61 @@ export async function PATCH(request, { params }) {
       throw new Error('Bad request')
     }
 
-    const { timeframe, postcode } = dto
+    const { sessionId, timeframe, postcode } = dto
 
-    // Check that email parameters are configured.
-    if (!process.env.SMTP_HOST) {
-      throw new Error('SMTP not configured')
-    }
+    const result = await prisma.$transaction(async (tx) => {
+      // Check that the session is valid and get the user details.
+      const session = await tx.session.findUnique({
+        where: { id: sessionId },
+        include: { user: true }
+      })
+      if (!session || session.expires.getTime() > Date.now())
+        throw new Error('Session not found')
 
-    // Prepare to send emails ...
-    const transport = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      secure: process.env.SMTP_PORT === '465',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD
-      },
-      tls: {
-        ciphers: 'SSLv3'
+      const { email, verifyId } = session.user
+
+      // If the email address is not yet verified then we cannot submit the request.
+      if (verifyId) {
+        throw new Error('Email address not verified')
       }
-    })
 
-    const link = `${siteURL}/model/view/${id}`
-    await transport.sendMail({
-      from: process.env.SMTP_ORIGIN,
-      to: process.env.SMTP_MAILBOX,
-      subject: 'New request: ' + id,
-      text: `New request for quote:
+      // Check that the model exists and belongs to this user.
+      const model = await tx.saved.findUnique({
+        where: { id },
+        select: { email: true }
+      })
+      if (!model) throw new Error('Model not found')
+      if (model.email !== email) throw new Error('You are not authorised')
+
+      // Check that the model has not already been submitted.
+      if (model.submitted) throw new Error('Model already submitted')
+
+      // Send email to the business, with a link to the saved model.
+      const transport = nodemailer.createTransport(smtpConfig)
+      const link = `${siteURL}/model/view/${id}`
+      await transport.sendMail({
+        from: process.env.SMTP_ORIGIN,
+        to: process.env.SMTP_MAILBOX,
+        subject: 'New request: ' + id,
+        text: `New request for quote:
       
       Go to ${link} to view details.`,
-      html: `<p><b>New request for quote:</b></p>
+        html: `<p><b>New request for quote:</b></p>
       <p>Go to <a href="${link}">${link}</a> to view details.</p>`
-    })
+      })
 
-    // Now update the model entry in the database, to show it as 'sent'.
-    const submitted = await prisma.saved.update({
-      where: { id },
-      data: { submitted: new Date(), timeframe, postcode },
-      select: { submitted: true }
+      // Update the model entry in the database, to show it as 'sent'.
+      const submitted = await prisma.saved.update({
+        where: { id },
+        data: { submitted: new Date(), timeframe, postcode },
+        select: { submitted: true }
+      })
+
+      return { submitted }
     })
 
     // Return result.
-    return Response.json({ submitted })
+    return Response.json(result)
   } catch (err) {
     console.error(err)
     return customError(err)

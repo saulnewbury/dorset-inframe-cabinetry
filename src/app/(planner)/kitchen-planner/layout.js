@@ -1,36 +1,55 @@
 'use client'
 import { useRef, useState, useEffect, useContext, useMemo } from 'react'
+import { ModelContext } from '@/model/context'
 
 // Components
 import KitchenPlanner from './KitchenPlanner'
 import NavConfigurator from './NavConfigurator'
 import IntroMessage from './IntroMessage'
 import List from './List'
-import SaveModel from './dialog/SaveModel'
-import SubmitModel from './dialog/SubmitModel'
+import LoginDialog from './dialog/LoginDialog'
+import ModelSavedDialog from './dialog/ModelSaved'
+import SubmitModelDialog from './dialog/SubmitModel'
+import VerifyEmailDialog from './dialog/VerifyEmail'
 
 import { CanvasContext } from '../../../context'
 import PerspectiveContextProvider from './perspectiveContextProvider'
-import { ModelContext } from '@/model/context'
 import {
   baseUnitStyles,
   tallUnitStyles,
   wallUnitStyles
 } from '@/model/itemStyles'
 import { useSearchParams } from 'next/navigation'
-import VerifyEmail from './dialog/VerifyEmail'
 
 export default function Layout({ children }) {
   const [ref, setRef] = useState({})
   const kitchenPlanner = useRef()
   const [showList, setShowList] = useState()
-  const [showSaveModel, setShowSaveModel] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
+  const [showModelSaved, setShowModelSaved] = useState(false)
   const [showSubmitModel, setShowSubmitModel] = useState(false)
-  const [model] = useContext(ModelContext)
+  const [isSave, setIsSave] = useState(false)
+  const [saveResult, setSaveResult] = useState(null)
+  const [model, dispatch] = useContext(ModelContext)
   const search = useSearchParams()
   const verifyId = search.get('verifyId')
-  const [modelId, setModelId] = useState(verifyId)
+  const [session, setSession] = useState(null)
 
+  // Fetch session data from browser storage (if available).
+  useEffect(() => {
+    const sessionData = sessionStorage.getItem('sessionData')
+    if (sessionData) {
+      try {
+        const session = JSON.parse(sessionData)
+        if (new Date(session.expires).getTime() > Date.now()) {
+          setSession(session)
+        }
+      } catch {}
+    }
+  }, [])
+
+  // Compute the list of items in the kitchen planner model. This is a memoized
+  // value that will only change when the model changes.
   const items = useMemo(() => {
     const items = new Map()
     if (model?.units)
@@ -68,35 +87,58 @@ export default function Layout({ children }) {
         <NavConfigurator
           count={count}
           openList={() => setShowList(true)}
-          saveModel={() => setShowSaveModel(true)}
+          saveModel={async () => {
+            if (session && new Date(session.expires).getTime() > Date.now()) {
+              setSaveResult(await doSaveModel())
+              setShowModelSaved(true)
+              return
+            }
+            setShowLogin(true)
+            setIsSave(true)
+          }}
         />
+
         <CanvasContext.Provider value={ref}>
           <List
             items={items}
             showList={showList}
             closeList={() => setShowList(false)}
           />
-          <SaveModelDialog
-            show={showSaveModel}
+
+          <LoginDialog
+            show={showLogin}
+            isSave={isSave}
             count={count}
             totalPrice={totalPrice}
-            onClose={() => setShowSaveModel(false)}
-            onSubmit={(id) => {
-              setModelId(id)
-              setShowSaveModel(false)
+            onClose={() => {
+              setIsSave(false)
+              setShowLogin(false)
+            }}
+            onLogin={doLogin}
+          />
+
+          <SubmitModelDialog
+            show={showSubmitModel}
+            onClose={() => setShowSubmitModel(false)}
+          />
+
+          <ModelSavedDialog
+            show={showModelSaved}
+            result={saveResult}
+            onClose={() => {
+              setShowModelSaved(false)
+            }}
+            onSubmit={() => {
+              setShowModelSaved(false)
               setShowSubmitModel(true)
             }}
           />
-          <SubmitModelDialog
-            show={showSubmitModel}
-            modelId={modelId}
-            onClose={() => setShowSubmitModel(false)}
-          />
+
           <VerifyEmailDialog
             verifyId={verifyId}
-            onSubmit={(id) => {
-              setModelId(id)
-              setShowSubmitModel(true)
+            onVerify={(session) => {
+              doLogin(session)
+              setShowSubmitModel(!!model.id)
             }}
           />
           <IntroMessage show={!verifyId} />
@@ -106,10 +148,51 @@ export default function Layout({ children }) {
       </PerspectiveContextProvider>
     </>
   )
+
+  // Action handlers:
+
+  async function doLogin(session) {
+    setShowLogin(false)
+    setSession(session)
+    sessionStorage.setItem('sessionData', JSON.stringify(session))
+    if (isSave) {
+      setIsSave(false)
+      setSaveResult(await doSaveModel())
+      setShowModelSaved(true)
+    }
+  }
+
+  async function doSaveModel() {
+    try {
+      const res = await fetch('/api/model/save', {
+        method: 'POST',
+        body: JSON.stringify({
+          sessionId: session.sessionId,
+          modelData: model
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      if (!res.ok) throw new Error('Network error')
+      const data = await res.json()
+      // Check result.
+      if (data.error) throw new Error(data.error)
+      dispatch({
+        id: 'setId',
+        modelId: data.id,
+        dateSaved: data.created
+      })
+      return data
+    } catch (err) {
+      console.error(err)
+      return { error: err.message }
+    }
+  }
 }
 
 // use imperative handle when it's an action, rather
-// than push it through a boolian variable.
+// than push it through a boolean variable.
 
 // discover whether a page needs a layout in the middle
 // layout can call a component that produces the menu bar.
@@ -160,53 +243,4 @@ function tallInfo(unit) {
       price: inf.prices[inf.sizes.indexOf(+unit.width)]
     }
   }
-}
-
-function SaveModelDialog({ show, count, totalPrice, onClose, onSubmit }) {
-  return (
-    show && (
-      <div className="bg-[#0000003f] h-[100vh] w-[100vw] absolute z-[500] flex justify-center items-center">
-        <div className="w-[600px] bg-[white] text-xl p-12 relative ">
-          <SaveModel
-            items={count}
-            price={totalPrice}
-            onClose={onClose}
-            onSubmit={onSubmit}
-          />
-        </div>
-      </div>
-    )
-  )
-}
-
-function SubmitModelDialog({ show, modelId, onClose }) {
-  return (
-    show && (
-      <div className="bg-[#0000003f] h-[100vh] w-[100vw] absolute z-[500] flex justify-center items-center">
-        <div className="w-[600px] bg-[white] text-xl p-12 relative ">
-          <SubmitModel modelId={modelId} onClose={onClose} />
-        </div>
-      </div>
-    )
-  )
-}
-
-function VerifyEmailDialog({ verifyId, onSubmit = () => {} }) {
-  const [show, setShow] = useState(!!verifyId)
-  return (
-    show && (
-      <div className="bg-[#0000003f] h-[100vh] w-[100vw] absolute z-[500] flex justify-center items-center">
-        <div className="w-[600px] bg-[white] text-xl p-12 relative ">
-          <VerifyEmail
-            requestId={verifyId}
-            onClose={() => setShow(false)}
-            onSubmit={(id) => {
-              setShow(false)
-              onSubmit(id)
-            }}
-          />
-        </div>
-      </div>
-    )
-  )
 }

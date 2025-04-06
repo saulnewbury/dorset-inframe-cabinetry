@@ -5,10 +5,22 @@ import nodemailer from 'nodemailer'
 import { siteURL } from '@/lib/siteURL'
 import { customError } from '@/lib/custom-error'
 
-const required = ['name', 'email', 'password', 'modelData']
-export const base = '0ae024030d0993124904e3a5181a5e5d' // md5 'random.upstart.bus'
+const required = ['sessionId', 'modelData']
 
 const EXPIRY_DAYS = 5
+
+const smtpConfig = {
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  secure: process.env.SMTP_PORT === '465',
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD
+  },
+  tls: {
+    ciphers: 'SSLv3'
+  }
+}
 
 export async function POST(request) {
   try {
@@ -21,14 +33,20 @@ export async function POST(request) {
       throw new Error('Bad request')
     }
 
-    const { name, email, password, modelData } = dto
-
-    // Protect against illegal values for name and email, as we're going to use
-    // them in nodemailer.
-    if (!/^[\w\s\d]*$/.test(name) || !/^[\w\d.@]*$/.test(email))
-      throw new Error('Bad data')
+    const { sessionId, modelData } = dto
 
     const result = await prisma.$transaction(async (tx) => {
+      // Check that the session is valid and get the user details.
+      const session = await tx.session.findUnique({
+        where: { id: sessionId },
+        include: { user: true }
+      })
+      console.log(session)
+      if (!session || session.expires.getTime() < Date.now())
+        throw new Error('Session not found')
+
+      const { email, verifyId } = session.user
+
       // If the model has already been saved, verify that it belongs to this user.
       if (modelData.id) {
         const model = await tx.saved.findUnique({
@@ -36,44 +54,15 @@ export async function POST(request) {
           select: { email: true }
         })
         if (!model) delete modelData.id
-        else if (email !== model.email)
+        else if (model.email !== email)
           throw new Error('You are not authorised')
       }
-
-      // Check if user already exists.
-      const {
-        salt: saltdb,
-        password: pwdb,
-        isVerified
-      } = await tx.user.findUnique({
-        where: { email },
-        select: { salt: true, password: true, isVerified: true }
-      })
-
-      // Create the user - unverified at first.
-      const salt = saltdb || randomBytes(16).toString('hex')
-      let pwd = await new Promise((resolve, reject) => {
-        scrypt(password, salt + base, 64, (err, buf) => {
-          if (err) reject(err)
-          resolve(buf.toString('hex'))
-        })
-      })
-
-      // If user doesn't yet exist, create the record now.
-      if (!saltdb) {
-        await tx.user.create({
-          data: { email, password: pwd, salt, name }
-        })
-      }
-
-      // Else check that the password given is the same as last saved.
-      else if (pwdb !== pwd) throw new Error('You are not authorised')
 
       // Next save the model against that user.
       const { id: modelId, created } = await (modelData.id
         ? tx.saved.update({
             where: { id: modelData.id },
-            data: { modelData: JSON.stringify(modelData) },
+            data: { modelData: JSON.stringify(modelData), created: new Date() },
             select: { id: true, created: true }
           })
         : tx.saved.create({
@@ -81,58 +70,17 @@ export async function POST(request) {
             select: { id: true, created: true }
           }))
 
-      return { id: modelId, created, isVerified }
-    })
-
-    // Prepare to send emails ...
-    const transport = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      secure: process.env.SMTP_PORT === '465',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD
-      },
-      tls: {
-        ciphers: 'SSLv3'
-      }
-    })
-
-    // If the email is not yet verified, send message to ask user to verify.
-    if (!result.isVerified) {
-      if (!process.env.SMTP_HOST) console.log('SMTP not configured')
-      else {
-        const link = `${siteURL}/kitchen-planner/define-your-space/verifyId=${result.id}`
-        await transport.sendMail({
-          from: process.env.SMTP_ORIGIN,
-          to: `${name}<${email}>`,
-          subject: 'Verify email address',
-          text: `Dear ${name},
-
-        Welcome to Dorset Inframe Cabinetry and thank you for your interest.
-        
-        Please verify your email address at the following URL:
-        ${link}
-        
-        Your model has been saved and will be kept on our server for ${EXPIRY_DAYS}
-        days but will then be deleted if your email address has not been verified.`,
-          html: `<p>Dear ${name},</p>
-        <p><b>Welcome to Dorset Inframe Cabinetry</b> and thank you for your interest.</p>
-        <p>Please verify your email address at the following URL:<br/>
-        <a href="${link}">${link}</a></p>
-        <p>Your model has been saved and will be kept on our server for
-        ${EXPIRY_DAYS} days but will then be deleted if your email address has not
-        been verified.</p>`
+      // If the email address is not yet verified, purge any obsolete saves.
+      if (verifyId) {
+        const expired = new Date()
+        expired.setDate(expired.getDate() - EXPIRY_DAYS)
+        await prisma.saved.deleteMany({
+          where: { email, created: { lt: expired } }
         })
       }
 
-      // And purge any obsolete saves.
-      const expired = new Date()
-      expired.setDate(expired.getDate() - EXPIRY_DAYS)
-      await prisma.saved.deleteMany({
-        where: { email, created: { lt: expired } }
-      })
-    }
+      return { id: modelId, created, isVerified: !verifyId }
+    })
 
     // Return success.
     return Response.json(result)

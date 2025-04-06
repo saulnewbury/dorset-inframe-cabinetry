@@ -1,10 +1,4 @@
-import { prisma } from '@/lib/database'
-import { scrypt } from 'node:crypto'
-import { customError } from '@/lib/custom-error'
-import { createSession } from '@/lib/session'
-
-const required = ['email', 'password', 'requestId']
-const saltBase = process.env.SALT_BASE
+import { customError } from '@/utils/customError'
 
 export async function POST(request) {
   try {
@@ -18,7 +12,7 @@ export async function POST(request) {
     if (required.some((key) => !keys.includes(key)))
       throw new Error('Bad request')
 
-    const { email, password, requestId } = dto
+    const { email, password } = dto
 
     const result = await prisma.$transaction(async (tx) => {
       // Check that the user exists.
@@ -27,11 +21,9 @@ export async function POST(request) {
       })
       if (!user) throw new Error('User not found')
 
-      const { password: pwdb, salt, verifyId } = user
+      const { password: pwdb, salt } = user
 
-      // Check that the user has supplied the correct password and verification
-      // id for the account.
-
+      // Check that the password is correct.
       const pwd = await new Promise((resolve, reject) => {
         scrypt(password, salt + saltBase, 64, (err, buf) => {
           if (err) reject(err)
@@ -40,17 +32,6 @@ export async function POST(request) {
       })
 
       if (pwd !== pwdb) throw new Error('User not found')
-      if (verifyId && verifyId !== requestId)
-        throw new Error('Invalid verification request')
-
-      // If the user has not been verified already then update their record.
-      if (verifyId) {
-        await prisma.user.update({
-          where: { email },
-          data: { verifyId: null }
-        })
-      }
-
       // Create a new session for the user.
       const { sessionId, expires } = await createSession(email, tx)
 

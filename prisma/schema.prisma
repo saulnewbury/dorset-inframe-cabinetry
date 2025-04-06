@@ -23,14 +23,24 @@ model saved {
 }
 
 model user {
-  email      String   @id
-  password   String // encrypted
-  salt       String
-  name       String
-  created    DateTime @default(now())
-  isVerified Boolean  @default(false)
+  email    String   @id
+  password String // encrypted
+  salt     String
+  name     String
+  created  DateTime @default(now())
+  verifyId String?
 
-  saved saved[]
+  saved   saved[]
+  session session[]
 
   @@unique([email, password])
+}
+
+model session {
+  id        String   @id @default(uuid())
+  userEmail String
+  created   DateTime @default(now())
+  expires   DateTime
+
+  user user @relation(fields: [userEmail], references: [email])
 }
