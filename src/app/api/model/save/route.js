@@ -41,7 +41,6 @@ export async function POST(request) {
         where: { id: sessionId },
         include: { user: true }
       })
-      console.log(session)
       if (!session || session.expires.getTime() < Date.now())
         throw new Error('Session not found')
 
