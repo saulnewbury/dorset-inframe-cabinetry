@@ -1,6 +1,7 @@
 'use client'
 import { useRef, useState, useEffect, useContext, useMemo } from 'react'
 import { ModelContext } from '@/model/context'
+import { useSearchParams } from 'next/navigation'
 
 // Components
 import KitchenPlanner from './KitchenPlanner'
@@ -19,7 +20,6 @@ import {
   tallUnitStyles,
   wallUnitStyles
 } from '@/model/itemStyles'
-import { useSearchParams } from 'next/navigation'
 
 export default function Layout({ children }) {
   const [ref, setRef] = useState({})
@@ -32,7 +32,7 @@ export default function Layout({ children }) {
   const [saveResult, setSaveResult] = useState(null)
   const [model, dispatch] = useContext(ModelContext)
   const search = useSearchParams()
-  const verifyId = search.get('verifyId')
+  const [verifyId] = useState(search.get('verifyId')) // retain from initial URL
   const [session, setSession] = useState(null)
 
   // Fetch session data from browser storage (if available).
@@ -47,6 +47,15 @@ export default function Layout({ children }) {
       } catch {}
     }
   }, [])
+
+  // Remove query string from URL after user has verified their email address.
+  useEffect(() => {
+    if (verifyId && session) {
+      const url = new URL(window.location.href)
+      url.searchParams.delete('verifyId')
+      window.history.replaceState({}, document.title, url.toString())
+    }
+  }, [verifyId, session])
 
   // Compute the list of items in the kitchen planner model. This is a memoized
   // value that will only change when the model changes.
@@ -85,6 +94,7 @@ export default function Layout({ children }) {
     <>
       <PerspectiveContextProvider>
         <NavConfigurator
+          session={session}
           count={count}
           openList={() => setShowList(true)}
           saveModel={async () => {
@@ -96,6 +106,8 @@ export default function Layout({ children }) {
             setShowLogin(true)
             setIsSave(true)
           }}
+          onLogOut={doLogout}
+          onLogIn={() => setShowLogin(true)}
         />
 
         <CanvasContext.Provider value={ref}>
@@ -187,6 +199,26 @@ export default function Layout({ children }) {
     } catch (err) {
       console.error(err)
       return { error: err.message }
+    }
+  }
+
+  async function doLogout() {
+    try {
+      const res = await fetch('/api/user/logout', {
+        method: 'POST',
+        body: JSON.stringify({ sessionId: session.sessionId }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      if (!res.ok) throw new Error('Network error')
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      sessionStorage.removeItem('sessionData')
+      setSession(null)
     }
   }
 }

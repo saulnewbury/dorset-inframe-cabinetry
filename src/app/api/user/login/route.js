@@ -1,4 +1,11 @@
-import { customError } from '@/utils/customError'
+import { customError } from '@/lib/custom-error'
+import { prisma } from '@/lib/database'
+import { scrypt } from 'node:crypto'
+import { createSession } from '@/lib/session'
+
+const saltBase = process.env.SALT_BASE
+
+const required = ['email', 'password']
 
 export async function POST(request) {
   try {

@@ -1,5 +1,6 @@
-import { useContext, useRef, useState } from 'react'
-import { ModelContext } from '@/model/context'
+import { useRef, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
+
 import Button from '@/components/Button'
 import TextInput from '@/components/TextInput'
 
@@ -15,11 +16,12 @@ export default function LoginDialog({
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [isExisting, setExisting] = useState(false)
+  const [isExisting, setExisting] = useState(true)
   const [message, setMessage] = useState('')
   const [isProblem, setIsProblem] = useState(false)
   const form = useRef(null)
 
+  const canSubmit = email && password && (isExisting || name)
   const disabled = !!message
 
   return (
@@ -40,7 +42,9 @@ export default function LoginDialog({
             </div>
           ) : (
             <div>
-              <h2 className="text-lg font-bold">Save Model</h2>
+              <h2 className="text-lg font-bold">
+                {isExisting ? 'Log In' : 'Create Account'}
+              </h2>
               <form
                 ref={form}
                 onSubmit={doLogin}

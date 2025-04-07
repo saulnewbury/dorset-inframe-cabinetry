@@ -10,10 +10,19 @@ import SvgIcon from '@/components/SvgIcon'
 import Button from '@/components/Button'
 
 import { plannerMenu } from '@/lib/data/menu'
+import { twMerge } from 'tailwind-merge'
 
-export default function NavConfigurator({ count = 0, openList, saveModel }) {
+export default function NavConfigurator({
+  session,
+  count = 0,
+  openList,
+  saveModel,
+  onLogOut = () => {},
+  onLogIn = () => {}
+}) {
   const [openConfirmation, setOpenConfirmation] = useState(false)
   const pathname = usePathname()
+  const [showUserPopup, setShowUserPopup] = useState(false)
 
   function confirmNavigation(e) {
     e.preventDefault()
@@ -48,20 +57,17 @@ export default function NavConfigurator({ count = 0, openList, saveModel }) {
           })}
         </div>
 
-        <div className="flex items-center justify-self-end h-full">
+        <div className="flex items-center justify-self-end h-full gap-x-[30px]">
           {/* <span className='inline-block cursor-pointer'>
             <span className='mr-[5px]'>Login</span>
             <SvgIcon shape='login' />
           </span> */}
-          <button
-            className="inline-block relative cursor-pointer mr-[30px]"
-            onClick={saveModel}
-          >
+          <button className="inline-block relative" onClick={saveModel}>
             <SvgIcon shape="save" />
           </button>
 
           <button
-            className="inline-block relative cursor-pointer mr-[30px]"
+            className="inline-block relative"
             onClick={openList}
             disabled={count === 0}
           >
@@ -72,6 +78,34 @@ export default function NavConfigurator({ count = 0, openList, saveModel }) {
               </span>
             </div>
           </button>
+
+          {session ? (
+            <div className="relative">
+              <button onClick={() => setShowUserPopup(!showUserPopup)}>
+                <SvgIcon shape="user" />
+              </button>
+              <div
+                className={twMerge(
+                  'absolute top-full hidden bg-white text-nowrap border border-darkGrey px-2 shadow-md',
+                  showUserPopup ? 'block' : 'hidden'
+                )}
+              >
+                <button
+                  onClick={() => {
+                    setShowUserPopup(false)
+                    onLogOut()
+                  }}
+                >
+                  Log out
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button className="flex gap-x-2" onClick={onLogIn}>
+              <span>Login</span>
+              <SvgIcon shape="login" />
+            </button>
+          )}
 
           <div className="h-[max-content] relative">
             <Link href="/" onClick={confirmNavigation}>
