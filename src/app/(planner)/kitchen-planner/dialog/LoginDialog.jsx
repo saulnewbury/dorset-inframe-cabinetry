@@ -19,10 +19,12 @@ export default function LoginDialog({
   const [isExisting, setExisting] = useState(true)
   const [message, setMessage] = useState('')
   const [isProblem, setIsProblem] = useState(false)
+  const [isReset, setIsReset] = useState(false)
   const form = useRef(null)
 
   const canSubmit = email && password && (isExisting || name)
   const disabled = !!message
+  console.log('isReset', isReset)
 
   return (
     show && (
@@ -35,7 +37,27 @@ export default function LoginDialog({
                 address and password and try again. Or create a new account.
               </p>
               <p className="flex justify-end gap-8 col-span-2 mt-4">
-                <Button type="button" onClick={setIsProblem(false)}>
+                <Button
+                  type="button"
+                  primary={true}
+                  onClick={setIsProblem(false)}
+                >
+                  Close
+                </Button>
+              </p>
+            </div>
+          ) : isReset ? (
+            <div>
+              <p>
+                A password reset link has been sent to your email address.
+                Please check your inbox.
+              </p>
+              <p className="flex justify-end gap-8 col-span-2 mt-4">
+                <Button
+                  type="button"
+                  primary={true}
+                  onClick={() => setIsReset(false)}
+                >
                   Close
                 </Button>
               </p>
@@ -130,11 +152,22 @@ export default function LoginDialog({
                       }
                     }}
                   />
-                  {!isExisting && (
+                  {isExisting ? (
+                    <p>
+                      <a
+                        className="text-darkGrey text-sm hover:text-[#0061ff] hover:underline"
+                        href="#forgot"
+                        onClick={forgotPassword}
+                      >
+                        Forgot password
+                      </a>
+                    </p>
+                  ) : (
                     <TextInput
                       name="confirm-password"
                       label="Confirm password"
                       type="password"
+                      value={confirmPassword}
                       disabled={disabled}
                       autoComplete="new-password"
                       onChange={(value) => {
@@ -211,5 +244,37 @@ export default function LoginDialog({
   function setUserType(ev, isExisting) {
     ev.preventDefault()
     setExisting(isExisting)
+  }
+
+  async function forgotPassword(ev) {
+    ev.preventDefault()
+    if (!email) {
+      form.current['email'].setCustomValidity('Email address is required')
+      form.current['email'].reportValidity()
+      return
+    }
+    try {
+      setMessage('Please wait...')
+      const res = await fetch('/api/user/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({
+          email
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      if (!res.ok) throw new Error('Network error')
+      const data = await res.json()
+      // Check result.
+      if (data.error) throw new Error(data.error)
+      console.log(data)
+      setMessage('')
+      setIsReset(true)
+    } catch (err) {
+      console.error(err)
+      setMessage('')
+      setIsProblem(true)
+    }
   }
 }

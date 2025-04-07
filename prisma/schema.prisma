@@ -23,12 +23,13 @@ model saved {
 }
 
 model user {
-  email    String   @id
-  password String // encrypted
-  salt     String
-  name     String
-  created  DateTime @default(now())
-  verifyId String?
+  email      String   @id
+  password   String // encrypted
+  salt       String
+  name       String
+  created    DateTime @default(now())
+  verifyId   String?
+  resetToken String?  @unique
 
   saved   saved[]
   session session[]

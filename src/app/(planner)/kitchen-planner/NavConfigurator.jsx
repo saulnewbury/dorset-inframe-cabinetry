@@ -86,8 +86,8 @@ export default function NavConfigurator({
               </button>
               <div
                 className={twMerge(
-                  'absolute top-full hidden bg-white text-nowrap border border-darkGrey px-2 shadow-md',
-                  showUserPopup ? 'block' : 'hidden'
+                  'absolute top-full bg-white text-nowrap border border-darkGrey px-2 shadow-md flex-col gap-y-2',
+                  showUserPopup ? 'flex' : 'hidden'
                 )}
               >
                 <button

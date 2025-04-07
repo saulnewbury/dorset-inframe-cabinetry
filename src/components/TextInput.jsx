@@ -23,7 +23,7 @@ export default function TextInput({
         {label}
       </span>
       <input
-        className="w-full outline-none border-b border-darkGrey"
+        className="w-full outline-none border-b border-darkGrey invalid:border-red invalid:text-red"
         name={name}
         type={type}
         value={value}
