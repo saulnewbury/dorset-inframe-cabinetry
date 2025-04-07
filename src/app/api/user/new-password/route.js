@@ -2,24 +2,18 @@ import { customError } from '@/lib/custom-error'
 import { randomBytes, scrypt } from 'node:crypto'
 import { prisma } from '@/lib/database'
 import nodemailer from 'nodemailer'
+import { smtpConfig } from '@/lib/smtp-config'
 
 const required = ['resetId', 'password']
 const saltBase = process.env.SALT_BASE
-const smtpConfig = {
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: process.env.SMTP_PORT === '465',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD
-  },
-  tls: {
-    ciphers: 'SSLv3'
-  }
-}
 
 export async function POST(request) {
   try {
+    // Check that email parameters are configured.
+    if (!smtpConfig.host) {
+      throw new Error('SMTP not configured')
+    }
+
     // Extract fields from the request body.
     const dto = await request.json()
     const keys = Object.keys(dto)

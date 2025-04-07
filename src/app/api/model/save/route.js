@@ -1,26 +1,9 @@
 import { prisma } from '@/lib/database'
-import { randomBytes, scrypt } from 'node:crypto'
-import nodemailer from 'nodemailer'
-
-import { siteURL } from '@/lib/siteURL'
 import { customError } from '@/lib/custom-error'
 
 const required = ['sessionId', 'modelData']
 
 const EXPIRY_DAYS = 5
-
-const smtpConfig = {
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: process.env.SMTP_PORT === '465',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD
-  },
-  tls: {
-    ciphers: 'SSLv3'
-  }
-}
 
 export async function POST(request) {
   try {

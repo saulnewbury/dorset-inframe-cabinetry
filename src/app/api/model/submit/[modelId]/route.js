@@ -1,23 +1,10 @@
 import { prisma } from '@/lib/database'
 import nodemailer from 'nodemailer'
-
 import { siteURL } from '@/lib/siteURL'
 import { customError } from '@/lib/custom-error'
+import { smtpConfig } from '@/lib/smtp-config'
 
 const required = ['sessionId', 'timeframe', 'postcode']
-
-const smtpConfig = {
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: process.env.SMTP_PORT === '465',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD
-  },
-  tls: {
-    ciphers: 'SSLv3'
-  }
-}
 
 /**
  *
@@ -25,7 +12,7 @@ const smtpConfig = {
 export async function PATCH(request, { params }) {
   try {
     // Check that email parameters are configured.
-    if (!process.env.SMTP_HOST) {
+    if (!smtpConfig.host) {
       throw new Error('SMTP not configured')
     }
 

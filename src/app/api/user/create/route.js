@@ -3,21 +3,10 @@ import { prisma } from '@/lib/database'
 import { randomBytes, randomUUID, scrypt } from 'node:crypto'
 import { createSession } from '@/lib/session'
 import nodemailer from 'nodemailer'
+import { smtpConfig } from '@/lib/smtp-config'
 
 const required = ['name', 'email', 'password']
 const saltBase = process.env.SALT_BASE
-const smtpConfig = {
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: process.env.SMTP_PORT === '465',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD
-  },
-  tls: {
-    ciphers: 'SSLv3'
-  }
-}
 
 export async function POST(request) {
   try {
