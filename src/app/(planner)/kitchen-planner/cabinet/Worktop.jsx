@@ -32,13 +32,17 @@ export default function Worktop({
       {basin ? (
         <>
           {/* Back */}
-          <mesh position={[0, height + 0.015, -d / 2 + backShim / 2]}>
+          <mesh
+            receiveShadow
+            position={[0, height + 0.015, -d / 2 + backShim / 2]}
+          >
             <boxGeometry args={[w, 0.03, backShim]} />
             <meshStandardMaterial color={color} />
           </mesh>
           {/* Front */}
           {basin.type !== 'belfast' && (
             <mesh
+              receiveShadow
               position={[
                 0,
                 height + 0.015,
@@ -50,11 +54,15 @@ export default function Worktop({
             </mesh>
           )}
           {/* Sides */}
-          <mesh position={[w / 2 - sideShim / 2, height + 0.015, overhang / 2]}>
+          <mesh
+            receiveShadow
+            position={[w / 2 - sideShim / 2, height + 0.015, overhang / 2]}
+          >
             <boxGeometry args={[sideShim, 0.03, d + overhang]} />
             <meshStandardMaterial color={color} />
           </mesh>
           <mesh
+            receiveShadow
             position={[-w / 2 + sideShim / 2, height + 0.015, overhang / 2]}
           >
             <boxGeometry args={[sideShim, 0.03, d + overhang]} />
@@ -63,7 +71,7 @@ export default function Worktop({
         </>
       ) : (
         <>
-          <mesh position={[0, height + 0.015, overhang / 2]}>
+          <mesh receiveShadow position={[0, height + 0.015, overhang / 2]}>
             <boxGeometry args={[w, 0.03, d + overhang]} />
             <meshStandardMaterial color={color} />
           </mesh>

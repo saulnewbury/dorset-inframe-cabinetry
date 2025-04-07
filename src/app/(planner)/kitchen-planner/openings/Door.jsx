@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import {
   BufferGeometry,
-  Path,
   Vector2,
   Vector3,
   LineBasicMaterial,
@@ -18,16 +17,6 @@ import { wh, wt } from '@/const'
 
 import { lineColor } from '../cabinet/colors'
 import { wallColor } from '../cabinet/colors'
-
-// Reusable materials
-import { wallMaterial, doorMaterial, linesMaterial } from '@/materials'
-
-// Styles:
-//   solid_1pane.src
-//   glass_1pane.src
-//   solid_2pane.src (todo)
-//   topGlass_2pane.src (todo)
-//   twinGlass_2pane.src (todo)
 
 /**
  * General component to display a door. Checks 2D/3D state to determine which
@@ -154,11 +143,6 @@ function Door2D({ len, offset, width, option, style, onClick = () => {} }) {
         material={new LineBasicMaterial({ color: 'lightgray' })}
         scale-x={handle === 'left' ? -1 : 1}
       />
-      {/* <line
-        geometry={lines}
-        material={linesMaterial}
-        scale-x={handle === 'left' ? -1 : 1}
-      /> */}
     </group>
   )
 }

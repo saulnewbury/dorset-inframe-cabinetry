@@ -3,6 +3,8 @@ import { Edges } from '@react-three/drei'
 
 import lineColor from './colors'
 
+import { useAppState } from '@/appState'
+
 export default function Carcass({
   distance,
   carcassHeight,
@@ -18,10 +20,14 @@ export default function Carcass({
   const offsetY = underCounter ? baseCarcassToFloor : 0
   const offsetZ = underCounter ? 0.05 - 0.051 : 0
 
+  // App state
+  const { is3D } = useAppState()
+
   return (
     <>
       {/* Left Side Panel */}
       <mesh
+        receiveShadow
         position={[
           -distance / 2,
           carcassHeight / 2 - offsetY / 2,
@@ -35,12 +41,17 @@ export default function Carcass({
             carcassDepth - offsetZ
           ]}
         />
-        <meshStandardMaterial color='white' />
-        <Edges color={lineColor} renderOrder={1000} />
+        <meshStandardMaterial color={is3D ? 'white' : 'lightgray'} />
+        <Edges
+          color={is3D ? lineColor : 'darkgray'}
+          renderOrder={1000}
+          lineWidth={!is3D && 2}
+        />
       </mesh>
 
       {/* Right Side Panel */}
       <mesh
+        receiveShadow
         position={[distance / 2, carcassHeight / 2 - offsetY / 2, -offsetZ / 2]}
       >
         <boxGeometry
@@ -50,8 +61,12 @@ export default function Carcass({
             carcassDepth + offsetZ
           ]}
         />
-        <meshStandardMaterial color='white' />
-        <Edges color='lineColor' renderOrder={1000} />
+        <meshStandardMaterial color={is3D ? 'white' : 'lightgray'} />
+        <Edges
+          color={is3D ? lineColor : 'darkgray'}
+          renderOrder={1000}
+          lineWidth={!is3D && 2}
+        />
       </mesh>
 
       {/* Back Panel & Bottom Panel */}
@@ -61,8 +76,12 @@ export default function Carcass({
             <boxGeometry
               args={[distance, panelThickness, carcassDepth - backInset]}
             />
-            <meshStandardMaterial color='white' />
-            <Edges color='lineColor' renderOrder={1000} />
+            <meshStandardMaterial color={is3D ? 'white' : 'lightgray'} />
+            <Edges
+              color='lineColor'
+              renderOrder={1000}
+              lineWidth={!is3D && 2}
+            />
           </mesh>
           <mesh
             rotation-y={Math.PI * 0.5}
@@ -75,8 +94,12 @@ export default function Carcass({
             <boxGeometry
               args={[panelThickness, carcassHeight, distance - panelThickness]}
             />
-            <meshStandardMaterial color='white' />
-            <Edges color='lineColor' renderOrder={1000} />
+            <meshStandardMaterial color={is3D ? 'white' : 'lightgray'} />
+            <Edges
+              color='lineColor'
+              renderOrder={1000}
+              lineWidth={!is3D && 2}
+            />
           </mesh>
         </>
       )}
@@ -91,7 +114,7 @@ export default function Carcass({
               carcassDepth - backInset
             ]}
           />
-          <meshStandardMaterial color='white' />
+          <meshStandardMaterial color={is3D ? 'white' : 'lightgray'} />
           <Edges color='lineColor' renderOrder={1000} />
         </mesh>
       )}

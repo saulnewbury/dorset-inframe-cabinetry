@@ -9,6 +9,8 @@ import MouldingThreeSided from './MouldingThreeSides'
 import FrontPanels from './FrontPanels'
 import Worktop from './Worktop'
 
+import { useAppState } from '@/appState'
+
 export default function CabinetUnderCounter({
   baseUnit = true,
   carcassDepth = 0.575,
@@ -20,6 +22,8 @@ export default function CabinetUnderCounter({
     }
   ]
 }) {
+  const { is3D } = useAppState()
+
   // Carcass
   const panelThickness = 0.018
   const backInset = 0.03
@@ -96,7 +100,7 @@ export default function CabinetUnderCounter({
         underCounter={true}
       />
 
-      {baseUnit && (
+      {baseUnit && is3D && (
         <Worktop
           distance={distance}
           thickness={panelThickness}

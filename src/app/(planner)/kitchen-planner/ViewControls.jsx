@@ -8,8 +8,12 @@ export default function ViewControls({
   shrink = false
 }) {
   return (
-    <div className={`absolute bottom-[40px] w-full flex justify-center`}>
-      <div className={`${shrink ? 'mr-[calc(30%-74px)]' : ''}`}>
+    <div
+      className={`absolute left-[50%] -translate-x-[50%] bottom-[40px] flex justify-center bg-red-500 ${
+        shrink ? 'left-[calc(30%+74px+37px)]' : ''
+      }`}
+    >
+      <div>
         <button
           type='button'
           className={`${

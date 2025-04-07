@@ -130,7 +130,12 @@ const SinkBasin = ({
       position-z={basin.type === 'belfast' ? zPosBelfast : zPosStandard}
       position-y={basin.type === 'belfast' ? height : height - basin.height}
     >
-      <mesh rotation={rotation} position={basinPosition} geometry={geometry}>
+      <mesh
+        receiveShadow
+        rotation={rotation}
+        position={basinPosition}
+        geometry={geometry}
+      >
         <meshStandardMaterial
           color={color}
           metalness={metalness}
@@ -140,7 +145,7 @@ const SinkBasin = ({
         <Edges color={lineColor} renderOrder={1000} />
       </mesh>
 
-      <mesh position={basePanelPosition} rotation={rotation}>
+      <mesh receiveShadow position={basePanelPosition} rotation={rotation}>
         <boxGeometry args={[width - 0.012, depth - 0.012, baseThickness]} />
         <meshStandardMaterial color={color} />
       </mesh>

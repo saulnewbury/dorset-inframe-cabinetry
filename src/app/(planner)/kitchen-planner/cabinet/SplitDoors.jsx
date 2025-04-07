@@ -4,7 +4,7 @@ import { Edges } from '@react-three/drei'
 import * as THREE from 'three'
 import { createPanelShape } from '@/utils/doorCalculations'
 
-import { lineColor } from './colors'
+import { lineColor, cabinetsColor } from './colors'
 
 export function SplitDoors({
   doorX,
@@ -112,13 +112,17 @@ export function SplitDoors({
   return (
     <group>
       {/* First panel and door */}
-      <mesh position={[pos1X, pos1Y, depth / 2 - pt + doorThickness]}>
+      <mesh
+        receiveShadow
+        position={[pos1X, pos1Y, depth / 2 - pt + doorThickness]}
+      >
         <extrudeGeometry args={[panel1Shape, extrudeSettings]} />
-        <meshStandardMaterial color='white' side={THREE.DoubleSide} />
+        <meshStandardMaterial color={cabinetsColor} side={THREE.DoubleSide} />
         <Edges threshold={5} color={lineColor} />
       </mesh>
 
       <mesh
+        receiveShadow
         position={[
           pos1X,
           pos1Y - (orientation === 'vertical' ? 0 : doorGapAtBottom / 2),
@@ -126,18 +130,22 @@ export function SplitDoors({
         ]}
       >
         <boxGeometry args={[door1Width, door1Height, doorThickness / 2]} />
-        <meshStandardMaterial color='white' />
+        <meshStandardMaterial color={cabinetsColor} />
         <Edges threshold={5} color={lineColor} />
       </mesh>
 
       {/* Second panel and door */}
-      <mesh position={[pos2X, pos2Y, depth / 2 - pt + doorThickness]}>
+      <mesh
+        receiveShadow
+        position={[pos2X, pos2Y, depth / 2 - pt + doorThickness]}
+      >
         <extrudeGeometry args={[panel2Shape, extrudeSettings]} />
-        <meshStandardMaterial color='white' side={THREE.DoubleSide} />
+        <meshStandardMaterial color={cabinetsColor} side={THREE.DoubleSide} />
         <Edges threshold={5} color={lineColor} />
       </mesh>
 
       <mesh
+        receiveShadow
         position={[
           pos2X,
           pos2Y - (orientation === 'vertical' ? 0 : doorGapAtBottom / 2),
@@ -145,7 +153,7 @@ export function SplitDoors({
         ]}
       >
         <boxGeometry args={[door2Width, door2Height, doorThickness / 2]} />
-        <meshStandardMaterial color='white' />
+        <meshStandardMaterial color={cabinetsColor} />
         <Edges threshold={5} color={lineColor} />
       </mesh>
     </group>

@@ -82,6 +82,7 @@ export default function MouldingThreeSides({
 
     return (
       <mesh
+        receiveShadow
         position={[
           -holeWidth / 2 + frameInset,
           -holeHeight / 2 + holeYOffset + frameInset,

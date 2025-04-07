@@ -1,38 +1,50 @@
 'use client'
 import { useMemo } from 'react'
-import { useLoader } from '@react-three/fiber'
-
+import { Edges } from '@react-three/drei'
 import {
   DoubleSide,
-  RepeatWrapping,
   Shape,
-  TextureLoader,
-  Vector2
+  Vector2,
+  LineBasicMaterial,
+  BufferGeometry,
+  Vector3
 } from 'three'
 
-// import woodFloor from './textures/shutterstock_2408341353.png'
-import tileFloor from '@/assets/textures/shutterstock_754494433.jpg'
+// Components
+import FloorLines from './FloorLines'
+import FloorCheckers from './FloorCheckers'
+
+// App state
+import { useAppState } from '@/appState'
 
 export default function Floor({ points, handlePan }) {
-  const texture = useLoader(TextureLoader, tileFloor.src)
-  texture.wrapS = texture.wrapT = RepeatWrapping
-  texture.repeat.set(0.5, 0.5)
-
   const shape = useMemo(
     () => new Shape(points.map((p) => new Vector2(p.x, p.z))).closePath(),
     [points]
   )
 
+  const { is3D } = useAppState()
   return (
-    <mesh
-      receiveShadow
-      rotation-x={Math.PI / 2}
-      onPointerOver={() => handlePan(true)}
-      onPointerOut={() => handlePan(false)}
-    >
-      <shapeGeometry args={[shape]} />
-      <meshStandardMaterial map={texture} side={DoubleSide} />
-      {/* <meshStandardMaterial color='#ffffff' side={DoubleSide} /> */}
-    </mesh>
+    <>
+      <FloorLines
+        points={points}
+        handlePan={handlePan}
+        // showHorizontalLines={true}
+        // showVerticalLines={true}
+      />
+      <FloorCheckers points={points} handlePan={handlePan} />
+
+      {!is3D && (
+        <mesh
+          receiveShadow
+          rotation-x={Math.PI / 2}
+          onPointerOver={() => handlePan(true)}
+          onPointerOut={() => handlePan(false)}
+        >
+          <shapeGeometry args={[shape]} />
+          <meshStandardMaterial side={DoubleSide} color='white' />
+        </mesh>
+      )}
+    </>
   )
 }

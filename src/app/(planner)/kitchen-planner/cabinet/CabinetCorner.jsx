@@ -1,6 +1,8 @@
 import React from 'react'
 import { Edges } from '@react-three/drei'
 
+import { useAppState } from '@/appState'
+
 // Components
 import Frame from './Frame'
 import Moulding from './Moulding'
@@ -24,6 +26,9 @@ export default function CabinetCorner({
     }
   ]
 }) {
+  // App state
+  const { is3D } = useAppState()
+
   // Frame
   const bottomFrameThickness = 0.045
 
@@ -114,13 +119,15 @@ export default function CabinetCorner({
 
       <Feet carcassInnerWidth={carcassInnerWidth} carcassDepth={carcassDepth} />
 
-      <Worktop
-        distance={distance}
-        thickness={panelThickness}
-        depth={carcassDepth}
-        height={carcassHeight}
-        color={'#777777'}
-      />
+      {is3D && (
+        <Worktop
+          distance={distance}
+          thickness={panelThickness}
+          depth={carcassDepth}
+          height={carcassHeight}
+          color={'#777777'}
+        />
+      )}
     </group>
   )
 }

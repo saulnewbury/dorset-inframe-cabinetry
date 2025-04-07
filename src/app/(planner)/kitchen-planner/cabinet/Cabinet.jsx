@@ -9,6 +9,8 @@ import SinkBasin from './SinkBasin'
 import Worktop from './Worktop'
 import Feet from './Feet'
 
+import { useAppState } from '@/appState'
+
 // panelConfig options
 // {
 //   type: 'door' | 'drawer' | 'oven', // Required: The type of panel
@@ -48,6 +50,9 @@ export default function Cabinet({
     }
   ]
 }) {
+  // App State
+  const { is3D } = useAppState()
+
   // Adapt cabinet height to accommodate basinConfig on top
   if (basinConfig?.type === 'belfast') carcassHeight -= basinConfig.height
 
@@ -124,7 +129,7 @@ export default function Cabinet({
         />
       )}
 
-      {!tall && baseUnit && (
+      {!tall && baseUnit && is3D && (
         <Worktop
           basin={basinConfig}
           distance={distance}

@@ -3,7 +3,7 @@ import React from 'react'
 import { Edges } from '@react-three/drei'
 import * as THREE from 'three'
 
-import { lineColor } from './colors'
+import { lineColor, cabinetsColor } from './colors'
 
 export function FourDoors({
   doorX,
@@ -207,6 +207,7 @@ export function FourDoors({
           <group key={`quadrant-${quadrant}`}>
             {/* Panel */}
             <mesh
+              receiveShadow
               position={[
                 doorX + pos.x,
                 doorY + pos.y,
@@ -214,12 +215,16 @@ export function FourDoors({
               ]}
             >
               <extrudeGeometry args={[panelData.shape, extrudeSettings]} />
-              <meshStandardMaterial color='white' side={THREE.DoubleSide} />
+              <meshStandardMaterial
+                color={cabinetsColor}
+                side={THREE.DoubleSide}
+              />
               <Edges threshold={5} color={lineColor} />
             </mesh>
 
             {/* Door */}
             <mesh
+              receiveShadow
               position={[
                 doorX + pos.x,
                 doorY + pos.y - (isBottomPanel ? doorGapAtBottom / 2 : 0),
@@ -233,7 +238,7 @@ export function FourDoors({
                   doorThickness / 2
                 ]}
               />
-              <meshStandardMaterial color='white' />
+              <meshStandardMaterial color={cabinetsColor} />
               <Edges threshold={5} color={lineColor} />
             </mesh>
           </group>

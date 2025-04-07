@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
-import { lineColor } from './colors'
+import { lineColor, cabinetsColor } from './colors'
 
 export default function Moulding({
   underCounter,
@@ -172,7 +172,10 @@ export default function Moulding({
     }, [hole, frameInset])
 
     return (
-      <mesh position={[hole.left + frameInset, hole.bottom + frameInset, 0]}>
+      <mesh
+        receiveShadow
+        position={[hole.left + frameInset, hole.bottom + frameInset, 0]}
+      >
         <extrudeGeometry
           args={[
             frameShape,
@@ -186,7 +189,7 @@ export default function Moulding({
             }
           ]}
         />
-        <meshStandardMaterial color='#e0e0e0' />
+        <meshStandardMaterial color={cabinetsColor} />
         <Edges threshold={15} color={lineColor} />
       </mesh>
     )

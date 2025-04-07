@@ -96,15 +96,17 @@ export default function Oven({
 
       return (
         <mesh
+          receiveShadow
           position={[
             0,
             compartmentHeight / 2 - 0.05,
             ovenThickness / 2 + handleOffset
           ]}
         >
+          <meshStandardMaterial color='white' />
+
           <boxGeometry args={[handleWidth, handleHeight, handleDepth]} />
-          <meshStandardMaterial color='#777777' />
-          <Edges threshold={5} color='#555555' />
+          <Edges threshold={5} color={lineColor} />
         </mesh>
       )
     }

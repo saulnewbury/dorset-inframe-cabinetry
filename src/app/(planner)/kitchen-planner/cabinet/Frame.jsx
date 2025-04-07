@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
-import { lineColor } from './colors'
+import { lineColor, cabinetsColor } from './colors'
 
 export default function Frame({
   carcassDepth,
@@ -155,6 +155,7 @@ export default function Frame({
 
   return (
     <mesh
+      receiveShadow
       position={[
         openingOrientation ? offset : 0,
         height / 2 + hOffset,
@@ -170,7 +171,7 @@ export default function Frame({
           }
         ]}
       />
-      <meshStandardMaterial color='white' />
+      <meshStandardMaterial color={cabinetsColor} />
       <Edges threshold={5} color={lineColor} renderOrder={1000} />
     </mesh>
   )
