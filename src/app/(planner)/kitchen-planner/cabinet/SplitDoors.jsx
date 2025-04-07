@@ -4,6 +4,8 @@ import { Edges } from '@react-three/drei'
 import * as THREE from 'three'
 import { createPanelShape } from '@/utils/doorCalculations'
 
+import { lineColor } from './colors'
+
 export function SplitDoors({
   doorX,
   doorY,
@@ -113,7 +115,7 @@ export function SplitDoors({
       <mesh position={[pos1X, pos1Y, depth / 2 - pt + doorThickness]}>
         <extrudeGeometry args={[panel1Shape, extrudeSettings]} />
         <meshStandardMaterial color='white' side={THREE.DoubleSide} />
-        <Edges threshold={5} color='gray' />
+        <Edges threshold={5} color={lineColor} />
       </mesh>
 
       <mesh
@@ -125,14 +127,14 @@ export function SplitDoors({
       >
         <boxGeometry args={[door1Width, door1Height, doorThickness / 2]} />
         <meshStandardMaterial color='white' />
-        <Edges threshold={5} color='gray' />
+        <Edges threshold={5} color={lineColor} />
       </mesh>
 
       {/* Second panel and door */}
       <mesh position={[pos2X, pos2Y, depth / 2 - pt + doorThickness]}>
         <extrudeGeometry args={[panel2Shape, extrudeSettings]} />
         <meshStandardMaterial color='white' side={THREE.DoubleSide} />
-        <Edges threshold={5} color='gray' />
+        <Edges threshold={5} color={lineColor} />
       </mesh>
 
       <mesh
@@ -144,7 +146,7 @@ export function SplitDoors({
       >
         <boxGeometry args={[door2Width, door2Height, doorThickness / 2]} />
         <meshStandardMaterial color='white' />
-        <Edges threshold={5} color='gray' />
+        <Edges threshold={5} color={lineColor} />
       </mesh>
     </group>
   )

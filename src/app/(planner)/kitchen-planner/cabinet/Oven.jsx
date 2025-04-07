@@ -4,6 +4,8 @@ import { Edges } from '@react-three/drei'
 import * as THREE from 'three'
 import { createPanelShape } from '@/utils/doorCalculations'
 
+import { lineColor } from './colors'
+
 export default function Oven({
   boundary, // Single boundary object
   carcassDepth,
@@ -123,7 +125,7 @@ export default function Oven({
               args={[ovenWidth, ovenHeight - cpanel, ovenThickness]}
             />
             <meshStandardMaterial color='white' />
-            <Edges threshold={5} color='gray' />
+            <Edges threshold={5} color={lineColor} />
           </mesh>
           {renderOvenHandle(ovenHeight - 0.15)}
         </group>
@@ -140,7 +142,7 @@ export default function Oven({
                 args={[ovenWidth, topCompartmentHeight, ovenThickness]}
               />
               <meshStandardMaterial color='white' />
-              <Edges threshold={5} color='gray' />
+              <Edges threshold={5} color={lineColor} />
             </mesh>
             {renderOvenHandle(topCompartmentHeight + 0.05)}
           </group>
@@ -156,7 +158,7 @@ export default function Oven({
                 args={[ovenWidth, bottomCompartmentHeight, ovenThickness]}
               />
               <meshStandardMaterial color='white' />
-              <Edges threshold={5} color='gray' />
+              <Edges threshold={5} color={lineColor} />
             </mesh>
             {renderOvenHandle(bottomCompartmentHeight + 0.05)}
           </group>
@@ -171,7 +173,7 @@ export default function Oven({
               args={[ovenWidth, ovenHeight - cpanel, ovenThickness / 2]}
             />
             <meshStandardMaterial color='white' />
-            <Edges threshold={5} color='gray' />
+            <Edges threshold={5} color={lineColor} />
           </mesh>
           <mesh>
             <extrudeGeometry
@@ -188,7 +190,7 @@ export default function Oven({
               ]}
             />
             <meshStandardMaterial color='white' />
-            <Edges threshold={5} color='gray' />
+            <Edges threshold={5} color={lineColor} />
           </mesh>
           {renderOvenHandle(ovenHeight - 0.05)}
         </group>
@@ -200,7 +202,7 @@ export default function Oven({
         <mesh>
           <boxGeometry args={[ovenWidth, cpanel, ovenThickness]} />
           <meshStandardMaterial color='white' />
-          <Edges threshold={5} color='gray' />
+          <Edges threshold={5} color={lineColor} />
         </mesh>
         {/* Digital display */}
         <mesh>
@@ -208,7 +210,7 @@ export default function Oven({
             args={[ovenWidth / 5, cpanel / 3, ovenThickness * 1.1]}
           />
           <meshStandardMaterial color='white' />
-          <Edges threshold={5} color='gray' />
+          <Edges threshold={5} color={lineColor} />
         </mesh>
         {/* Knobs */}
         {knobs.map((knob, idx) => {
@@ -220,7 +222,7 @@ export default function Oven({
             >
               <cylinderGeometry args={[0.02, 0.02, 0.01]} />
               <meshStandardMaterial color='white' />
-              <Edges threshold={5} color='gray' />
+              <Edges threshold={5} color={lineColor} />
             </mesh>
           )
         })}

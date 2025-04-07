@@ -2,6 +2,8 @@ import React, { useMemo } from 'react'
 import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
+import { lineColor } from './colors'
+
 export default function Moulding({
   underCounter,
   carcassDepth,
@@ -185,7 +187,7 @@ export default function Moulding({
           ]}
         />
         <meshStandardMaterial color='#e0e0e0' />
-        <Edges threshold={15} color='gray' />
+        <Edges threshold={15} color={lineColor} />
       </mesh>
     )
   }

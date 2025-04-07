@@ -2,6 +2,8 @@
 import React from 'react'
 import { Edges } from '@react-three/drei'
 
+import { lineColor } from './colors'
+
 export default function DrawerPanel({
   boundary, // Single boundary object
   carcassDepth,
@@ -39,8 +41,8 @@ export default function DrawerPanel({
           ]}
         >
           <boxGeometry args={[handleWidth, handleHeight, handleDepth]} />
-          <meshStandardMaterial color='#777777' />
-          <Edges threshold={5} color='#555555' />
+          <meshStandardMaterial color='white' />
+          <Edges threshold={5} color={lineColor} />
         </mesh>
       )
     }
@@ -61,7 +63,7 @@ export default function DrawerPanel({
       <mesh>
         <boxGeometry args={[drawerWidth, drawerHeight, drawerThickness]} />
         <meshStandardMaterial color='white' />
-        <Edges threshold={5} color='gray' />
+        <Edges threshold={5} color={lineColor} />
       </mesh>
 
       {/* Optional drawer handle */}

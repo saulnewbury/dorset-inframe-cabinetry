@@ -4,7 +4,7 @@ import {
   Path,
   Vector2,
   Vector3,
-  LineBasicMaterial,
+  LineSegment,
   Shape
 } from 'three'
 import { Edges } from '@react-three/drei'
@@ -15,9 +15,6 @@ import DoorSingle from './DoorSingle'
 import { useAppState } from '@/appState'
 
 import { wh, wt } from '@/const'
-
-import { lineColor } from '../cabinet/colors'
-import { wallColor } from '../cabinet/colors'
 
 // Reusable materials
 import { wallMaterial, doorMaterial, linesMaterial } from '@/materials'
@@ -43,97 +40,37 @@ export default function Door(props) {
  * Renders a door for the 2D (plan) view.
  */
 function Door2D({ len, offset, width, option, style, onClick = () => {} }) {
+  console.log(style)
   const w = style === 'double-door' ? width / 2 : width
   const [handle, opens] = option.split(':')
-  const angle = Math.PI / (opens == 'out' ? 2 : -2)
-
-  // Arcs
-  const arcsGeometry = useMemo(() => {
-    let vertices = []
-    const arcSegments = 20 // Increase for a smoother arc.
-
-    // Double door
-    if (style === 'double-door') {
-      // Left arc
-      const arcPointsA = []
-      for (let i = 0; i <= arcSegments; i++) {
-        const t = i / arcSegments
-        const theta = t * angle
-        // Compute arc points then add a vertical offset of 0.072.
-        const x = -w + w * Math.cos(theta)
-        const y = w * Math.sin(theta)
-        arcPointsA.push(new Vector3(x, y, 0))
-      }
-      // Convert continuous arc into separate line segments.
-      for (let i = 0; i < arcPointsA.length - 1; i++) {
-        vertices.push(arcPointsA[i], arcPointsA[i + 1])
-      }
-
-      // Right arc
-      const arcPointsB = []
-      for (let i = 0; i <= arcSegments; i++) {
-        const t = i / arcSegments
-        const theta = t * angle
-        // Compute arc points then add a vertical offset of 0.072.
-        const x = w - w * Math.cos(theta)
-        const y = w * Math.sin(theta)
-        arcPointsB.push(new Vector3(x, y, 0))
-      }
-      // Convert continuous arc into separate line segments.
-      for (let i = 0; i < arcPointsB.length - 1; i++) {
-        vertices.push(arcPointsB[i], arcPointsB[i + 1])
-      }
-    }
-
-    // Single door
-    if (style === 'single-door') {
-      const arcPointsA = []
-      for (let i = 0; i <= arcSegments; i++) {
-        const t = i / arcSegments
-        const theta = t * angle
-        // Compute arc points then add a vertical offset of 0.072.
-        const x = -width + width * Math.cos(theta) + w / 2
-        const y = width * Math.sin(theta)
-        arcPointsA.push(new Vector3(x, y, 0))
-      }
-      // Convert continuous arc into separate line segments.
-      for (let i = 0; i < arcPointsA.length - 1; i++) {
-        vertices.push(arcPointsA[i], arcPointsA[i + 1])
-      }
-    }
-
-    const geometry = new BufferGeometry()
-    geometry.setFromPoints(vertices)
-    return geometry
-  }, [width, opens])
-
-  // Doors
-  const doorsGeometry = useMemo(() => {
-    let vertices = []
-
-    if (style === 'double-door') {
-      const pointsA = doorA(width, angle, w) // function (bottom of page)
-      const pointsB = doorB(width, angle, w) // function (bottom of page)
-      const arr = [...pointsA, ...pointsB]
-
-      for (let i = 0; i < arr.length; i++) {
-        console.log('loop')
-        vertices.push(arr[i])
-      }
-    }
-
-    if (style === 'single-door') {
-      const pointsA = doorA(width, angle, w) // function (bottom of page)
-      for (let i = 0; i < pointsA.length; i++) {
-        console.log('loop')
-        vertices.push(pointsA[i])
-      }
-    }
-
-    const geometry = new BufferGeometry()
-    geometry.setFromPoints(vertices)
-    return geometry
-  }, [width, opens])
+  const angle = Math.PI / (opens === 'out' ? 2 : -2)
+  const segmentsGeometry = useMemo(
+    () => {
+      const points = [
+        // first segment
+        new Vector3(
+          width * (Math.cos(angle) - 0.5),
+          w * Math.sin(angle) + 0.072
+        ),
+        new Vector3(-width / 2, 0.072),
+        // Second segment
+        new Vector3(0, 0.072),
+        new Vector3()
+      ]
+      const geometry = new BufferGeometry()
+      geometry.setFromPoints(points)
+      return geometry
+    },
+    // new BufferGeometry().setFromPoints(
+    //   new Path()
+    //     .moveTo(width * (Math.cos(angle) - 0.5), w * Math.sin(angle) + 0.072)
+    //     .lineTo(-width / 2, 0.072)
+    //     .moveTo(0, 0.072)
+    //     .arc(-w, 0, w, 0, angle * 1, opens === 'in')
+    //     .getPoints()
+    // ),
+    [width, opens]
+  )
 
   return (
     <group position={[offset - len / 2, wh + 0.1, 0]} rotation-x={-Math.PI / 2}>
@@ -142,23 +79,39 @@ function Door2D({ len, offset, width, option, style, onClick = () => {} }) {
         {/* <meshStandardMaterial color='white' /> */}
         <Edges threshold={15} color='gray' lineWidth={0.5} />
       </mesh>
-      {/* Door(s) */}
-      <lineSegments
-        geometry={doorsGeometry}
-        material={new LineBasicMaterial({ color: 'gray' })}
-        scale-x={handle === 'left' ? -1 : 1}
-      />
-      {/* Arc(s) */}
-      <lineSegments
-        geometry={arcsGeometry}
-        material={new LineBasicMaterial({ color: 'lightgray' })}
-        scale-x={handle === 'left' ? -1 : 1}
-      />
-      {/* <line
-        geometry={lines}
+      {/* Single */}
+      {style === 'single-door' && (
+        <mesh>
+          <planeGeometry args={[wt / 2, width / 2]} />
+          <meshStandardMaterial visible={false} />
+          <Edges threshold={15} color='gray' lineWidth={0.5} />
+        </mesh>
+      )}
+      {/* Double */}
+      {style === 'double-door' && (
+        <>
+          <mesh position-x={-width / 2 + wt / 4} position-y={width / 4}>
+            <planeGeometry args={[wt / 2, width / 2]} />
+            <meshStandardMaterial />
+            <Edges threshold={15} color='gray' lineWidth={0.5} />
+          </mesh>
+          <mesh position-x={width / 2 - wt / 4} position-y={width / 4}>
+            <planeGeometry args={[wt / 2, width / 2]} />
+            <meshStandardMaterial />
+            <Edges threshold={15} color='gray' lineWidth={0.5} />
+          </mesh>
+        </>
+      )}
+      {/* <lineSegments
+        geometry={segmentsGeometry}
         material={linesMaterial}
         scale-x={handle === 'left' ? -1 : 1}
       /> */}
+      <line
+        geometry={lines}
+        material={linesMaterial}
+        scale-x={handle === 'left' ? -1 : 1}
+      />
     </group>
   )
 }
@@ -194,11 +147,10 @@ function Door3D({ style, len, offset, width, option }) {
       {/* Lintel */}
       <mesh
         position={[0, wh - 0.2, 0]}
-        // material={wallMaterial}
+        material={wallMaterial}
         castShadow
         receiveShadow
       >
-        <meshStandardMaterial color={wallColor} />
         <boxGeometry args={[width, 0.4, wt]} />
       </mesh>
       <group position-y={height / 2 - cOpp / 2}>
@@ -216,7 +168,7 @@ function Door3D({ style, len, offset, width, option }) {
                 args={[sideLeft, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial color='white' />
-              <Edges linewidth={1} threshold={15} color={lineColor} />
+              <Edges linewidth={1} threshold={15} color={'gray'} />
             </mesh>
           ) : i < 2 ? (
             <mesh
@@ -230,7 +182,7 @@ function Door3D({ style, len, offset, width, option }) {
                 args={[sideRight, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial />
-              <Edges linewidth={1} threshold={15} color={lineColor} />
+              <Edges linewidth={1} threshold={15} color={'gray'} />
             </mesh>
           ) : (
             <mesh
@@ -244,7 +196,7 @@ function Door3D({ style, len, offset, width, option }) {
                 args={[top, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial />
-              <Edges linewidth={1} threshold={15} color={lineColor} />
+              <Edges linewidth={1} threshold={15} color={'gray'} />
             </mesh>
           )
         )}
@@ -262,7 +214,7 @@ function Door3D({ style, len, offset, width, option }) {
                 args={[sideStopLeft, { depth: sd, bevelEnabled: false }]}
               />
               <meshStandardMaterial />
-              <Edges linewidth={1} threshold={15} color={lineColor} />
+              <Edges linewidth={1} threshold={15} color={'gray'} />
             </mesh>
           ) : i < 2 ? (
             <mesh
@@ -276,7 +228,7 @@ function Door3D({ style, len, offset, width, option }) {
                 args={[sideStopRight, { depth: sd, bevelEnabled: false }]}
               />
               <meshStandardMaterial />
-              <Edges linewidth={1} threshold={15} color={lineColor} />
+              <Edges linewidth={1} threshold={15} color={'gray'} />
             </mesh>
           ) : (
             <mesh
@@ -290,7 +242,7 @@ function Door3D({ style, len, offset, width, option }) {
                 args={[topStop, { depth: sd, bevelEnabled: false }]}
               />
               <meshStandardMaterial />
-              <Edges linewidth={1} threshold={15} color={lineColor} />
+              <Edges linewidth={1} threshold={15} color={'gray'} />
             </mesh>
           )
         )}
@@ -399,32 +351,4 @@ function Door3D({ style, len, offset, width, option }) {
       }
     ]
   }
-}
-
-// 2D door A
-const doorA = (width, angle, w) => {
-  const a = new Vector3(width * (Math.cos(angle) - 0.5), w * Math.sin(angle))
-  const b = new Vector3(-width / 2, 0.072)
-
-  const c = new Vector3(
-    width * (Math.cos(angle) - 0.5) + 0.063,
-    w * Math.sin(angle)
-  )
-  const d = new Vector3(-width / 2 + 0.063, 0.072)
-
-  return [a, b, c, d]
-}
-
-// 2D door B
-const doorB = (width, angle, w) => {
-  const a = new Vector3(-width * (Math.cos(angle) - 0.5), w * Math.sin(angle))
-  const b = new Vector3(width / 2, 0.072)
-
-  const c = new Vector3(
-    -width * (Math.cos(angle) - 0.5) - 0.063,
-    w * Math.sin(angle)
-  )
-  const d = new Vector3(width / 2 - 0.063, 0.072)
-
-  return [a, b, c, d]
 }

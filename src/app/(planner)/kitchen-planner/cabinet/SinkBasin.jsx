@@ -4,6 +4,8 @@ import React, { useMemo } from 'react'
 import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
+import { lineColor } from './colors'
+
 const SinkBasin = ({
   basin = null,
   depth,
@@ -135,7 +137,7 @@ const SinkBasin = ({
           roughness={roughness}
           side={THREE.DoubleSide}
         />
-        <Edges color='gray' renderOrder={1000} />
+        <Edges color={lineColor} renderOrder={1000} />
       </mesh>
 
       <mesh position={basePanelPosition} rotation={rotation}>

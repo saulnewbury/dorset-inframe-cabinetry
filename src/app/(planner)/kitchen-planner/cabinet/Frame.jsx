@@ -2,6 +2,8 @@ import React, { useMemo } from 'react'
 import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
+import { lineColor } from './colors'
+
 export default function Frame({
   carcassDepth,
   carcassHeight,
@@ -169,7 +171,7 @@ export default function Frame({
         ]}
       />
       <meshStandardMaterial color='white' />
-      <Edges threshold={5} color='gray' renderOrder={1000} />
+      <Edges threshold={5} color={lineColor} renderOrder={1000} />
     </mesh>
   )
 }

@@ -6,6 +6,7 @@ import { AppContext } from '@/context'
 import { ModelContext } from '@/model/context'
 
 import { wt, wh } from '@/const'
+import { wallColor } from './cabinet/colors'
 
 import DimensionLine from './DimensionLine'
 import Opening from './openings/Opening'
@@ -128,7 +129,9 @@ export default function Wall({
         {/* Wall segments */}
         <mesh rotation-x={Math.PI / -2} castShadow receiveShadow>
           <extrudeGeometry args={[base, { depth: wh, bevelEnabled: false }]} />
-          <meshStandardMaterial color={highlight ? '#8DB3FF' : '#C8C8C8'} />
+          <meshStandardMaterial
+            color={highlight ? '#8DB3FF' : !is3D ? '#C8C8C8' : wallColor}
+          />
         </mesh>
         {/* Openings */}
         {openings.map((op) => (

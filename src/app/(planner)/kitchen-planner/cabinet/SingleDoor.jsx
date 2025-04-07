@@ -4,6 +4,8 @@ import { Edges } from '@react-three/drei'
 import * as THREE from 'three'
 import { createPanelShape } from '@/utils/doorCalculations'
 
+import { lineColor } from './colors'
+
 export function SingleDoor({
   doorX,
   doorY,
@@ -40,7 +42,7 @@ export function SingleDoor({
       <mesh position={[doorX, doorY, depth / 2 - pt + doorThickness]}>
         <extrudeGeometry args={[panelShape, extrudeSettings]} />
         <meshStandardMaterial color='white' side={THREE.DoubleSide} />
-        <Edges threshold={5} color='gray' />
+        <Edges threshold={5} color={lineColor} />
       </mesh>
 
       {/* Single door front */}
@@ -55,7 +57,7 @@ export function SingleDoor({
           args={[doorWidth - 2 * doorGap, doorHeight, doorThickness / 2]}
         />
         <meshStandardMaterial color='white' />
-        <Edges threshold={5} color='gray' />
+        <Edges threshold={5} color={lineColor} />
       </mesh>
     </group>
   )

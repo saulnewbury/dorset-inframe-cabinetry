@@ -1,7 +1,14 @@
 'use client'
 import { useContext, useMemo } from 'react'
-import { BufferGeometry, Vector3, TextureLoader, Vector2, Shape } from 'three'
-import { Outlines, Edges } from '@react-three/drei'
+import {
+  BufferGeometry,
+  Vector3,
+  TextureLoader,
+  Vector2,
+  Shape,
+  LineBasicMaterial
+} from 'three'
+import { Edges } from '@react-three/drei'
 
 import { useLoader } from '@react-three/fiber'
 
@@ -9,6 +16,7 @@ import { AppContext } from '@/appState'
 import { useAppState } from '@/appState'
 
 import { wh, wt } from '@/const'
+import { wallColor } from '../cabinet/colors'
 
 // Reusable materials
 import { wallMaterial, windowMaterial, linesMaterial } from '@/materials'
@@ -36,28 +44,16 @@ export default function Window(props) {
 /**
  * Renders a window for the 2D (plan) view.
  */
-function Window2D({ len, offset, width, onClick = () => {} }) {
-  const lines = useMemo(
-    () =>
-      new BufferGeometry().setFromPoints([
-        // segment 1
-        new Vector3(-width / 2, -wt / 2, 0),
-        new Vector3(-width / 2, wt / 2, 0),
-        // segment 2
-        new Vector3(-width / 2, wt * 0.3, 0),
-        new Vector3(width / 2, wt * 0.3, 0),
-        // segment 3
-        new Vector3(-width / 2, 0, 0),
-        new Vector3(width / 2, 0, 0),
-        // segment 4
-        new Vector3(width / 2, -wt * 0.3, 0),
-        new Vector3(-width / 2, -wt * 0.3, 0),
-        // segment 4
-        new Vector3(width / 2, wt / 2, 0),
-        new Vector3(width / 2, -wt / 2, 0)
-      ]),
-    [width]
-  )
+function Window2D({ len, offset, width, style, onClick = () => {} }) {
+  console.log(style)
+  const lines = useMemo(() => {
+    const a = new Vector3(-width / 2, 0, 0)
+    const b = new Vector3(width / 2, 0, 0)
+
+    const geometry = new BufferGeometry()
+    geometry.setFromPoints([a, b])
+    return geometry
+  }, [width])
 
   return (
     <group
@@ -65,10 +61,21 @@ function Window2D({ len, offset, width, onClick = () => {} }) {
       rotation-x={-Math.PI / 2}
       onClick={onClick}
     >
-      <mesh material={windowMaterial}>
+      <mesh>
         <planeGeometry args={[width, wt]} />
+        <Edges threshold={13} lineWidth={0.5} color={'gray'} />
       </mesh>
-      <lineSegments geometry={lines} material={linesMaterial} />
+      <lineSegments
+        geometry={lines}
+        material={new LineBasicMaterial({ color: 'gray' })}
+      />
+      {style === 'double' && (
+        <mesh>
+          <planeGeometry args={[0.018, wt]} />
+          <meshStandardMaterial color='lightgray' />
+          <Edges threshold={13} lineWidth={0.5} color={'gray'} />
+        </mesh>
+      )}
     </group>
   )
 }
@@ -90,12 +97,8 @@ function Window3D({ style, len, offset, width, option }) {
     // <group position={[0, -height, 0]}>
     <group position={[offset - len / 2, 0, 0]}>
       {/* Lintel */}
-      <mesh
-        position={[0, wh - 0.2, 0]}
-        material={wallMaterial}
-        castShadow
-        receiveShadow
-      >
+      <mesh position={[0, wh - 0.2, 0]} castShadow receiveShadow>
+        <meshStandardMaterial color={wallColor} />
         <boxGeometry args={[width, 0.4, wt]} />
       </mesh>
       <group position={[0, wh - 0.4 - height / 2, 0.05 - wt / 2]}>
@@ -106,7 +109,7 @@ function Window3D({ style, len, offset, width, option }) {
                 args={[jamb, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial color='#eee' />
-              <Edges linewidth={1} threshold={15} color={'lightgray'} />
+              <Edges linewidth={1} threshold={15} color={'#989898'} />
             </mesh>
           ) : (
             <mesh key={i} position={f.pos} rotation={f.rotation}>
@@ -114,7 +117,7 @@ function Window3D({ style, len, offset, width, option }) {
                 args={[head, { depth: d, bevelEnabled: false }]}
               />
               <meshStandardMaterial color='#eee' />
-              <Edges linewidth={1} threshold={15} color={'lightgray'} />
+              <Edges linewidth={1} threshold={15} color={'#989898'} />
             </mesh>
           )
         )}
@@ -159,6 +162,7 @@ function Window3D({ style, len, offset, width, option }) {
           receiveShadow
           material={wallMaterial}
         >
+          <meshStandardMaterial color={wallColor} />
           <boxGeometry args={[width, wh / 2, wt]} />
         </mesh>
       )}

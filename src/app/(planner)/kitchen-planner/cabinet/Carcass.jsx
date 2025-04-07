@@ -1,6 +1,8 @@
 import React from 'react'
 import { Edges } from '@react-three/drei'
 
+import lineColor from './colors'
+
 export default function Carcass({
   distance,
   carcassHeight,
@@ -34,7 +36,7 @@ export default function Carcass({
           ]}
         />
         <meshStandardMaterial color='white' />
-        <Edges color='gray' renderOrder={1000} />
+        <Edges color={lineColor} renderOrder={1000} />
       </mesh>
 
       {/* Right Side Panel */}
@@ -49,7 +51,7 @@ export default function Carcass({
           ]}
         />
         <meshStandardMaterial color='white' />
-        <Edges color='gray' renderOrder={1000} />
+        <Edges color='lineColor' renderOrder={1000} />
       </mesh>
 
       {/* Back Panel & Bottom Panel */}
@@ -60,7 +62,7 @@ export default function Carcass({
               args={[distance, panelThickness, carcassDepth - backInset]}
             />
             <meshStandardMaterial color='white' />
-            <Edges color='gray' renderOrder={1000} />
+            <Edges color='lineColor' renderOrder={1000} />
           </mesh>
           <mesh
             rotation-y={Math.PI * 0.5}
@@ -74,7 +76,7 @@ export default function Carcass({
               args={[panelThickness, carcassHeight, distance - panelThickness]}
             />
             <meshStandardMaterial color='white' />
-            <Edges color='gray' renderOrder={1000} />
+            <Edges color='lineColor' renderOrder={1000} />
           </mesh>
         </>
       )}
@@ -90,7 +92,7 @@ export default function Carcass({
             ]}
           />
           <meshStandardMaterial color='white' />
-          <Edges color='gray' renderOrder={1000} />
+          <Edges color='lineColor' renderOrder={1000} />
         </mesh>
       )}
     </>

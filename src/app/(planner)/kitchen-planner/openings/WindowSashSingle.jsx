@@ -1,7 +1,7 @@
 'use client'
 
 import { Shape, Vector2 } from 'three'
-import { Edges, Outlines } from '@react-three/drei'
+import { Edges } from '@react-three/drei'
 
 export default function WindowSashSingle({
   len,
@@ -25,7 +25,7 @@ export default function WindowSashSingle({
               args={[sashSide, { depth: d / 2, bevelEnabled: false }]}
             />
             <meshStandardMaterial color={color} />
-            <Edges linewidth={1} threshold={15} color={'lightgray'} />
+            <Edges linewidth={1} threshold={15} color={'#989898'} />
           </mesh>
         ) : (
           <mesh key={i} position={s.pos} rotation={s.rotation}>
@@ -33,7 +33,7 @@ export default function WindowSashSingle({
               args={[sashHead, { depth: d / 2, bevelEnabled: false }]}
             />
             <meshStandardMaterial color={color} />
-            <Edges linewidth={1} threshold={15} color={'lightgray'} />
+            <Edges linewidth={1} threshold={15} color={'#989898'} />
           </mesh>
         )
       )}

@@ -11,7 +11,8 @@ export default function WindowSashDouble({
   w,
   d,
   opp,
-  color
+  color,
+  colorLine = '#989898'
 }) {
   const sash = sashDimensions(width / 2 - w * 1.5, len - w * 2)
   const sashSide = getSashSideDimensions(frame, w)
@@ -30,7 +31,7 @@ export default function WindowSashDouble({
                     args={[sashSide, { depth: d / 2, bevelEnabled: false }]}
                   />
                   <meshStandardMaterial />
-                  <Edges linewidth={1} threshold={15} color={'gray'} />
+                  <Edges linewidth={1} threshold={15} color={colorLine} />
                 </mesh>
               ) : (
                 <mesh key={i} position={s.pos} rotation={s.rotation}>
@@ -38,7 +39,7 @@ export default function WindowSashDouble({
                     args={[sashHead, { depth: d / 2, bevelEnabled: false }]}
                   />
                   <meshStandardMaterial />
-                  <Edges linewidth={1} threshold={15} color={'gray'} />
+                  <Edges linewidth={1} threshold={15} color={colorLine} />
                 </mesh>
               )
             )}
@@ -47,9 +48,9 @@ export default function WindowSashDouble({
       })}
 
       <mesh>
-        <boxGeometry args={[w, len - w * 2, d]} />
+        <boxGeometry args={[w, len - w * 2, d - 0.001]} />
         <meshStandardMaterial />
-        <Edges linewidth={1} threshold={15} color={'gray'} />
+        <Edges linewidth={1} threshold={15} color={colorLine} />
       </mesh>
     </>
   )

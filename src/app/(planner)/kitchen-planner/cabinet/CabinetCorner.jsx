@@ -9,6 +9,8 @@ import Feet from './Feet'
 import Worktop from './Worktop'
 import CornerDoor from './CornerDoor'
 
+import { lineColor } from './colors'
+
 export default function CabinetCorner({
   underCounter = false,
   carcassDepth = 0.575,
@@ -65,7 +67,7 @@ export default function CabinetCorner({
           ]}
         />
         <meshStandardMaterial color='white' />
-        <Edges threshold={15} color='gray' />
+        <Edges threshold={15} color={lineColor} />
       </mesh>
 
       <Frame
