@@ -17,6 +17,7 @@ let keepCopy = true
 const wrap = (a, n, s) => (s ? a[n] : a[(n + a.length) % a.length])
 
 const actions = {
+  setId,
   loadState,
   loadModel,
   setScheme,
@@ -85,6 +86,18 @@ function loadModel(state, { shape }) {
 }
 
 /**
+ * Sets the saved model id and timestamp.
+ */
+function setId(state, { modelId, dateSaved }) {
+  console.log('Model saved', modelId, dateSaved)
+  return {
+    ...state,
+    id: modelId,
+    dateSaved
+  }
+}
+
+/**
  * Sets the colour scheme (worktop and unit face).
  */
 function setScheme(state, { worktop, colour }) {
@@ -120,7 +133,8 @@ function addSegment(state, { wall }) {
 
   return {
     ...state,
-    walls: state.walls.toSpliced(ns, 0, [start, end])
+    walls: state.walls.toSpliced(ns, 0, [start, end]),
+    dateSaved: null
   }
 }
 
@@ -135,7 +149,8 @@ function moveCorner(state, { to, dragging }) {
 
   state = {
     ...state,
-    walls: state.walls.toSpliced(s, 1, segment)
+    walls: state.walls.toSpliced(s, 1, segment),
+    dateSaved: null
   }
   if (!dragging) state = removeRedundantPoints(state, segment)
   return state
@@ -167,7 +182,8 @@ function moveWall(state, { from, dragging }) {
 
   state = {
     ...state,
-    walls: state.walls.toSpliced(s, 1, segment)
+    walls: state.walls.toSpliced(s, 1, segment),
+    dateSaved: null
   }
   if (!dragging) state = removeRedundantPoints(state, segment)
   return state
@@ -227,7 +243,8 @@ function removeRedundantPoints(state, segment) {
     return {
       ...state,
       walls: state.walls.map((s) => (s === segment ? walls : s)),
-      openings
+      openings,
+      dateSaved: null
     }
 }
 
@@ -262,7 +279,11 @@ function resizeWall(state, { from, len }) {
     p.id === from.id ? from : p.id === to?.id ? to : p
   )
 
-  state = { ...state, walls: state.walls.toSpliced(s, 1, segment) }
+  state = {
+    ...state,
+    walls: state.walls.toSpliced(s, 1, segment),
+    dateSaved: null
+  }
   return removeRedundantPoints(state, segment)
 }
 
@@ -294,7 +315,8 @@ function addPoint(state, { from, at }) {
   return {
     ...state,
     walls: state.walls.toSpliced(s, 1, segment),
-    openings
+    openings,
+    dateSaved: null
   }
 }
 
@@ -313,7 +335,8 @@ function addOpening(state, { type, style, option, wall, width }) {
       wall,
       width,
       offset: wt + width / 2
-    })
+    }),
+    dateSaved: null
   }
 }
 
@@ -327,7 +350,8 @@ function moveOpening(state, { item, offset }) {
     openings: state.openings.toSpliced(o, 1, {
       ...state.openings[o],
       offset
-    })
+    }),
+    dateSaved: null
   }
 }
 
@@ -337,7 +361,8 @@ function moveOpening(state, { item, offset }) {
 function deleteOpening(state, { item }) {
   return {
     ...state,
-    openings: state.openings.filter((o) => o.id !== item)
+    openings: state.openings.filter((o) => o.id !== item),
+    dateSaved: null
   }
 }
 
@@ -358,7 +383,8 @@ function addUnit(state, { type, width, variant, style }) {
       style,
       pos: new Vector3(0, 0, 0),
       rotation: 0
-    })
+    }),
+    dateSaved: null
   }
 }
 
@@ -371,7 +397,8 @@ function moveUnit(state, { unit, pos, rotation }) {
   const n = state.units.findIndex((u) => u.id === unit)
   return {
     ...state,
-    units: state.units.toSpliced(n, 1, { ...state.units[n], pos, rotation })
+    units: state.units.toSpliced(n, 1, { ...state.units[n], pos, rotation }),
+    dateSaved: null
   }
 }
 
@@ -381,6 +408,7 @@ function moveUnit(state, { unit, pos, rotation }) {
 function deleteUnit(state, { unit }) {
   return {
     ...state,
-    units: state.units.filter((u) => u.id !== unit)
+    units: state.units.filter((u) => u.id !== unit),
+    dateSaved: null
   }
 }
