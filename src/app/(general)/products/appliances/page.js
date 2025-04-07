@@ -30,7 +30,7 @@ export default function page() {
         brands={brands}
         color='#e6e5e4'
       />
-      <ProductsMini not='Appliances' />
+      <ProductsMini not='Appliances' gridNum={5} />
       <Footer />
     </>
   )
