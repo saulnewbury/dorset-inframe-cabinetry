@@ -11,6 +11,7 @@ import cabinets from '@/lib/icons/cabinets.svg'
 import worktop from '@/lib/icons/worktop.svg'
 import appliances from '@/lib/icons/appliances.svg'
 import yourItems from '@/lib/icons/your-items.svg'
+import colors from '@/lib/icons/colors.svg'
 
 import close from '@/lib/icons/close.svg'
 import save from '@/lib/icons/save.svg'
@@ -46,10 +47,9 @@ const icons = [
   { icon: shape, shape: 'shape' },
   { icon: features, shape: 'features' },
   { icon: openings, shape: 'openings' },
-  { icon: elements, shape: 'elements' },
+  { icon: elements, shape: 'we supply' },
   { icon: cabinets, shape: 'cabinets' },
-  { icon: worktop, shape: 'worktop' },
-  { icon: appliances, shape: 'we supply' },
+  { icon: colors, shape: 'colors' },
   { icon: yourItems, shape: 'your items' },
   { icon: close, shape: 'close' },
   { icon: square, shape: 'square' },

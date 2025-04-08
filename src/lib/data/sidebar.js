@@ -96,11 +96,11 @@ export const makeItYours = [
     ]
   },
   {
-    name: 'worktop',
+    name: 'colors',
     options: [
       {
-        name: 'Style worktop',
-        heading: 'Style worktop',
+        name: 'Color your kitchen',
+        heading: 'Color your kitchen',
         component: ChooseWallUnit
       }
     ]
