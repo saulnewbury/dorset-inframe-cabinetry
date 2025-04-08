@@ -4,35 +4,45 @@ import { ModelContext } from '@/model/context'
 import SelectWall from './SelectWall'
 
 import Button from '@/components/Button'
+import CabinetGridContainer from './CabinetGridContainer'
+
+import internalWallOpening from '@/lib/images/internal-wall-opening.webp'
 
 export default function ChooseArch({ onClose = () => {} }) {
   const [, dispatch] = useContext(ModelContext)
   const [width, setWidth] = useState(0.7)
   const [wall, setWall] = useState(0)
   return (
-    <form onSubmit={selectDoor} className='[&>p]:my-4'>
-      {/* Width */}
-      <p>
-        <span className='text-gray-400'>Width (m):</span>{' '}
-        <input
-          type='number'
-          min='0.5'
-          step='0.1'
-          value={width.toFixed(2)}
-          onChange={(e) => setWidth(parseFloat(e.target.value))}
-          className='w-14'
-        />
-      </p>
-      {/* Initial wall */}
-      <p className='text-gray-400'>Select wall:</p>
-      <p>
-        <SelectWall value={wall} onChange={setWall} />
-      </p>
-      {/* Submit button */}
-      <p>
-        <Button>Submit</Button>
-      </p>
-    </form>
+    <div className='flex'>
+      <form onSubmit={selectDoor} className='[&>p]:my-4'>
+        {/* Width */}
+        <p>
+          <span className='text-gray-400'>Width (m):</span>{' '}
+          <input
+            type='number'
+            min='0.5'
+            step='0.1'
+            value={width.toFixed(2)}
+            onChange={(e) => setWidth(parseFloat(e.target.value))}
+            className='w-14'
+          />
+        </p>
+        {/* Initial wall */}
+        <p className='text-gray-400 pb-12'>Select wall:</p>
+        <p className='pb-4'>
+          <SelectWall value={wall} onChange={setWall} />
+        </p>
+        {/* Submit button */}
+        <p>
+          <Button type='submit' primary>
+            Submit
+          </Button>
+        </p>
+      </form>
+      <CabinetGridContainer classes='pb-12 h-[45rem]'>
+        <img src={internalWallOpening.src} className='h-full' alt='' />
+      </CabinetGridContainer>
+    </div>
   )
 
   function selectDoor(ev) {

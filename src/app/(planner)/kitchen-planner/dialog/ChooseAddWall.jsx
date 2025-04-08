@@ -3,28 +3,34 @@ import { ModelContext } from '@/model/context'
 import SelectWall from './SelectWall'
 
 import Button from '@/components/Button'
+import CabinetGridContainer from './CabinetGridContainer'
+
+import internalWallImage from '@/lib/images/internal-wall.webp'
+import { Chela_One } from 'next/font/google'
 
 export default function ChooseAddWall({ onClose }) {
+  console.log(internalWallImage)
   const [, dispatch] = useContext(ModelContext)
   const [wall, setWall] = useState(0)
   return (
-    <form onSubmit={addWall} className='[&>p]:my-4'>
-      {/* Initial wall */}
-      <p className='text-gray-400'>Select wall:</p>
-      <p>
-        <SelectWall value={wall} onChange={setWall} />
-      </p>
-      {/* Submit button */}
-      <p>
-        {/* <button
-          type='submit'
-          className='bg-blue-700 text-white rounded-md px-2 py-1 disabled:bg-gray-400'
-        >
-          Submit
-        </button> */}
-        <Button primary>Submit</Button>
-      </p>
-    </form>
+    <div className='flex'>
+      <form onSubmit={addWall} className='[&>p]:my-4'>
+        {/* Initial wall */}
+        <p className='text-gray-400 pb-12'>Select wall:</p>
+        <p className='pb-4'>
+          <SelectWall value={wall} onChange={setWall} />
+        </p>
+        {/* Submit button */}
+        <p>
+          <Button type='submit' primary>
+            Submit
+          </Button>
+        </p>
+      </form>
+      <CabinetGridContainer classes='pb-12 h-[45rem]'>
+        <img src={internalWallImage.src} className='h-full' alt='' />
+      </CabinetGridContainer>
+    </div>
   )
 
   function addWall(ev) {

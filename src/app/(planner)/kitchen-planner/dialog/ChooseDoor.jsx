@@ -19,11 +19,11 @@ export default function ChooseDoor({ onClose = () => {} }) {
   const [handle, setHandle] = useState('left')
 
   return (
-    <div className='[&>p]:my-3 text-[14px]'>
+    <div className='[&>p]:my-3 text-[14px] flex gap-10'>
       {/* Width */}
       <div className='flex py-8 mb-6'>
         <div className='mr-8 gap-5'>
-          <p className='text-gray-400 mb-6'>Select wall:</p>
+          <p className='text-gray-400 mb-[5.3rem]'>Select wall:</p>
           {/* Wall on which to insert the door */}
           <p>
             <SelectWall value={wall} onChange={setWall} />
@@ -34,7 +34,7 @@ export default function ChooseDoor({ onClose = () => {} }) {
       <CabinetGridContainer classes='pb-12'>
         {/* Door style */}
         <p className='text-gray-400'>Choose style:</p>
-        <CabinetGrid classes='grid-cols-6'>
+        <CabinetGrid classes='grid-cols-3'>
           {styles.map((s) => (
             <DoorButton
               key={s.id}

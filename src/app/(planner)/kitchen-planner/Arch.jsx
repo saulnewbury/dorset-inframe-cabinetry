@@ -2,6 +2,8 @@ import { useAppState } from '@/appState'
 
 import { wh, wt } from '@/const'
 
+import { wallColor } from './cabinet/colors'
+
 // Reusable materials
 import { wallMaterial, archMaterial } from '@/materials'
 
@@ -35,10 +37,11 @@ function Arch3D({ len, offset, width }) {
       {/* Lintel */}
       <mesh
         position={[0, wh - 0.2, 0]}
-        material={wallMaterial}
+        // material={wallMa terial}
         castShadow
         receiveShadow
       >
+        <meshStandardMaterial color={wallColor} />
         <boxGeometry args={[width, 0.4, wt]} />
       </mesh>
     </group>
