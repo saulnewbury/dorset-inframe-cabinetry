@@ -7,7 +7,8 @@ export default function Worktop({
   distance,
   color,
   overhang = 0.02,
-  basin = null
+  basin = null,
+  corner = null
 }) {
   const w = distance + thickness * 2
   const d = depth + thickness
@@ -66,6 +67,20 @@ export default function Worktop({
             position={[-w / 2 + sideShim / 2, height + 0.015, overhang / 2]}
           >
             <boxGeometry args={[sideShim, 0.03, d + overhang]} />
+            <meshStandardMaterial color={color} />
+          </mesh>
+        </>
+      ) : corner ? (
+        <>
+          <mesh
+            receiveShadow
+            position={[
+              corner.orientation === 'left' ? corner.offset : -corner.offset,
+              height + 0.015,
+              overhang / 2
+            ]}
+          >
+            <boxGeometry args={[w, 0.03, d + overhang]} />
             <meshStandardMaterial color={color} />
           </mesh>
         </>

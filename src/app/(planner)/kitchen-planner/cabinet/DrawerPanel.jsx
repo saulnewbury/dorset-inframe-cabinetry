@@ -34,6 +34,7 @@ export default function DrawerPanel({
 
       return (
         <mesh
+          receiveShadow
           position={[
             0,
             drawerHeight / 2 - 0.05,
@@ -60,7 +61,7 @@ export default function DrawerPanel({
       ]}
     >
       {/* Drawer front */}
-      <mesh>
+      <mesh receiveShadow>
         <boxGeometry args={[drawerWidth, drawerHeight, drawerThickness]} />
         <meshStandardMaterial color='white' />
         <Edges threshold={5} color={lineColor} />

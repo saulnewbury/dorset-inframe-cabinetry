@@ -14,7 +14,9 @@ export default function Carcass({
   backInset,
   baseUnit,
   basin,
-  underCounter = false
+  underCounter = false,
+  cornerFullWidth = null,
+  corner = null
 }) {
   // Undercounter
   const offsetY = underCounter ? baseCarcassToFloor : 0
@@ -78,7 +80,7 @@ export default function Carcass({
             />
             <meshStandardMaterial color={is3D ? 'white' : 'lightgray'} />
             <Edges
-              color='lineColor'
+              color={lineColor}
               renderOrder={1000}
               lineWidth={!is3D && 2}
             />
@@ -96,7 +98,7 @@ export default function Carcass({
             />
             <meshStandardMaterial color={is3D ? 'white' : 'lightgray'} />
             <Edges
-              color='lineColor'
+              color={lineColor}
               renderOrder={1000}
               lineWidth={!is3D && 2}
             />
@@ -115,7 +117,24 @@ export default function Carcass({
             ]}
           />
           <meshStandardMaterial color={is3D ? 'white' : 'lightgray'} />
-          <Edges color='lineColor' renderOrder={1000} />
+          <Edges color={lineColor} renderOrder={1000} />
+        </mesh>
+      )}
+
+      {/* Corner */}
+      {corner && !is3D && (
+        <mesh
+          position-z={0.009}
+          position-y={carcassHeight - 0.5}
+          position-x={
+            corner.orientation === 'left' ? corner.offset : -corner.offset
+          }
+        >
+          <boxGeometry
+            args={[cornerFullWidth + 0.036, 0.036, carcassDepth + 0.018]}
+          />
+          <meshStandardMaterial color='#cccccc' />
+          <Edges threshold={15} color='lightgray' />
         </mesh>
       )}
     </>
