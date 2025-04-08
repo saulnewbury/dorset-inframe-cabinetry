@@ -10,6 +10,8 @@ import ChooseColours from '@/app/(planner)/kitchen-planner/dialog/ChooseColours'
 
 import WeCanSupply from '@/app/(general)/WeCanSupply'
 import { weSupplyAppliances } from '@/lib/data/weSupply'
+import { weCanSupplySinksAndTaps } from '@/lib/data/weSupply'
+import { WeCanSupplyHandlesAndKnobs } from '@/lib/data/weSupply'
 
 export const defineYourSpaceMenu = [
   {
@@ -98,8 +100,7 @@ export const makeItYours = [
       {
         name: 'Appliances',
         heading: 'Appliances',
-        component: WeCanSupply,
-        data: weSupplyAppliances
+        component: () => <WeCanSupply {...weSupplyAppliances} />
       }
     ]
   },
