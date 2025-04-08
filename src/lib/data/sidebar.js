@@ -1,6 +1,3 @@
-import placeholderA from '@/lib/images/placeholder-a.jpg'
-import placeholderB from '@/lib/images/placeholder-b.jpg'
-
 import ChooseFloorPlan from '@/app/(planner)/kitchen-planner/dialog/ChooseFloorPlan'
 import ChooseDoor from '@/app/(planner)/kitchen-planner/dialog/ChooseDoor'
 import ChooseWindow from '@/app/(planner)/kitchen-planner/dialog/ChooseWindow'
@@ -10,6 +7,9 @@ import ChooseTallUnit from '@/app/(planner)/kitchen-planner/dialog/ChooseTallUni
 import ChooseWallUnit from '@/app/(planner)/kitchen-planner/dialog/ChooseWallUnit'
 import ChooseAddWall from '@/app/(planner)/kitchen-planner/dialog/ChooseAddWall'
 import ChooseColours from '@/app/(planner)/kitchen-planner/dialog/ChooseColours'
+
+import WeCanSupply from '@/app/(general)/WeCanSupply'
+import { weSupplyAppliances } from '@/lib/data/weSupply'
 
 export const defineYourSpaceMenu = [
   {
@@ -91,8 +91,36 @@ export const makeItYours = [
         variants: ['All wall units']
       }
     ]
+  },
+  {
+    name: 'appliances',
+    options: [
+      {
+        name: 'Appliances',
+        heading: 'Appliances',
+        component: WeCanSupply,
+        data: weSupplyAppliances
+      }
+    ]
+  },
+  {
+    name: 'worktop',
+    options: [
+      {
+        name: 'Style worktop',
+        heading: 'Style worktop',
+        component: ChooseWallUnit
+      }
+    ]
+  },
+  {
+    name: 'your items',
+    options: [
+      {
+        name: 'Your items',
+        heading: 'Your selected items',
+        component: ChooseWallUnit
+      }
+    ]
   }
-  // {
-  //   name: 'appliances'
-  // }
 ]

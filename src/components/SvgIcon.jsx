@@ -50,7 +50,7 @@ const icons = [
   { icon: cabinets, shape: 'cabinets' },
   { icon: worktop, shape: 'worktop' },
   { icon: appliances, shape: 'appliances' },
-  { icon: yourItems, shape: 'your-items' },
+  { icon: yourItems, shape: 'your items' },
   { icon: close, shape: 'close' },
   { icon: square, shape: 'square' },
   { icon: notch, shape: 'notch' },
@@ -87,7 +87,7 @@ export default function SvgIcon({ shape = '', alt = undefined, classes = '' }) {
           width={`${item.icon.width}`}
           height={`${item.icon.height}`}
           viewBox={`0 0 ${item.icon.width} ${item.icon.height}`}
-          role="img"
+          role='img'
           aria-label={alt}
         >
           <use href={item.icon.src + '#root'} />
