@@ -58,3 +58,7 @@ div {
 .header {
   @apply text-[24px] lg:text-[28px] leading-[32px] lg:leading-[37px] font-normal;
 }
+
+.dangerlink {
+  @apply hover:text-blue underline;
+}

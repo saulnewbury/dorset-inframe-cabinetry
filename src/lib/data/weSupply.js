@@ -7,9 +7,8 @@ export const weSupplyAppliances = {
   codes: true,
   src: caple,
   color: '#e6e5e4',
-
   markup:
-    'We can supply a wide range of appliances. Request a call back via the contact form or on submission of your kitchen design and we will endeavour to get you a competitive price. <br /> <br />Or browse products from the brands below, and add the <br />product code to the list:',
+    "We can supply a wide range of appliances. Request a call back via the <span class='dangerlink'><a href='/contact'>contact form</a></span> or on submission of your kitchen design and we will endeavour to get you a competitive price. <br /> <br />Or browse products from the brands below, and add the <br />product code to the list:",
   brands: [
     { name: 'Belling', url: 'https://www.belling.co.uk/en-gb' },
     { name: 'Bosch', url: 'https://www.bosch.co.uk/' },

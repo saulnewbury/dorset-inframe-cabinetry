@@ -77,7 +77,7 @@ function DoorButton({ id, title, image, onClick = () => {} }) {
       onClick={() => onClick(id)}
       className='flex flex-col items-center'
     >
-      <div className='w-full aspect-square overflow-hidden mb-[1rem]'>
+      <div className='w-full aspect-square overflow-hidden mb-[1rem] hover:border-[0.5px] hover:border-blue'>
         <img src={image.src} alt='' />
       </div>
       <div className='text-center'>

@@ -10,8 +10,9 @@ import ChooseColours from '@/app/(planner)/kitchen-planner/dialog/ChooseColours'
 
 import WeCanSupply from '@/app/(general)/WeCanSupply'
 import { weSupplyAppliances } from '@/lib/data/weSupply'
-import { weCanSupplySinksAndTaps } from '@/lib/data/weSupply'
-import { WeCanSupplyHandlesAndKnobs } from '@/lib/data/weSupply'
+import { weSupplySinksAndTaps } from '@/lib/data/weSupply'
+import { weSupplyHandlesAndKnobs } from '@/lib/data/weSupply'
+import { weSupplyStorageAndAccessories } from '@/lib/data/weSupply'
 
 export const defineYourSpaceMenu = [
   {
@@ -40,12 +41,12 @@ export const defineYourSpaceMenu = [
     options: [
       {
         name: 'Add windows',
-        heading: 'Windows',
+        heading: 'Add resizable windows',
         component: ChooseWindow
       },
       {
         name: 'Add doors',
-        heading: 'Doors',
+        heading: 'Add resizable doors',
         component: ChooseDoor
       },
       {
@@ -95,22 +96,47 @@ export const makeItYours = [
     ]
   },
   {
-    name: 'appliances',
-    options: [
-      {
-        name: 'Appliances',
-        heading: 'Appliances',
-        component: () => <WeCanSupply {...weSupplyAppliances} />
-      }
-    ]
-  },
-  {
     name: 'worktop',
     options: [
       {
         name: 'Style worktop',
         heading: 'Style worktop',
         component: ChooseWallUnit
+      }
+    ]
+  },
+  {
+    name: 'we supply',
+    options: [
+      {
+        fullWidth: true,
+        name: 'Appliances',
+        heading: 'We supply appliances',
+        component: () => <WeCanSupply {...weSupplyAppliances} isModal={true} />
+      },
+      {
+        fullWidth: true,
+        name: 'Sinks and taps',
+        heading: 'We supply sinks and taps',
+        component: () => (
+          <WeCanSupply {...weSupplySinksAndTaps} isModal={true} />
+        )
+      },
+      {
+        fullWidth: true,
+        name: 'Handles and knobs',
+        heading: 'We supply handles and knobs',
+        component: () => (
+          <WeCanSupply {...weSupplyHandlesAndKnobs} isModal={true} />
+        )
+      },
+      {
+        fullWidth: true,
+        name: 'Storage and accessories',
+        heading: 'We supply storage and accessories',
+        component: () => (
+          <WeCanSupply {...weSupplyStorageAndAccessories} isModal={true} />
+        )
       }
     ]
   },

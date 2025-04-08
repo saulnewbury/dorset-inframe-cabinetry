@@ -1,4 +1,5 @@
 import { useAppState } from '@/appState'
+import { Edges } from '@react-three/drei'
 
 import { wh, wt } from '@/const'
 
@@ -20,8 +21,10 @@ export default function Arch(props) {
 function Arch2D({ len, offset, width, onClick = () => {} }) {
   return (
     <group position={[offset - len / 2, wh + 0.1, 0]} rotation-x={-Math.PI / 2}>
-      <mesh material={archMaterial} onClick={onClick}>
+      <mesh onClick={onClick}>
+        <meshBasicMaterial color={'#fff'} />
         <planeGeometry args={[width, wt]} />
+        <Edges threshold={15} color={'gray'} lineWidth={0.5} />
       </mesh>
     </group>
   )

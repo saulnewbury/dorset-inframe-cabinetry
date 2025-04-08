@@ -49,7 +49,7 @@ const icons = [
   { icon: elements, shape: 'elements' },
   { icon: cabinets, shape: 'cabinets' },
   { icon: worktop, shape: 'worktop' },
-  { icon: appliances, shape: 'appliances' },
+  { icon: appliances, shape: 'we supply' },
   { icon: yourItems, shape: 'your items' },
   { icon: close, shape: 'close' },
   { icon: square, shape: 'square' },

@@ -19,7 +19,7 @@ export default function ChooseWindow({ onClose = () => {} }) {
   const [wall, setWall] = useState(0)
 
   return (
-    <div className='[&>p]:my-3 text-[14px] flex gap-20'>
+    <div className='[&>p]:my-3 text-[14px] flex gap-32'>
       {/* Width */}
       <div className='flex py-8 mb-6'>
         <div className='mr-8 gap-5'>
@@ -80,12 +80,11 @@ function WindowButton({ id, title, image, onClick = () => {} }) {
       onClick={() => onClick(id)}
       className='flex flex-col items-center'
     >
-      <div className='w-full aspect-square overflow-hidden mb-[1rem]'>
+      <div className='w-full aspect-square overflow-hidden mb-[1rem] hover:border-[0.5px]  hover:border-blue'>
         <img src={image.src} alt='' />
       </div>
       <div className='text-center'>
         <p>{title}</p>
-        <p className='text-sm'>Resizeable</p>
       </div>
     </button>
   )

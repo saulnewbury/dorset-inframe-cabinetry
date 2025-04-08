@@ -2,6 +2,6 @@
   <g id='root'>
     <path d="M1 0.5V34H31V21.5" stroke="black"/>
     <path d="M31 22H25.2174M15.0435 34V22H25.2174M25.2174 22V11H14.4783H8.5V34" stroke="black"/>
-    <path d="M8.5 11V6V1H1.5" stroke="black"/>
-  </g>  
+    <path d="M1.5 1H14V11" stroke="black"/>
+  </g>
 </svg>

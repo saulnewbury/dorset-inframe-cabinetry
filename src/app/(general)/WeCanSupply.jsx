@@ -7,6 +7,7 @@ import Image from 'next/image'
 import createMarkup from '@/lib/helpers/createMarkup.js'
 
 export default function WeCanSupply({
+  isModal = false,
   codes = false,
   markup,
   src,
@@ -32,7 +33,9 @@ export default function WeCanSupply({
 
   return (
     <section
-      className={`gutter flex py-[6rem] text-[1.2rem]`}
+      className={`flex py-[6rem] text-[1.2rem] w-full mb-[3rem] ${
+        !isModal ? 'gutter' : 'overflow-scroll h-[calc(100%-90.9983px-3rem)]'
+      }`}
       style={{ backgroundColor: color }}
     >
       <div className='indent w-full'>
@@ -68,7 +71,7 @@ export default function WeCanSupply({
           </div>
         </div>
 
-        <div className='flex justify-between w-full items-center'>
+        <div className='flex justify-between w-full items-center pb-[5rem]'>
           <div className='text-[3rem] mt-[2rem]'>
             {brands.map((b, idx) => (
               <Link
@@ -88,7 +91,11 @@ export default function WeCanSupply({
             ))}
           </div>
           <div className='hidden md:block'>
-            <Image className='w-[45vw]' src={src} alt='appliances' />
+            <Image
+              className={isModal ? 'w-[35vw]' : 'w-[45vw]'}
+              src={src}
+              alt='appliances'
+            />
           </div>
         </div>
       </div>
