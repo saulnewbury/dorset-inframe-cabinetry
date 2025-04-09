@@ -128,7 +128,7 @@ function Door2D({ len, offset, width, option, style, onClick = () => {} }) {
     <group position={[offset - len / 2, wh + 0.1, 0]} rotation-x={-Math.PI / 2}>
       <mesh onClick={onClick}>
         <planeGeometry args={[width - 0.001, wt]} />
-        {/* <meshStandardMaterial color='white' /> */}
+        <meshStandardMaterial color='#999999' />
         <Edges threshold={15} color='gray' lineWidth={0.5} />
       </mesh>
       {/* Door(s) */}

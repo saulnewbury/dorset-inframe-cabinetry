@@ -16,17 +16,17 @@ export default function DoorHandle({ len, width, depth, orientation }) {
         rotation-y={orientation === 'left' ? Math.PI : Math.PI * 2}
       >
         {/* Plate */}
-        <mesh position-y={0.05}>
+        <mesh receiveShadow position-y={0.05}>
           <cylinderGeometry args={[0.05, 0.05, 0.0001]} />
           <meshStandardMaterial color='lightgrey' />
         </mesh>
         {/* Shaft */}
-        <mesh position-y={shaftLength / 2}>
+        <mesh receiveShadow position-y={shaftLength / 2}>
           <cylinderGeometry args={[rad, rad, shaftLength]} />
           <meshStandardMaterial color='lightgrey' />
         </mesh>
         {/* Lever */}
-        <mesh position-x={0.06} rotation-z={Math.PI / 2}>
+        <mesh receiveShadow position-x={0.06} rotation-z={Math.PI / 2}>
           <cylinderGeometry args={[rad, rad, leverLength]} />
           <meshStandardMaterial color='lightgrey' />
           <Edges linewidth={1} threshold={15} color={'gray'} />
@@ -41,17 +41,17 @@ export default function DoorHandle({ len, width, depth, orientation }) {
         rotation-y={orientation === 'left' ? Math.PI : Math.PI * 2}
       >
         {/* Plate */}
-        <mesh position-y={0.05}>
+        <mesh receiveShadow position-y={0.05}>
           <cylinderGeometry args={[0.05, 0.05, 0.0001]} />
           <meshStandardMaterial color='lightgrey' />
         </mesh>
         {/* Shaft */}
-        <mesh position-y={shaftLength / 2}>
+        <mesh receiveShadow position-y={shaftLength / 2}>
           <cylinderGeometry args={[rad, rad, shaftLength]} />
           <meshStandardMaterial color='lightgrey' />
         </mesh>
         {/* Lever */}
-        <mesh position-x={0.06} rotation-z={Math.PI / 2}>
+        <mesh receiveShadow position-x={0.06} rotation-z={Math.PI / 2}>
           <cylinderGeometry args={[rad, rad, leverLength]} />
           <meshStandardMaterial color='lightgrey' />
           <Edges linewidth={1} threshold={15} color={'gray'} />

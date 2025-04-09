@@ -22,7 +22,7 @@ function Arch2D({ len, offset, width, onClick = () => {} }) {
   return (
     <group position={[offset - len / 2, wh + 0.1, 0]} rotation-x={-Math.PI / 2}>
       <mesh onClick={onClick}>
-        <meshBasicMaterial color={'#fff'} />
+        <meshBasicMaterial color={'#AAAAAA'} />
         <planeGeometry args={[width, wt]} />
         <Edges threshold={15} color={'gray'} lineWidth={0.5} />
       </mesh>

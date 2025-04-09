@@ -63,6 +63,7 @@ function Window2D({ len, offset, width, style, onClick = () => {} }) {
     >
       <mesh>
         <planeGeometry args={[width, wt]} />
+        <meshStandardMaterial color='#999999' />
         <Edges threshold={13} lineWidth={0.5} color={'gray'} />
       </mesh>
       <lineSegments
