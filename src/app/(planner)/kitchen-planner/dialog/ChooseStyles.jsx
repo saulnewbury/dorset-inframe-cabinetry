@@ -7,7 +7,7 @@ import SvgIcon from '@/components/SvgIcon'
 
 import ColorPicker from './ColorPicker'
 
-const patterns = [
+const list = [
   {
     svgProps: {
       shape: 'checkers',
@@ -77,9 +77,11 @@ export default function ChooseStyles({
   floor = { pattern: 'checkers', colors: { even: '#000000', odd: '#ffffff' } }
 }) {
   const containerRef = useRef()
-  const patternsRef = useRef([])
+  const patternElementsRef = useRef([])
   const floorConfig = useRef({})
-  const [tileId, setTileId] = useState(0)
+
+  const [patterns, setPatterns] = useState(list)
+  const [patternId, setPatternId] = useState(0)
   const [open, setOpen] = useState(false)
   const [isReady, setIsReady] = useState(false)
   const [picker, setPicker] = useState(null)
@@ -89,11 +91,11 @@ export default function ChooseStyles({
 
   // Reset refs and set up cleanup
   useEffect(() => {
-    patternsRef.current = []
+    patternElementsRef.current = []
 
     return () => {
       // Clean up animations
-      gsap.killTweensOf(patternsRef.current)
+      gsap.killTweensOf(patternElementsRef.current)
     }
   }, [])
 
@@ -105,11 +107,11 @@ export default function ChooseStyles({
       console.log('All pattern refs loaded, initializing positions')
 
       // Ensure we have valid elements before proceeding
-      if (patternsRef.current.every((el) => el instanceof Element)) {
+      if (patternElementsRef.current.every((el) => el instanceof Element)) {
         console.log('All refs are valid DOM elements')
 
         // Set initial positions and make ready
-        patternsRef.current.forEach((tile) => {
+        patternElementsRef.current.forEach((tile) => {
           gsap.set(tile, { translateX: 0 })
         })
 
@@ -117,7 +119,7 @@ export default function ChooseStyles({
       } else {
         console.error(
           'Some refs are not valid DOM elements',
-          patternsRef.current
+          patternElementsRef.current
         )
       }
     }
@@ -126,12 +128,12 @@ export default function ChooseStyles({
   useEffect(() => {
     if (open) return
     animation('reverse')
-  }, [tileId])
+  }, [patternId])
 
   // Add elements to ref
   const addToPatternElementsRef = (el) => {
-    if (el && !patternsRef.current.includes(el)) {
-      patternsRef.current.push(el)
+    if (el && !patternElementsRef.current.includes(el)) {
+      patternElementsRef.current.push(el)
 
       // Update ref count for debugging
       setRefsLoaded((prevCount) => prevCount + 1)
@@ -141,7 +143,7 @@ export default function ChooseStyles({
   function animation(direction) {
     console.log(`Animation triggered: ${direction}`, {
       isReady,
-      refCount: patternsRef.current.length,
+      refCount: patternElementsRef.current.length,
       open
     })
 
@@ -151,7 +153,7 @@ export default function ChooseStyles({
       return
     }
 
-    const patternTiles = patternsRef.current
+    const patternTiles = patternElementsRef.current
     if (patternTiles.length === 0) {
       console.error('No pattern tiles found in ref')
       return
@@ -169,7 +171,7 @@ export default function ChooseStyles({
 
     // Update z-index
     patternTiles.forEach((p, idx) => {
-      gsap.set(p, { zIndex: idx === tileId ? 50 : 10 })
+      gsap.set(p, { zIndex: idx === patternId ? 50 : 10 })
     })
 
     // Kill any ongoing animations
@@ -232,13 +234,13 @@ export default function ChooseStyles({
     }
   }
 
-  function handleColor(hex, type, parity) {
-    if (type === 1) {
+  function handleColor(hex, parity = undefined) {
+    if (!parity) {
       floorConfig.color = hex
       // send off the object!
     } else {
       if (!floorConfig.colors) {
-        // empty array
+        // if array doesn't exist
         floorConfig.colors = []
         floorConfig.colors.push(hex)
       } else if (parity === 'even') {
@@ -249,7 +251,7 @@ export default function ChooseStyles({
           // send off the object!
         } else {
           // if array doesn't contain 'even' yet, then insert
-          floorConfig.colors.unShift(hex)
+          floorConfig.colors.unshift(hex)
           // send off the object!
         }
       } else if (parity === 'odd') {
@@ -298,7 +300,9 @@ export default function ChooseStyles({
         <div className='mb-3 flex items-center gap-[4.5rem] cursor-pointer'>
           <p className='text-gray-400 text-[.8rem]'>Floor</p>
           <span
-            className='w-5 h-5 flex justify-center items-center rounded-full hover:scale-[1.3]'
+            className={`w-5 h-5 flex justify-center items-center rounded-full scale-[1.3] transition ${
+              open ? 'rotate-[90deg]' : 'rotate-[0deg]'
+            }`}
             onClick={handleChevronClick}
           >
             <SvgIcon shape='chevron-right' />
@@ -310,14 +314,14 @@ export default function ChooseStyles({
             <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
             <ColorPicker
               onClick={(hex) => {
-                handleColor(hex, 2, 'even')
+                handleColor(hex, 'even')
               }}
             />
             <br />
             <p className='text-gray-600 text-[.8rem] mb-5'>Odd tiles</p>
             <ColorPicker
               onClick={(hex) => {
-                handleColor(hex, 2, 'odd')
+                handleColor(hex, 'odd')
               }}
             />
           </div>
@@ -341,7 +345,7 @@ export default function ChooseStyles({
               onClick={() => {
                 if (!open) return
                 setOpen(false)
-                setTileId(idx)
+                setPatternId(idx)
                 floorConfig.pattern = pattern.svgProps.shape
               }}
             >
