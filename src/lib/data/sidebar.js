@@ -6,6 +6,7 @@ import ChooseBaseUnit from '@/app/(planner)/kitchen-planner/dialog/ChooseBaseUni
 import ChooseTallUnit from '@/app/(planner)/kitchen-planner/dialog/ChooseTallUnit'
 import ChooseWallUnit from '@/app/(planner)/kitchen-planner/dialog/ChooseWallUnit'
 import ChooseAddWall from '@/app/(planner)/kitchen-planner/dialog/ChooseAddWall'
+import ChooseStyles from '@/app/(planner)/kitchen-planner/dialog/ChooseStyles'
 import ChooseColours from '@/app/(planner)/kitchen-planner/dialog/ChooseColours'
 
 import WeCanSupply from '@/app/(general)/WeCanSupply'
@@ -96,12 +97,13 @@ export const makeItYours = [
     ]
   },
   {
-    name: 'colors',
+    name: 'styles',
     options: [
       {
-        name: 'Color your kitchen',
-        heading: 'Color your kitchen',
-        component: ChooseWallUnit
+        fullWidth: true,
+        name: 'Style your kitchen',
+        heading: 'Style your kitchen',
+        component: ChooseStyles
       }
     ]
   },

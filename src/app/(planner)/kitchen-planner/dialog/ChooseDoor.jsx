@@ -4,7 +4,7 @@ import clsx from 'clsx'
 
 import SelectWall from './SelectWall'
 import CabinetGrid from '@/app/(planner)/kitchen-planner/dialog/CabinetGrid'
-import CabinetGridContainer from './CabinetGridContainer'
+import DialogInnerContainer from './DialogInnerContainer'
 
 import { doorStyles as styles } from '@/model/itemStyles'
 
@@ -31,7 +31,7 @@ export default function ChooseDoor({ onClose = () => {} }) {
         </div>
       </div>
 
-      <CabinetGridContainer classes='pb-12'>
+      <DialogInnerContainer classes='pb-12'>
         {/* Door style */}
         <p className='text-gray-400'>Choose style:</p>
         <CabinetGrid classes='grid-cols-3'>
@@ -43,7 +43,7 @@ export default function ChooseDoor({ onClose = () => {} }) {
             />
           ))}
         </CabinetGrid>
-      </CabinetGridContainer>
+      </DialogInnerContainer>
     </div>
   )
 

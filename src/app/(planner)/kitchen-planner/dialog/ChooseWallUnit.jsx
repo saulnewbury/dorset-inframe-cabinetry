@@ -5,7 +5,7 @@ import clsx from 'clsx'
 
 // Project componets
 import CabinetGrid from '@/app/(planner)/kitchen-planner/dialog/CabinetGrid'
-import CabinetGridContainer from '@/app/(planner)/kitchen-planner/dialog/CabinetGridContainer'
+import DialogInnerContainer from '@/app/(planner)/kitchen-planner/dialog/DialogInnerContainer'
 import UnitCard from './UnitCard'
 
 import { wallUnitStyles } from '@/model/itemStyles'
@@ -25,7 +25,7 @@ export default function ChooseWallUnit({ onClose = () => {} }) {
   )
 
   return (
-    <CabinetGridContainer>
+    <DialogInnerContainer>
       {/* Filter */}
       <p className='flex gap-4'>
         {['All', ...filterText].map((f) => (
@@ -54,7 +54,7 @@ export default function ChooseWallUnit({ onClose = () => {} }) {
             ))
         )}
       </CabinetGrid>
-    </CabinetGridContainer>
+    </DialogInnerContainer>
   )
 
   function selectUnit(style, width) {

@@ -3,7 +3,7 @@ import { ModelContext } from '@/model/context'
 import SelectWall from './SelectWall'
 
 import Button from '@/components/Button'
-import CabinetGridContainer from './CabinetGridContainer'
+import DialogInnerContainer from './DialogInnerContainer'
 
 import internalWallImage from '@/lib/images/internal-wall.webp'
 import { Chela_One } from 'next/font/google'
@@ -27,9 +27,9 @@ export default function ChooseAddWall({ onClose }) {
           </Button>
         </p>
       </form>
-      <CabinetGridContainer classes='pb-12 h-[45rem]'>
+      <DialogInnerContainer classes='pb-12 h-[45rem]'>
         <img src={internalWallImage.src} className='h-full' alt='' />
-      </CabinetGridContainer>
+      </DialogInnerContainer>
     </div>
   )
 

@@ -6,7 +6,7 @@ import SelectWall from './SelectWall'
 
 import Button from '@/components/Button'
 import CabinetGrid from '@/app/(planner)/kitchen-planner/dialog/CabinetGrid'
-import CabinetGridContainer from './CabinetGridContainer'
+import DialogInnerContainer from './DialogInnerContainer'
 
 import { windowStyles as styles } from '@/model/itemStyles'
 
@@ -30,7 +30,7 @@ export default function ChooseWindow({ onClose = () => {} }) {
           </p>
         </div>
       </div>
-      <CabinetGridContainer classes='pb-12'>
+      <DialogInnerContainer classes='pb-12'>
         {/* Window style */}
         <p className='text-gray-400'>Choose style:</p>
         <CabinetGrid classes='grid-cols-3'>
@@ -46,7 +46,7 @@ export default function ChooseWindow({ onClose = () => {} }) {
             />
           ))}
         </CabinetGrid>
-      </CabinetGridContainer>
+      </DialogInnerContainer>
     </div>
   )
 

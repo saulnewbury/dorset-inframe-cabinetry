@@ -40,17 +40,28 @@ import icon2d from '@/lib/icons/2d-icon.svg'
 import icon3d from '@/lib/icons/3d-icon.svg'
 
 import tick from '@/lib/icons/tick.svg'
+import chevronRight from '@/lib/icons/chevron-right.svg'
+
+// floor
+import checkers from '@/lib/icons/floor/checkers.svg'
+import checkers2 from '@/lib/icons/floor/checkers2.svg'
+import diagonal from '@/lib/icons/floor/diagonal.svg'
+import grid from '@/lib/icons/floor/grid.svg'
+import horizontalLines from '@/lib/icons/floor/horizontal-lines.svg'
+import verticalLines from '@/lib/icons/floor/vertical-lines.svg'
 
 const icons = [
   { icon: list, shape: 'list' },
   { icon: login, shape: 'login' },
   { icon: shape, shape: 'shape' },
+  // Side panel
   { icon: features, shape: 'features' },
   { icon: openings, shape: 'openings' },
   { icon: elements, shape: 'we supply' },
   { icon: cabinets, shape: 'cabinets' },
-  { icon: colors, shape: 'colors' },
+  { icon: colors, shape: 'styles' },
   { icon: yourItems, shape: 'your items' },
+  // Floor plan
   { icon: close, shape: 'close' },
   { icon: square, shape: 'square' },
   { icon: notch, shape: 'notch' },
@@ -59,7 +70,9 @@ const icons = [
   { icon: notchDivide, shape: 'notch-divide' },
   { icon: cornerDivide, shape: 'corner-divide' },
   { icon: tick, shape: 'tick' },
+  //
   { icon: capture, shape: 'capture' },
+  //
   { icon: wallHandle, shape: 'wall-handle' },
   { icon: wallHandleRight, shape: 'wall-handle-right' },
   { icon: wallHandleLeft, shape: 'wall-handle-left' },
@@ -71,10 +84,25 @@ const icons = [
   { icon: icon3d, shape: '3d' },
   { icon: pen, shape: 'pen' },
   { icon: save, shape: 'save' },
-  { icon: person, shape: 'user' }
+  { icon: person, shape: 'user' },
+  { icon: chevronRight, shape: 'chevron-right' },
+  // floors
+  { icon: checkers, shape: 'checkers' },
+  { icon: checkers2, shape: 'checkers2' },
+  { icon: diagonal, shape: 'diagonal' },
+  { icon: grid, shape: 'grid' },
+  { icon: horizontalLines, shape: 'horizontal-lines' },
+  { icon: verticalLines, shape: 'vertical-lines' }
 ]
 
-export default function SvgIcon({ shape = '', alt = undefined, classes = '' }) {
+export default function SvgIcon({
+  shape = '',
+  alt = undefined,
+  factor = null,
+  width = null,
+  height = null,
+  classes = ''
+}) {
   return icons.map((item, i) => {
     if (item.shape === shape) {
       return (
@@ -84,9 +112,11 @@ export default function SvgIcon({ shape = '', alt = undefined, classes = '' }) {
             'svg-icon inline-block cursor-pointer fill-transparent stroke-[currentcolor]',
             classes
           )}
-          width={`${item.icon.width}`}
-          height={`${item.icon.height}`}
-          viewBox={`0 0 ${item.icon.width} ${item.icon.height}`}
+          width={`${factor ? width * factor : item.icon.width}`}
+          height={`${factor ? height * factor : item.icon.height}`}
+          viewBox={`0 0 ${width ? width : item.icon.width} ${
+            height ? height : item.icon.height
+          }`}
           role='img'
           aria-label={alt}
         >

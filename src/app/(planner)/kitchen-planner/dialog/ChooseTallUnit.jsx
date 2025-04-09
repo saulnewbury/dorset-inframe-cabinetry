@@ -3,7 +3,7 @@ import { ModelContext } from '@/model/context'
 import clsx from 'clsx'
 
 // Project components
-import CabinetGridContainer from '@/app/(planner)/kitchen-planner/dialog/CabinetGridContainer'
+import DialogInnerContainer from '@/app/(planner)/kitchen-planner/dialog/DialogInnerContainer'
 import CabinetGrid from '@/app/(planner)/kitchen-planner/dialog/CabinetGrid'
 import UnitCard from './UnitCard'
 
@@ -27,7 +27,7 @@ export default function ChooseTallUnit({
   )
 
   return (
-    <CabinetGridContainer>
+    <DialogInnerContainer>
       {/* Filter */}
       <p className='flex gap-4'>
         {['All', ...filterText].map((f) => (
@@ -56,7 +56,7 @@ export default function ChooseTallUnit({
             ))
         )}
       </CabinetGrid>
-    </CabinetGridContainer>
+    </DialogInnerContainer>
   )
 
   function selectUnit(style, width) {

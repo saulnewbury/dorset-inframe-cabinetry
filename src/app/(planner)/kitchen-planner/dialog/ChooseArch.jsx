@@ -4,7 +4,7 @@ import { ModelContext } from '@/model/context'
 import SelectWall from './SelectWall'
 
 import Button from '@/components/Button'
-import CabinetGridContainer from './CabinetGridContainer'
+import DialogInnerContainer from './DialogInnerContainer'
 
 import internalWallOpening from '@/lib/images/internal-wall-opening.webp'
 
@@ -39,9 +39,9 @@ export default function ChooseArch({ onClose = () => {} }) {
           </Button>
         </p>
       </form>
-      <CabinetGridContainer classes='pb-12 h-[45rem]'>
+      <DialogInnerContainer classes='pb-12 h-[45rem]'>
         <img src={internalWallOpening.src} className='h-full' alt='' />
-      </CabinetGridContainer>
+      </DialogInnerContainer>
     </div>
   )
 

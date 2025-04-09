@@ -5,7 +5,7 @@ import clsx from 'clsx'
 import { baseUnitStyles } from '@/model/itemStyles'
 
 import CabinetGrid from '@/app/(planner)/kitchen-planner/dialog/CabinetGrid'
-import CabinetGridContainer from '@/app/(planner)/kitchen-planner/dialog/CabinetGridContainer'
+import DialogInnerContainer from '@/app/(planner)/kitchen-planner/dialog/DialogInnerContainer'
 import UnitCard from './UnitCard'
 
 const baseHeight = 0.759 // 759mm
@@ -32,13 +32,13 @@ export default function ChooseBaseUnit({
   console.log(heights)
 
   return (
-    <CabinetGridContainer>
+    <DialogInnerContainer>
       {/* Filter */}
-      <p className="flex gap-4">
+      <p className='flex gap-4'>
         {['All', ...filterText].map((f) => (
           <button
             key={f}
-            type="button"
+            type='button'
             className={clsx(f === filter && 'border-black border-b-2')}
             onClick={() => setFilter(f)}
           >
@@ -67,7 +67,7 @@ export default function ChooseBaseUnit({
           )
         )}
       </CabinetGrid>
-    </CabinetGridContainer>
+    </DialogInnerContainer>
   )
 
   function selectUnit(style, width) {

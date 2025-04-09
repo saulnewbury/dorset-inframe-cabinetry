@@ -1,0 +1,26 @@
+<svg width="108" height="60" viewBox="0 0 108 60" stroke="none" xmlns="http://www.w3.org/2000/svg">
+  <g id='root' stroke="none">
+    <rect y="36" width="12" height="12" fill="current"/>
+    <rect x="48" y="12" width="12" height="12" fill="current"/>
+    <rect x="24" y="12" width="12" height="12" fill="current"/>
+    <rect x="12" width="12" height="12" fill="current"/>
+    <rect x="36" width="12" height="12" fill="current"/>
+    <rect y="12" width="12" height="12" fill="current"/>
+    <rect x="24" y="36" width="12" height="12" fill="current"/>
+    <rect x="72" y="12" width="12" height="12" fill="current"/>
+    <rect x="36" y="24" width="12" height="12" fill="current"/>
+    <rect x="84" width="12" height="12" fill="current"/>
+    <rect x="48" y="36" width="12" height="12" fill="current"/>
+    <rect x="96" y="12" width="12" height="12" fill="current"/>
+    <rect x="36" y="48" width="12" height="12" fill="current"/>
+    <rect x="84" y="24" width="12" height="12" fill="current"/>
+    <rect x="84" y="48" width="12" height="12" fill="current"/>
+    <rect x="72" y="36" width="12" height="12" fill="current"/>
+    <rect x="96" y="36" width="12" height="12" fill="current"/>
+    <rect x="60" y="48" width="12" height="12" fill="current"/>
+    <rect x="12" y="48" width="12" height="12" fill="current"/>
+    <rect x="60" y="24" width="12" height="12" fill="current"/>
+    <rect x="12" y="24" width="12" height="12" fill="current"/>
+    <rect x="60" width="12" height="12" fill="current"/>
+  </g>  
+</svg>
