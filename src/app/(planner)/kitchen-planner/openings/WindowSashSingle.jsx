@@ -20,7 +20,7 @@ export default function WindowSashSingle({
     <group position-z={0}>
       {sash.map((s, i) =>
         i < 2 ? (
-          <mesh key={i} position={s.pos} rotation={s.rotation}>
+          <mesh receiveShadow key={i} position={s.pos} rotation={s.rotation}>
             <extrudeGeometry
               args={[sashSide, { depth: d / 2, bevelEnabled: false }]}
             />
@@ -28,7 +28,7 @@ export default function WindowSashSingle({
             <Edges linewidth={1} threshold={15} color={'#989898'} />
           </mesh>
         ) : (
-          <mesh key={i} position={s.pos} rotation={s.rotation}>
+          <mesh receiveShadow key={i} position={s.pos} rotation={s.rotation}>
             <extrudeGeometry
               args={[sashHead, { depth: d / 2, bevelEnabled: false }]}
             />

@@ -26,7 +26,12 @@ export default function WindowSashDouble({
           <group key={idx} position-x={px} position-z={0}>
             {sash.map((s, i) =>
               i < 2 ? (
-                <mesh key={i} position={s.pos} rotation={s.rotation}>
+                <mesh
+                  receiveShadow
+                  key={i}
+                  position={s.pos}
+                  rotation={s.rotation}
+                >
                   <extrudeGeometry
                     args={[sashSide, { depth: d / 2, bevelEnabled: false }]}
                   />
@@ -34,7 +39,12 @@ export default function WindowSashDouble({
                   <Edges linewidth={1} threshold={15} color={colorLine} />
                 </mesh>
               ) : (
-                <mesh key={i} position={s.pos} rotation={s.rotation}>
+                <mesh
+                  receiveShadow
+                  key={i}
+                  position={s.pos}
+                  rotation={s.rotation}
+                >
                   <extrudeGeometry
                     args={[sashHead, { depth: d / 2, bevelEnabled: false }]}
                   />
@@ -47,7 +57,7 @@ export default function WindowSashDouble({
         )
       })}
 
-      <mesh>
+      <mesh receiveShadow>
         <boxGeometry args={[w, len - w * 2, d - 0.001]} />
         <meshStandardMaterial />
         <Edges linewidth={1} threshold={15} color={colorLine} />

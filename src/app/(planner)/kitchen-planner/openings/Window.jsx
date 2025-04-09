@@ -98,14 +98,14 @@ function Window3D({ style, len, offset, width, option }) {
     // <group position={[0, -height, 0]}>
     <group position={[offset - len / 2, 0, 0]}>
       {/* Lintel */}
-      <mesh position={[0, wh - 0.2, 0]} castShadow receiveShadow>
+      <mesh receiveShadow position={[0, wh - 0.2, 0]} castShadow receiveShadow>
         <meshStandardMaterial color={wallColor} />
         <boxGeometry args={[width, 0.4, wt]} />
       </mesh>
       <group position={[0, wh - 0.4 - height / 2, 0.05 - wt / 2]}>
         {frame.map((f, i) =>
           i < 2 ? (
-            <mesh key={i} position={f.pos} rotation={f.rotation}>
+            <mesh receiveShadow key={i} position={f.pos} rotation={f.rotation}>
               <extrudeGeometry
                 args={[jamb, { depth: d, bevelEnabled: false }]}
               />
@@ -113,7 +113,7 @@ function Window3D({ style, len, offset, width, option }) {
               <Edges linewidth={1} threshold={15} color={'#989898'} />
             </mesh>
           ) : (
-            <mesh key={i} position={f.pos} rotation={f.rotation}>
+            <mesh receiveShadow key={i} position={f.pos} rotation={f.rotation}>
               <extrudeGeometry
                 args={[head, { depth: d, bevelEnabled: false }]}
               />
@@ -152,7 +152,7 @@ function Window3D({ style, len, offset, width, option }) {
         {/* Pane */}
         <mesh>
           <boxGeometry args={[width - 0.1, height - 0.1, 0.0001]} />
-          <meshStandardMaterial map={texture} transparent opacity={0.5} />
+          <meshStandardMaterial map={texture} transparent opacity={0.3} />
         </mesh>
       </group>
       {/* Wall below */}
