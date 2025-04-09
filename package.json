@@ -15,6 +15,7 @@
     "@react-three/drei": "^9.114.0",
     "@react-three/fiber": "^8.17.7",
     "@types/three": "^0.168.0",
+    "@uiw/react-color-circle": "^2.4.5",
     "gsap": "^3.12.5",
     "next": "^14.2.26",
     "nodemailer": "^6.10.0",

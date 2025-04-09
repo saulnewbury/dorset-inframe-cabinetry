@@ -2,10 +2,10 @@
 
 import { useRef, useEffect, useState } from 'react'
 import gsap from 'gsap'
-import { useGSAP } from '@gsap/react'
-
 import DialogInnerContainer from './DialogInnerContainer'
 import SvgIcon from '@/components/SvgIcon'
+
+import ColorPicker from './ColorPicker'
 
 const patterns = [
   {
@@ -53,9 +53,18 @@ const patterns = [
   }
 ]
 
-export default function ChooseStyles() {
+// floorConfig
+// pattern: 'checkers' | diagonal squares | horizontal lines | vertical lines | grid | stars | none
+// colors: [hex1, hex2] (for checkers & diagonal squares)
+//
+//
+
+export default function ChooseStyles({
+  floor = { pattern: 'checkers', colors: { even: '#000000', odd: '#ffffff' } }
+}) {
   const containerRef = useRef()
   const patternsRef = useRef([])
+  const floorConfig = useRef({})
   const [tileId, setTileId] = useState(0)
   const [open, setOpen] = useState(false)
   const [isReady, setIsReady] = useState(false)
@@ -72,16 +81,6 @@ export default function ChooseStyles() {
       gsap.killTweensOf(patternsRef.current)
     }
   }, [])
-
-  // Add elements to ref
-  const addToPatternElementsRef = (el) => {
-    if (el && !patternsRef.current.includes(el)) {
-      patternsRef.current.push(el)
-
-      // Update ref count for debugging
-      setRefsLoaded((prevCount) => prevCount + 1)
-    }
-  }
 
   // Set initial positions and mark component as ready once all refs are loaded
   useEffect(() => {
@@ -113,6 +112,16 @@ export default function ChooseStyles() {
     if (open) return
     animation('reverse')
   }, [tileId])
+
+  // Add elements to ref
+  const addToPatternElementsRef = (el) => {
+    if (el && !patternsRef.current.includes(el)) {
+      patternsRef.current.push(el)
+
+      // Update ref count for debugging
+      setRefsLoaded((prevCount) => prevCount + 1)
+    }
+  }
 
   function animation(direction) {
     console.log(`Animation triggered: ${direction}`, {
@@ -208,15 +217,44 @@ export default function ChooseStyles() {
     }
   }
 
+  function handleColor(hex, type, parity) {
+    if (type === 1) {
+      floorConfig.color = hex
+      // send off the object!
+    } else {
+      if (!floorConfig.colors) {
+        // empty array
+        floorConfig.colors = []
+        floorConfig.colors.push(hex)
+      } else if (parity === 'even') {
+        // has an 'odd' color already so 'even' color needs to be inserted at the beginning
+        if (floorConfig.colors.length === 2) {
+          // if array contains 'even' already, then replace
+          floorConfig.colors.splice(0, 1, hex)
+          // send off the object!
+        } else {
+          // if array doesn't contain 'even' yet, then insert
+          floorConfig.colors.unShift(hex)
+          // send off the object!
+        }
+      } else if (parity === 'odd') {
+        // has an 'even' color already so 'odd' color needs to be inserted at the beginning
+        if (floorConfig.colors.length === 2) {
+          // if array contains 'odd' already, then replace
+          floorConfig.colors.splice(1, 1, hex)
+          // send off the object!
+        } else {
+          // if array doesn't contain 'odd' yet, then insert
+          floorConfig.colors.push(hex)
+          // send off the object!
+        }
+      }
+    }
+  }
+
   return (
     <DialogInnerContainer>
       {/* Debug info */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className='text-xs text-gray-400 mb-2'>
-          Status: {isReady ? 'Ready' : 'Loading'} | Refs: {refsLoaded}/
-          {patterns.length} | Open: {open ? 'Yes' : 'No'}
-        </div>
-      )}
 
       {/* Cabinets color */}
       <div className='mb-6'>
@@ -244,10 +282,26 @@ export default function ChooseStyles() {
             <SvgIcon shape='chevron-right' />
           </span>
         </div>
+        {/* Floor Colors */}
+        <div className='bg-[#eeeeee] z-[500] absolute -top-[90px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'>
+          <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
+          <ColorPicker
+            onClick={(hex) => {
+              handleColor(hex, 2, 'even')
+            }}
+          />
+          <br />
+          <p className='text-gray-600 text-[.8rem] mb-5'>Odd tiles</p>
+          <ColorPicker
+            onClick={(hex) => {
+              handleColor(hex, 2, 'odd')
+            }}
+          />
+        </div>
 
         {/* Slider */}
         <div className='absolute top-[2rem] left-0' ref={containerRef}>
-          {patterns.map((props, idx) => (
+          {patterns.map((pattern, idx) => (
             <div
               key={idx}
               style={{ zIndex: patterns.length * 2 - idx + 1 }}
@@ -257,12 +311,13 @@ export default function ChooseStyles() {
                 if (!open) return
                 setOpen(false)
                 setTileId(idx)
+                floorConfig.pattern = pattern.shape
               }}
             >
               <div
-                className={`bg-[#BFBFBF] rounded-lg w-[120px] aspect-[9/5] text-red-100 ${props.containerClasses}`}
+                className={`bg-[#BFBFBF] rounded-lg w-[120px] aspect-[9/5] text-red-100 ${pattern.containerClasses}`}
               >
-                <SvgIcon {...props} />
+                <SvgIcon {...pattern} />
               </div>
             </div>
           ))}
