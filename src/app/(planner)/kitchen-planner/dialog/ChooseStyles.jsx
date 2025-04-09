@@ -68,6 +68,7 @@ export default function ChooseStyles({
   const [tileId, setTileId] = useState(0)
   const [open, setOpen] = useState(false)
   const [isReady, setIsReady] = useState(false)
+  const [picker, setPicker] = useState(null)
 
   // Debug state to track ref loading
   const [refsLoaded, setRefsLoaded] = useState(0)
@@ -254,8 +255,15 @@ export default function ChooseStyles({
 
   return (
     <DialogInnerContainer>
-      {/* Debug info */}
-
+      {/* Overlay */}
+      {picker && (
+        <div
+          className='absolute z-[50] left-0 top-0 w-[100vh] h-[100vw]'
+          onClick={() => {
+            setPicker(null)
+          }}
+        ></div>
+      )}
       {/* Cabinets color */}
       <div className='mb-6'>
         <p className='text-gray-400 text-[.8rem] mb-3'>Cabinets</p>
@@ -283,24 +291,33 @@ export default function ChooseStyles({
           </span>
         </div>
         {/* Floor Colors */}
-        <div className='bg-[#eeeeee] z-[500] absolute -top-[90px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'>
-          <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
-          <ColorPicker
-            onClick={(hex) => {
-              handleColor(hex, 2, 'even')
-            }}
-          />
-          <br />
-          <p className='text-gray-600 text-[.8rem] mb-5'>Odd tiles</p>
-          <ColorPicker
-            onClick={(hex) => {
-              handleColor(hex, 2, 'odd')
-            }}
-          />
-        </div>
+        {picker === 'floor' && (
+          <div className='bg-[#eeeeee] z-[500] absolute -top-[90px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'>
+            <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
+            <ColorPicker
+              onClick={(hex) => {
+                handleColor(hex, 2, 'even')
+              }}
+            />
+            <br />
+            <p className='text-gray-600 text-[.8rem] mb-5'>Odd tiles</p>
+            <ColorPicker
+              onClick={(hex) => {
+                handleColor(hex, 2, 'odd')
+              }}
+            />
+          </div>
+        )}
 
         {/* Slider */}
-        <div className='absolute top-[2rem] left-0' ref={containerRef}>
+        <div
+          className='absolute top-[2rem] left-0'
+          ref={containerRef}
+          onClick={() => {
+            if (open) return
+            setPicker('floor')
+          }}
+        >
           {patterns.map((pattern, idx) => (
             <div
               key={idx}
