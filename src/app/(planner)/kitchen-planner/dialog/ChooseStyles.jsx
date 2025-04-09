@@ -9,45 +9,59 @@ import ColorPicker from './ColorPicker'
 
 const patterns = [
   {
-    shape: 'checkers',
-    classes: 'fill-[black]',
-    factor: 1.1,
-    height: 66.67,
-    width: 120,
-    containerClasses: 'hover:scale-[1.1]'
+    svgProps: {
+      shape: 'checkers',
+      classes: 'fill-[black]',
+      factor: 1.1,
+      height: 66.67,
+      width: 120
+    },
+    containerClasses: 'hover:scale-[1.1]',
+    colorPair: true
   },
   {
-    shape: 'diagonal',
-    classes: 'fill-[black]',
-    factor: 1.1,
-    height: 66.67,
-    width: 117,
-    containerClasses: 'mt-[0.8px] -ml-[5px] scale-[1.05] hover:scale-[1.1]'
+    svgProps: {
+      shape: 'diagonal',
+      classes: 'fill-[black]',
+      factor: 1.1,
+      height: 66.67,
+      width: 117
+    },
+    containerClasses: 'mt-[0.8px] -ml-[5px] scale-[1.05] hover:scale-[1.1]',
+    colorPair: true
   },
   {
-    shape: 'grid',
-    classes: 'fill-[black]',
-    factor: 1,
-    height: 66.67,
-    width: 108,
+    svgProps: {
+      shape: 'grid',
+      classes: 'fill-[black]',
+      factor: 1,
+      height: 66.67,
+      width: 108
+    },
+
     containerClasses:
       'mt-[0.27rem] ml-[0.4rem] scale-[1.2] hover:scale-[1.5] hover:mt-[0.66rem] hover:ml-[0.52rem]'
   },
   {
-    shape: 'horizontal-lines',
-    classes: 'fill-[black]',
-    factor: 1,
-    height: 66.67,
-    width: 108,
+    svgProps: {
+      shape: 'horizontal-lines',
+      classes: 'fill-[black]',
+      factor: 1,
+      height: 66.67,
+      width: 108
+    },
+
     containerClasses:
       'mt-[0.9rem] ml-[0.4rem] scale-[1.2] hover:scale-[1.5] hover:mt-[0.66rem]'
   },
   {
-    shape: 'vertical-lines',
-    classes: 'fill-[black]',
-    factor: 1,
-    height: 66.67,
-    width: 108,
+    svgProps: {
+      shape: 'vertical-lines',
+      classes: 'fill-[black]',
+      factor: 1,
+      height: 66.67,
+      width: 108
+    },
     containerClasses:
       'mt-[0.25rem] ml-[.99rem] scale-[1.15] hover:scale-[1.5] hover:ml-[2.25rem]'
   }
@@ -328,13 +342,13 @@ export default function ChooseStyles({
                 if (!open) return
                 setOpen(false)
                 setTileId(idx)
-                floorConfig.pattern = pattern.shape
+                floorConfig.pattern = pattern.svgProps.shape
               }}
             >
               <div
                 className={`bg-[#BFBFBF] rounded-lg w-[120px] aspect-[9/5] text-red-100 ${pattern.containerClasses}`}
               >
-                <SvgIcon {...pattern} />
+                <SvgIcon {...pattern.svgProps} />
               </div>
             </div>
           ))}
