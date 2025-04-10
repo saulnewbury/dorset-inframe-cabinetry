@@ -469,7 +469,7 @@ export default function ChooseStyles() {
             <div
               key={idx}
               style={{ zIndex: patterns.length * 2 - idx + 1 }}
-              className={`pattern absolute top-0 left-0 rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer overflow-hidden mr-5`}
+              className={`pattern absolute top-0 left-0 rounded-lg w-[120px] h-[66.67px] border-[0.5px] border-black cursor-pointer overflow-hidden mr-5`}
               ref={addToPatternElementsRef}
               onClick={() => {
                 if (!open) return
@@ -480,7 +480,7 @@ export default function ChooseStyles() {
             >
               <div
                 style={{ backgroundColor: '#ffffff', ...pattern.bg }}
-                className={`rounded-lg w-[120px] aspect-[9/5] text-red-500 ${pattern.containerClasses}`}
+                className={`rounded-lg text-red-500 ${pattern.containerClasses}`}
               >
                 <SvgFloorPattern
                   {...pattern.svgProps}
