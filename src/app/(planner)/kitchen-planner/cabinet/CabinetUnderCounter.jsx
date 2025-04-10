@@ -1,5 +1,7 @@
 'use client'
 
+import { useContext } from 'react'
+
 // Components
 import Carcass from './Carcass'
 import Frame from './Frame'
@@ -10,6 +12,10 @@ import FrontPanels from './FrontPanels'
 import Worktop from './Worktop'
 
 import { useAppState } from '@/appState'
+import { ModelContext } from '@/model/context'
+
+// Helpers
+import deriveLineColor from '@/lib/helpers/deriveLineColor'
 
 export default function CabinetUnderCounter({
   baseUnit = true,
@@ -22,7 +28,17 @@ export default function CabinetUnderCounter({
     }
   ]
 }) {
+  // App state
   const { is3D } = useAppState()
+
+  // Model data
+  const [model] = useContext(ModelContext)
+
+  // Cabinet color
+  const color = model.color || '#eeeeee'
+
+  // Derive line colour from color
+  const lineColor = deriveLineColor(color)
 
   // Carcass
   const panelThickness = 0.018
@@ -39,6 +55,8 @@ export default function CabinetUnderCounter({
   return (
     <group position-y={baseUnitPositionY}>
       <FrameThreeSided
+        color={color}
+        lineColor={lineColor}
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={carcassInnerWidth}
@@ -49,6 +67,8 @@ export default function CabinetUnderCounter({
 
       {panelConfig[0].type !== 'door' && (
         <MouldingThreeSided
+          color={color}
+          lineColor={lineColor}
           carcassDepth={carcassDepth}
           carcassHeight={carcassHeight}
           carcassInnerWidth={carcassInnerWidth}
@@ -61,6 +81,8 @@ export default function CabinetUnderCounter({
       {panelConfig[0].type === 'door' && (
         <>
           <Frame
+            color={color}
+            lineColor={lineColor}
             carcassDepth={carcassDepth}
             carcassHeight={carcassHeight}
             carcassInnerWidth={carcassInnerWidth}
@@ -69,6 +91,8 @@ export default function CabinetUnderCounter({
             ratios={panelRatios}
           />
           <Moulding
+            color={color}
+            lineColor={lineColor}
             carcassDepth={carcassDepth}
             carcassHeight={carcassHeight}
             carcassInnerWidth={carcassInnerWidth}
@@ -81,6 +105,8 @@ export default function CabinetUnderCounter({
 
       {panelConfig[0].type == 'door' && (
         <FrontPanels
+          color={color}
+          lineColor={lineColor}
           carcassDepth={carcassDepth}
           carcassHeight={carcassHeight}
           carcassInnerWidth={carcassInnerWidth}

@@ -2,9 +2,9 @@ import React, { useMemo } from 'react'
 import { Edges } from '@react-three/drei'
 import * as THREE from 'three'
 
-import { lineColor } from './colors'
-
 export default function CornerDoor({
+  color,
+  lineColor,
   carcassDepth,
   carcassHeight,
   carcassInnerWidth,
@@ -115,7 +115,7 @@ export default function CornerDoor({
         ]}
       >
         <extrudeGeometry args={[panelShape, extrudeSettings]} />
-        <meshStandardMaterial color='white' side={THREE.DoubleSide} />
+        <meshStandardMaterial color={color} side={THREE.DoubleSide} />
         <Edges threshold={5} color={lineColor} />
       </mesh>
 
@@ -130,7 +130,7 @@ export default function CornerDoor({
         <boxGeometry
           args={[doorWidth - 2 * doorGap, doorHeight, doorThickness / 2]}
         />
-        <meshStandardMaterial color='white' />
+        <meshStandardMaterial color={color} />
         <Edges threshold={5} color={lineColor} />
       </mesh>
     </group>

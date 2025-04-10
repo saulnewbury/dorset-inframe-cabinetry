@@ -100,7 +100,7 @@ export const makeItYours = [
     name: 'styles',
     options: [
       {
-        dialogWidth: '50%',
+        dialogWidth: '630px',
         name: 'Style your kitchen',
         heading: 'Style your kitchen',
         component: ChooseStyles

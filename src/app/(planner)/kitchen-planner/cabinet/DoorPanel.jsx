@@ -5,6 +5,8 @@ import { SplitDoors } from './SplitDoors'
 import { FourDoors } from './FourDoors'
 
 export default function DoorPanel({
+  color,
+  lineColor,
   boundary, // Single boundary object
   carcassDepth,
   panelThickness,
@@ -39,6 +41,8 @@ export default function DoorPanel({
 
   // Common props for all door types
   const doorProps = {
+    color,
+    lineColor,
     doorX,
     doorY,
     depth: carcassDepth,

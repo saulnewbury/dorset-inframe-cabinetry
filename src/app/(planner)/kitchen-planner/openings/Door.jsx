@@ -113,7 +113,6 @@ function Door2D({ len, offset, width, option, style, onClick = () => {} }) {
     if (style === 'single-door') {
       const pointsA = doorA(width, angle, w) // function (bottom of page)
       for (let i = 0; i < pointsA.length; i++) {
-        console.log('loop')
         vertices.push(pointsA[i])
       }
     }

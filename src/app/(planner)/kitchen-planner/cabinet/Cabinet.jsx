@@ -1,5 +1,7 @@
 'use client'
 
+import { useContext, useRef } from 'react'
+
 // Components
 import Carcass from './Carcass'
 import Frame from './Frame'
@@ -11,27 +13,9 @@ import Feet from './Feet'
 
 import { useAppState } from '@/appState'
 
-// panelConfig options
-// {
-//   type: 'door' | 'drawer' | 'oven', // Required: The type of panel
-//   style: 'single' | 'split' | 'fourDoors', // Required for door type only: The door style
-//   ovenType: 'single' | 'double' | 'compact', // Required for oven type only: The oven style
-//   ratio: 1, // Optional: The relative size ratio of this panel section
-//   handleType: 'bar' | 'knob', // Optional: For drawers/ovens, specifies handle style
-//   color: 'white', // Optional: You could add color options
-//   orientation: 'horizontal' | 'vertical', // Optional: For split doors, specifies orientation
-//   doorRatio: [1, 1], // Optional: For split doors, specifies the ratio between sections
-//   verticalRatio: [1, 1], // Optional: For fourDoors, specifies ratio between top and bottom
-//   horizontalRatio: [1, 1], // Optional: For fourDoors, specifies ratio between left and right
-//   compartmentRatio: [2, 3], // Optional: For double ovens, specifies ratio between compartments
-//   // Additional properties as needed for future extensions
-// }
+import { ModelContext } from '@/model/context'
 
-// basinConfig options
-// {
-//   type: 'standard' | 'belfast'
-//   doubleBasin: bool
-// }
+import deriveLineColor from '@/lib/helpers/deriveLineColor'
 
 export default function Cabinet({
   tall = true,
@@ -53,6 +37,9 @@ export default function Cabinet({
   // App State
   const { is3D } = useAppState()
 
+  // Model Data
+  const [model] = useContext(ModelContext)
+
   // Adapt cabinet height to accommodate basinConfig on top
   if (basinConfig?.type === 'belfast') carcassHeight -= basinConfig.height
 
@@ -71,9 +58,17 @@ export default function Cabinet({
   // Base unit position - the distance from carcass to floor
   const baseUnitPositionY = 0.0265 + 0.104
 
+  // Cabinet colour
+  const color = model.color || '#eeeeee'
+
+  // Derive line colour from color
+  const lineColor = deriveLineColor(color)
+
   return (
     <group position-y={baseUnitPositionY}>
       <Frame
+        color={color}
+        lineColor={lineColor}
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={carcassInnerWidth}
@@ -82,6 +77,8 @@ export default function Cabinet({
         ratios={panelRatios}
       />
       <Moulding
+        color={color}
+        lineColor={lineColor}
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={carcassInnerWidth}
@@ -91,6 +88,8 @@ export default function Cabinet({
       />
 
       <FrontPanels
+        color={color}
+        lineColor={lineColor}
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={carcassInnerWidth}

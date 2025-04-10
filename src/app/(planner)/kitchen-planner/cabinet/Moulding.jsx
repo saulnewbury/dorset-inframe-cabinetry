@@ -1,11 +1,10 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useContext } from 'react'
 import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
-import { lineColor, cabinetsColor } from './colors'
-
 export default function Moulding({
-  underCounter,
+  color,
+  lineColor,
   carcassDepth,
   carcassHeight,
   carcassInnerWidth,
@@ -189,7 +188,7 @@ export default function Moulding({
             }
           ]}
         />
-        <meshStandardMaterial color={cabinetsColor} />
+        <meshStandardMaterial color={color} />
         <Edges threshold={15} color={lineColor} />
       </mesh>
     )

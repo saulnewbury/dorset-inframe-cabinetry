@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Edges } from '@react-three/drei'
 
 import { useAppState } from '@/appState'
+
+import { ModelContext } from '@/model/context'
 
 // Components
 import Frame from './Frame'
@@ -11,7 +13,8 @@ import Feet from './Feet'
 import Worktop from './Worktop'
 import CornerDoor from './CornerDoor'
 
-import { lineColor } from './colors'
+// Helpers
+import deriveLineColor from '@/lib/helpers/deriveLineColor'
 
 export default function CabinetCorner({
   underCounter = false,
@@ -29,11 +32,20 @@ export default function CabinetCorner({
   // App state
   const { is3D } = useAppState()
 
+  // Model data
+  const [model] = useContext(ModelContext)
+
   // Fill width including hidden part
   const cornerFullWidth = interiorOpeningWidth + 0.018 + carcassDepth
 
   // Frame
   const bottomFrameThickness = 0.045
+
+  // Cabinet color
+  const color = model.color || '#eeeeee'
+
+  // Derive line color from color
+  const lineColor = deriveLineColor(color)
 
   // Carcass
   const panelThickness = 0.018
@@ -74,11 +86,13 @@ export default function CabinetCorner({
             panelThickness
           ]}
         />
-        <meshStandardMaterial color='white' />
+        <meshStandardMaterial color={color} />
         <Edges threshold={15} color={lineColor} />
       </mesh>
 
       <Frame
+        color={color}
+        lineColor={lineColor}
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={interiorOpeningWidth}
@@ -90,6 +104,8 @@ export default function CabinetCorner({
       />
 
       <Moulding
+        color={color}
+        lineColor={lineColor}
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={interiorOpeningWidth}
@@ -101,6 +117,8 @@ export default function CabinetCorner({
       />
 
       <CornerDoor
+        color={color}
+        lineColor={lineColor}
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={interiorOpeningWidth}

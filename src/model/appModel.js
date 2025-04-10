@@ -9,7 +9,7 @@ export const initialState = {
   divider: [],
   units: [],
   worktop: 'blue-marble',
-  colour: '#ffffff'
+  color: '#ffffff'
 }
 
 let keepCopy = true
@@ -20,7 +20,7 @@ const actions = {
   setId,
   loadState,
   loadModel,
-  setScheme,
+  setScheme, // color of cabinets and worktop
   addSegment,
   moveCorner,
   moveWall,
@@ -76,12 +76,12 @@ function loadModel(state, { shape }) {
   const walls = [
     floorPlans[shape].map((pt, n) => ({ ...pt, id: n, segment: 0 }))
   ]
-  const { worktop, colour } = state
+  const { worktop, color } = state
   return {
     ...initialState,
     walls,
     worktop,
-    colour
+    color
   }
 }
 
@@ -98,13 +98,13 @@ function setId(state, { modelId, dateSaved }) {
 }
 
 /**
- * Sets the colour scheme (worktop and unit face).
+ * Sets the color scheme (worktop and unit face).
  */
-function setScheme(state, { worktop, colour }) {
+function setScheme(state, { worktop, color }) {
   return {
     ...state,
     worktop,
-    colour
+    color
   }
 }
 

@@ -30,7 +30,6 @@ export default function SvgFloorPattern({
 }) {
   const style = mainColor ? { fill: mainColor } : { fill: '#ffffff' }
 
-  console.log(mainColor)
   return svgPatterns.map((item, i) => {
     if (item.shape === shape) {
       return (

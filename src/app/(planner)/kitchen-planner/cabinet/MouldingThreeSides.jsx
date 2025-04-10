@@ -2,18 +2,13 @@ import React, { useMemo } from 'react'
 import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
-import { lineColor } from './colors'
-
 export default function MouldingThreeSides({
-  underCounter,
+  color,
+  lineColor,
   carcassDepth,
   carcassHeight,
   carcassInnerWidth,
   panelThickness,
-  frameThickness = 0.05,
-  numHoles = 4,
-  ratios = null, // Parameter for custom ratios
-  dividerThickness = 0.018,
   mouldingSize = 0.004,
   mouldingRadius = 0.0008, // radius for rounding the moulding
   frameInset = 0.004 // inset for the frame
@@ -21,8 +16,6 @@ export default function MouldingThreeSides({
   // Calculate dimensions
   const frameHeight = carcassHeight + 0.0262
   const height = frameHeight
-  const hOffset = carcassHeight - frameHeight
-  const zOffset = frameThickness - panelThickness
 
   // const offset = 0.0262 - 0.05 + 0.009
   const offset = 0.0148 + 0.0018
@@ -102,7 +95,7 @@ export default function MouldingThreeSides({
             }
           ]}
         />
-        <meshStandardMaterial color='white' />
+        <meshStandardMaterial color={color} />
         <Edges threshold={15} color={lineColor} />
       </mesh>
     )

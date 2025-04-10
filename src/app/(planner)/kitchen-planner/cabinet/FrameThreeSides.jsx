@@ -1,10 +1,12 @@
+'use client'
+
 import React, { useMemo } from 'react'
 import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
 
-import { lineColor } from './colors'
-
 export default function FrameThreeSides({
+  color,
+  lineColor,
   carcassDepth,
   carcassHeight,
   panelThickness,
@@ -68,7 +70,7 @@ export default function FrameThreeSides({
           }
         ]}
       />
-      <meshStandardMaterial color='white' />
+      <meshStandardMaterial color={color} />
       <Edges threshold={5} color={lineColor} renderOrder={1000} />
     </mesh>
   )

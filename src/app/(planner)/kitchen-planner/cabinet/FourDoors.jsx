@@ -3,9 +3,9 @@ import React from 'react'
 import { Edges } from '@react-three/drei'
 import * as THREE from 'three'
 
-import { lineColor, cabinetsColor } from './colors'
-
 export function FourDoors({
+  color,
+  lineColor,
   doorX,
   doorY,
   depth,
@@ -215,10 +215,7 @@ export function FourDoors({
               ]}
             >
               <extrudeGeometry args={[panelData.shape, extrudeSettings]} />
-              <meshStandardMaterial
-                color={cabinetsColor}
-                side={THREE.DoubleSide}
-              />
+              <meshStandardMaterial color={color} side={THREE.DoubleSide} />
               <Edges threshold={5} color={lineColor} />
             </mesh>
 
@@ -238,7 +235,7 @@ export function FourDoors({
                   doorThickness / 2
                 ]}
               />
-              <meshStandardMaterial color={cabinetsColor} />
+              <meshStandardMaterial color={color} />
               <Edges threshold={5} color={lineColor} />
             </mesh>
           </group>

@@ -1,12 +1,13 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useContext, useRef, useEffect, useState } from 'react'
+import { ModelContext } from '@/model/context'
 import gsap from 'gsap'
+
 import DialogInnerContainer from './DialogInnerContainer'
 import SvgFloorPattern from '@/components/SvgFloorPattern'
 import SvgIcon from '@/components/SvgIcon'
 import Button from '@/components/Button'
-
 import ColorPicker from './ColorPicker'
 
 const list = [
@@ -71,6 +72,7 @@ const list = [
 ]
 
 export default function ChooseStyles() {
+  const [model, dispatch] = useContext(ModelContext)
   const containerRef = useRef()
   const patternElementsRef = useRef([])
   const floorConfig = useRef({})
@@ -78,8 +80,12 @@ export default function ChooseStyles() {
   const activePickerRef = useRef(null)
 
   const [wallColor, setWallColor] = useState('#BFBFBF')
-  const [cabinetsColor, setCabinetsColor] = useState('#F0F0F0')
-  const [worktopColor, setWorktopColor] = useState('#666666')
+  const [cabinetsColor, setCabinetsColor] = useState(
+    model.color ? model.color : '#F0F0F0'
+  )
+  const [worktopColor, setWorktopColor] = useState(
+    model.worktop ? model.worktop : '#666666'
+  )
   const [patterns, setPatterns] = useState(list)
   const [patternId, setPatternId] = useState(0)
   const [open, setOpen] = useState(false)
@@ -315,14 +321,17 @@ export default function ChooseStyles() {
 
   function handleCabinetsColor(hex) {
     setCabinetsColor(hex)
+    selectCabinetsColor(hex)
   }
 
   function handleWorktopColor(hex) {
     setWorktopColor(hex)
+    selectWorktopColor(hex)
   }
 
   function handleWallColor(hex) {
     setWallColor(hex)
+    selectWallColor(hex)
   }
 
   function resetColors() {
@@ -533,4 +542,25 @@ export default function ChooseStyles() {
       )}
     </DialogInnerContainer>
   )
+
+  function selectWorktopColor(hex) {
+    dispatch({
+      id: 'setScheme',
+      worktop: hex
+    })
+  }
+
+  function selectCabinetsColor(hex) {
+    dispatch({
+      id: 'setScheme',
+      color: hex
+    })
+  }
+
+  function selectWallColor(hex) {
+    // dispatch({
+    //   id: 'setWallColor',
+    //   wallColor: hex
+    // })
+  }
 }

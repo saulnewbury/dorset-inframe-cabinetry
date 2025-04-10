@@ -1,26 +1,16 @@
 'use client'
 
+import { useContext } from 'react'
+
 // Components
 import Carcass from './Carcass'
 import Frame from './Frame'
 import Moulding from './Moulding'
 import FrontPanels from './FrontPanels'
 
-// panelConfig options
-// {
-//   type: 'door' | 'drawer' | 'oven', // Required: The type of panel
-//   style: 'single' | 'split' | 'fourDoors', // Required for door type only: The door style
-//   ovenType: 'single' | 'double' | 'compact', // Required for oven type only: The oven style
-//   ratio: 1, // Optional: The relative size ratio of this panel section
-//   handleType: 'bar' | 'knob', // Optional: For drawers/ovens, specifies handle style
-//   color: 'white', // Optional: You could add color options
-//   orientation: 'horizontal' | 'vertical', // Optional: For split doors, specifies orientation
-//   doorRatio: [1, 1], // Optional: For split doors, specifies the ratio between sections
-//   verticalRatio: [1, 1], // Optional: For fourDoors, specifies ratio between top and bottom
-//   horizontalRatio: [1, 1], // Optional: For fourDoors, specifies ratio between left and right
-//   compartmentRatio: [2, 3], // Optional: For double ovens, specifies ratio between compartments
-//   // Additional properties as needed for future extensions
-// }
+import { ModelContext } from '@/model/context'
+
+import deriveLineColor from '@/lib/helpers/deriveLineColor'
 
 export default function CabinetWall({
   carcassDepth = 0.575,
@@ -34,8 +24,16 @@ export default function CabinetWall({
     }
   ]
 }) {
+  const [model] = useContext(ModelContext)
+
   // Frame
   const bottomFrameThickness = 0.05
+
+  // Cabinet color
+  const color = model.color || '#eeeeee'
+
+  // Derive line colour from color
+  const lineColor = deriveLineColor(color)
 
   // Carcass
   const panelThickness = 0.018
@@ -54,6 +52,8 @@ export default function CabinetWall({
   return (
     <group position-y={baseUnitPositionY + footToTop + worktopToWallUnit}>
       <Frame
+        color={color}
+        lineColor={lineColor}
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={carcassInnerWidth}
@@ -63,6 +63,8 @@ export default function CabinetWall({
         bottomFrameThickness={bottomFrameThickness}
       />
       <Moulding
+        color={color}
+        lineColor={lineColor}
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={carcassInnerWidth}
@@ -72,6 +74,8 @@ export default function CabinetWall({
       />
 
       <FrontPanels
+        color={color}
+        lineColor={lineColor}
         carcassDepth={carcassDepth}
         carcassHeight={carcassHeight}
         carcassInnerWidth={carcassInnerWidth}

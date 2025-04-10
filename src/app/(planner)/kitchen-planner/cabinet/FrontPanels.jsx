@@ -6,6 +6,8 @@ import Oven from './Oven'
 import { calculateDoorBoundaries } from '@/utils/doorCalculations'
 
 export default function FrontPanels({
+  color,
+  lineColor,
   carcassDepth,
   carcassHeight,
   carcassInnerWidth,
@@ -54,6 +56,8 @@ export default function FrontPanels({
 
         // Common props for all panel types
         const commonProps = {
+          color,
+          lineColor,
           boundary,
           carcassDepth,
           carcassHeight,

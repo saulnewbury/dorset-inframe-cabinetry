@@ -1,15 +1,22 @@
-import React from 'react'
+'use client'
+
+import { useContext } from 'react'
+
+import { ModelContext } from '@/model/context'
 
 export default function Worktop({
   depth,
   height,
   thickness,
   distance,
-  color,
   overhang = 0.02,
   basin = null,
   corner = null
 }) {
+  const [model] = useContext(ModelContext)
+
+  const color = model.worktop
+
   const w = distance + thickness * 2
   const d = depth + thickness
   const basinDepth = basin?.depth
