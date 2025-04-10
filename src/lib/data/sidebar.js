@@ -64,7 +64,7 @@ export const makeItYours = [
     name: 'cabinets',
     options: [
       {
-        fullWidth: true,
+        dialogWidth: '100%',
         name: 'Base units',
         heading: 'Base unit',
         component: ChooseBaseUnit,
@@ -81,14 +81,14 @@ export const makeItYours = [
         ]
       },
       {
-        fullWidth: true,
+        dialogWidth: '100%',
         name: 'Tall units',
         heading: 'Tall cupboard',
         component: ChooseTallUnit,
         variants: ['Storage', 'Pantry', 'For oven', 'Fridge freezer']
       },
       {
-        fullWidth: true,
+        dialogWidth: '100%',
         name: 'Wall unit',
         heading: 'Wall cupboards',
         component: ChooseWallUnit,
@@ -100,7 +100,7 @@ export const makeItYours = [
     name: 'styles',
     options: [
       {
-        fullWidth: true,
+        dialogWidth: '50%',
         name: 'Style your kitchen',
         heading: 'Style your kitchen',
         component: ChooseStyles
@@ -111,13 +111,13 @@ export const makeItYours = [
     name: 'we supply',
     options: [
       {
-        fullWidth: true,
+        dialogWidth: '100%',
         name: 'Appliances',
         heading: 'We supply appliances',
         component: () => <WeCanSupply {...weSupplyAppliances} isModal={true} />
       },
       {
-        fullWidth: true,
+        dialogWidth: '100%',
         name: 'Sinks and taps',
         heading: 'We supply sinks and taps',
         component: () => (
@@ -125,7 +125,7 @@ export const makeItYours = [
         )
       },
       {
-        fullWidth: true,
+        dialogWidth: '100%',
         name: 'Handles and knobs',
         heading: 'We supply handles and knobs',
         component: () => (
@@ -133,7 +133,7 @@ export const makeItYours = [
         )
       },
       {
-        fullWidth: true,
+        dialogWidth: '100%',
         name: 'Storage and accessories',
         heading: 'We supply storage and accessories',
         component: () => (

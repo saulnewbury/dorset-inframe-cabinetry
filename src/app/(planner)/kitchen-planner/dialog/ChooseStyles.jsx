@@ -5,6 +5,7 @@ import gsap from 'gsap'
 import DialogInnerContainer from './DialogInnerContainer'
 import SvgFloorPattern from '@/components/SvgFloorPattern'
 import SvgIcon from '@/components/SvgIcon'
+import Button from '@/components/Button'
 
 import ColorPicker from './ColorPicker'
 
@@ -72,6 +73,7 @@ const list = [
 export default function ChooseStyles() {
   const containerRef = useRef()
   const patternElementsRef = useRef([])
+  const floorConfig = useRef({})
   // Create a ref for the currently active color picker container
   const activePickerRef = useRef(null)
 
@@ -83,6 +85,7 @@ export default function ChooseStyles() {
   const [open, setOpen] = useState(false)
   const [isReady, setIsReady] = useState(false)
   const [picker, setPicker] = useState(null)
+  const [resetModal, setResetModal] = useState(false)
 
   // Debug state to track ref loading
   const [refsLoaded, setRefsLoaded] = useState(0)
@@ -153,6 +156,38 @@ export default function ChooseStyles() {
     }
   }, [picker]) // Re-run when picker state changes
 
+  // Add click outside handler for the pattern slider
+  useEffect(() => {
+    // Only add listener if the slider is open
+    if (open) {
+      const handleClickOutside = (event) => {
+        // Ignore clicks on the chevron to prevent conflict with handleChevronClick
+        const chevronElement = document.querySelector('.chevron-icon')
+        if (chevronElement && chevronElement.contains(event.target)) {
+          return
+        }
+
+        // Check if the click is outside the slider container
+        if (
+          containerRef.current &&
+          !containerRef.current.contains(event.target)
+        ) {
+          // Close the slider
+          setOpen(false)
+          animation('reverse')
+        }
+      }
+
+      // Add event listener to document
+      document.addEventListener('mousedown', handleClickOutside)
+
+      // Return cleanup function
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }
+  }, [open]) // Re-run when open state changes
+
   // Add elements to ref
   const addToPatternElementsRef = (el) => {
     if (el && !patternElementsRef.current.includes(el)) {
@@ -188,6 +223,7 @@ export default function ChooseStyles() {
     }
 
     const distance = firstTile.offsetWidth + 20
+    const height = firstTile.offsetHeight + 20
 
     // Update z-index
     patternTiles.forEach((p, idx) => {
@@ -203,15 +239,28 @@ export default function ChooseStyles() {
     if (direction === 'forward') {
       // Spread tiles
       patternTiles.forEach((tile, idx) => {
-        tl.to(
-          tile,
-          {
-            translateX: distance * idx,
-            duration: 0.4,
-            ease: 'power2.out'
-          },
-          '<0.05' // First starts immediately, rest are staggered
-        )
+        if (idx <= 3) {
+          tl.to(
+            tile,
+            {
+              translateX: distance * idx,
+              duration: 0.4,
+              ease: 'power2.out'
+            },
+            '<0.05' // First starts immediately, rest are staggered
+          )
+        } else {
+          tl.to(
+            tile,
+            {
+              translateX: distance * (idx - 4),
+              translateY: height,
+              duration: 0.4,
+              ease: 'power2.out'
+            },
+            '<0.05' // First starts immediately, rest are staggered
+          )
+        }
       })
     } else if (direction === 'reverse') {
       // Stack tiles
@@ -220,6 +269,7 @@ export default function ChooseStyles() {
           tile,
           {
             translateX: 0,
+            translateY: 0,
             duration: 0.4,
             ease: 'power2.out'
           },
@@ -275,6 +325,13 @@ export default function ChooseStyles() {
     setWallColor(hex)
   }
 
+  function resetColors() {
+    setCabinetsColor('#F0F0F0')
+    setWorktopColor('#666666')
+    setWallColor('#BFBFBF')
+    setPatterns(list)
+  }
+
   return (
     <DialogInnerContainer>
       {/* Cabinets color */}
@@ -291,7 +348,7 @@ export default function ChooseStyles() {
         {picker === 'cabinets' && (
           <div
             ref={activePickerRef}
-            className='bg-[#eeeeee] z-[500] absolute top-0 left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
+            className='bg-[#eeeeee] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
@@ -316,7 +373,7 @@ export default function ChooseStyles() {
         {picker === 'worktop' && (
           <div
             ref={activePickerRef}
-            className='bg-[#eeeeee] z-[500] absolute top-0 left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
+            className='bg-[#eeeeee] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
@@ -341,7 +398,7 @@ export default function ChooseStyles() {
         {picker === 'wall' && (
           <div
             ref={activePickerRef}
-            className='bg-[#eeeeee] z-[500] absolute top-0 left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
+            className='bg-[#eeeeee] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
@@ -354,11 +411,11 @@ export default function ChooseStyles() {
       </div>
 
       {/* Floor */}
-      <div className='mb-6 relative'>
+      <div className='mb-6 relative min-h-[120px]'>
         <div className='mb-3 flex items-center gap-[4.5rem] cursor-pointer'>
           <p className='text-gray-400 text-[.8rem]'>Floor</p>
           <span
-            className={`w-5 h-5 flex justify-center items-center rounded-full scale-[1.3] transition ${
+            className={`w-5 h-5 flex justify-center items-center rounded-full scale-[1.3] transition chevron-icon ${
               open ? 'rotate-[90deg]' : 'rotate-[0deg]'
             }`}
             onClick={handleChevronClick}
@@ -366,33 +423,44 @@ export default function ChooseStyles() {
             <SvgIcon shape='chevron-right' />
           </span>
         </div>
-        {/* Floor Colors */}
+        {/* Floor Colors (if there is no mainColor present only show one picker) */}
         {picker === 'floor' && (
           <div
             ref={activePickerRef}
-            className='bg-[#eeeeee] z-[500] absolute -top-[90px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
+            className={`${
+              patterns[patternId].mainColor ? '-top-[180px]' : '-top-[16px]'
+            }
+            bg-[#eeeeee] z-[500] absolute left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg`}
           >
-            <p className='text-gray-600 text-[.8rem] mb-5'>Odd tiles</p>
+            <p className='text-gray-600 text-[.8rem] mb-5'>
+              {patterns[patternId].mainColor ? 'Odd tiles' : 'Choose colour'}
+            </p>
             <ColorPicker
               onClick={(hex) => {
                 handleFloorColors(hex, 'odd')
               }}
             />
-            <br />
-            <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
-            <ColorPicker
-              onClick={(hex) => {
-                handleFloorColors(hex, 'even')
-              }}
-            />
+            {patterns[patternId].mainColor && (
+              <>
+                <br />
+                <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
+                <ColorPicker
+                  onClick={(hex) => {
+                    handleFloorColors(hex, 'even')
+                  }}
+                />
+              </>
+            )}
           </div>
         )}
 
-        {/* Floor Patterns */}
+        {/* Slider */}
         <div
           className='absolute top-[2rem] left-0'
           ref={containerRef}
-          onClick={() => {
+          onClick={(e) => {
+            // Prevent this click from triggering the outside click handler
+            e.stopPropagation()
             if (open) return
             setPicker('floor')
           }}
@@ -407,6 +475,7 @@ export default function ChooseStyles() {
                 if (!open) return
                 setOpen(false)
                 setPatternId(idx)
+                floorConfig.pattern = pattern.svgProps.shape
               }}
             >
               <div
@@ -422,6 +491,46 @@ export default function ChooseStyles() {
           ))}
         </div>
       </div>
+      <button
+        className='text-sm text-[#555555] hover:underline'
+        onClick={() => {
+          setResetModal(true)
+        }}
+      >
+        Reset colors &nbsp;
+        <span>
+          <SvgIcon shape='chevron-right' classes='scale-[1.3]' />
+        </span>
+      </button>
+      {/* Modal for resetting colours */}
+      {resetModal && (
+        <>
+          <div className='w-full h-full bg-black absolute top-0 left-0 z-[60] opacity-10'></div>
+          <div className='h-[40vh] w-[35vw] shadow-xl absolute z-[900] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] flex justify-center items-center bg-white'>
+            <div>
+              <p className='text-center mb-6'>Are you sure?</p>
+              <div className='flex justify-center items-center gap-3'>
+                <Button
+                  primary
+                  onClick={() => {
+                    setResetModal(false)
+                  }}
+                >
+                  Keep selection
+                </Button>
+                <Button
+                  onClick={() => {
+                    setResetModal(false)
+                    resetColors()
+                  }}
+                >
+                  Reset colours
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </DialogInnerContainer>
   )
 }

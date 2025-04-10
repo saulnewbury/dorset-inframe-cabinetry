@@ -48,7 +48,7 @@ export default function Page() {
       {/* <ContentBox /> */}
       {showContent && (
         <Dialog
-          fullWidth={content.fullWidth}
+          width={content.dialogWidth}
           content={content}
           variant={variant}
           Body={content.component}
