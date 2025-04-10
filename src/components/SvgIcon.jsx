@@ -42,14 +42,6 @@ import icon3d from '@/lib/icons/3d-icon.svg'
 import tick from '@/lib/icons/tick.svg'
 import chevronRight from '@/lib/icons/chevron-right.svg'
 
-// floor
-import checkers from '@/lib/icons/floor/checkers.svg'
-import checkers2 from '@/lib/icons/floor/checkers2.svg'
-import diagonal from '@/lib/icons/floor/diagonal.svg'
-import grid from '@/lib/icons/floor/grid.svg'
-import horizontalLines from '@/lib/icons/floor/horizontal-lines.svg'
-import verticalLines from '@/lib/icons/floor/vertical-lines.svg'
-
 const icons = [
   { icon: list, shape: 'list' },
   { icon: login, shape: 'login' },
@@ -85,14 +77,7 @@ const icons = [
   { icon: pen, shape: 'pen' },
   { icon: save, shape: 'save' },
   { icon: person, shape: 'user' },
-  { icon: chevronRight, shape: 'chevron-right' },
-  // floors
-  { icon: checkers, shape: 'checkers' },
-  { icon: checkers2, shape: 'checkers2' },
-  { icon: diagonal, shape: 'diagonal' },
-  { icon: grid, shape: 'grid' },
-  { icon: horizontalLines, shape: 'horizontal-lines' },
-  { icon: verticalLines, shape: 'vertical-lines' }
+  { icon: chevronRight, shape: 'chevron-right' }
 ]
 
 export default function SvgIcon({
@@ -109,14 +94,12 @@ export default function SvgIcon({
         <svg
           key={i}
           className={twMerge(
-            'svg-icon inline-block cursor-pointer fill-transparent stroke-[currentcolor]',
+            'svg-icon inline-block cursor-pointer fill-transparent stroke-[currentColor]',
             classes
           )}
-          width={`${factor ? width * factor : item.icon.width}`}
-          height={`${factor ? height * factor : item.icon.height}`}
-          viewBox={`0 0 ${width ? width : item.icon.width} ${
-            height ? height : item.icon.height
-          }`}
+          width={`${item.icon.width}`}
+          height={`${item.icon.height}`}
+          viewBox={`0 0 ${item.icon.width} ${item.icon.height}`}
           role='img'
           aria-label={alt}
         >

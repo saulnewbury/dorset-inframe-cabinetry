@@ -106,7 +106,6 @@ function Door2D({ len, offset, width, option, style, onClick = () => {} }) {
       const arr = [...pointsA, ...pointsB]
 
       for (let i = 0; i < arr.length; i++) {
-        console.log('loop')
         vertices.push(arr[i])
       }
     }

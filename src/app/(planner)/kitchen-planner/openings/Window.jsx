@@ -45,7 +45,6 @@ export default function Window(props) {
  * Renders a window for the 2D (plan) view.
  */
 function Window2D({ len, offset, width, style, onClick = () => {} }) {
-  console.log(style)
   const lines = useMemo(() => {
     const a = new Vector3(-width / 2, 0, 0)
     const b = new Vector3(width / 2, 0, 0)

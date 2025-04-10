@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from 'react'
 import gsap from 'gsap'
 import DialogInnerContainer from './DialogInnerContainer'
+import SvgFloorPattern from '@/components/SvgFloorPattern'
 import SvgIcon from '@/components/SvgIcon'
 
 import ColorPicker from './ColorPicker'
@@ -11,59 +12,60 @@ const list = [
   {
     svgProps: {
       shape: 'checkers',
-      classes: 'fill-[black]',
       factor: 1.1,
       height: 66.67,
       width: 120
     },
     containerClasses: 'hover:scale-[1.1]',
-    colorPair: true
+    bg: { backgroundColor: '#ffffff' },
+    mainColor: '#000000',
+    parity: true
   },
   {
     svgProps: {
       shape: 'diagonal',
-      classes: 'fill-[black]',
       factor: 1.1,
       height: 66.67,
       width: 117
     },
     containerClasses: 'mt-[0.8px] -ml-[5px] scale-[1.05] hover:scale-[1.1]',
-    colorPair: true
+    bg: { backgroundColor: '#ffffff' },
+    mainColor: '#000000',
+    parity: true
   },
   {
     svgProps: {
       shape: 'grid',
-      classes: 'fill-[black]',
       factor: 1,
       height: 66.67,
       width: 108
     },
-
     containerClasses:
-      'mt-[0.27rem] ml-[0.4rem] scale-[1.2] hover:scale-[1.5] hover:mt-[0.66rem] hover:ml-[0.52rem]'
+      'mt-[0.27rem] ml-[0.4rem] scale-[1.2] hover:scale-[1.5] hover:mt-[0.66rem] hover:ml-[0.52rem]',
+    bg: { backgroundColor: '#ffffff' }
   },
   {
     svgProps: {
       shape: 'horizontal-lines',
-      classes: 'fill-[black]',
       factor: 1,
-      height: 66.67,
-      width: 108
+      height: 62,
+      width: 107,
+      bg: { backgroundColor: '#ffffff' }
     },
 
     containerClasses:
-      'mt-[0.9rem] ml-[0.4rem] scale-[1.2] hover:scale-[1.5] hover:mt-[0.66rem]'
+      'mt-[2.115px] ml-[0.4rem] scale-[1.2] hover:scale-[1.5] hover:mt-[0.66rem]'
   },
   {
     svgProps: {
       shape: 'vertical-lines',
-      classes: 'fill-[black]',
       factor: 1,
       height: 66.67,
       width: 108
     },
     containerClasses:
-      'mt-[0.25rem] ml-[.99rem] scale-[1.15] hover:scale-[1.5] hover:ml-[2.25rem]'
+      'mt-[0.25rem] ml-[4px] scale-[1.15] hover:scale-[1.5] hover:ml-[6px] ',
+    bg: { backgroundColor: '#ffffff' }
   }
 ]
 
@@ -73,9 +75,7 @@ const list = [
 //
 //
 
-export default function ChooseStyles({
-  floor = { pattern: 'checkers', colors: { even: '#000000', odd: '#ffffff' } }
-}) {
+export default function ChooseStyles() {
   const containerRef = useRef()
   const patternElementsRef = useRef([])
   const floorConfig = useRef({})
@@ -128,7 +128,7 @@ export default function ChooseStyles({
   useEffect(() => {
     if (open) return
     animation('reverse')
-  }, [patternId])
+  }, [open])
 
   // Add elements to ref
   const addToPatternElementsRef = (el) => {
@@ -140,6 +140,7 @@ export default function ChooseStyles({
     }
   }
 
+  // Spread patterns animation
   function animation(direction) {
     console.log(`Animation triggered: ${direction}`, {
       isReady,
@@ -149,25 +150,21 @@ export default function ChooseStyles({
 
     // Don't proceed if component isn't ready
     if (!isReady) {
-      console.log('Component not ready yet, skipping animation')
       return
     }
 
     const patternTiles = patternElementsRef.current
     if (patternTiles.length === 0) {
-      console.error('No pattern tiles found in ref')
       return
     }
 
     // Calculate the distance
     const firstTile = patternTiles[0]
     if (!firstTile || !firstTile.offsetWidth) {
-      console.error('Cannot get tile dimensions', firstTile)
       return
     }
 
     const distance = firstTile.offsetWidth + 20
-    console.log(`Animation distance: ${distance}px`)
 
     // Update z-index
     patternTiles.forEach((p, idx) => {
@@ -188,11 +185,7 @@ export default function ChooseStyles({
           {
             translateX: distance * idx,
             duration: 0.4,
-            ease: 'power2.out',
-            onStart: () =>
-              console.log(`Starting forward animation for tile ${idx}`),
-            onComplete: () =>
-              console.log(`Completed forward animation for tile ${idx}`)
+            ease: 'power2.out'
           },
           '<0.05' // First starts immediately, rest are staggered
         )
@@ -205,11 +198,7 @@ export default function ChooseStyles({
           {
             translateX: 0,
             duration: 0.4,
-            ease: 'power2.out',
-            onStart: () =>
-              console.log(`Starting reverse animation for tile ${idx}`),
-            onComplete: () =>
-              console.log(`Completed reverse animation for tile ${idx}`)
+            ease: 'power2.out'
           },
           '<0.05'
         )
@@ -218,8 +207,6 @@ export default function ChooseStyles({
   }
 
   const handleChevronClick = () => {
-    console.log('Chevron clicked', { open, isReady, refsLoaded })
-
     if (!isReady) {
       console.log('Component not ready for animation yet')
       return
@@ -235,38 +222,25 @@ export default function ChooseStyles({
   }
 
   function handleColor(hex, parity = undefined) {
-    if (!parity) {
-      floorConfig.color = hex
-      // send off the object!
-    } else {
-      if (!floorConfig.colors) {
-        // if array doesn't exist
-        floorConfig.colors = []
-        floorConfig.colors.push(hex)
-      } else if (parity === 'even') {
-        // has an 'odd' color already so 'even' color needs to be inserted at the beginning
-        if (floorConfig.colors.length === 2) {
-          // if array contains 'even' already, then replace
-          floorConfig.colors.splice(0, 1, hex)
-          // send off the object!
-        } else {
-          // if array doesn't contain 'even' yet, then insert
-          floorConfig.colors.unshift(hex)
-          // send off the object!
+    const newArray = patterns.map((p, i) => {
+      if (!parity || parity === 'odd') {
+        console.log('Wooooyeaah ODD ' + hex)
+        return {
+          ...p,
+          bg: { backgroundColor: hex }
         }
-      } else if (parity === 'odd') {
-        // has an 'even' color already so 'odd' color needs to be inserted at the beginning
-        if (floorConfig.colors.length === 2) {
-          // if array contains 'odd' already, then replace
-          floorConfig.colors.splice(1, 1, hex)
-          // send off the object!
-        } else {
-          // if array doesn't contain 'odd' yet, then insert
-          floorConfig.colors.push(hex)
-          // send off the object!
+      } else {
+        console.log('Ooooh EVEN ' + hex)
+        return {
+          ...p,
+          mainColor: hex // Change dark color
         }
       }
-    }
+    })
+
+    console.log(newArray)
+    // Do stuff
+    setPatterns(newArray)
   }
 
   return (
@@ -311,17 +285,17 @@ export default function ChooseStyles({
         {/* Floor Colors */}
         {picker === 'floor' && (
           <div className='bg-[#eeeeee] z-[500] absolute -top-[90px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'>
-            <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
-            <ColorPicker
-              onClick={(hex) => {
-                handleColor(hex, 'even')
-              }}
-            />
-            <br />
             <p className='text-gray-600 text-[.8rem] mb-5'>Odd tiles</p>
             <ColorPicker
               onClick={(hex) => {
                 handleColor(hex, 'odd')
+              }}
+            />
+            <br />
+            <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
+            <ColorPicker
+              onClick={(hex) => {
+                handleColor(hex, 'even')
               }}
             />
           </div>
@@ -340,7 +314,7 @@ export default function ChooseStyles({
             <div
               key={idx}
               style={{ zIndex: patterns.length * 2 - idx + 1 }}
-              className={`pattern absolute top-0 left-0 bg-[#BFBFBF] rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer overflow-hidden mr-5`}
+              className={`pattern absolute top-0 left-0 rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer overflow-hidden mr-5`}
               ref={addToPatternElementsRef}
               onClick={() => {
                 if (!open) return
@@ -350,9 +324,13 @@ export default function ChooseStyles({
               }}
             >
               <div
-                className={`bg-[#BFBFBF] rounded-lg w-[120px] aspect-[9/5] text-red-100 ${pattern.containerClasses}`}
+                style={{ backgroundColor: '#ffffff', ...pattern.bg }}
+                className={`rounded-lg w-[120px] aspect-[9/5] text-red-500 ${pattern.containerClasses}`}
               >
-                <SvgIcon {...pattern.svgProps} />
+                <SvgFloorPattern
+                  {...pattern.svgProps}
+                  mainColor={pattern.mainColor}
+                />
               </div>
             </div>
           ))}
