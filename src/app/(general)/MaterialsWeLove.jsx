@@ -20,8 +20,8 @@ export default function MaterialsWeLove() {
           ...light on your wallet!
         </p>
 
-        <div>
-          <div className='relative w-[50%] h-[auto] aspect-square inline-block'>
+        <div className='flex'>
+          <div className='relative w-[50%] h-[auto] aspect-square'>
             <Image
               fill
               src={mdf}
@@ -30,7 +30,7 @@ export default function MaterialsWeLove() {
               sizes='40vw'
             />
           </div>
-          <div className='relative aspect-square h-[auto] w-[50%] inline-block'>
+          <div className='relative aspect-square h-[auto] w-[50%]'>
             <Image
               fill
               src={kitchenBlue}
