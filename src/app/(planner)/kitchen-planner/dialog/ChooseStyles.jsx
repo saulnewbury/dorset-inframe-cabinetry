@@ -69,17 +69,15 @@ const list = [
   }
 ]
 
-// floorConfig
-// pattern: 'checkers' | diagonal squares | horizontal lines | vertical lines | grid | stars | none
-// colors: [hex1, hex2] (for checkers & diagonal squares)
-//
-//
-
 export default function ChooseStyles() {
   const containerRef = useRef()
   const patternElementsRef = useRef([])
-  const floorConfig = useRef({})
+  // Create a ref for the currently active color picker container
+  const activePickerRef = useRef(null)
 
+  const [wallColor, setWallColor] = useState('#BFBFBF')
+  const [cabinetsColor, setCabinetsColor] = useState('#F0F0F0')
+  const [worktopColor, setWorktopColor] = useState('#666666')
   const [patterns, setPatterns] = useState(list)
   const [patternId, setPatternId] = useState(0)
   const [open, setOpen] = useState(false)
@@ -129,6 +127,31 @@ export default function ChooseStyles() {
     if (open) return
     animation('reverse')
   }, [open])
+
+  // Add click outside handler for color pickers
+  useEffect(() => {
+    // Only add listener if a picker is open
+    if (picker !== null) {
+      const handleClickOutside = (event) => {
+        // If the active picker container exists and the click is outside of it
+        if (
+          activePickerRef.current &&
+          !activePickerRef.current.contains(event.target)
+        ) {
+          // Close the picker
+          setPicker(null)
+        }
+      }
+
+      // Add event listener to document
+      document.addEventListener('mousedown', handleClickOutside)
+
+      // Return cleanup function
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }
+  }, [picker]) // Re-run when picker state changes
 
   // Add elements to ref
   const addToPatternElementsRef = (el) => {
@@ -221,7 +244,7 @@ export default function ChooseStyles() {
     }
   }
 
-  function handleColor(hex, parity = undefined) {
+  function handleFloorColors(hex, parity = undefined) {
     const newArray = patterns.map((p, i) => {
       if (!parity || parity === 'odd') {
         console.log('Wooooyeaah ODD ' + hex)
@@ -237,38 +260,99 @@ export default function ChooseStyles() {
         }
       }
     })
-
-    console.log(newArray)
-    // Do stuff
     setPatterns(newArray)
+  }
+
+  function handleCabinetsColor(hex) {
+    setCabinetsColor(hex)
+  }
+
+  function handleWorktopColor(hex) {
+    setWorktopColor(hex)
+  }
+
+  function handleWallColor(hex) {
+    setWallColor(hex)
   }
 
   return (
     <DialogInnerContainer>
-      {/* Overlay */}
-      {picker && (
+      {/* Cabinets color */}
+      <div className='mb-6 relative'>
+        <p className='text-gray-400 text-[.8rem] mb-3'>Cabinets</p>
         <div
-          className='absolute z-[50] left-0 top-0 w-[100vh] h-[100vw]'
+          className='bg-[#F0F0F0] rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'
+          style={{ backgroundColor: cabinetsColor }}
           onClick={() => {
-            setPicker(null)
+            if (open) return
+            setPicker('cabinets')
           }}
         ></div>
-      )}
-      {/* Cabinets color */}
-      <div className='mb-6'>
-        <p className='text-gray-400 text-[.8rem] mb-3'>Cabinets</p>
-        <div className='bg-[#F0F0F0] rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'></div>
+        {picker === 'cabinets' && (
+          <div
+            ref={activePickerRef}
+            className='bg-[#eeeeee] z-[500] absolute top-0 left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
+          >
+            <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
+            <ColorPicker
+              onClick={(hex) => {
+                handleCabinetsColor(hex)
+              }}
+            />
+          </div>
+        )}
       </div>
       {/* Worktop color */}
-      <div className='mb-6'>
+      <div className='mb-6 relative'>
         <p className='text-gray-400 text-[.8rem] mb-3'>Worktop</p>
-        <div className='bg-[#666666] rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'></div>
+        <div
+          className='bg-[#666666] rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'
+          style={{ backgroundColor: worktopColor }}
+          onClick={() => {
+            if (open) return
+            setPicker('worktop')
+          }}
+        ></div>
+        {picker === 'worktop' && (
+          <div
+            ref={activePickerRef}
+            className='bg-[#eeeeee] z-[500] absolute top-0 left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
+          >
+            <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
+            <ColorPicker
+              onClick={(hex) => {
+                handleWorktopColor(hex)
+              }}
+            />
+          </div>
+        )}
       </div>
       {/* Walls color */}
-      <div className='mb-6'>
+      <div className='mb-6 relative'>
         <p className='text-gray-400 text-[.8rem] mb-3'>Walls</p>
-        <div className='bg-[#BFBFBF] rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'></div>
+        <div
+          className='rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'
+          style={{ backgroundColor: wallColor }}
+          onClick={() => {
+            if (open) return
+            setPicker('wall')
+          }}
+        ></div>
+        {picker === 'wall' && (
+          <div
+            ref={activePickerRef}
+            className='bg-[#eeeeee] z-[500] absolute top-0 left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
+          >
+            <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
+            <ColorPicker
+              onClick={(hex) => {
+                handleWallColor(hex)
+              }}
+            />
+          </div>
+        )}
       </div>
+
       {/* Floor */}
       <div className='mb-6 relative'>
         <div className='mb-3 flex items-center gap-[4.5rem] cursor-pointer'>
@@ -284,24 +368,27 @@ export default function ChooseStyles() {
         </div>
         {/* Floor Colors */}
         {picker === 'floor' && (
-          <div className='bg-[#eeeeee] z-[500] absolute -top-[90px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'>
+          <div
+            ref={activePickerRef}
+            className='bg-[#eeeeee] z-[500] absolute -top-[90px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
+          >
             <p className='text-gray-600 text-[.8rem] mb-5'>Odd tiles</p>
             <ColorPicker
               onClick={(hex) => {
-                handleColor(hex, 'odd')
+                handleFloorColors(hex, 'odd')
               }}
             />
             <br />
             <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
             <ColorPicker
               onClick={(hex) => {
-                handleColor(hex, 'even')
+                handleFloorColors(hex, 'even')
               }}
             />
           </div>
         )}
 
-        {/* Slider */}
+        {/* Floor Patterns */}
         <div
           className='absolute top-[2rem] left-0'
           ref={containerRef}
@@ -320,7 +407,6 @@ export default function ChooseStyles() {
                 if (!open) return
                 setOpen(false)
                 setPatternId(idx)
-                floorConfig.pattern = pattern.svgProps.shape
               }}
             >
               <div
