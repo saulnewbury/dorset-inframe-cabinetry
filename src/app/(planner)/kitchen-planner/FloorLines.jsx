@@ -12,8 +12,9 @@ import {
 export default function FloorLines({
   points,
   handlePan,
-  showHorizontalLines,
-  showVerticalLines
+  showHorizontalLines = false,
+  showVerticalLines = false,
+  color
 }) {
   const shape = useMemo(
     () => new Shape(points.map((p) => new Vector2(p.x, p.z))).closePath(),
@@ -208,7 +209,7 @@ export default function FloorLines({
     >
       <mesh receiveShadow rotation-x={Math.PI / 2} position-y={-0.002}>
         <shapeGeometry args={[shape]} />
-        <meshStandardMaterial color='#ffffff' side={DoubleSide} />
+        <meshStandardMaterial color={color} side={DoubleSide} />
       </mesh>
 
       {GridLines}

@@ -6,7 +6,6 @@ import { AppContext } from '@/context'
 import { ModelContext } from '@/model/context'
 
 import { wt, wh } from '@/const'
-import { wallColor } from './cabinet/colors'
 
 import DimensionLine from './DimensionLine'
 import Opening from './openings/Opening'
@@ -59,6 +58,9 @@ export default function Wall({
     ],
     [dragging]
   )
+
+  // Wall color
+  const wallColor = model.wall || '#BFBFBF'
 
   // Wall geometry
   const pos = new Vector3((from.x + to.x) / 2, 0, (from.z + to.z) / 2)

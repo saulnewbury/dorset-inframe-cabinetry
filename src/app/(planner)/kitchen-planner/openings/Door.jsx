@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useContext } from 'react'
 import {
   BufferGeometry,
   Vector2,
@@ -15,8 +15,9 @@ import { useAppState } from '@/appState'
 
 import { wh, wt } from '@/const'
 
+import { ModelContext } from '@/model/context'
+
 import { lineColor } from '../cabinet/colors'
-import { wallColor } from '../cabinet/colors'
 
 /**
  * General component to display a door. Checks 2D/3D state to determine which
@@ -151,6 +152,10 @@ function Door2D({ len, offset, width, option, style, onClick = () => {} }) {
  * scale) on the outside.
  */
 function Door3D({ style, len, offset, width, option }) {
+  const [model] = useContext(ModelContext)
+
+  const wallColor = model.wall || '#BFBFBF'
+
   const height = wh - 0.4
 
   const cw = 0.05

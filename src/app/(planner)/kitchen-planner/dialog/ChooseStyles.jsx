@@ -10,68 +10,11 @@ import SvgIcon from '@/components/SvgIcon'
 import Button from '@/components/Button'
 import ColorPicker from './ColorPicker'
 
-const list = [
-  {
-    svgProps: {
-      shape: 'checkers',
-      factor: 1.1,
-      height: 66.67,
-      width: 120
-    },
-    containerClasses: 'hover:scale-[1.1]',
-    bg: { backgroundColor: '#ffffff' },
-    mainColor: '#000000',
-    parity: true
-  },
-  {
-    svgProps: {
-      shape: 'diagonal',
-      factor: 1.1,
-      height: 66.67,
-      width: 117
-    },
-    containerClasses: 'mt-[0.8px] -ml-[5px] scale-[1.05] hover:scale-[1.1]',
-    bg: { backgroundColor: '#ffffff' },
-    mainColor: '#000000',
-    parity: true
-  },
-  {
-    svgProps: {
-      shape: 'grid',
-      factor: 1,
-      height: 66.67,
-      width: 108
-    },
-    containerClasses:
-      'mt-[0.27rem] ml-[0.4rem] scale-[1.2] hover:scale-[1.5] hover:mt-[0.66rem] hover:ml-[0.52rem]',
-    bg: { backgroundColor: '#ffffff' }
-  },
-  {
-    svgProps: {
-      shape: 'horizontal-lines',
-      factor: 1,
-      height: 62,
-      width: 107,
-      bg: { backgroundColor: '#ffffff' }
-    },
-
-    containerClasses:
-      'mt-[2.115px] ml-[0.4rem] scale-[1.2] hover:scale-[1.5] hover:mt-[0.66rem]'
-  },
-  {
-    svgProps: {
-      shape: 'vertical-lines',
-      factor: 1,
-      height: 66.67,
-      width: 108
-    },
-    containerClasses:
-      'mt-[0.25rem] ml-[4px] scale-[1.15] hover:scale-[1.5] hover:ml-[6px] ',
-    bg: { backgroundColor: '#ffffff' }
-  }
-]
+import { initialState } from '@/model/appModel'
 
 export default function ChooseStyles() {
+  const list = initialState.floor.patterns
+
   const [model, dispatch] = useContext(ModelContext)
   const containerRef = useRef()
   const patternElementsRef = useRef([])
@@ -79,11 +22,13 @@ export default function ChooseStyles() {
   // Create a ref for the currently active color picker container
   const activePickerRef = useRef(null)
 
-  const [wallColor, setWallColor] = useState('#BFBFBF')
+  // Styles
+  const [wallColor, setWallColor] = useState(model.wall || '#BFBFBF')
   const [cabinetsColor, setCabinetsColor] = useState(model.color || '#F0F0F0')
   const [worktopColor, setWorktopColor] = useState(model.worktop || '#666666')
-  const [patterns, setPatterns] = useState(list)
-  const [patternId, setPatternId] = useState(0)
+  const [patterns, setPatterns] = useState(model.floor?.patterns || list)
+  const [patternId, setPatternId] = useState(model.floor?.id || 0)
+
   const [open, setOpen] = useState(false)
   const [isReady, setIsReady] = useState(false)
   const [picker, setPicker] = useState(null)
@@ -102,16 +47,24 @@ export default function ChooseStyles() {
     }
   }, [])
 
+  // Make sure correct pattern sits ontop of the stack
+  useEffect(() => {
+    const patternTiles = patternElementsRef.current
+    patternTiles.forEach((p, idx) => {
+      gsap.set(p, { zIndex: idx === patternId ? 50 : 10 })
+    })
+  }, [])
+
   // Set initial positions and mark component as ready once all refs are loaded
   useEffect(() => {
-    console.log(`Refs loaded: ${refsLoaded}/${patterns.length}`)
+    // console.log(`Refs loaded: ${refsLoaded}/${patterns.length}`)
 
     if (refsLoaded === patterns.length && !isReady) {
-      console.log('All pattern refs loaded, initializing positions')
+      // console.log('All pattern refs loaded, initializing positions')
 
       // Ensure we have valid elements before proceeding
       if (patternElementsRef.current.every((el) => el instanceof Element)) {
-        console.log('All refs are valid DOM elements')
+        // console.log('All refs are valid DOM elements')
 
         // Set initial positions and make ready
         patternElementsRef.current.forEach((tile) => {
@@ -202,12 +155,6 @@ export default function ChooseStyles() {
 
   // Spread patterns animation
   function animation(direction) {
-    console.log(`Animation triggered: ${direction}`, {
-      isReady,
-      refCount: patternElementsRef.current.length,
-      open
-    })
-
     // Don't proceed if component isn't ready
     if (!isReady) {
       return
@@ -283,7 +230,7 @@ export default function ChooseStyles() {
 
   const handleChevronClick = () => {
     if (!isReady) {
-      console.log('Component not ready for animation yet')
+      // console.log('Component not ready for animation yet')
       return
     }
 
@@ -296,22 +243,30 @@ export default function ChooseStyles() {
     }
   }
 
-  function handleFloorColors(hex, parity = undefined) {
-    const newArray = patterns.map((p, i) => {
-      if (!parity || parity === 'odd') {
-        console.log('Wooooyeaah ODD ' + hex)
+  // Change Color of all patterns
+  function handleFloorColors(hex, evenOdd) {
+    const newArray = patterns.map((p) => {
+      console.log(p.svgProps.shape + ' ' + p.color)
+      if (!p.parity) {
         return {
           ...p,
-          bg: { backgroundColor: hex }
+          color: [hex]
+        }
+      } else if (evenOdd === 'odd') {
+        return {
+          ...p,
+          color: [hex, p.color[1]]
         }
       } else {
-        console.log('Ooooh EVEN ' + hex)
         return {
           ...p,
-          mainColor: hex // Change dark color
+          color: [p.color[0], hex]
         }
       }
     })
+
+    // console.log(newArray)
+    selectFloorColors(newArray)
     setPatterns(newArray)
   }
 
@@ -331,9 +286,9 @@ export default function ChooseStyles() {
   }
 
   function resetColors() {
-    setCabinetsColor('#F0F0F0')
-    setWorktopColor('#666666')
-    setWallColor('#BFBFBF')
+    handleCabinetsColor('#F0F0F0')
+    handleWorktopColor('#666666')
+    handleWallColor('#BFBFBF')
     setPatterns(list)
   }
 
@@ -429,23 +384,23 @@ export default function ChooseStyles() {
           </span>
         </div>
         {/* Floor Colors (if there is no mainColor present only show one picker) */}
-        {picker === 'floor' && (
+        {list && picker === 'floor' && (
           <div
             ref={activePickerRef}
             className={`${
-              patterns[patternId].mainColor ? '-top-[180px]' : '-top-[16px]'
+              patterns[patternId].parity ? '-top-[180px]' : '-top-[16px]'
             }
             bg-[#dedede] z-[500] absolute left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg`}
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>
-              {patterns[patternId].mainColor ? 'Odd tiles' : 'Choose colour'}
+              {patterns[patternId].parity ? 'Odd tiles' : 'Choose colour'}
             </p>
             <ColorPicker
               onClick={(hex) => {
                 handleFloorColors(hex, 'odd')
               }}
             />
-            {patterns[patternId].mainColor && (
+            {patterns[patternId].parity && (
               <>
                 <br />
                 <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
@@ -460,42 +415,50 @@ export default function ChooseStyles() {
         )}
 
         {/* Slider */}
-        <div
-          className='absolute top-[2rem] left-0'
-          ref={containerRef}
-          onClick={(e) => {
-            // Prevent this click from triggering the outside click handler
-            e.stopPropagation()
-            if (open) return
-            setPicker('floor')
-          }}
-        >
-          {patterns.map((pattern, idx) => (
-            <div
-              key={idx}
-              style={{ zIndex: patterns.length * 2 - idx + 1 }}
-              className={`pattern absolute top-0 left-0 rounded-lg w-[120px] h-[66.67px] border-[0.5px] border-black cursor-pointer overflow-hidden mr-5`}
-              ref={addToPatternElementsRef}
-              onClick={() => {
-                if (!open) return
-                setOpen(false)
-                setPatternId(idx)
-                floorConfig.pattern = pattern.svgProps.shape
-              }}
-            >
-              <div
-                style={{ backgroundColor: '#ffffff', ...pattern.bg }}
-                className={`rounded-lg text-red-500 ${pattern.containerClasses}`}
-              >
-                <SvgFloorPattern
-                  {...pattern.svgProps}
-                  mainColor={pattern.mainColor}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+        {list && (
+          <div
+            className='absolute top-[2rem] left-0'
+            ref={containerRef}
+            onClick={(e) => {
+              // Prevent this click from triggering the outside click handler
+              e.stopPropagation()
+              if (open) return
+              setPicker('floor')
+            }}
+          >
+            {patterns.map((pattern, idx) => {
+              // console.log(pattern)
+              return (
+                <div
+                  key={idx}
+                  style={{ zIndex: patterns.length * 2 - idx + 1 }}
+                  className={`pattern absolute top-0 left-0 rounded-lg w-[120px] h-[66.67px] border-[0.5px] border-black cursor-pointer overflow-hidden mr-5`}
+                  ref={addToPatternElementsRef}
+                  onClick={() => {
+                    if (!open) return
+                    setOpen(false)
+                    setPatternId(idx)
+                    selectFloor(idx)
+                    floorConfig.pattern = pattern.svgProps.shape
+                  }}
+                >
+                  <div
+                    style={{ backgroundColor: pattern.color[0] }}
+                    className={`rounded-lg text-red-500 ${pattern.containerClasses}`}
+                  >
+                    <SvgFloorPattern
+                      {...pattern.svgProps}
+                      color={pattern.color[1] ? pattern.color[1] : ''}
+                    />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
+
+      {/* Reset colors modal */}
       <button
         className='text-sm text-[#555555] hover:underline'
         onClick={() => {
@@ -507,7 +470,7 @@ export default function ChooseStyles() {
           <SvgIcon shape='chevron-right' classes='scale-[1.3]' />
         </span>
       </button>
-      {/* Modal for resetting colours */}
+      {/* Modal*/}
       {resetModal && (
         <>
           <div className='w-full h-full bg-black absolute top-0 left-0 z-[60] opacity-10'></div>
@@ -543,7 +506,9 @@ export default function ChooseStyles() {
     dispatch({
       id: 'setScheme',
       worktop: hex,
-      color: cabinetsColor
+      wall: wallColor,
+      color: cabinetsColor,
+      floor: { patterns, id: patternId }
     })
   }
 
@@ -551,14 +516,39 @@ export default function ChooseStyles() {
     dispatch({
       id: 'setScheme',
       worktop: worktopColor,
-      color: hex
+      wall: wallColor,
+      color: hex,
+      floor: { patterns, id: patternId }
     })
   }
 
   function selectWallColor(hex) {
-    // dispatch({
-    //   id: 'setWallColor',
-    //   wallColor: hex
-    // })
+    dispatch({
+      id: 'setScheme',
+      worktop: worktopColor,
+      wall: hex,
+      color: cabinetsColor,
+      floor: { patterns, id: patternId }
+    })
+  }
+
+  function selectFloor(idx) {
+    dispatch({
+      id: 'setScheme',
+      worktop: worktopColor,
+      wall: wallColor,
+      color: cabinetsColor,
+      floor: { patterns, id: idx }
+    })
+  }
+
+  function selectFloorColors(newArray) {
+    dispatch({
+      id: 'setScheme',
+      worktop: worktopColor,
+      wall: wallColor,
+      color: cabinetsColor,
+      floor: { patterns: newArray, id: patternId }
+    })
   }
 }

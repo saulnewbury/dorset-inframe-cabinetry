@@ -3,7 +3,6 @@ import { twMerge } from 'tailwind-merge'
 
 // floor
 import checkers from '@/lib/icons/floor/checkers.svg'
-import checkers2 from '@/lib/icons/floor/checkers2.svg'
 import diagonal from '@/lib/icons/floor/diagonal.svg'
 import grid from '@/lib/icons/floor/grid.svg'
 import horizontalLines from '@/lib/icons/floor/horizontal-lines.svg'
@@ -12,7 +11,6 @@ import verticalLines from '@/lib/icons/floor/vertical-lines.svg'
 const svgPatterns = [
   // floor patterns
   { icon: checkers, shape: 'checkers' },
-  { icon: checkers2, shape: 'checkers2' },
   { icon: diagonal, shape: 'diagonal' },
   { icon: grid, shape: 'grid' },
   { icon: horizontalLines, shape: 'horizontal-lines' },
@@ -25,10 +23,10 @@ export default function SvgFloorPattern({
   factor = null,
   width = null,
   height = null,
-  mainColor,
+  color,
   classes = ''
 }) {
-  const style = mainColor ? { fill: mainColor } : { fill: '#ffffff' }
+  const style = color ? { fill: color } : { fill: '#ffffff' }
 
   return svgPatterns.map((item, i) => {
     if (item.shape === shape) {

@@ -14,9 +14,9 @@ import { useLoader } from '@react-three/fiber'
 
 import { AppContext } from '@/appState'
 import { useAppState } from '@/appState'
+import { ModelContext } from '@/model/context'
 
 import { wh, wt } from '@/const'
-import { wallColor } from '../cabinet/colors'
 
 // Reusable materials
 import { wallMaterial, windowMaterial, linesMaterial } from '@/materials'
@@ -86,6 +86,8 @@ function Window2D({ len, offset, width, style, onClick = () => {} }) {
  * If the window is not full height, also paints the wall below it.
  */
 function Window3D({ style, len, offset, width, option }) {
+  const [model, dispatch] = useContext(ModelContext)
+
   const texture = useLoader(TextureLoader, window_pane.src)
   const height = wh - 0.4 - (option === 'full' ? 0 : wh / 2)
 
@@ -93,11 +95,13 @@ function Window3D({ style, len, offset, width, option }) {
   const jamb = getJambDimensions(frame, w)
   const head = getHeadDimensions(frame, w)
 
+  const wallColor = model.wall || '#BFBFBF'
+
   return (
     // <group position={[0, -height, 0]}>
     <group position={[offset - len / 2, 0, 0]}>
       {/* Lintel */}
-      <mesh receiveShadow position={[0, wh - 0.2, 0]} castShadow receiveShadow>
+      <mesh receiveShadow position={[0, wh - 0.2, 0]} castShadow>
         <meshStandardMaterial color={wallColor} />
         <boxGeometry args={[width, 0.4, wt]} />
       </mesh>
