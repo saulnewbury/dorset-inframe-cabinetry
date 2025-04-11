@@ -329,6 +329,7 @@ export default function ChooseStyles() {
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
+              selectedColor={cabinetsColor}
               onClick={(hex) => {
                 handleCabinetsColor(hex)
               }}
@@ -354,6 +355,7 @@ export default function ChooseStyles() {
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
+              selectedColor={worktopColor}
               onClick={(hex) => {
                 handleWorktopColor(hex)
               }}
@@ -379,6 +381,7 @@ export default function ChooseStyles() {
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
+              selectedColor={wallColor}
               onClick={(hex) => {
                 handleWallColor(hex)
               }}
@@ -413,6 +416,7 @@ export default function ChooseStyles() {
               {patterns[patternId]?.parity ? 'Odd tiles' : 'Choose colour'}
             </p>
             <ColorPicker
+              selectedColor={patterns[patternId]?.color[0]}
               onClick={(hex) => {
                 handleFloorColors(hex, 'odd')
               }}
@@ -422,6 +426,7 @@ export default function ChooseStyles() {
                 <br />
                 <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
                 <ColorPicker
+                  selectedColor={patterns[patternId]?.color[1]}
                   onClick={(hex) => {
                     handleFloorColors(hex, 'even')
                   }}

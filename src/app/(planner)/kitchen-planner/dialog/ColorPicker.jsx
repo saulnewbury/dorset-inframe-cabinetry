@@ -1,5 +1,4 @@
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
 import Circle from '@uiw/react-color-circle'
 
 const colors = [
@@ -36,26 +35,35 @@ const colors = [
   '#000000',
   '#FFFFFF'
 ]
-const ColorPicker = ({ onClick }) => {
-  const [hex, setHex] = useState('#F44E3B')
+
+const ColorPicker = ({ onClick, selectedColor, initialColor = '#F44E3B' }) => {
+  // Use internal state that syncs with external props
+  const [currentColor, setCurrentColor] = useState(
+    selectedColor || initialColor
+  )
+
+  // Update internal state when selectedColor prop changes
+  useEffect(() => {
+    if (selectedColor && selectedColor !== currentColor) {
+      setCurrentColor(selectedColor)
+    }
+  }, [selectedColor])
+
   return (
     <Circle
       colors={colors}
-      color={hex}
+      color={currentColor} // Use the internal state that syncs with props
       pointProps={{
         style: {
           marginRight: 8
         }
       }}
       onChange={(color) => {
-        onClick(color.hex)
-        setHex(color.hex)
+        setCurrentColor(color.hex) // Update internal state
+        onClick(color.hex) // Call the onClick handler with the selected color
       }}
     />
   )
 }
 
 export default ColorPicker
-
-// not these
-// '#ad9b88',
