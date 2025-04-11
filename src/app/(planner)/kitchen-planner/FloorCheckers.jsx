@@ -124,7 +124,7 @@ export default function FloorCheckers({
                 vec3 adjustedCheckerColor = checkerColor * 0.5;
                 
                 // Add contrast enhancement
-                float contrastFactor = 1.15; // Adjust for more or less contrast
+                float contrastFactor = 1.2; // Adjust for more or less contrast
                 vec3 contrastEnhanced = (adjustedCheckerColor - 0.5) * contrastFactor + 0.5;
                 // Clamp to prevent values outside valid range
                 contrastEnhanced = clamp(contrastEnhanced, vec3(0.0), vec3(1.0));

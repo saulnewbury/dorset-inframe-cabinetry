@@ -8,7 +8,7 @@ export const weSupplyAppliances = {
   src: caple,
   color: '#e6e5e4',
   markup:
-    "We can supply a wide range of appliances. Request a call back via the <span class='dangerlink'><a href='/contact'>contact form</a></span> or on submission of your kitchen design and we will endeavour to get you a competitive price. <br /> <br />Or browse products from the brands below, and add the <br />product code to the list:",
+    'We can supply a wide range of appliances. Speak to one of our team or use the contact form and we will endeavour to get you a competitive price. <br /> <br />Or browse products from the brands below, and add the <br />product code to the list:',
   brands: [
     { name: 'Belling', url: 'https://www.belling.co.uk/en-gb' },
     { name: 'Bosch', url: 'https://www.bosch.co.uk/' },
@@ -23,7 +23,7 @@ export const weSupplyAppliances = {
 
 export const weSupplyHandlesAndKnobs = {
   markup:
-    'We can supply many different handles and knobs. If you would like us to suggest options or cost your choices please request a call back via the contact form or on submission of your kitchen design and we will endeavour to get you a competitive price.',
+    'We can supply many different handles and knobs. If you would like us to suggest options or cost your choices speak to a member of our team or use the contact form and we will endeavour to get you a competitive price.',
   src: corston,
   color: '#e2e1e1',
   brands: [
@@ -39,7 +39,7 @@ export const weSupplySinksAndTaps = {
   src: minerva,
   color: '#eeece9',
   markup:
-    'We supply a wide range of taps and sinks from leading manufacturers which are too numerous to mention here. If you would like us to cost your sink and taps please request a call back via the contact form or on submission of your kitchen design and we will endeavour to get you a competitive price.',
+    'We supply a wide range of taps and sinks from leading manufacturers which are too numerous to mention here. If you would like us to cost your sink and taps speak to a member of our team or use the contact form and we will endeavour to get you a competitive price.',
   brands: [
     { name: 'Caple', url: 'https://www.caple.co.uk/' },
     { name: 'Franke', url: 'https://www.franke.com/gb/en/home.html' },
@@ -52,7 +52,7 @@ export const weSupplyStorageAndAccessories = {
   color: '#eae4dc',
   src: vauth,
   markup:
-    'We can supply many different styles and sizes of pull out larders, bins and corner storage for your kitchen. If you would like us to suggest options or cost your choices please request a call back via the contact form or on submission of your kitchen design and we will endeavour to get you a competitive price.',
+    'We can supply many different styles and sizes of pull out larders, bins and corner storage for your kitchen. If you would like us to suggest options or cost your choices speak to a member of our time or use the contact form and we will endeavour to get you a competitive price.',
   brands: [
     { name: 'Hafele', url: 'https://www.hafele.co.uk/en/' },
     { name: 'Reason', url: 'https://www.raisonhome.com/en-gb/' },

@@ -315,7 +315,7 @@ export default function ChooseStyles() {
       <div className='mb-6 relative'>
         <p className='text-gray-400 text-[.8rem] mb-3'>Cabinets</p>
         <div
-          className='bg-[#F0F0F0] rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'
+          className='rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'
           style={{ backgroundColor: cabinetsColor }}
           onClick={() => {
             if (open) return
@@ -325,7 +325,7 @@ export default function ChooseStyles() {
         {picker === 'cabinets' && (
           <div
             ref={activePickerRef}
-            className='bg-[#eeeeee] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
+            className='bg-[#ffffff] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
@@ -340,7 +340,7 @@ export default function ChooseStyles() {
       <div className='mb-6 relative'>
         <p className='text-gray-400 text-[.8rem] mb-3'>Worktop</p>
         <div
-          className='bg-[#666666] rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'
+          className='rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'
           style={{ backgroundColor: worktopColor }}
           onClick={() => {
             if (open) return
@@ -350,7 +350,7 @@ export default function ChooseStyles() {
         {picker === 'worktop' && (
           <div
             ref={activePickerRef}
-            className='bg-[#eeeeee] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
+            className='bg-[#ffffff] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
@@ -375,7 +375,7 @@ export default function ChooseStyles() {
         {picker === 'wall' && (
           <div
             ref={activePickerRef}
-            className='bg-[#eeeeee] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg'
+            className='bg-[#ffffff] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
@@ -407,7 +407,7 @@ export default function ChooseStyles() {
             className={`${
               patterns[patternId]?.parity ? '-top-[180px]' : '-top-[16px]'
             }
-            bg-[#dedede] z-[500] absolute left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg`}
+            bg-[#ffffff] z-[500] absolute left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg`}
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>
               {patterns[patternId]?.parity ? 'Odd tiles' : 'Choose colour'}

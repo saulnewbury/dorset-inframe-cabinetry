@@ -53,7 +53,7 @@ export default function Experience({ is3D }) {
   const light = useRef()
 
   // useHelper(light, THREE.DirectionalLightHelper, 1)
-  // useHelper(light, THREE.PointLightHelper, 1)
+  useHelper(light, THREE.PointLightHelper, 1)
 
   const hovered = useRef(new Set())
 
@@ -116,7 +116,7 @@ export default function Experience({ is3D }) {
       <directionalLight
         position={[4, 4, -2]}
         castShadow={is3D ? true : false}
-        intensity={4.5}
+        intensity={4}
         shadow-mapSize={[1024 * 3, 1024 * 3]}
       />
       {is3D && (
