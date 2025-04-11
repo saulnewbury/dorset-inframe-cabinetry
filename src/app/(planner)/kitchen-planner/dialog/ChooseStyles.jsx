@@ -325,7 +325,7 @@ export default function ChooseStyles() {
         {picker === 'cabinets' && (
           <div
             ref={activePickerRef}
-            className='bg-[#ffffff] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
+            className='bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
@@ -351,7 +351,7 @@ export default function ChooseStyles() {
         {picker === 'worktop' && (
           <div
             ref={activePickerRef}
-            className='bg-[#ffffff] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
+            className='bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
@@ -377,7 +377,7 @@ export default function ChooseStyles() {
         {picker === 'wall' && (
           <div
             ref={activePickerRef}
-            className='bg-[#ffffff] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
+            className='bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
@@ -408,9 +408,9 @@ export default function ChooseStyles() {
           <div
             ref={activePickerRef}
             className={`${
-              patterns[patternId]?.parity ? '-top-[180px]' : '-top-[16px]'
+              patterns[patternId]?.parity ? '-top-[270px]' : '-top-[16px]'
             }
-            bg-[#ffffff] z-[500] absolute left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg`}
+            bg-[#dddddd] z-[500] absolute left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg`}
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>
               {patterns[patternId]?.parity ? 'Odd tiles' : 'Choose colour'}

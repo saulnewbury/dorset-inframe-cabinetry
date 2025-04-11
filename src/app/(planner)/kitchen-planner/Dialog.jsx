@@ -11,12 +11,16 @@ const Dialog = forwardRef(
   ({ closeContentBox, content, variant, Body, width }, ref) => {
     const container = useRef()
     useGSAP(() => {
-      gsap.from(container.current, { opacity: 0, duration: 0.2 })
+      gsap.fromTo(
+        container.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.2, delay: 0.15 }
+      )
     })
     return (
       <div
         ref={container}
-        className='fixed z-[100] flex h-[100vh] w-[100vw] top-0 left-0 bg-overlay px-[98px] py-[40px]'
+        className='fixed z-[100] flex h-[100vh] w-[100vw] top-0 left-0 bg-overlay px-[98px] py-[40px] opacity-0'
       >
         {/* <div className='bg-white w-full h-full relative'> */}
         <div style={{ width: width }} className='bg-white h-full relative'>
