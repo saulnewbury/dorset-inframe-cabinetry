@@ -49,8 +49,8 @@ const panels = {
   ],
   'oven-double': [{ type: 'oven', ovenType: 'double' }],
   'oven-compact': [
-    { type: 'oven', ovenType: 'compact', ratio: 4.5 },
-    { type: 'drawer', ratio: 2.7 }
+    { type: 'drawer', ratio: 2.7 },
+    { type: 'oven', ovenType: 'compact', ratio: 4.5 }
   ],
   'tall-doors': [
     { type: 'door', ratio: 153 },

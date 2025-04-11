@@ -80,12 +80,8 @@ export default function ChooseStyles() {
   const activePickerRef = useRef(null)
 
   const [wallColor, setWallColor] = useState('#BFBFBF')
-  const [cabinetsColor, setCabinetsColor] = useState(
-    model.color ? model.color : '#F0F0F0'
-  )
-  const [worktopColor, setWorktopColor] = useState(
-    model.worktop ? model.worktop : '#666666'
-  )
+  const [cabinetsColor, setCabinetsColor] = useState(model.color || '#F0F0F0')
+  const [worktopColor, setWorktopColor] = useState(model.worktop || '#666666')
   const [patterns, setPatterns] = useState(list)
   const [patternId, setPatternId] = useState(0)
   const [open, setOpen] = useState(false)
@@ -439,7 +435,7 @@ export default function ChooseStyles() {
             className={`${
               patterns[patternId].mainColor ? '-top-[180px]' : '-top-[16px]'
             }
-            bg-[#eeeeee] z-[500] absolute left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg`}
+            bg-[#dedede] z-[500] absolute left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg`}
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>
               {patterns[patternId].mainColor ? 'Odd tiles' : 'Choose colour'}
@@ -515,7 +511,7 @@ export default function ChooseStyles() {
       {resetModal && (
         <>
           <div className='w-full h-full bg-black absolute top-0 left-0 z-[60] opacity-10'></div>
-          <div className='h-[40vh] w-[35vw] shadow-xl absolute z-[900] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] flex justify-center items-center bg-white'>
+          <div className='h-[200px] w-[35vw] shadow-xl absolute z-[900] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] flex justify-center items-center bg-white'>
             <div>
               <p className='text-center mb-6'>Are you sure?</p>
               <div className='flex justify-center items-center gap-3'>
@@ -546,13 +542,15 @@ export default function ChooseStyles() {
   function selectWorktopColor(hex) {
     dispatch({
       id: 'setScheme',
-      worktop: hex
+      worktop: hex,
+      color: cabinetsColor
     })
   }
 
   function selectCabinetsColor(hex) {
     dispatch({
       id: 'setScheme',
+      worktop: worktopColor,
       color: hex
     })
   }

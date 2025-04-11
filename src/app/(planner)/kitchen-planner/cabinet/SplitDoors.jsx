@@ -117,7 +117,11 @@ export function SplitDoors({
         position={[pos1X, pos1Y, depth / 2 - pt + doorThickness]}
       >
         <extrudeGeometry args={[panel1Shape, extrudeSettings]} />
-        <meshStandardMaterial color={color} side={THREE.DoubleSide} />
+        <meshStandardMaterial
+          color={color}
+          side={THREE.DoubleSide}
+          roughness={1}
+        />
         <Edges threshold={5} color={lineColor} />
       </mesh>
 
@@ -130,7 +134,7 @@ export function SplitDoors({
         ]}
       >
         <boxGeometry args={[door1Width, door1Height, doorThickness / 2]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={color} roughness={1} />
         <Edges threshold={5} color={lineColor} />
       </mesh>
 
@@ -140,7 +144,11 @@ export function SplitDoors({
         position={[pos2X, pos2Y, depth / 2 - pt + doorThickness]}
       >
         <extrudeGeometry args={[panel2Shape, extrudeSettings]} />
-        <meshStandardMaterial color={color} side={THREE.DoubleSide} />
+        <meshStandardMaterial
+          color={color}
+          side={THREE.DoubleSide}
+          roughness={1}
+        />
         <Edges threshold={5} color={lineColor} />
       </mesh>
 
@@ -153,7 +161,7 @@ export function SplitDoors({
         ]}
       >
         <boxGeometry args={[door2Width, door2Height, doorThickness / 2]} />
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial color={color} roughness={1} />
         <Edges threshold={5} color={lineColor} />
       </mesh>
     </group>

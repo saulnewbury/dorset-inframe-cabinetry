@@ -8,8 +8,8 @@ export const initialState = {
   openings: [],
   divider: [],
   units: [],
-  worktop: 'blue-marble',
-  color: '#ffffff'
+  worktop: '#666666',
+  color: '#F0F0F0'
 }
 
 let keepCopy = true

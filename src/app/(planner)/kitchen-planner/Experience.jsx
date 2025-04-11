@@ -123,7 +123,7 @@ export default function Experience({ is3D }) {
         <pointLight
           ref={light}
           args={[0xfffae6, 1, 100]}
-          intensity={6.5}
+          intensity={15}
           position={[0, 3, 0]}
         />
       )}

@@ -13,12 +13,11 @@ const colors = [
   '#c2bdbd',
   '#d1c8b6',
   '#d1b27c',
+  '#c1df8e',
   '#aacd7b',
-  '#7a9c53',
   '#6b6b44',
   '#42421f',
   '#aca592',
-  '#ad9b88',
   '#897f78',
   '#f3d2c1',
   '#dfb299',
@@ -26,8 +25,7 @@ const colors = [
   '#b35a3c',
   '#764639',
   '#322d30',
-  '#000000',
-  '#ffffff'
+  '#F0F0F0'
 ]
 const ColorPicker = ({ onClick }) => {
   const [hex, setHex] = useState('#F44E3B')
@@ -49,3 +47,6 @@ const ColorPicker = ({ onClick }) => {
 }
 
 export default ColorPicker
+
+// not these
+// '#ad9b88',

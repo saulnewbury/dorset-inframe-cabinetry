@@ -122,11 +122,11 @@ export default function Oven({
       {/* Oven front */}
       {type === 'compact' && (
         <group>
-          <mesh position-y={-cpanel / 2}>
+          <mesh receiveShadow position-y={-cpanel / 2}>
             <boxGeometry
               args={[ovenWidth, ovenHeight - cpanel, ovenThickness]}
             />
-            <meshStandardMaterial color='white' />
+            <meshStandardMaterial color='white' metalness={0.4} roughness={1} />
             <Edges threshold={5} color={lineColor} />
           </mesh>
           {renderOvenHandle(ovenHeight - 0.15)}
@@ -139,11 +139,15 @@ export default function Oven({
           <group
             position-y={(ovenHeight - topCompartmentHeight) / 2 - cpanel / 2}
           >
-            <mesh>
+            <mesh receiveShadow>
               <boxGeometry
                 args={[ovenWidth, topCompartmentHeight, ovenThickness]}
               />
-              <meshStandardMaterial color='white' />
+              <meshStandardMaterial
+                color='white'
+                metalness={0.4}
+                roughness={1}
+              />
               <Edges threshold={5} color={lineColor} />
             </mesh>
             {renderOvenHandle(topCompartmentHeight + 0.05)}
@@ -155,11 +159,15 @@ export default function Oven({
               -(ovenHeight - bottomCompartmentHeight) / 2 + cpanel / 2
             }
           >
-            <mesh>
+            <mesh receiveShadow>
               <boxGeometry
                 args={[ovenWidth, bottomCompartmentHeight, ovenThickness]}
               />
-              <meshStandardMaterial color='white' />
+              <meshStandardMaterial
+                color='white'
+                metalness={0.4}
+                roughness={1}
+              />
               <Edges threshold={5} color={lineColor} />
             </mesh>
             {renderOvenHandle(bottomCompartmentHeight + 0.05)}
@@ -170,14 +178,18 @@ export default function Oven({
       {/* Updated 'single' type with box and extruded geometries */}
       {type === 'single' && (
         <group position-y={-cpanel / 2} position-z={-ovenThickness / 2}>
-          <mesh position-y={-cpanel / 2} position-z={ovenThickness / 2}>
+          <mesh
+            receiveShadow
+            position-y={-cpanel / 2}
+            position-z={ovenThickness / 2}
+          >
             <boxGeometry
               args={[ovenWidth, ovenHeight - cpanel, ovenThickness / 2]}
             />
-            <meshStandardMaterial color='white' />
+            <meshStandardMaterial color='white' metalness={0.4} roughness={1} />
             <Edges threshold={5} color={lineColor} />
           </mesh>
-          <mesh>
+          <mesh receiveShadow>
             <extrudeGeometry
               args={[
                 createOvenFrontShape(
@@ -191,7 +203,7 @@ export default function Oven({
                 }
               ]}
             />
-            <meshStandardMaterial color='white' />
+            <meshStandardMaterial color='white' metalness={0.4} roughness={1} />
             <Edges threshold={5} color={lineColor} />
           </mesh>
           {renderOvenHandle(ovenHeight - 0.05)}
@@ -201,23 +213,24 @@ export default function Oven({
       {/* cpanel */}
       <group position={[0, ovenHeight / 2 - cpanel / 2, 0]}>
         {/* panel */}
-        <mesh>
+        <mesh receiveShadow>
           <boxGeometry args={[ovenWidth, cpanel, ovenThickness]} />
-          <meshStandardMaterial color='white' />
+          <meshStandardMaterial color='white' metalness={0.4} roughness={1} />
           <Edges threshold={5} color={lineColor} />
         </mesh>
         {/* Digital display */}
-        <mesh>
+        <mesh receiveShadow>
           <boxGeometry
             args={[ovenWidth / 5, cpanel / 3, ovenThickness * 1.1]}
           />
-          <meshStandardMaterial color='white' />
+          <meshStandardMaterial color='darkgray' />
           <Edges threshold={5} color={lineColor} />
         </mesh>
         {/* Knobs */}
         {knobs.map((knob, idx) => {
           return (
             <mesh
+              receiveShadow
               key={idx}
               position={[knob.x, 0, 0.015]}
               rotation-x={Math.PI * 0.5}
