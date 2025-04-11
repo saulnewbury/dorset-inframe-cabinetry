@@ -266,7 +266,7 @@ export default function ChooseStyles() {
     })
 
     // console.log(newArray)
-    selectFloorColors(newArray)
+    selectFloorColors(newArray, patternId)
     setPatterns(newArray)
   }
 
@@ -290,6 +290,8 @@ export default function ChooseStyles() {
     handleWorktopColor('#666666')
     handleWallColor('#BFBFBF')
     setPatterns(list)
+    selectFloor(0)
+    selectFloorColors(list, patternId)
   }
 
   return (
@@ -388,19 +390,19 @@ export default function ChooseStyles() {
           <div
             ref={activePickerRef}
             className={`${
-              patterns[patternId].parity ? '-top-[180px]' : '-top-[16px]'
+              patterns[patternId]?.parity ? '-top-[180px]' : '-top-[16px]'
             }
             bg-[#dedede] z-[500] absolute left-[150px] shadow-xl h-[max-content] w-[282px] px-[15px] py-[15px] rounded-lg`}
           >
             <p className='text-gray-600 text-[.8rem] mb-5'>
-              {patterns[patternId].parity ? 'Odd tiles' : 'Choose colour'}
+              {patterns[patternId]?.parity ? 'Odd tiles' : 'Choose colour'}
             </p>
             <ColorPicker
               onClick={(hex) => {
                 handleFloorColors(hex, 'odd')
               }}
             />
-            {patterns[patternId].parity && (
+            {patterns[patternId]?.parity && (
               <>
                 <br />
                 <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
@@ -542,13 +544,13 @@ export default function ChooseStyles() {
     })
   }
 
-  function selectFloorColors(newArray) {
+  function selectFloorColors(newArray, id) {
     dispatch({
       id: 'setScheme',
       worktop: worktopColor,
       wall: wallColor,
       color: cabinetsColor,
-      floor: { patterns: newArray, id: patternId }
+      floor: { patterns: newArray, id }
     })
   }
 }
