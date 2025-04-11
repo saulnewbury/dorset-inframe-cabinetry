@@ -103,7 +103,7 @@ export default function Oven({
             ovenThickness / 2 + handleOffset
           ]}
         >
-          <meshStandardMaterial color='white' />
+          <meshStandardMaterial color='#999999' />
 
           <boxGeometry args={[handleWidth, handleHeight, handleDepth]} />
           <Edges threshold={5} color={lineColor} />
@@ -215,7 +215,7 @@ export default function Oven({
         {/* panel */}
         <mesh receiveShadow>
           <boxGeometry args={[ovenWidth, cpanel, ovenThickness]} />
-          <meshStandardMaterial color='white' metalness={0.4} roughness={1} />
+          <meshStandardMaterial color='white' metalness={0.4} roughness={0.1} />
           <Edges threshold={5} color={lineColor} />
         </mesh>
         {/* Digital display */}
@@ -223,7 +223,7 @@ export default function Oven({
           <boxGeometry
             args={[ovenWidth / 5, cpanel / 3, ovenThickness * 1.1]}
           />
-          <meshStandardMaterial color='darkgray' />
+          <meshStandardMaterial color='#959595' />
           <Edges threshold={5} color={lineColor} />
         </mesh>
         {/* Knobs */}
@@ -236,7 +236,7 @@ export default function Oven({
               rotation-x={Math.PI * 0.5}
             >
               <cylinderGeometry args={[0.02, 0.02, 0.01]} />
-              <meshStandardMaterial color='white' />
+              <meshStandardMaterial color='white' metalness={0.6} />
               <Edges threshold={5} color={lineColor} />
             </mesh>
           )
