@@ -42,9 +42,9 @@ export default function Worktop({
           {/* Back */}
           <mesh
             receiveShadow
-            position={[0, height + 0.015, -d / 2 + backShim / 2]}
+            position={[0, height + 0.02, -d / 2 + backShim / 2]}
           >
-            <boxGeometry args={[w, 0.03, backShim]} />
+            <boxGeometry args={[w, 0.04, backShim]} />
             <meshStandardMaterial color={color} />
           </mesh>
           {/* Front */}
@@ -53,27 +53,27 @@ export default function Worktop({
               receiveShadow
               position={[
                 0,
-                height + 0.015,
+                height + 0.02,
                 d / 2 - frontShim / 2 + overhang / 2
               ]}
             >
-              <boxGeometry args={[w, 0.03, frontShim + overhang]} />
+              <boxGeometry args={[w, 0.04, frontShim + overhang]} />
               <meshStandardMaterial color={color} />
             </mesh>
           )}
           {/* Sides */}
           <mesh
             receiveShadow
-            position={[w / 2 - sideShim / 2, height + 0.015, overhang / 2]}
+            position={[w / 2 - sideShim / 2, height + 0.02, overhang / 2]}
           >
-            <boxGeometry args={[sideShim, 0.03, d + overhang]} />
+            <boxGeometry args={[sideShim, 0.04, d + overhang]} />
             <meshStandardMaterial color={color} />
           </mesh>
           <mesh
             receiveShadow
-            position={[-w / 2 + sideShim / 2, height + 0.015, overhang / 2]}
+            position={[-w / 2 + sideShim / 2, height + 0.02, overhang / 2]}
           >
-            <boxGeometry args={[sideShim, 0.03, d + overhang]} />
+            <boxGeometry args={[sideShim, 0.04, d + overhang]} />
             <meshStandardMaterial color={color} />
           </mesh>
         </>
@@ -83,18 +83,18 @@ export default function Worktop({
             receiveShadow
             position={[
               corner.orientation === 'left' ? corner.offset : -corner.offset,
-              height + 0.015,
+              height + 0.02,
               overhang / 2
             ]}
           >
-            <boxGeometry args={[w, 0.03, d + overhang]} />
+            <boxGeometry args={[w, 0.04, d + overhang]} />
             <meshStandardMaterial color={color} />
           </mesh>
         </>
       ) : (
         <>
-          <mesh receiveShadow position={[0, height + 0.015, overhang / 2]}>
-            <boxGeometry args={[w, 0.03, d + overhang]} />
+          <mesh receiveShadow position={[0, height + 0.02, overhang / 2]}>
+            <boxGeometry args={[w, 0.04, d + overhang]} />
             <meshStandardMaterial color={color} />
           </mesh>
         </>

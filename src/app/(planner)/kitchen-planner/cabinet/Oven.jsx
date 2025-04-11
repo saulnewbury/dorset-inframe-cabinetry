@@ -186,7 +186,13 @@ export default function Oven({
             <boxGeometry
               args={[ovenWidth, ovenHeight - cpanel, ovenThickness / 2]}
             />
-            <meshStandardMaterial color='white' metalness={0.4} roughness={1} />
+            <meshStandardMaterial
+              color='black'
+              metalness={1}
+              roughness={1}
+              opacity={0.5}
+              transparent={true}
+            />
             <Edges threshold={5} color={lineColor} />
           </mesh>
           <mesh receiveShadow>
