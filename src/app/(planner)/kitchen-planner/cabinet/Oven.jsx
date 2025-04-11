@@ -178,6 +178,7 @@ export default function Oven({
       {/* Updated 'single' type with box and extruded geometries */}
       {type === 'single' && (
         <group position-y={-cpanel / 2} position-z={-ovenThickness / 2}>
+          {/* Glass front */}
           <mesh
             receiveShadow
             position-y={-cpanel / 2}
@@ -187,13 +188,13 @@ export default function Oven({
               args={[ovenWidth, ovenHeight - cpanel, ovenThickness / 2]}
             />
             <meshStandardMaterial
-              color='black'
+              color='#777777'
               metalness={1}
               roughness={1}
-              opacity={0.5}
+              opacity={0.8}
               transparent={true}
             />
-            <Edges threshold={5} color={lineColor} />
+            <Edges threshold={5} color={'#999999'} />
           </mesh>
           <mesh receiveShadow>
             <extrudeGeometry
@@ -209,8 +210,12 @@ export default function Oven({
                 }
               ]}
             />
-            <meshStandardMaterial color='white' metalness={0.4} roughness={1} />
-            <Edges threshold={5} color={lineColor} />
+            <meshStandardMaterial
+              color='#777777'
+              metalness={0.6}
+              roughness={1}
+            />
+            <Edges threshold={5} color={'#999999'} />
           </mesh>
           {renderOvenHandle(ovenHeight - 0.05)}
         </group>
@@ -221,8 +226,8 @@ export default function Oven({
         {/* panel */}
         <mesh receiveShadow>
           <boxGeometry args={[ovenWidth, cpanel, ovenThickness]} />
-          <meshStandardMaterial color='white' metalness={0.4} roughness={0.1} />
-          <Edges threshold={5} color={lineColor} />
+          <meshStandardMaterial color='#777777' metalness={0.6} roughness={1} />
+          <Edges threshold={5} color={'#999999'} />
         </mesh>
         {/* Digital display */}
         <mesh receiveShadow>
@@ -230,7 +235,7 @@ export default function Oven({
             args={[ovenWidth / 5, cpanel / 3, ovenThickness * 1.1]}
           />
           <meshStandardMaterial color='#959595' />
-          <Edges threshold={5} color={lineColor} />
+          <Edges threshold={5} color={'#bbbbbb'} />
         </mesh>
         {/* Knobs */}
         {knobs.map((knob, idx) => {
@@ -242,7 +247,7 @@ export default function Oven({
               rotation-x={Math.PI * 0.5}
             >
               <cylinderGeometry args={[0.02, 0.02, 0.01]} />
-              <meshStandardMaterial color='white' metalness={0.6} />
+              <meshStandardMaterial color='#999999' metalness={0.6} />
               <Edges threshold={5} color={lineColor} />
             </mesh>
           )
