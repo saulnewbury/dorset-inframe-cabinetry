@@ -53,7 +53,7 @@ export default function ChooseStyles() {
     patternTiles.forEach((p, idx) => {
       gsap.set(p, { zIndex: idx === patternId ? 50 : 10 })
     })
-  }, [])
+  })
 
   // Set initial positions and mark component as ready once all refs are loaded
   useEffect(() => {
@@ -286,12 +286,27 @@ export default function ChooseStyles() {
   }
 
   function resetColors() {
-    handleCabinetsColor('#F0F0F0')
-    handleWorktopColor('#666666')
-    handleWallColor('#BFBFBF')
+    // Define the reset values
+    const resetCabinetsColor = '#F0F0F0'
+    const resetWorktopColor = '#666666'
+    const resetWallColor = '#BFBFBF'
+    const resetPatternId = 0
+
+    // Update local state
+    setCabinetsColor(resetCabinetsColor)
+    setWorktopColor(resetWorktopColor)
+    setWallColor(resetWallColor)
     setPatterns(list)
-    selectFloor(0)
-    selectFloorColors(list, patternId)
+    setPatternId(resetPatternId)
+
+    // Make a single dispatch with all reset values
+    dispatch({
+      id: 'setScheme',
+      worktop: resetWorktopColor,
+      wall: resetWallColor,
+      color: resetCabinetsColor,
+      floor: { patterns: list, id: resetPatternId }
+    })
   }
 
   return (
