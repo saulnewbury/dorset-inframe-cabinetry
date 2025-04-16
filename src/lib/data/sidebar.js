@@ -76,7 +76,7 @@ export const makeItYours = [
           'For oven',
           'For dishwasher',
           'For bin',
-          'Shallow',
+          'For island',
           'Counter only'
         ]
       },

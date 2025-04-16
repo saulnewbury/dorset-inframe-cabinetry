@@ -26,23 +26,20 @@ const products = [
       {
         name: 'Base cabinets',
         subCategories: [
-          'For sink',
           'For corner',
-          'For hob',
-          'For hob and oven',
-          'For washing machine'
+          'With door',
+          'With drawers',
+          'With sink',
+          'For oven',
+          'For dishwasher',
+          'For bin',
+          'For island (shallow)',
+          'Counter only'
         ]
       },
       {
         name: 'Wall cabinets',
-        subCategories: [
-          'With door',
-          'For corner',
-          'For sink',
-          'For hob',
-          'For hob and oven',
-          'For washing machine'
-        ]
+        subCategories: ['All wall cabinets']
       }
     ],
     items: [
