@@ -346,7 +346,7 @@ export const baseUnitStyles = {
       prices: [80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80]
     }
   ],
-  Shallow: [
+  'For island': [
     {
       id: 'base:shallow',
       props: {
