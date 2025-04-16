@@ -20,7 +20,7 @@ export const defineYourSpaceMenu = [
     name: 'shape',
     options: [
       {
-        fullWidth: true,
+        dialogWidth: '100%',
         name: 'Choose floor plan',
         heading: 'Select a general floor plan',
         component: ChooseFloorPlan

@@ -153,7 +153,7 @@ export default function Layout({ children }) {
               setShowSubmitModel(!!model.id)
             }}
           />
-          <IntroMessage show={!verifyId} />
+          {/* <IntroMessage show={!verifyId} /> */}
           <KitchenPlanner ref={kitchenPlanner} />
           {children}
         </CanvasContext.Provider>

@@ -315,13 +315,20 @@ export default function ChooseStyles() {
       <div className='mb-6 relative'>
         <p className='text-gray-400 text-[.8rem] mb-3'>Cabinets</p>
         <div
-          className='rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'
+          className='relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100'
           style={{ backgroundColor: cabinetsColor }}
           onClick={() => {
             if (open) return
             setPicker('cabinets')
           }}
-        ></div>
+        >
+          <div
+            style={{ color: cabinetsColor }}
+            className='absolute bottom-1 mix-blend-exclusion pl-2 text-sm'
+          >
+            {cabinetsColor}
+          </div>
+        </div>
         {picker === 'cabinets' && (
           <div
             ref={activePickerRef}
@@ -341,13 +348,20 @@ export default function ChooseStyles() {
       <div className='mb-6 relative'>
         <p className='text-gray-400 text-[.8rem] mb-3'>Worktop</p>
         <div
-          className='rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'
+          className='relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100'
           style={{ backgroundColor: worktopColor }}
           onClick={() => {
             if (open) return
             setPicker('worktop')
           }}
-        ></div>
+        >
+          <div
+            style={{ color: worktopColor }}
+            className='absolute bottom-1 mix-blend-exclusion pl-2 text-sm'
+          >
+            {worktopColor}
+          </div>
+        </div>
         {picker === 'worktop' && (
           <div
             ref={activePickerRef}
@@ -367,13 +381,20 @@ export default function ChooseStyles() {
       <div className='mb-6 relative'>
         <p className='text-gray-400 text-[.8rem] mb-3'>Walls</p>
         <div
-          className='rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer'
+          className='relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100'
           style={{ backgroundColor: wallColor }}
           onClick={() => {
             if (open) return
             setPicker('wall')
           }}
-        ></div>
+        >
+          <div
+            style={{ color: wallColor }}
+            className='absolute bottom-1 mix-blend-exclusion pl-2 text-sm'
+          >
+            {wallColor}
+          </div>
+        </div>
         {picker === 'wall' && (
           <div
             ref={activePickerRef}
@@ -473,6 +494,14 @@ export default function ChooseStyles() {
                       color={pattern.color[1] ? pattern.color[1] : ''}
                     />
                   </div>
+                  {/* <div
+                    style={{ color: pattern.color[0] }}
+                    className='absolute bottom-1 mix-blend-exclusion pl-2 text-sm'
+                  >
+                    {pattern.length === 2
+                      ? pattern.color[0] + ' ' + pattern.color[0]
+                      : pattern.color[0]}
+                  </div> */}
                 </div>
               )
             })}

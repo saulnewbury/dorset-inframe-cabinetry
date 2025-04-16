@@ -26,6 +26,8 @@ export default function Page() {
     }
   }, [ref])
 
+  console.log(content)
+
   return (
     <>
       <Sidebar
@@ -48,7 +50,7 @@ export default function Page() {
       {/* <ContentBox /> */}
       {showContent && (
         <Dialog
-          fullWidth={content.fullWidth}
+          width={content.dialogWidth}
           content={content}
           variant={variant}
           Body={content.component}

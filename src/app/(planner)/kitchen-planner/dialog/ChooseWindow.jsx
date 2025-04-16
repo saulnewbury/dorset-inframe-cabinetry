@@ -21,16 +21,16 @@ export default function ChooseWindow({ onClose = () => {} }) {
   return (
     <div className='[&>p]:my-3 text-[14px] flex gap-32'>
       {/* Width */}
-      <div className='flex py-8 mb-6'>
-        <div className='mr-8 gap-5'>
-          <p className='text-gray-400 mb-[5.3rem]'>Select wall:</p>
+      <div className='py-8'>
+        <div className='bg-[#EEEFF1] p-12 h-[25rem] w-[20rem]'>
+          <p className='text-gray-400 mb-12'>Select wall:</p>
           {/* Wall on which to insert the window */}
           <p>
             <SelectWall value={wall} onChange={setWall} />
           </p>
         </div>
       </div>
-      <DialogInnerContainer classes='pb-12'>
+      <DialogInnerContainer classes='pt-12'>
         {/* Window style */}
         <p className='text-gray-400'>Choose style:</p>
         <CabinetGrid classes='grid-cols-3'>

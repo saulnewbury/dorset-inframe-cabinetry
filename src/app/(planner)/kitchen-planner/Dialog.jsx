@@ -9,6 +9,7 @@ import SvgIcon from '@/components/SvgIcon.jsx'
 
 const Dialog = forwardRef(
   ({ closeContentBox, content, variant, Body, width }, ref) => {
+    console.log(width)
     const container = useRef()
     useGSAP(() => {
       gsap.fromTo(
