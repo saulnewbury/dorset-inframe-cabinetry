@@ -33,7 +33,7 @@ const products = [
           'For oven',
           'For dishwasher',
           'For bin',
-          'For island (shallow)',
+          'For island',
           'Counter only'
         ]
       },
