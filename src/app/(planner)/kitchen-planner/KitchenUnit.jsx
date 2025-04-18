@@ -18,6 +18,15 @@ import CabinetWall from './cabinet/CabinetWall'
 
 import DimensionLine from './DimensionLine'
 
+// Used when a unit is not found in the respective styles list.
+const nullStyle = {
+  id: 'null',
+  title: 'Unknown',
+  prices: [],
+  sizes: [],
+  props: {} // default props
+}
+
 // Drag handle for openings:
 import dragHandle from '@/assets/icons/general-handle.svg'
 
@@ -245,14 +254,6 @@ export default function KitchenUnit({
   }
 }
 
-const nullStyle = {
-  id: 'null',
-  title: 'Unknown',
-  prices: [],
-  sizes: [],
-  props: {} // default props
-}
-
 /**
  * Component to display details of the current unit.
  */
@@ -300,6 +301,9 @@ const InfoPanel = forwardRef((props, ref) => {
 
 InfoPanel.displayName = 'InfoPanel'
 
+/**
+ * Child component to render a base unit.
+ */
 function BaseUnit({ width, variant, style }) {
   const option =
     baseUnitStyles[variant]?.find((s) => s.id === style) ?? nullStyle
@@ -328,6 +332,9 @@ function BaseUnit({ width, variant, style }) {
   }
 }
 
+/**
+ * Child component to render a tall unit.
+ */
 function TallUnit({ width, variant, style }) {
   const option =
     tallUnitStyles[variant].find((s) => s.id === style) ?? nullStyle
