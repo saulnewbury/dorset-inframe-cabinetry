@@ -229,9 +229,19 @@ export default function Layout({ children }) {
 // discover whether a page needs a layout in the middle
 // layout can call a component that produces the menu bar.
 
+const nullStyle = {
+  id: 'null',
+  title: 'Unknown',
+  prices: [],
+  sizes: [],
+  filterText: 'Unknown'
+}
+
 function baseInfo(unit) {
-  const inf = baseUnitStyles[unit.variant].find((s) => s.id === unit.style)
+  const inf =
+    baseUnitStyles[unit.variant]?.find((s) => s.id === unit.style) ?? nullStyle
   const base = unit.style.replace(':', '-')
+  const size = inf.sizes.indexOf(+unit.width)
   return {
     image:
       unit.style === 'base:counter-only'
@@ -242,14 +252,16 @@ function baseInfo(unit) {
       desc: inf.title,
       width: unit.width,
       height: unit.height,
-      price: inf.prices[inf.sizes.indexOf(+unit.width)]
+      price: size < 0 ? NaN : inf.prices[size]
     }
   }
 }
 
 function wallInfo(unit) {
-  const inf = wallUnitStyles.find((s) => s.sizes.includes(+unit.width))
+  const inf =
+    wallUnitStyles.find((s) => s.sizes.includes(+unit.width)) ?? nullStyle
   const base = inf.id.replace(':', '-')
+  const size = inf.sizes.indexOf(+unit.width)
   return {
     image: `/units/${base}/${base}-${unit.width}-front.webp`,
     info: {
@@ -257,14 +269,16 @@ function wallInfo(unit) {
       desc: inf.title,
       width: unit.width,
       height: 595,
-      price: inf.prices[inf.sizes.indexOf(+unit.width)]
+      price: size < 0 ? NaN : inf.prices[size]
     }
   }
 }
 
 function tallInfo(unit) {
-  const inf = tallUnitStyles[unit.variant].find((s) => s.id === unit.style)
+  const inf =
+    tallUnitStyles[unit.variant]?.find((s) => s.id === unit.style) ?? nullStyle
   const base = inf.id.replace(':', '-')
+  const size = inf.sizes.indexOf(+unit.width)
   return {
     image: `/units/${base}/${base}-${unit.width}-front.webp`,
     info: {
@@ -272,7 +286,7 @@ function tallInfo(unit) {
       desc: inf.title,
       width: unit.width,
       height: unit.height,
-      price: inf.prices[inf.sizes.indexOf(+unit.width)]
+      price: size < 0 ? NaN : inf.prices[size]
     }
   }
 }

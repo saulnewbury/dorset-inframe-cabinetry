@@ -112,13 +112,13 @@ export default function KitchenUnit({
           >
             <mesh rotation-x={Math.PI / -2} position-z={0.015}>
               <planeGeometry args={[size.x, size.z]} />
-              <meshStandardMaterial color='#4080bf' transparent opacity={0.6} />
+              <meshStandardMaterial color="#4080bf" transparent opacity={0.6} />
             </mesh>
-            <Html center className='pointer-events-none'>
+            <Html center className="pointer-events-none">
               <img
                 src={dragHandle.src}
-                alt=''
-                className='size-6 max-w-none'
+                alt=""
+                className="size-6 max-w-none"
                 style={{ translate: '-1px 1px' }}
               />
             </Html>
@@ -245,6 +245,14 @@ export default function KitchenUnit({
   }
 }
 
+const nullStyle = {
+  id: 'null',
+  title: 'Unknown',
+  prices: [],
+  sizes: [],
+  props: {} // default props
+}
+
 /**
  * Component to display details of the current unit.
  */
@@ -253,9 +261,11 @@ const InfoPanel = forwardRef((props, ref) => {
 
   const style =
     props.type === 'base'
-      ? baseUnitStyles[props.variant].find((s) => s.id === props.style)
+      ? baseUnitStyles[props.variant]?.find((s) => s.id === props.style) ??
+        nullStyle
       : props.type === 'tall'
-      ? tallUnitStyles[props.variant].find((s) => s.id === props.style)
+      ? tallUnitStyles[props.variant]?.find((s) => s.id === props.style) ??
+        nullStyle
       : { id: 'wall' }
   const type = props.type[0].toUpperCase() + props.type.slice(1)
   const base = style.id.replace(':', '-')
@@ -264,7 +274,7 @@ const InfoPanel = forwardRef((props, ref) => {
   return (
     <ItemInfo ref={ref}>
       <div className={clsx(style && 'flex gap-5 items-start')}>
-        {style && <img src={image} alt='' className='w-28' />}
+        {style && <img src={image} alt="" className="w-28" />}
         <div>
           <p>
             Item: {type} {props.variant?.toLowerCase()}
@@ -273,9 +283,9 @@ const InfoPanel = forwardRef((props, ref) => {
           <p>Width: {props.width}mm</p>
         </div>
       </div>
-      <p className='text-right'>
+      <p className="text-right">
         <button onClick={deleteItem}>
-          <img src={ic_delete.src} alt='Delete' className='size-4' />
+          <img src={ic_delete.src} alt="Delete" className="size-4" />
         </button>
       </p>
     </ItemInfo>
@@ -291,7 +301,8 @@ const InfoPanel = forwardRef((props, ref) => {
 InfoPanel.displayName = 'InfoPanel'
 
 function BaseUnit({ width, variant, style }) {
-  const option = baseUnitStyles[variant].find((s) => s.id === style)
+  const option =
+    baseUnitStyles[variant]?.find((s) => s.id === style) ?? nullStyle
   switch (variant) {
     case 'Counter only':
       return (
@@ -318,6 +329,7 @@ function BaseUnit({ width, variant, style }) {
 }
 
 function TallUnit({ width, variant, style }) {
-  const option = tallUnitStyles[variant].find((s) => s.id === style)
+  const option =
+    tallUnitStyles[variant].find((s) => s.id === style) ?? nullStyle
   return <Cabinet {...option.props} carcassInnerWidth={width / 1000 - 0.036} />
 }

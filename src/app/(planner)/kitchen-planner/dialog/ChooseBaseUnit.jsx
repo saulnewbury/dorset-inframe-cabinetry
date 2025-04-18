@@ -17,7 +17,7 @@ export default function ChooseBaseUnit({
   const [, dispatch] = useContext(ModelContext)
   const [filter, setFilter] = useState('All')
 
-  const options = baseUnitStyles[variant]
+  const options = baseUnitStyles[variant] ?? []
   const filterText = new Set(options.map((opt) => opt.filterText))
   const filtered =
     filter === 'All'
@@ -34,11 +34,11 @@ export default function ChooseBaseUnit({
   return (
     <DialogInnerContainer>
       {/* Filter */}
-      <p className='flex gap-4'>
+      <p className="flex gap-4">
         {['All', ...filterText].map((f) => (
           <button
             key={f}
-            type='button'
+            type="button"
             className={clsx(f === filter && 'border-black border-b-2')}
             onClick={() => setFilter(f)}
           >
