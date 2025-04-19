@@ -64,7 +64,7 @@ export default function Experience({ is3D }) {
   // Hide default cursor when hovering or dragging.
   useLayoutEffect(() => {
     document.body.style.cursor =
-      dragging ?? (hover && hover.type !== 'unit') ? 'none' : 'auto'
+      (dragging ?? hover) && hover?.type !== 'unit' ? 'none' : 'auto'
   }, [dragging, hover])
 
   useEffect(() => {

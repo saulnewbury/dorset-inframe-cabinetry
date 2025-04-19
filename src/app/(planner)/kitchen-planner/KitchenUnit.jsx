@@ -1,9 +1,8 @@
 import { forwardRef, useContext, useMemo, useRef, useState } from 'react'
-import { DragControls, Html } from '@react-three/drei'
-import { Matrix4, Vector3 } from 'three'
+import { DragControls } from '@react-three/drei'
+import { Matrix4, Vector3, Vector2, Shape } from 'three'
 import clsx from 'clsx'
 
-import { AppContext } from '@/appState'
 import { ModelContext } from '@/model/context'
 import { useAppState } from '@/appState'
 
@@ -27,8 +26,35 @@ const nullStyle = {
   props: {} // default props
 }
 
-// Drag handle for openings:
-import dragHandle from '@/assets/icons/general-handle.svg'
+const crossMove = new Shape(
+  [
+    [-0.01, 0.01],
+    [-0.01, 0.06],
+    [-0.03, 0.06],
+    [0.0, 0.08],
+    [0.03, 0.06],
+    [0.01, 0.06],
+    [0.01, 0.01],
+    [0.06, 0.01],
+    [0.06, 0.03],
+    [0.08, 0.0],
+    [0.06, -0.03],
+    [0.06, -0.01],
+    [0.01, -0.01],
+    [0.01, -0.06],
+    [0.03, -0.06],
+    [0.0, -0.08],
+    [-0.03, -0.06],
+    [-0.01, -0.06],
+    [-0.01, -0.01],
+    [-0.06, -0.01],
+    [-0.06, -0.03],
+    [-0.08, 0.0],
+    [-0.06, 0.03],
+    [-0.06, 0.01],
+    [-0.01, 0.01]
+  ].map((p) => new Vector2(p[0], p[1]))
+)
 
 import ic_delete from '@/assets/icons/trash.svg'
 
@@ -59,16 +85,16 @@ export default function KitchenUnit({
   const info = useRef()
 
   const size = new Vector3(
-    width / 1000,
-    height / 1000 + 0.02,
+    width / 1000 + 0.14,
+    height / 1000 + 0.2,
     depth / 1000 + 0.03
   )
   if (type === 'base' && style.includes('corner')) size.x += 0.295
 
   const showHandle = !is3D && hover?.type === 'unit' && hover.id === id
 
-  const [handle, matrix] = useMemo(() => {
-    return [{ ...pos }, new Matrix4()]
+  const [handle, matrix, mrotate, ry] = useMemo(() => {
+    return [{ ...pos }, new Matrix4(), new Matrix4(), rotation]
   }, [dragging])
 
   return (
@@ -82,7 +108,9 @@ export default function KitchenUnit({
               material={hoverMaterial}
               onPointerOver={(ev) => onHover(ev, true)}
               onPointerOut={(ev) => onHover(ev, false)}
-              onClick={showInfo}
+              onClick={() => {
+                if (!dragging) showInfo()
+              }}
               userData={{ id, type: 'unit' }}
             >
               <planeGeometry args={[size.x, size.z]} />
@@ -108,31 +136,50 @@ export default function KitchenUnit({
         )}
       </group>
       {(showHandle || dragging) && (
-        <DragControls
-          matrix={matrix}
-          autoTransform={false}
-          onDragStart={startDrag}
-          onDrag={moveUnit}
-          onDragEnd={endDrag}
-        >
-          <group
-            position={[handle.x, size.y + 0.1, handle.z]}
-            rotation-y={rotation}
+        <>
+          <DragControls
+            matrix={matrix}
+            autoTransform={false}
+            onDragStart={startDrag}
+            onDrag={moveUnit}
+            onDragEnd={endDrag}
           >
-            <mesh rotation-x={Math.PI / -2} position-z={0.015}>
-              <planeGeometry args={[size.x, size.z]} />
-              <meshStandardMaterial color="#4080bf" transparent opacity={0.6} />
-            </mesh>
-            <Html center className="pointer-events-none">
-              <img
-                src={dragHandle.src}
-                alt=""
-                className="size-6 max-w-none"
-                style={{ translate: '-1px 1px' }}
-              />
-            </Html>
-          </group>
-        </DragControls>
+            <group
+              position={[handle.x, size.y + 0.1, handle.z]}
+              rotation-y={rotation}
+            >
+              <mesh rotation-x={Math.PI / -2}>
+                <circleGeometry args={[0.1]} />
+                <meshStandardMaterial
+                  color="#4080bf"
+                  transparent
+                  opacity={0.6}
+                />
+              </mesh>
+              <mesh rotation-x={Math.PI / -2} position-y={0.001}>
+                <shapeGeometry args={[crossMove]} />
+                <meshStandardMaterial color="#ffffff" />
+              </mesh>
+            </group>
+          </DragControls>
+          <DragControls
+            matrix={mrotate}
+            autoTransform={false}
+            onDragStart={startDrag}
+            onDrag={rotateUnit}
+            onDragEnd={endDrag}
+          >
+            <group
+              position={[handle.x, size.y + 0.1, handle.z]}
+              rotation-y={ry}
+            >
+              <mesh rotation-x={Math.PI / -2} position-x={0.2}>
+                <circleGeometry args={[0.03]} />
+                <meshStandardMaterial color="#004088" />
+              </mesh>
+            </group>
+          </DragControls>
+        </>
       )}
     </>
   )
@@ -160,7 +207,7 @@ export default function KitchenUnit({
   function moveUnit(lm) {
     const wrap = (a, n, s) => (s ? a[n] : a[(n + a.length) % a.length])
     let { x, z } = new Vector3().setFromMatrixPosition(lm).add(handle)
-    let rotation = 0
+    let rotation = ry
 
     // Find all walls where distance from centre of unit is within snap radius.
     const snapable = model.walls.flat().reduce((list, pt, n) => {
@@ -243,6 +290,31 @@ export default function KitchenUnit({
     dispatch({ id: 'moveUnit', unit: id, pos: new Vector3(x, 0, z), rotation })
 
     matrix.makeTranslation(x - handle.x, 0, z - handle.z)
+    mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
+  }
+
+  /**
+   * Handles the rotation of the unit when dragging the handle.
+   */
+  function rotateUnit(lm) {
+    // Get the current position of the handle, relative to the centre of the
+    // unit.
+    const t = new Matrix4().makeRotationY(ry)
+    const v = new Vector3(0.2, 0, 0).applyMatrix4(t)
+    const { x, z } = new Vector3().setFromMatrixPosition(lm).add(v)
+
+    // Calculate the new position of the handle, relative to the centre of
+    // the unit. This is done by rotating the handle around the centre of
+    // the unit.
+    const theta = Math.atan2(z, x)
+    const px = 0.2 * Math.cos(theta)
+    const pz = 0.2 * Math.sin(theta)
+
+    // Update the rotation of the unit to match the new angle.
+    dispatch({ id: 'moveUnit', unit: id, pos, rotation: -theta })
+
+    // Now update the position of the handle.
+    mrotate.makeTranslation(px - v.x, 0, pz - v.z)
   }
 
   /**

@@ -32,7 +32,7 @@ export default function Floor({ points, handlePan }) {
   const colorB = pattern.color[1] || '#000000'
   const type = pattern.svgProps.shape
 
-  console.log('Floor rendering pattern:', type, 'Colors:', colorA, colorB)
+  // console.log('Floor rendering pattern:', type, 'Colors:', colorA, colorB)
 
   return (
     <>
@@ -89,7 +89,7 @@ export default function Floor({ points, handlePan }) {
           onPointerOut={() => handlePan(false)}
         >
           <shapeGeometry args={[shape]} />
-          <meshStandardMaterial side={DoubleSide} color='white' />
+          <meshStandardMaterial side={DoubleSide} color="white" />
         </mesh>
       )}
     </>

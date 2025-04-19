@@ -24,7 +24,6 @@ export default function LoginDialog({
 
   const canSubmit = email && password && (isExisting || name)
   const disabled = !!message
-  console.log('isReset', isReset)
 
   return (
     show && (

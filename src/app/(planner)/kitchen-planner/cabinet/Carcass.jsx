@@ -1,7 +1,7 @@
 import React from 'react'
 import { Edges } from '@react-three/drei'
 
-import lineColor from './colors'
+import { lineColor } from './colors'
 
 import { useAppState } from '@/appState'
 
@@ -133,8 +133,8 @@ export default function Carcass({
           <boxGeometry
             args={[cornerFullWidth + 0.036, 0.036, carcassDepth + 0.018]}
           />
-          <meshStandardMaterial color='#cccccc' />
-          <Edges threshold={15} color='lightgray' />
+          <meshStandardMaterial color="#cccccc" />
+          <Edges threshold={15} color="lightgray" />
         </mesh>
       )}
     </>
