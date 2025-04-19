@@ -108,9 +108,7 @@ export default function KitchenUnit({
               material={hoverMaterial}
               onPointerOver={(ev) => onHover(ev, true)}
               onPointerOut={(ev) => onHover(ev, false)}
-              onClick={() => {
-                if (!dragging) showInfo()
-              }}
+              onClick={showInfo}
               userData={{ id, type: 'unit' }}
             >
               <planeGeometry args={[size.x, size.z]} />
@@ -188,8 +186,8 @@ export default function KitchenUnit({
    * Callback for 'click' event on 2D opening. Shows information about the
    * item, with option to delete.
    */
-  function showInfo(ev) {
-    if (ev.delta < 2) info.current.show()
+  function showInfo() {
+    if (!dragging) info.current.show()
   }
 
   /**
@@ -306,9 +304,13 @@ export default function KitchenUnit({
     // Calculate the new position of the handle, relative to the centre of
     // the unit. This is done by rotating the handle around the centre of
     // the unit.
-    const theta = Math.atan2(z, x)
+    let theta = Math.atan2(z, x)
     const px = 0.2 * Math.cos(theta)
     const pz = 0.2 * Math.sin(theta)
+
+    // Snap rotation to 90 degree increments.
+    const snap = Math.round(theta / (Math.PI / 2)) * (Math.PI / 2)
+    if (Math.abs(snap - theta) < 0.1) theta = snap
 
     // Update the rotation of the unit to match the new angle.
     dispatch({ id: 'moveUnit', unit: id, pos, rotation: -theta })
