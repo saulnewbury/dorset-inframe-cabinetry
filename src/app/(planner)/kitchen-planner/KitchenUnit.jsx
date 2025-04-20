@@ -84,11 +84,7 @@ export default function KitchenUnit({
   const [dragging, setDragging] = useState(false)
   const info = useRef()
 
-  const size = new Vector3(
-    width / 1000 + 0.14,
-    height / 1000 + 0.2,
-    depth / 1000 + 0.03
-  )
+  const size = new Vector3(width / 1000, height / 1000 + 0.2, depth / 1000)
   if (type === 'base' && style.includes('corner')) size.x += 0.295
 
   const showHandle = !is3D && hover?.type === 'unit' && hover.id === id
@@ -203,24 +199,41 @@ export default function KitchenUnit({
    * the nearest wall (if close enough).
    */
   function moveUnit(lm) {
+    const snap = wt * wt
     const wrap = (a, n, s) => (s ? a[n] : a[(n + a.length) % a.length])
-    let { x, z } = new Vector3().setFromMatrixPosition(lm).add(handle)
+    const normalise = (r) => (r < Math.PI ? r : r - Math.PI * 2)
+    let newPos = new Vector3().setFromMatrixPosition(lm).add(handle)
     let rotation = ry
 
-    // Find all walls where distance from centre of unit is within snap radius.
+    // Get the four corners of the unit.
+    const corners = [
+      new Vector3(-size.x / 2, 0, -size.z / 2),
+      new Vector3(size.x / 2, 0, -size.z / 2),
+      new Vector3(size.x / 2, 0, size.z / 2),
+      new Vector3(-size.x / 2, 0, size.z / 2)
+    ].map((p) => p.applyAxisAngle(new Vector3(0, 1, 0), rotation).add(newPos))
+
+    // Find all walls where any corner is within snap radius.
     const snapable = model.walls.flat().reduce((list, pt, n) => {
       const s = pt.segment
       const end = wrap(model.walls[s], n + 1, s)
       if (!end) return list
       const len2 = (end.x - pt.x) ** 2 + (end.z - pt.z) ** 2
       if (len2 === 0) return list // wall zero length
-      const dot =
-        ((x - pt.x) * (end.x - pt.x) + (z - pt.z) * (end.z - pt.z)) / len2
-      if (dot < 0 || dot > 1) return list // projection outside wall
-      const xx = pt.x + dot * (end.x - pt.x)
-      const zz = pt.z + dot * (end.z - pt.z)
-      const d2 = (x - xx) ** 2 + (z - zz) ** 2
-      if (d2 < 0.3) list.push({ n, s, d2, xx, zz })
+      for (const corner of corners) {
+        const { x: cx, z: cz } = corner
+        // Get distance of corner to wall segment.
+        const dot =
+          ((cx - pt.x) * (end.x - pt.x) + (cz - pt.z) * (end.z - pt.z)) / len2
+        if (dot < 0 || dot > 1) return list // projection outside wall
+        const xx = pt.x + dot * (end.x - pt.x)
+        const zz = pt.z + dot * (end.z - pt.z)
+        const d2 = (cx - xx) ** 2 + (cz - zz) ** 2
+        if (d2 < snap) {
+          list.push({ n, s, d2, xx, zz })
+          break // only need one corner to snap
+        }
+      }
       return list
     }, [])
 
@@ -234,59 +247,77 @@ export default function KitchenUnit({
       const end = wrap(model.walls[s], n + 1, s)
       const theta = Math.atan2(end.x - start.x, end.z - start.z)
       rotation = theta - Math.PI / 2
-      x = xx - ((size.z + wt - 0.025) / 2) * Math.cos(theta)
-      z = zz + ((size.z + wt - 0.025) / 2) * Math.sin(theta)
+      newPos = new Vector3(
+        xx - ((size.z + wt) / 2) * Math.cos(theta),
+        0,
+        zz + ((size.z + wt) / 2) * Math.sin(theta)
+      )
     }
 
     // Now work out whether any other unit is close enough to snap. We do this
-    // by finding the distances between 'attachment points' on on the object
-    // being moved and the centre point of candidates for snapping.
-    const dx = (size.x / 2) * Math.cos(rotation)
-    const dz = (size.x / 2) * Math.sin(rotation)
-    const dl = (size.z / 2) * Math.sin(rotation)
-    const dr = (size.z / 2) * Math.cos(rotation)
-    const ap = [
-      new Vector3(x - dx, 0, z - dz), // left
-      new Vector3(x + dx, 0, z + dz), // right
-      new Vector3(x - dl, 0, z - dr) // rear
-    ]
+    // by finding whether any of the corners are within snap radius of any
+    // other unit.
     for (const unit of model.units) {
       if (
         unit.id === id ||
         (unit.type === 'wall' && type === 'base') ||
         (type === 'wall' && unit.type === 'base')
       )
-        continue
-      const diag = (unit.width * unit.depth) / 4000000
-      const p = ap.findIndex((p) => p.distanceToSquared(unit.pos) < diag)
-      if (p < 0) continue
-      const ux =
-        unit.width / 1000 +
-        (unit.type === 'base' && unit.style.includes('corner'))
-          ? 0.595
-          : 0
-      const uz = unit.depth / 1000
-      switch (p) {
-        case 0: // left
-          rotation = unit.rotation
-          x = unit.pos.x + ((ux + size.x) * Math.cos(rotation)) / 2
-          z = unit.pos.z + ((ux + size.x) * Math.sin(rotation)) / 2
-          break
-        case 1: // right
-          rotation = unit.rotation
-          x = unit.pos.x - ((ux + size.x) * Math.cos(rotation)) / 2
-          z = unit.pos.z - ((ux + size.x) * Math.sin(rotation)) / 2
-          break
-        default: // back
-          rotation = unit.rotation + Math.PI
-          x = unit.pos.x - ((uz + size.z) * Math.sin(unit.rotation)) / 2
-          z = unit.pos.z - ((uz + size.z) * Math.cos(unit.rotation)) / 2
+        continue // wrong heights: can't snap
+
+      // Get corners of the unit.
+      const w = unit.width / 1000
+      const d = unit.depth / 1000
+      const unitCorners = [
+        new Vector3(-w / 2, 0, -d / 2), // [0] = back left
+        new Vector3(w / 2, 0, -d / 2), // [1] = back right
+        new Vector3(w / 2, 0, d / 2), // [2] = front right
+        new Vector3(-w / 2, 0, d / 2) // [3] = front left
+      ].map((p) =>
+        p.applyAxisAngle(new Vector3(0, 1, 0), unit.rotation).add(unit.pos)
+      )
+
+      // Can we snap to front left corner?
+      if (corners.some((c) => unitCorners[3].distanceToSquared(c) < snap)) {
+        rotation = normalise(unit.rotation)
+        const p = new Vector3(size.x / 2, 0, size.z / 2).applyAxisAngle(
+          new Vector3(0, 1, 0),
+          rotation
+        )
+        newPos = unitCorners[3].sub(p)
+        break
+      }
+
+      // Or to front right?
+      if (corners.some((c) => unitCorners[2].distanceToSquared(c) < snap)) {
+        rotation = normalise(unit.rotation)
+        const p = new Vector3(-size.x / 2, 0, size.z / 2).applyAxisAngle(
+          new Vector3(0, 1, 0),
+          rotation
+        )
+        newPos = unitCorners[2].sub(p)
+        break
+      }
+
+      // Or to back?
+      if (
+        corners.some((c) => unitCorners[0].distanceToSquared(c) < snap) ||
+        corners.some((c) => unitCorners[1].distanceToSquared(c) < snap)
+      ) {
+        rotation = normalise(unit.rotation + Math.PI)
+        const p = new Vector3(-size.x / 2, 0, size.z / 2).applyAxisAngle(
+          new Vector3(0, 1, 0),
+          rotation
+        )
+        newPos = unitCorners[0].add(p)
+        break
       }
     }
 
     // Update unit position and rotation
-    dispatch({ id: 'moveUnit', unit: id, pos: new Vector3(x, 0, z), rotation })
+    dispatch({ id: 'moveUnit', unit: id, pos: newPos, rotation })
 
+    const { x, z } = newPos
     matrix.makeTranslation(x - handle.x, 0, z - handle.z)
     mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
   }
