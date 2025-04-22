@@ -1,3 +1,13 @@
+import HeroText from '@/components/HeroText'
+import Products from '../products/Products'
+
+// TODO
+// Swap products out for cabinet categories
 export default function Page() {
-  return <h2>wasssup</h2>
+  return (
+    <>
+      <HeroText markup={'All products'} />
+      {/* <Products /> */}
+    </>
+  )
 }

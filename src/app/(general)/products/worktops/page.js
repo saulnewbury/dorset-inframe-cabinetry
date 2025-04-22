@@ -1,5 +1,5 @@
 import HeroText from '@/components/HeroText'
-import ProductsMini from '@/app/(general)/ProductsMini'
+import CtaProducts from '@/app/(general)/CtaProducts'
 import WeCanSupply from '@/app/(general)/WeCanSupply'
 import Footer from '@/components/Footer'
 
@@ -25,7 +25,7 @@ export default function page() {
         brands={brands}
         color='#e1e2e2'
       />
-      <ProductsMini not='Worktops' gridNum={5} />
+      <CtaProducts not='Worktops' gridNum={5} />
       <Footer />
     </>
   )

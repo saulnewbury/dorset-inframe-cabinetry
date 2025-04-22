@@ -2,7 +2,8 @@
 import HeroText from '@/components/HeroText'
 import HeroImage from '@/components/HeroImage'
 import MaterialsWeLove from './MaterialsWeLove'
-import ProductsMini from './ProductsMini'
+import CtaProducts from './CtaProducts'
+import OurCabinets from './OurCabinets'
 import ConfigureYourKitchen from './ConfigureYourKitchen'
 
 // Images
@@ -19,7 +20,8 @@ export default function Page() {
       <HeroText markup={markup} />
       <HeroImage src={kitchen} alt='something' />
       <MaterialsWeLove />
-      <ProductsMini />
+      <OurCabinets />
+      <CtaProducts not='Our cabinets' gridNum={5} title='We can source...' />
       <ConfigureYourKitchen />
       <Footer classes='bg-[#606D8E] text-white pb-[120px]' />
     </>
