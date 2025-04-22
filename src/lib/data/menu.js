@@ -19,6 +19,17 @@ export const menu = [
   },
   { name: 'Kitchen planner', url: '/kitchen-planner', id: 7 },
   {
+    name: 'Our cabinets',
+    url: '/our-cabinets',
+    id: 19,
+    submenu: [
+      { name: 'All cabinets', url: '/out-cabinets', id: 20 },
+      { name: 'Base cabinets', url: '/base-cabinets', id: 16 },
+      { name: 'Tall cabinets', url: '/tall-cabinets', id: 17 },
+      { name: 'Wall cabinets', url: '/wall-cabinets', id: 18 }
+    ]
+  },
+  {
     name: 'Products', // desktop: link, mobile: button
     url: '/products', // ...only desktop
     id: 8,
