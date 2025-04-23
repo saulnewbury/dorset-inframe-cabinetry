@@ -6,7 +6,7 @@ export default function Button({
   href,
   classes,
   primary,
-  disabled,
+  disabled = false,
   onClick = () => {}
 }) {
   return href ? (

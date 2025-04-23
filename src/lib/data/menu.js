@@ -19,12 +19,22 @@ export const menu = [
   },
   { name: 'Kitchen planner', url: '/kitchen-planner', id: 7 },
   {
+    name: 'Our cabinets',
+    url: '/our-cabinets',
+    id: 19,
+    submenu: [
+      { name: 'All cabinets', url: '/our-cabinets', id: 20 },
+      { name: 'Base cabinets', url: '/our-cabinets/base-cabinets', id: 16 },
+      { name: 'Tall cabinets', url: '/our-cabinets/tall-cabinets', id: 17 },
+      { name: 'Wall cabinets', url: '/our-cabinets/wall-cabinets', id: 18 }
+    ]
+  },
+  {
     name: 'Products', // desktop: link, mobile: button
     url: '/products', // ...only desktop
     id: 8,
     submenu: [
       { name: 'All products', url: '/products', id: 9 }, // only mobile - make part of submenu
-      { name: 'Cabinets', url: '/products/cabinets', id: 10 },
       { name: 'Worktops', url: '/products/worktops', id: 11 },
       { name: 'Handles and knobs', url: '/products/handles-and-knobs', id: 12 },
       { name: 'Sinks and taps', url: '/products/sinks-and-taps', id: 13 },

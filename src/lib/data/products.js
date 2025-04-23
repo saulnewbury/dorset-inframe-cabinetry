@@ -18,7 +18,7 @@ import taps from '@/lib/images/square/taps-smeg.webp'
 
 const products = [
   {
-    name: 'Cabinets',
+    name: 'Our cabinets',
     src: cabinets,
     url: '/products/cabinets',
     categories: [

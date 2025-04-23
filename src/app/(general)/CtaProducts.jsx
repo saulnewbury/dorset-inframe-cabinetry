@@ -4,11 +4,15 @@ import HeaderText from '@/components/HeaderText'
 
 import products from '@/lib/data/products.js'
 
-export default function ProductsMini({ not = false, gridNum = null }) {
+export default function CtaProducts({
+  not = false,
+  gridNum = null,
+  title = 'Products'
+}) {
   return (
     <section className='gutter py-[5rem] lg:pt-[8rem]'>
       <div className='indent'>
-        <HeaderText>Products</HeaderText>
+        <HeaderText>{title}</HeaderText>
         <div
           className={`grid gap-[1vw] pt-[60px] mb-[60px] grid-cols-1 sm:grid-cols-2 md:grid-cols-3 sm:gap-[3vw] md:gap-[2vw] lg:gap-[1vw]
             ${gridNum == 5 ? 'lg:grid-cols-5' : 'lg:grid-cols-3 '} 

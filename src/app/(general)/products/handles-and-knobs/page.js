@@ -1,5 +1,5 @@
 import HeroText from '@/components/HeroText'
-import ProductsMini from '@/app/(general)/ProductsMini'
+import CtaProducts from '@/app/(general)/CtaProducts'
 import WeCanSupply from '@/app/(general)/WeCanSupply'
 import Footer from '@/components/Footer'
 
@@ -10,7 +10,7 @@ export default function page() {
     <>
       <HeroText markup={'Handles and Knobs'} />
       <WeCanSupply {...weSupplyHandlesAndKnobs} />
-      <ProductsMini not='Handles and knobs' gridNum={5} />
+      <CtaProducts not='Handles and knobs' gridNum={5} />
       <Footer />
     </>
   )
