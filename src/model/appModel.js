@@ -123,7 +123,18 @@ export function loadState(initial, action) {
   try {
     const saved = window.localStorage.getItem('dorset-model')
     let state
-    if (saved) state = JSON.parse(saved)
+    if (saved) {
+      state = JSON.parse(saved)
+      for (const unit of state.units) {
+        unit.depth =
+          unit.type === 'wall'
+            ? 300
+            : unit.style.includes('shallow')
+            ? 282
+            : 573
+        unit.height = unit.type === 'base' ? 840 : 2130
+      }
+    }
     return state ?? loadModel(initial, action)
   } catch (err) {
     return loadModel(initial, action)
@@ -440,8 +451,8 @@ function addUnit(state, { type, width, variant, style }) {
       id,
       type,
       width,
-      depth: type === 'wall' ? 300 : style.includes('shallow') ? 282 : 575,
-      height: type === 'base' ? 840 : 2030,
+      depth: type === 'wall' ? 300 : style.includes('shallow') ? 282 : 573,
+      height: type === 'base' ? 840 : 2130,
       variant,
       style,
       pos: new Vector3(0, 0, 0),

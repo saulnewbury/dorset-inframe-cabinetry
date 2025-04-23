@@ -84,13 +84,18 @@ export default function KitchenUnit({
   const [dragging, setDragging] = useState(false)
   const info = useRef()
 
-  const size = new Vector3(width / 1000, height / 1000 + 0.2, depth / 1000)
-  if (type === 'base' && style.includes('corner')) size.x += 0.295
+  const size = new Vector3(width / 1000, height / 1000, depth / 1000)
+  if (type === 'base' && style?.includes('corner')) size.x += 0.295
 
   const showHandle = !is3D && hover?.type === 'unit' && hover.id === id
 
   const [handle, matrix, mrotate, ry] = useMemo(() => {
-    return [{ ...pos }, new Matrix4(), new Matrix4(), rotation]
+    return [
+      new Vector3(pos.x, 0, pos.z),
+      new Matrix4(),
+      new Matrix4(),
+      rotation
+    ]
   }, [dragging])
 
   return (
@@ -131,6 +136,14 @@ export default function KitchenUnit({
       </group>
       {(showHandle || dragging) && (
         <>
+          <mesh
+            position={[pos.x, size.y + 0.08, pos.z]}
+            rotation-x={Math.PI / -2}
+            rotation-z={rotation}
+          >
+            <planeGeometry args={[size.x, size.z]} />
+            <meshStandardMaterial color="#20ff20" />
+          </mesh>
           <DragControls
             matrix={matrix}
             autoTransform={false}
@@ -266,7 +279,8 @@ export default function KitchenUnit({
         continue // wrong heights: can't snap
 
       // Get corners of the unit.
-      const w = unit.width / 1000
+      let w = unit.width / 1000
+      if (unit.type === 'base' && unit.style?.includes('corner')) w += 0.295
       const d = unit.depth / 1000
       const unitCorners = [
         new Vector3(-w / 2, 0, -d / 2), // [0] = back left
