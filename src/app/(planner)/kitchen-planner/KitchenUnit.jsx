@@ -243,22 +243,28 @@ export default function KitchenUnit({
         const zz = pt.z + dot * (end.z - pt.z)
         const d2 = (cx - xx) ** 2 + (cz - zz) ** 2
         if (d2 < snap) {
-          list.push({ n, s, d2, xx, zz })
+          list.push({ n, s, d2, len2 })
           break // only need one corner to snap
         }
       }
       return list
     }, [])
 
-    // If we found a wall to snap to then xx and zz are the perpendicular
-    // projection to the centre line of the wall. Use this to calculate
-    // an offset that puts the unit right against the wall.
+    // If we found a wall to snap to then we need to find the perpendicular
+    // projection from the centre of the unit to the centre line of the wall.
+    // We then use this to calculate an offset that puts the unit right
+    // against the wall.
     if (snapable.length > 0) {
       const dMin = Math.min(...snapable.map((s) => s.d2))
-      const { n, s, xx, zz } = snapable.find((s) => s.d2 === dMin) ?? {}
-      const start = model.walls[s][n]
+      const { n, s, len2 } = snapable.find((s) => s.d2 === dMin) ?? {}
+      const pt = model.walls[s][n]
       const end = wrap(model.walls[s], n + 1, s)
-      const theta = Math.atan2(end.x - start.x, end.z - start.z)
+      const { x: cx, z: cz } = newPos
+      const dot =
+        ((cx - pt.x) * (end.x - pt.x) + (cz - pt.z) * (end.z - pt.z)) / len2
+      const xx = pt.x + dot * (end.x - pt.x)
+      const zz = pt.z + dot * (end.z - pt.z)
+      const theta = Math.atan2(end.x - pt.x, end.z - pt.z)
       rotation = theta - Math.PI / 2
       newPos = new Vector3(
         xx - ((size.z + wt) / 2) * Math.cos(theta),
@@ -273,8 +279,8 @@ export default function KitchenUnit({
     for (const unit of model.units) {
       if (
         unit.id === id ||
-        (unit.type === 'wall' && type === 'base') ||
-        (type === 'wall' && unit.type === 'base')
+        (unit.type === 'wall' && type !== 'wall') ||
+        (unit.type !== 'wall' && type === 'wall')
       )
         continue // wrong heights: can't snap
 
@@ -292,7 +298,7 @@ export default function KitchenUnit({
       )
 
       // Can we snap to front left corner?
-      if (corners.some((c) => unitCorners[3].distanceToSquared(c) < snap)) {
+      if (unitCorners[3].distanceToSquared(corners[2]) < snap) {
         rotation = normalise(unit.rotation)
         const p = new Vector3(size.x / 2, 0, size.z / 2).applyAxisAngle(
           new Vector3(0, 1, 0),
@@ -303,7 +309,7 @@ export default function KitchenUnit({
       }
 
       // Or to front right?
-      if (corners.some((c) => unitCorners[2].distanceToSquared(c) < snap)) {
+      if (unitCorners[2].distanceToSquared(corners[3]) < snap) {
         rotation = normalise(unit.rotation)
         const p = new Vector3(-size.x / 2, 0, size.z / 2).applyAxisAngle(
           new Vector3(0, 1, 0),
