@@ -21,7 +21,7 @@ export default function MaterialsWeLove() {
         </p>
 
         <div className='flex'>
-          <div className='relative w-[50%] h-[auto] aspect-square'>
+          <div className='relative w-full md:w-[50%] h-[auto] aspect-square'>
             <Image
               fill
               src={mdf}
@@ -30,7 +30,7 @@ export default function MaterialsWeLove() {
               sizes='40vw'
             />
           </div>
-          <div className='relative aspect-square h-[auto] w-[50%]'>
+          <div className='relative aspect-square h-[auto] w-[50%] hidden md:block'>
             <Image
               fill
               src={kitchenBlue}

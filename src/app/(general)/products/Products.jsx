@@ -7,8 +7,8 @@ export default function Products() {
   return (
     <section className='gutter'>
       <div className='indent mb-[120px] grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:gap-[4vw] md:gap-[3vw] lg:gap-[2vw]'>
-        {products.map((p) => {
-          return (
+        {products.map((p, idx) => {
+          return idx === 0 ? null : (
             <div key={p.name} className='flex flex-col'>
               <Link
                 href={p.url}

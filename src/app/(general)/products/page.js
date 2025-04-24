@@ -5,7 +5,7 @@ import Footer from '@/components/Footer'
 export default function Page() {
   return (
     <>
-      <HeroText markup={'All products'} />
+      <HeroText markup={'Goods we can source for you'} />
       <Products />
       <Footer />
     </>

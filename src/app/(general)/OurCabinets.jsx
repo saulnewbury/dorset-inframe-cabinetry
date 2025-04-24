@@ -55,23 +55,28 @@ export default function OurCabinets() {
         <div className='indent pt-[5rem] lg:pt-[8rem]'>
           <HeaderText>Our cabinets</HeaderText>
         </div>
-        <div className='indent flex mt-[60px] justify-center items-center'>
-          <div className='w-[50%] h-auto aspect-square'>
+        <div className='indent mt-[60px] items-center md:flex md:flex-row mg:justify-center '>
+          <div className='md:w-[50%] h-auto aspect-square'>
             <Image src={ourCabinets} alt='' width={798} height={798} />
           </div>
 
-          <div className='relative grid sm:grid-cols-6 md:grid-cols-4 lg:grid-cols-4  gap-[.5vw] h-full w-[50%] basis-[50%] bg-[#e7e7e7] aspect-square'>
+          <div className='relative grid sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-[.5vw] h-full md:w-[50%] basis-[50%] bg-[#e7e7e7] aspect-square'>
             {/* {randomizedImages.map((src, idx) => (
               <Image
                 key={idx}
                 width={400}
                 height={400}
-                className='w-full h-[auto] aspect-square inline-block mix-blend-multiply'
+                className={`w-full h-[auto] aspect-square inline-block mix-blend-multiply 
+                  ${idx >= 4 && idx < 12 ? 'opacity-0' : ''}
+                `}
                 src={src}
                 alt=''
               />
             ))} */}
-            <div className='absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] text-center pt-[7rem] pb-[7rem]'>
+            <div className='absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] pt-[7rem] pb-[7rem] w-full text-center'>
+              <p className='pb-[32px] px-[3rem] text-base font-normal text-center md:mb-[1rem]'>
+                We specialise in making inframe cabinetry
+              </p>
               <Button href='/our-cabinets'>Browse cabinets</Button>
             </div>
           </div>
