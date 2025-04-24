@@ -6,7 +6,7 @@ import Products from '../products/Products'
 export default function Page() {
   return (
     <>
-      <HeroText markup={'All products'} />
+      <HeroText markup={'Our cabinets'} />
       {/* <Products /> */}
     </>
   )
