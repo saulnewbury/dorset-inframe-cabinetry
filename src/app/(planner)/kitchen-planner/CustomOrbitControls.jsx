@@ -3,6 +3,7 @@
 
 import { forwardRef, useEffect, useRef, useImperativeHandle } from 'react'
 import { OrbitControls as DreiOrbitControls } from '@react-three/drei'
+import { useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 
 const CustomOrbitControls = forwardRef(
@@ -18,6 +19,8 @@ const CustomOrbitControls = forwardRef(
     ref
   ) => {
     const controlsRef = useRef()
+    const panningRef = useRef(false)
+    const { camera } = useThree()
 
     // Forward the ref and expose methods
     useImperativeHandle(ref, () => ({
@@ -40,42 +43,83 @@ const CustomOrbitControls = forwardRef(
     }))
 
     useEffect(() => {
-      if (!controlsRef.current) return
-
       const controls = controlsRef.current
+      if (!controls || !controls.domElement) return
 
-      // Store the original mousedown handler
-      const originalMouseDown = controls.onMouseDown
+      const domElement = controls.domElement
+      let prevX = 0
+      let prevY = 0
 
-      // Override the mousedown handler with our own version
-      controls.onMouseDown = function (event) {
-        // If Ctrl+Left click, treat it as RIGHT click (PAN)
+      // Custom implementation of panning
+      function handlePan(event) {
+        if (!panningRef.current) return
+
+        const deltaX = event.clientX - prevX
+        const deltaY = event.clientY - prevY
+        prevX = event.clientX
+        prevY = event.clientY
+
+        // Pan the camera based on mouse movement
+        // This mimics OrbitControls pan behavior without modifying internal state
+        const offset = new THREE.Vector3()
+        const position = camera.position.clone()
+        const targetPosition = controls.target.clone()
+
+        // Get the offset direction based on camera orientation
+        offset.copy(position).sub(targetPosition)
+        const targetDistance = offset.length()
+
+        // Calculate pan speed based on zoom level
+        const panSpeed = (controls.panSpeed * targetDistance) / 1000
+
+        // Apply the pan movement
+        offset.set(-deltaX * panSpeed, deltaY * panSpeed, 0)
+        offset.applyQuaternion(camera.quaternion)
+
+        position.add(offset)
+        targetPosition.add(offset)
+
+        camera.position.copy(position)
+        controls.target.copy(targetPosition)
+
+        controls.update()
+      }
+
+      function handlePointerDown(event) {
         if (event.ctrlKey && event.button === 0) {
-          // Create a modified event with button set to RIGHT
-          const modifiedEvent = {
-            ...event,
-            button: 2, // RIGHT mouse button
-            preventDefault: event.preventDefault,
-            stopPropagation: event.stopPropagation
-          }
+          event.preventDefault()
+          panningRef.current = true
+          prevX = event.clientX
+          prevY = event.clientY
 
-          // Call the original handler with our modified event
-          originalMouseDown.call(this, modifiedEvent)
-          return
+          // Add listeners for move and up events
+          window.addEventListener('pointermove', handlePointerMove, false)
+          window.addEventListener('pointerup', handlePointerUp, false)
         }
-
-        // For all other cases, use the original handler
-        originalMouseDown.call(this, event)
       }
 
-      // Clean up when the component unmounts
+      function handlePointerMove(event) {
+        if (panningRef.current) {
+          event.preventDefault()
+          handlePan(event)
+        }
+      }
+
+      function handlePointerUp() {
+        panningRef.current = false
+        window.removeEventListener('pointermove', handlePointerMove, false)
+        window.removeEventListener('pointerup', handlePointerUp, false)
+      }
+
+      // Add the main pointer down listener
+      domElement.addEventListener('pointerdown', handlePointerDown, false)
+
       return () => {
-        // Restore the original handler
-        if (controls && originalMouseDown) {
-          controls.onMouseDown = originalMouseDown
-        }
+        domElement.removeEventListener('pointerdown', handlePointerDown, false)
+        window.removeEventListener('pointermove', handlePointerMove, false)
+        window.removeEventListener('pointerup', handlePointerUp, false)
       }
-    }, [is3D]) // Only re-run if is3D changes
+    }, [camera])
 
     return (
       <DreiOrbitControls
@@ -86,11 +130,11 @@ const CustomOrbitControls = forwardRef(
         maxDistance={20}
         enableZoom={true}
         maxPolarAngle={Math.PI / 2.1}
-        panSpeed={1}
+        panSpeed={is3D ? 0.3 : 0.6}
         zoomSpeed={0.5}
         dampingFactor={is3D ? 0.1 : 0.3}
         mouseButtons={{
-          LEFT: is3D ? THREE.MOUSE.ROTATE : null,
+          LEFT: is3D ? THREE.MOUSE.ROTATE : THREE.MOUSE.PAN,
           MIDDLE: THREE.MOUSE.DOLLY,
           RIGHT: THREE.MOUSE.PAN
         }}
