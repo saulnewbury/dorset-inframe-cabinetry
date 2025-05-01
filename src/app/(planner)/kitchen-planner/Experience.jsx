@@ -10,6 +10,8 @@ import {
 } from '@react-three/drei'
 import * as THREE from 'three'
 
+import CustomOrbitControls from './CustomOrbitControls'
+
 // Helpers
 import { radToDeg } from '@/lib/helpers/radToDeg'
 
@@ -87,24 +89,13 @@ export default function Experience({ is3D }) {
 
   return (
     <>
-      <OrbitControls
+      <CustomOrbitControls
         ref={orbitControls}
-        enableRotate={is3D}
+        is3D={is3D}
         enablePan={is3D ? true : enablePan && !(dragging ?? hover)}
-        minDistance={1.5} //
-        maxDistance={20} // how far out
-        enableZoom={true}
-        maxPolarAngle={Math.PI / 2.1}
-        panSpeed={1}
-        zoomSpeed={0.5}
-        dampingFactor={is3D ? 0.1 : 0.3}
-        mouseButtons={{
-          LEFT: is3D ? THREE.MOUSE.ROTATE : THREE.MOUSE.PAN,
-          MIDDLE: THREE.MOUSE.DOLLY,
-          RIGHT: THREE.MOUSE.PAN
-        }}
+        dragging={dragging}
+        hover={hover}
         onChange={hideWalls}
-        target={[0, 1, 0]}
       />
 
       <axesHelper />
@@ -217,7 +208,7 @@ export default function Experience({ is3D }) {
   }
 
   function hideWalls() {
-    if (is3D) {
+    if (is3D && orbitControls.current) {
       walls.current.traverse((obj) => {
         const sceneRotation = radToDeg(
           orbitControls.current.getAzimuthalAngle()
