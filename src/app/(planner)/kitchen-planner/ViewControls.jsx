@@ -13,28 +13,28 @@ export default function ViewControls({
         shrink ? 'left-[calc(30%+74px+37px)]' : ''
       }`}
     >
-      <div>
+      <div className='flex items-center justify-center rounded-full bg-lightBlue h-[50px] px-1'>
         <button
           type='button'
           className={`${
-            !is3D ? 'bg-[#F0F0EE]' : ''
-          } hover:bg-[#F0F0EE] h-[50px] w-[50px] rounded-full mr-[12px]`}
+            !is3D ? 'bg-[#ffffff] shadow-md' : ''
+          }  h-[40px] w-[40px] rounded-full mr-[12px] flex items-center justify-center `}
           onClick={() => {
             changePerspective(false)
           }}
         >
-          <SvgIcon classes='w-[22px] h-[22px]' shape='2d' />
+          <SvgIcon classes='w-[16px] h-[16px]' shape='2d' />
         </button>
         <button
           type='button'
           className={`${
-            is3D ? 'bg-[#F0F0EE]' : ''
-          } hover:bg-[#F0F0EE] h-[50px] w-[50px] rounded-full`}
+            is3D ? 'bg-[#ffffff] shadow-md' : ''
+          }  h-[40px] w-[40px] rounded-full flex items-center justify-center`}
           onClick={() => {
             changePerspective(true)
           }}
         >
-          <SvgIcon classes='w-[30px] h-[30px]' shape='3d' />
+          <SvgIcon classes='w-[24px] h-[24px]' shape='3d' />
         </button>
       </div>
     </div>
