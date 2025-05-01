@@ -1,13 +1,26 @@
+'use client'
 import HeroText from '@/components/HeroText'
-import Products from '../products/Products'
+import ProductGrid from './ProductGrid'
+import Footer from '@/components/Footer'
 
-// TODO
-// Swap products out for cabinet categories
-export default function Page() {
+import productRange from '@/lib/data/products'
+
+export default function Page({ params }) {
+  const products = productRange[0]
+
+  console.log(products)
+
+  // const sdf = productRange.find((item) => {
+  //   const text = params.category.split('-').join(' ')
+  //   const name = text.charAt(0).toUpperCase() + text.slice(1)
+  //   return item.name === name
+  // })
+
   return (
     <>
       <HeroText markup={'Our cabinets'} />
-      {/* <Products /> */}
+      {products && <ProductGrid products={products} />}
+      <Footer />
     </>
   )
 }

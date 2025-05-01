@@ -38,8 +38,12 @@ const products = [
         ]
       },
       {
+        name: 'Tall cabinets',
+        subCategories: ['Storage', 'Pantry', 'For oven', 'Fridge freezer']
+      },
+      {
         name: 'Wall cabinets',
-        subCategories: ['All wall cabinets']
+        subCategories: ['Single door', 'Double doors']
       }
     ],
     items: [
