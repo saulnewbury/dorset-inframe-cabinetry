@@ -18,7 +18,7 @@ export default function ViewControls({
           type='button'
           className={`${
             !is3D ? 'bg-[#ffffff] shadow-md' : ''
-          }  h-[40px] w-[40px] rounded-full mr-[12px] flex items-center justify-center `}
+          }  h-[40px] w-[40px] rounded-full mr-[8px] flex items-center justify-center `}
           onClick={() => {
             changePerspective(false)
           }}
