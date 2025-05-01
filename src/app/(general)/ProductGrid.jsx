@@ -4,10 +4,12 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import Categories from './Categories'
+import Categories from './products/[category]/Categories'
 
 export default function ProductGrid({ products }) {
-  const { items, categories } = products
+  const { items, subCategories: categories } = products
+
+  console.log(categories)
 
   const [hover, setHover] = useState(false)
   const [selected, setSelected] = useState({ top: 'All', sub: null })
@@ -46,6 +48,11 @@ export default function ProductGrid({ products }) {
     <section className='gutter pb-[120px]'>
       <div className='indent'>
         {/* basic filter vs dropdown subCat filter */}
+        <Categories
+          categories={categories}
+          handleClick={handleClick}
+          selected={selected}
+        />
         {filtered ? (
           <>
             <Categories

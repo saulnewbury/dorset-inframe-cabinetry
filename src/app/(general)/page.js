@@ -1,3 +1,7 @@
+/**
+ * Home page
+ */
+
 // Components
 import HeroText from '@/components/HeroText'
 import HeroImage from '@/components/HeroImage'
