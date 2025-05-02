@@ -21,8 +21,8 @@ export default function Page() {
       <HeroImage src={kitchen} alt='something' />
       <MaterialsWeLove />
       <OurCabinets />
-      <CtaProducts not='Our cabinets' gridNum={5} title='We can source...' />
       <ConfigureYourKitchen />
+      <CtaProducts not='Our cabinets' gridNum={5} title='We can source...' />
       <Footer classes='bg-[#606D8E] text-white pb-[120px]' />
     </>
   )

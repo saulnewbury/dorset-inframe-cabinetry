@@ -4,10 +4,9 @@
 
 import { twMerge } from 'tailwind-merge'
 
-export default function TextInput({
+export default function Textarea({
   name,
   label,
-  type = 'text',
   value,
   autoComplete,
   onChange = () => {}
@@ -16,18 +15,18 @@ export default function TextInput({
     <div className='relative pt-4'>
       <span
         className={twMerge(
-          'absolute -top-1 left-0 text-xs text-[#b0b0b0]',
+          'absolute -top-[0.1em] left-0 text-[.7rem] text-[#b0b0b0]',
           !value && 'hidden'
         )}
       >
         {label}
       </span>
-      <input
-        className='w-full outline-none border-b border-darkGrey invalid:border-red invalid:text-red pb-[.3em] mb-4 bg-transparent'
+      <textarea
+        className='w-full outline-none border-b border-darkGrey invalid:border-red invalid:text-red pb-2 mb-4 field-sizing-content bg-transparent'
+        style={{ fieldSizing: 'content' }}
         name={name}
-        type={type}
+        // type={type}
         value={value}
-        autoComplete={autoComplete}
         placeholder={label}
         onChange={(e) => onChange(e.target.value)}
       />

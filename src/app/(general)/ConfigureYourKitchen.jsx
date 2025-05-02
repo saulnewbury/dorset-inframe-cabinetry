@@ -10,7 +10,7 @@ export default function ConfigureYourKitchen({ classes = '' }) {
   return (
     <section
       className={twMerge(
-        'gutter w-[100vw] h-[100vh] max-h-[800px] md:my-[60px]',
+        'gutter w-[100vw] h-[100vh] max-h-[800px] md:mt-[60px]',
         classes
       )}
     >
