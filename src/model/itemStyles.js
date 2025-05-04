@@ -339,7 +339,7 @@ export const baseUnitStyles = {
       id: 'base:counter-only',
       props: { ...baseUnitConfig, panelConfig: [{ type: 'none' }] },
       title: 'Counter only',
-      sizes: [800],
+      sizes: [600],
       prices: [80]
     }
   ],
