@@ -24,8 +24,8 @@ export default function Page() {
             <div className='mr-10'>
               <p className='mb-[1rem]'>We&apos;re here to help.</p>
               <p className='mb-[3rem] text-balance max-w-[30rem]'>
-                Get in touch an a member of our team will contact you as soon as
-                possible.
+                Get in touch and a member of our team will contact you as soon
+                as possible.
               </p>
               {/* <p className='mb-[3rem]'>We&apos;re here to help.</p> */}
               {/* <p>t: 01300 345 555</p>
