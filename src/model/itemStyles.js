@@ -339,11 +339,8 @@ export const baseUnitStyles = {
       id: 'base:counter-only',
       props: { ...baseUnitConfig, panelConfig: [{ type: 'none' }] },
       title: 'Counter only',
-      sizes: [
-        300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950,
-        1000
-      ],
-      prices: [80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80]
+      sizes: [600],
+      prices: [80]
     }
   ],
   'For island': [

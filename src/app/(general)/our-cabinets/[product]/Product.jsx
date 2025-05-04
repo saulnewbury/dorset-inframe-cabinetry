@@ -3,8 +3,9 @@ import Image from 'next/image'
 import { Fragment, useState, useEffect, useRef } from 'react'
 import { Select } from '@headlessui/react'
 
-export default function Product({ name, price, images, sizes, options, desc }) {
-  const [finish, setFinish] = useState([images[0], images[1]])
+export default function Product(item) {
+  const { name, desc, price, sizes, options } = item
+  const [finish, setFinish] = useState(getImages(item))
   const [canScroll, setCanScroll] = useState(null)
 
   const optionsContainer = useRef()
@@ -25,48 +26,63 @@ export default function Product({ name, price, images, sizes, options, desc }) {
 
   function updateList() {}
 
+  function getImages(item) {
+    return [
+      {
+        id: item.id + '-front',
+        src: `/units/${item.group}/${item.id}-front.webp`,
+        alt: 'front view'
+      },
+      {
+        id: item.id + '-side',
+        src: `/units/${item.group}/${item.id}-side.webp`,
+        alt: 'side view'
+      }
+    ]
+  }
+
   return (
-    <section className='gutter pt-[210px] pb-[120px]'>
-      <div className='indent flex md:flex-row flex-col'>
+    <section className="gutter pt-[210px] pb-[120px]">
+      <div className="indent flex md:flex-row flex-col">
         {/* Images */}
-        <div className='w-full sm:w-[80%] md:w-[50%] lg:w-[35%] h-[max-content] md:sticky top-[180px]'>
+        <div className="w-full sm:w-[80%] md:w-[50%] lg:w-[35%] h-[max-content] md:sticky top-[180px]">
           {finish && (
-            <div className='relative aspect-[3/4] w-full h-[max-content] bg-red-300'>
+            <div className="relative aspect-[3/4] w-full h-[max-content] bg-red-300">
               <Image
                 priority
                 fill
-                sizes='(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 976px) 33vw, 25vw'
+                sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 976px) 33vw, 25vw"
                 src={finish[0].src}
-                className='object-cover'
+                className="object-cover"
                 alt={finish[0].alt}
               />
               <Image
                 priority
                 fill
-                sizes='(max-width: 480px) 100vw, (max-width: 768px) 50vw, 50vw'
+                sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 50vw"
                 src={finish[1].src}
-                className='object-cover opacity-0 hover:opacity-100'
+                className="object-cover opacity-0 hover:opacity-100"
                 alt={finish[1].alt}
               />
             </div>
           )}
         </div>
         {/* Info */}
-        <div className='md:ml-[37px] pt-[4vw] w-[60%] grow-0'>
-          <div className='indent-left'>
+        <div className="md:ml-[37px] pt-[4vw] w-[60%] grow-0">
+          <div className="indent-left">
             {/* Name */}
-            <div className='text-[28px] font-normal'>{name}</div>
+            <div className="text-[28px] font-normal">{name}</div>
             {/* Description */}
-            <div className='mb-[2rem] font-normal'>{desc}</div>
+            <div className="mb-[2rem] font-normal">{desc}</div>
             {/* Price */}
-            <div className='mb-[.8rem] text-[24px] font-normal'>{price}</div>
+            <div className="mb-[.8rem] text-[24px] font-normal">{price}</div>
             {/* Sizes */}
             {sizes && (
-              <div className='mb-[2rem]'>
+              <div className="mb-[2rem]">
                 <Select
-                  name='status'
-                  aria-label='Project status'
-                  className='-ml-[3px] mr-[20px] inline-block focus:outline-none focus:underline data-[focus]:outline-blue-500 min-w-[8rem]'
+                  name="status"
+                  aria-label="Project status"
+                  className="-ml-[3px] mr-[20px] inline-block focus:outline-none focus:underline data-[focus]:outline-blue-500 min-w-[8rem]"
                 >
                   {sizes.map((size, i) => (
                     <option key={i} value={size.w + size.h}>
@@ -74,7 +90,7 @@ export default function Product({ name, price, images, sizes, options, desc }) {
                     </option>
                   ))}
                 </Select>
-                <span className='font-medium'>
+                <span className="font-medium">
                   Choose&nbsp;a&nbsp;different&nbsp;size
                 </span>
               </div>
@@ -82,18 +98,18 @@ export default function Product({ name, price, images, sizes, options, desc }) {
 
             {/* Options */}
             {options && (
-              <div className='font-medium w-[max-content]'>
+              <div className="font-medium w-[max-content]">
                 {options.map((option, i) => {
                   return (
                     <Fragment key={i}>
-                      <div className='mb-[1rem]'>{option.instruction}</div>
+                      <div className="mb-[1rem]">{option.instruction}</div>
                       <div
                         ref={shoot}
-                        className='overflow-scroll w-[76vw] md:w-[44vw] pb-[13px]'
+                        className="overflow-scroll w-[76vw] md:w-[44vw] pb-[13px]"
                       >
                         <div
                           ref={optionsContainer}
-                          className='flex w-[max-content] gap-[1vw]'
+                          className="flex w-[max-content] gap-[1vw]"
                         >
                           {option.options.map((o, i) => {
                             return (
@@ -117,7 +133,7 @@ export default function Product({ name, price, images, sizes, options, desc }) {
                         </div>
                       </div>
                       {canScroll && (
-                        <div className='font-normal text-[.9rem] text-right w-full pr-[12px]'>
+                        <div className="font-normal text-[.9rem] text-right w-full pr-[12px]">
                           Scroll for more options &gt;
                         </div>
                       )}
@@ -128,8 +144,8 @@ export default function Product({ name, price, images, sizes, options, desc }) {
             )}
 
             <button
-              type='button'
-              className='font-normal cursor-pointer hover:underline mt-[.5rem]'
+              type="button"
+              className="font-normal cursor-pointer hover:underline mt-[.5rem]"
               onClick={updateList}
             >
               Add to list +
