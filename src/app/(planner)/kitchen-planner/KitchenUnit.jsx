@@ -219,7 +219,7 @@ export default function KitchenUnit({
     let rotation = ry
 
     // Get the four corners of the unit.
-    const corners = [
+    let corners = [
       new Vector3(-size.x / 2, 0, -size.z / 2),
       new Vector3(size.x / 2, 0, -size.z / 2),
       new Vector3(size.x / 2, 0, size.z / 2),
@@ -271,6 +271,12 @@ export default function KitchenUnit({
         0,
         zz + ((size.z + wt) / 2) * Math.sin(theta)
       )
+      corners = [
+        new Vector3(-size.x / 2, 0, -size.z / 2),
+        new Vector3(size.x / 2, 0, -size.z / 2),
+        new Vector3(size.x / 2, 0, size.z / 2),
+        new Vector3(-size.x / 2, 0, size.z / 2)
+      ].map((p) => p.applyAxisAngle(new Vector3(0, 1, 0), rotation).add(newPos))
     }
 
     // Now work out whether any other unit is close enough to snap. We do this
