@@ -1,13 +1,10 @@
-// handles and knobs
+import {
+  baseUnitStyles,
+  tallUnitStyles,
+  wallUnitStyles
+} from '@/model/itemStyles'
 
-import wallCabinet1a from '@/lib/images/products/wall-cabinet1a.jpg'
-import wallCabinet1b from '@/lib/images/products/wall-cabinet1b.jpg'
-import baseCabinet1a from '@/lib/images/products/base-cabinet1a.jpg'
-import baseCabinet1b from '@/lib/images/products/base-cabinet1b.jpg'
-import wallCabinet1aGrey from '@/lib/images/products/wall-cabinet1a-grey.jpg'
-import wallCabinet1bGrey from '@/lib/images/products/wall-cabinet1b-grey.jpg'
-import baseCabinet1aGrey from '@/lib/images/products/base-cabinet1a-grey.jpg'
-import baseCabinet1bGrey from '@/lib/images/products/base-cabinet1b-grey.jpg'
+// handles and knobs
 
 import knobs from '@/lib/images/square/knobs-corston.webp'
 import worktops from '@/lib/images/square/worksurface.webp'
@@ -15,6 +12,19 @@ import appliances from '@/lib/images/square/appliences-smeg.webp'
 import storage from '@/lib/images/square/storage-accessories.webp'
 import cabinets from '@/lib/images/cabinets.jpg'
 import taps from '@/lib/images/square/taps-smeg.webp'
+
+const cabinetOptions = [
+  {
+    instruction: 'Choose frame finish',
+    options: [
+      { name: 'Beige', hex: '#F5F3F0' },
+      { name: 'Grey', hex: '#D8DADB' },
+      { name: 'Pale green', hex: '#ECEDE8' },
+      { name: 'Blue', hex: '#3B5771' },
+      { name: 'Dark stone', hex: '#393D40' }
+    ]
+  }
+]
 
 const products = [
   {
@@ -25,135 +35,56 @@ const products = [
       { name: 'All' },
       {
         name: 'Base cabinets',
-        subCategories: [
-          'For corner',
-          'With door',
-          'With drawers',
-          'With sink',
-          'For oven',
-          'For dishwasher',
-          'For bin',
-          'For island',
-          'Counter only'
-        ]
+        subCategories: Object.keys(baseUnitStyles)
       },
       {
         name: 'Tall cabinets',
-        subCategories: ['Storage', 'Pantry', 'For oven', 'Fridge freezer']
+        subCategories: Object.keys(tallUnitStyles)
       },
       {
         name: 'Wall cabinets',
-        subCategories: ['Single door', 'Double doors']
+        subCategories: ['One door', 'Two doors']
       }
     ],
     items: [
-      {
-        id: crypto.randomUUID(),
-        name: 'Floor cabinet',
-        desc: 'Floor cabinet with door',
-        categories: ['All', 'Base cabinets', 'For sink'],
-        price: '£24.00',
-        sizes: [
-          { w: 66.6, h: 80 },
-          { w: 71.6, h: 80 }
-        ],
-        options: [
-          {
-            instruction: 'Choose frame finish',
-            options: [
-              { name: 'Beige', hex: '#F5F3F0' },
-              { name: 'Grey', hex: '#D8DADB' },
-              { name: 'Pale green', hex: '#ECEDE8' },
-              { name: 'Blue', hex: '#3B5771' },
-              { name: 'Dark stone', hex: '#393D40' }
-            ]
-          }
-        ],
-        images: [
-          {
-            id: crypto.randomUUID(),
-            src: baseCabinet1a,
-            alt: '',
-            name: 'Beige',
-            size: { w: 66.6, h: 80 }
-          },
-          {
-            id: crypto.randomUUID(),
-            src: baseCabinet1b,
-            alt: '',
-            name: 'Beige',
-            size: { w: 66.6, h: 80 }
-          },
-          {
-            id: crypto.randomUUID(),
-            src: baseCabinet1aGrey,
-            alt: '',
-            name: 'Grey',
-            size: { w: 71.6, h: 80 }
-          },
-          {
-            id: crypto.randomUUID(),
-            src: baseCabinet1bGrey,
-            alt: '',
-            name: 'Grey',
-            size: { w: 71.6, h: 80 }
-          }
-        ]
-      },
-      {
-        id: crypto.randomUUID(),
-        name: 'Wall cabinet',
-        desc: 'Wall cabinet with door',
-        categories: ['All', 'Wall cabinets', 'With door'],
-        price: '£24.00',
-        sizes: [
-          { w: 66.6, h: 80 },
-          { w: 71.6, h: 80 }
-        ],
-        options: [
-          {
-            instruction: 'Choose frame finish',
-            options: [
-              { name: 'Beige', hex: '#F5F3F0' },
-              { name: 'Grey', hex: '#D8DADB' },
-              { name: 'Pale green', hex: '#ECEDE8' },
-              { name: 'Blue', hex: '#3B5771' },
-              { name: 'Dark stone', hex: '#393D40' }
-            ]
-          }
-        ],
-        images: [
-          {
-            id: crypto.randomUUID(),
-            src: wallCabinet1a,
-            alt: '',
-            name: 'Beige',
-            size: { w: 66.6, h: 80 }
-          },
-          {
-            id: crypto.randomUUID(),
-            src: wallCabinet1b,
-            alt: '',
-            name: 'Beige',
-            size: { w: 66.6, h: 80 }
-          },
-          {
-            id: crypto.randomUUID(),
-            src: wallCabinet1aGrey,
-            alt: '',
-            name: 'Grey',
-            size: { w: 71.6, h: 80 }
-          },
-          {
-            id: crypto.randomUUID(),
-            src: wallCabinet1bGrey,
-            alt: '',
-            name: 'Grey',
-            size: { w: 71.6, h: 80 }
-          }
-        ]
-      }
-    ]
+      Object.entries(baseUnitStyles).flatMap(([key, options]) =>
+        options.flatMap((opt) =>
+          opt.sizes.map((w, n) => ({
+            categories: ['All', 'Base cabinets', key],
+            group: opt.id.replace(':', '-'),
+            id: opt.id.replace(':', '-') + '-' + w,
+            name: opt.title,
+            desc: `Width: ${(w / 10).toFixed(1)}cm`,
+            price: `£${opt.prices[n]}`,
+            options: cabinetOptions
+          }))
+        )
+      ),
+      Object.entries(tallUnitStyles).flatMap(([key, options]) =>
+        options.flatMap((opt) =>
+          opt.sizes.map((w, n) => ({
+            categories: ['All', 'Tall cabinets', key],
+            group: opt.id.replace(':', '-'),
+            id: opt.id.replace(':', '-') + '-' + w,
+            name: key,
+            desc: `Width: ${(w / 10).toFixed(1)}cm`,
+            price: `£${opt.prices[n]}`,
+            options: cabinetOptions
+          }))
+        )
+      ),
+      wallUnitStyles.flatMap((opt) =>
+        opt.sizes.map((w, n) => ({
+          categories: ['All', 'Wall cabinets', opt.filterText],
+          group: opt.id.replace(':', '-'),
+          id: opt.id.replace(':', '-') + '-' + w,
+          name: opt.title,
+          desc: `Width: ${(w / 10).toFixed(1)}cm`,
+          price: `£${opt.prices[n]}`,
+          options: cabinetOptions
+        }))
+      )
+    ].flat()
   },
   { name: 'Worktops', src: worktops, url: '/products/worktops' },
   {

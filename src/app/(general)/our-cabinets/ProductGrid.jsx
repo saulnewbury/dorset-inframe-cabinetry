@@ -38,13 +38,28 @@ export default function ProductGrid({ products }) {
       })
     }
 
-    setFiltered([...arr])
+    setFiltered(arr)
     setSelected({ top: option[0], sub: option[1] })
   }
 
+  function getImages(item) {
+    return [
+      {
+        id: item.id + '-front',
+        src: `/units/${item.group}/${item.id}-front.webp`,
+        alt: 'front view'
+      },
+      {
+        id: item.id + '-side',
+        src: `/units/${item.group}/${item.id}-side.webp`,
+        alt: 'side view'
+      }
+    ]
+  }
+
   return (
-    <section className='gutter pb-[120px]'>
-      <div className='indent'>
+    <section className="gutter pb-[120px]">
+      <div className="indent">
         {/* basic filter vs dropdown subCat filter */}
         {filtered ? (
           <>
@@ -54,23 +69,22 @@ export default function ProductGrid({ products }) {
               selected={selected}
             />
 
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-[4vw] md:gap-[3vw] lg:gap-[2vw] '>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-[4vw] md:gap-[3vw] lg:gap-[2vw] ">
               {filtered.map((item) => {
-                const href =
-                  pathname + '/' + item.name.toLowerCase().split(' ').join('-')
+                const href = pathname + '/' + item.id
                 return (
-                  <div key={item.id} className='flex flex-col'>
-                    <Link href={href} className='relative aspect-[3/4]'>
-                      {item.images.map((image, i) => {
+                  <div key={item.id} className="flex flex-col">
+                    <Link href={href} className="relative aspect-[3/4]">
+                      {getImages(item).map((image, i) => {
                         if (i > 1) return
                         return i % 2 === 0 ? (
                           <Image
                             priority
                             key={image.id}
                             fill
-                            sizes='(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 976px) 33vw, 25vw'
+                            sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 976px) 33vw, 25vw"
                             src={image.src}
-                            className='object-cover'
+                            className="object-cover"
                             alt={image.alt}
                           />
                         ) : (
@@ -78,7 +92,7 @@ export default function ProductGrid({ products }) {
                             priority
                             key={image.id}
                             fill
-                            sizes='(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 976px) 33vw, 25vw'
+                            sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 976px) 33vw, 25vw"
                             src={image.src}
                             className={`${
                               hover ? 'hover:opacity-100' : ''
@@ -93,15 +107,15 @@ export default function ProductGrid({ products }) {
                         )
                       })}
                     </Link>
-                    <div className='py-[1rem]'>
+                    <div className="py-[1rem]">
                       <Link
                         href={href}
-                        className='font-medium hover:underline uppercase'
+                        className="font-medium hover:underline uppercase"
                       >
                         {item.name}
                       </Link>
                       <div>{item.desc}</div>
-                      <div className='font-semibold'>{item.price}</div>
+                      <div className="font-semibold">{item.price}</div>
                     </div>
                   </div>
                 )
