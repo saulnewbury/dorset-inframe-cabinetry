@@ -3,8 +3,13 @@ export const metadata = {
   description: 'Configure your kitchen with our kitchen planner'
 }
 
+import { Suspense } from 'react'
 import ModelContextProvider from './ModelContextProvider'
 
 export default function Layout({ children }) {
-  return <ModelContextProvider>{children}</ModelContextProvider>
+  return (
+    <Suspense>
+      <ModelContextProvider>{children}</ModelContextProvider>
+    </Suspense>
+  )
 }
