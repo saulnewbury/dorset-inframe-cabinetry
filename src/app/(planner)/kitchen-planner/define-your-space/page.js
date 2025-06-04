@@ -26,8 +26,6 @@ export default function Page() {
     }
   }, [ref])
 
-  console.log(content)
-
   return (
     <>
       <Sidebar
