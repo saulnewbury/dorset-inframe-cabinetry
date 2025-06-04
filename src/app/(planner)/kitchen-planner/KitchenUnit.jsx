@@ -319,6 +319,46 @@ export default function KitchenUnit({
   }
 
   /**
+   * Binary search to find the closest valid position along a movement vector
+   */
+  function findClosestValidPosition(fromPos, toPos, unit, iterations = 10) {
+    let validPos = fromPos.clone()
+    let invalidPos = toPos.clone()
+
+    // Binary search for the boundary
+    for (let i = 0; i < iterations; i++) {
+      const midPos = new Vector3().lerpVectors(validPos, invalidPos, 0.5)
+
+      // Check collision at midpoint
+      const corners = getCorners(unit, midPos, unit.rotation)
+      let hasCollision = false
+
+      for (const otherUnit of otherUnits.current) {
+        const otherBox = getUnitBoundingBox(otherUnit)
+        const myBox = getUnitBoundingBox(unit, midPos, unit.rotation)
+
+        if (!myBox.intersectsBox(otherBox)) continue
+
+        const otherCorners = getCorners(otherUnit)
+        if (checkUnitCollision(corners, otherCorners)) {
+          hasCollision = true
+          break
+        }
+      }
+
+      if (hasCollision) {
+        invalidPos = midPos
+      } else {
+        validPos = midPos
+      }
+    }
+
+    // Back off slightly from the exact collision point
+    const direction = new Vector3().subVectors(validPos, invalidPos).normalize()
+    return validPos.add(direction.multiplyScalar(0.001))
+  }
+
+  /**
    * Callback for 'drag' event. Updates the position of the unit.
    */
   function moveUnit(lm) {
@@ -354,7 +394,6 @@ export default function KitchenUnit({
       const otherCorners = getCorners(otherUnit)
 
       if (checkUnitCollision(myCorners, otherCorners)) {
-        console.log('Collision detected with unit', otherUnit.id)
         hasCollision = true
         break
       }
@@ -363,8 +402,9 @@ export default function KitchenUnit({
     // Update ghost color based on collision state
     ghostColor.current = hasCollision ? '#ff2020' : '#20ff20'
 
-    // Only update position if no collision
+    // Handle position update
     if (!hasCollision) {
+      // No collision - update normally
       lastValidPosition.current = {
         pos: new Vector3(newPos.x, newPos.y, newPos.z),
         rotation: ry
@@ -374,8 +414,23 @@ export default function KitchenUnit({
       const { x, z } = newPos
       matrix.copy(lm)
       mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
+    } else {
+      // Collision detected - find closest valid position
+      if (lastValidPosition.current) {
+        const closestValid = findClosestValidPosition(
+          lastValidPosition.current.pos,
+          newPos,
+          currentUnit
+        )
+
+        lastValidPosition.current = { pos: closestValid, rotation: ry }
+        dispatch({ id: 'moveUnit', unit: id, pos: closestValid, rotation: ry })
+
+        const { x, z } = closestValid
+        matrix.copy(lm)
+        mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
+      }
     }
-    // If there's a collision, don't update anything - the unit stays at its current position
   }
 
   /**
