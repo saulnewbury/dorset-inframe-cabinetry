@@ -17,6 +17,9 @@ import CabinetWall from './cabinet/CabinetWall'
 
 import DimensionLine from './DimensionLine'
 
+import ic_delete from '@/assets/icons/trash.svg'
+import { hoverMaterial } from '@/materials'
+
 // Used when a unit is not found in the respective styles list.
 const nullStyle = {
   id: 'null',
@@ -56,9 +59,7 @@ const crossMove = new Shape(
   ].map((p) => new Vector2(p[0], p[1]))
 )
 
-import ic_delete from '@/assets/icons/trash.svg'
-
-import { hoverMaterial } from '@/materials'
+const vectorY = new Vector3(0, 1, 0)
 
 /**
  * Component to render a kitchen unit (at present, only base units and wall units).
@@ -83,6 +84,7 @@ export default function KitchenUnit({
   const [model, dispatch] = useContext(ModelContext)
   const [dragging, setDragging] = useState(false)
   const info = useRef()
+  const allEdges = useRef([])
 
   const size = new Vector3(width / 1000, height / 1000, depth / 1000)
   if (type === 'base' && style?.includes('corner')) size.x += 0.295
@@ -200,9 +202,89 @@ export default function KitchenUnit({
   }
 
   /**
-   * Callback for 'drag start' event.
+   * Returns true if the current unit is allowed to snap to the given one.
+   */
+  function canSnap(unit) {
+    return (
+      unit.id !== id &&
+      (type === 'base' ||
+        unit.type === 'wall' ||
+        (type === 'wall' && unit.type === 'base'))
+    )
+  }
+
+  /**
+   * Calculates the four corners of a unit.
+   */
+  function getCorners(unit) {
+    const pos = new Vector3(unit.pos.x, 0, unit.pos.z)
+    let w = unit.width / 1000
+    if (unit.type === 'base' && unit.style?.includes('corner')) {
+      const offset = unit.style?.includes('left') ? -0.1475 : 0.1475
+      w += 0.295
+      pos.add(new Vector3(offset, 0, 0).applyAxisAngle(vectorY, unit.rotation))
+    }
+    const d = unit.depth / 1000
+    return [
+      new Vector3(-w / 2, 0, d / 2), // front left
+      new Vector3(-w / 2, 0, -d / 2), // back left
+      new Vector3(w / 2, 0, -d / 2), // back right
+      new Vector3(w / 2, 0, d / 2) // front right
+    ].map((p) => p.applyAxisAngle(vectorY, unit.rotation).add(pos))
+  }
+
+  /**
+   * Calculates the edges of a unit, based on its corners.
+   */
+  function getEdges(id, corners) {
+    return corners.map((c, i) => {
+      const next = corners[(i + 1) % corners.length]
+      return {
+        id,
+        start: [c.x, c.z],
+        end: [next.x, next.z],
+        rot: Math.atan2(next.x - c.x, next.z - c.z),
+        side: i
+      }
+    })
+  }
+
+  /**
+   * Calculate the shortest distance between two edges, a and b.
+   */
+  function edgeDistance(a, b) {
+    const { start: a1, end: a2 } = a
+    const { start: b1, end: b2 } = b
+    function pointToSegment([px, pz], [sx, sz], [ex, ez]) {
+      const dx = ex - sx
+      const dz = ez - sz
+      if (dx === 0 && dz === 0) return Math.hypot(px - sx, pz - sz)
+      const t = Math.max(
+        0,
+        Math.min(1, ((px - sx) * dx + (pz - sz) * dz) / (dx * dx + dz * dz))
+      )
+      const projX = sx + t * dx
+      const projZ = sz + t * dz
+      return Math.hypot(px - projX, pz - projZ)
+    }
+    return Math.min(
+      pointToSegment(a1, b1, b2),
+      pointToSegment(a2, b1, b2),
+      pointToSegment(b1, a1, a2),
+      pointToSegment(b2, a1, a2)
+    )
+  }
+
+  /**
+   * Callback for 'drag start' event. Calculate the corners and edges of all
+   * units and set the dragging state to true. Only keep the first three
+   * edges of each unit, as we don't snap to front.
    */
   function startDrag() {
+    allEdges.current = model.units
+      .filter((u) => canSnap(u))
+      .map((u) => getEdges(u.id, getCorners(u)).slice(0, 3))
+      .flat()
     setDragging(true)
     onDrag(true)
   }
@@ -219,21 +301,22 @@ export default function KitchenUnit({
     let rotation = ry
 
     // Get the four corners of the unit.
-    let corners = [
-      new Vector3(-size.x / 2, 0, -size.z / 2),
-      new Vector3(size.x / 2, 0, -size.z / 2),
-      new Vector3(size.x / 2, 0, size.z / 2),
-      new Vector3(-size.x / 2, 0, size.z / 2)
-    ].map((p) => p.applyAxisAngle(new Vector3(0, 1, 0), rotation).add(newPos))
+    let myCorners = [
+      new Vector3(-size.x / 2, 0, size.z / 2), // front left
+      new Vector3(-size.x / 2, 0, -size.z / 2), // back left
+      new Vector3(size.x / 2, 0, -size.z / 2), // back right
+      new Vector3(size.x / 2, 0, size.z / 2) // front right
+    ].map((p) => p.applyAxisAngle(vectorY, rotation).add(newPos))
 
-    // Find all walls where any corner is within snap radius.
+    // Find all walls where any corner of the current unit is within snap
+    // radius.
     const snapable = model.walls.flat().reduce((list, pt, n) => {
       const s = pt.segment
       const end = wrap(model.walls[s], n + 1, s)
       if (!end) return list
       const len2 = (end.x - pt.x) ** 2 + (end.z - pt.z) ** 2
       if (len2 === 0) return list // wall zero length
-      for (const corner of corners) {
+      for (const corner of myCorners) {
         const { x: cx, z: cz } = corner
         // Get distance of corner to wall segment.
         const dot =
@@ -271,72 +354,61 @@ export default function KitchenUnit({
         0,
         zz + ((size.z + wt) / 2) * Math.sin(theta)
       )
-      corners = [
+      // Recalculate corners based on new position and rotation.
+      myCorners = [
+        new Vector3(-size.x / 2, 0, size.z / 2),
         new Vector3(-size.x / 2, 0, -size.z / 2),
         new Vector3(size.x / 2, 0, -size.z / 2),
-        new Vector3(size.x / 2, 0, size.z / 2),
-        new Vector3(-size.x / 2, 0, size.z / 2)
-      ].map((p) => p.applyAxisAngle(new Vector3(0, 1, 0), rotation).add(newPos))
+        new Vector3(size.x / 2, 0, size.z / 2)
+      ].map((p) => p.applyAxisAngle(vectorY, rotation).add(newPos))
     }
 
     // Now work out whether any other unit is close enough to snap. We do this
-    // by finding whether any of the corners are within snap radius of any
-    // other unit.
-    for (const unit of model.units) {
-      if (
-        unit.id === id ||
-        (unit.type === 'wall' && type !== 'wall') ||
-        (unit.type !== 'wall' && type === 'wall')
-      )
-        continue // wrong heights: can't snap
+    // by finding the closest distance between any edge of the current unit and
+    // any edge of any other (compatible) unit.
+    let minDist = wt // minimum distance to snap
+    let snapTo = null
 
-      // Get corners of the unit.
-      let w = unit.width / 1000
-      if (unit.type === 'base' && unit.style?.includes('corner')) w += 0.295
-      const d = unit.depth / 1000
-      const unitCorners = [
-        new Vector3(-w / 2, 0, -d / 2), // [0] = back left
-        new Vector3(w / 2, 0, -d / 2), // [1] = back right
-        new Vector3(w / 2, 0, d / 2), // [2] = front right
-        new Vector3(-w / 2, 0, d / 2) // [3] = front left
-      ].map((p) =>
-        p.applyAxisAngle(new Vector3(0, 1, 0), unit.rotation).add(unit.pos)
-      )
-
-      // Can we snap to front left corner?
-      if (unitCorners[3].distanceToSquared(corners[2]) < snap) {
-        rotation = normalise(unit.rotation)
-        const p = new Vector3(size.x / 2, 0, size.z / 2).applyAxisAngle(
-          new Vector3(0, 1, 0),
-          rotation
-        )
-        newPos = unitCorners[3].sub(p)
-        break
+    const edges = getEdges(id, myCorners)
+    for (const edgeA of edges) {
+      for (const edgeB of allEdges.current) {
+        const dist = edgeDistance(edgeA, edgeB)
+        if (minDist > 0.0001 && dist < minDist) {
+          minDist = dist
+          snapTo = edgeB
+        }
       }
+    }
 
-      // Or to front right?
-      if (unitCorners[2].distanceToSquared(corners[3]) < snap) {
-        rotation = normalise(unit.rotation)
-        const p = new Vector3(-size.x / 2, 0, size.z / 2).applyAxisAngle(
-          new Vector3(0, 1, 0),
-          rotation
-        )
-        newPos = unitCorners[2].sub(p)
-        break
-      }
-
-      // Or to back?
-      if (
-        corners.some((c) => unitCorners[0].distanceToSquared(c) < snap) ||
-        corners.some((c) => unitCorners[1].distanceToSquared(c) < snap)
-      ) {
-        rotation = normalise(unit.rotation + Math.PI)
-        const p = new Vector3(-size.x / 2, 0, size.z / 2).applyAxisAngle(
-          new Vector3(0, 1, 0),
-          rotation
-        )
-        newPos = unitCorners[0].add(p)
-        break
+    // If we found a snap, then calculate new position and rotation
+    // to match the snap.
+    if (snapTo) {
+      const target = model.units.find((u) => u.id === snapTo.id)
+      let dx = target.width / 2000 + size.x / 2
+      if (target.type === 'base' && target.style?.includes('corner'))
+        dx += 0.295
+      const dz = target.depth / 2000 + size.z / 2
+      const dd = target.depth / 2000 - size.z / 2
+      // console.log('Snap to', ['left', 'back', 'right'][snapTo.side], minDist)
+      switch (snapTo.side) {
+        case 0: // left edge
+          rotation = target.rotation
+          newPos = new Vector3(-dx, 0, dd)
+            .applyAxisAngle(vectorY, rotation)
+            .add(target.pos)
+          break
+        case 1: // back edge
+          rotation = normalise(target.rotation + Math.PI)
+          newPos = new Vector3(0, 0, dz)
+            .applyAxisAngle(vectorY, rotation)
+            .add(target.pos)
+          break
+        case 2: // right edge
+          rotation = target.rotation
+          newPos = new Vector3(dx, 0, dd)
+            .applyAxisAngle(vectorY, rotation)
+            .add(target.pos)
+          break
       }
     }
 
@@ -344,7 +416,7 @@ export default function KitchenUnit({
     dispatch({ id: 'moveUnit', unit: id, pos: newPos, rotation })
 
     const { x, z } = newPos
-    matrix.makeTranslation(x - handle.x, 0, z - handle.z)
+    matrix.copy(lm)
     mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
   }
 
@@ -380,6 +452,7 @@ export default function KitchenUnit({
    * Callback for 'drag end' event.
    */
   function endDrag() {
+    allEdges.current = []
     setDragging(false)
     onDrag(false)
   }
