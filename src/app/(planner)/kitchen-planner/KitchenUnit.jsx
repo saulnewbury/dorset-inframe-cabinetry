@@ -207,9 +207,7 @@ export default function KitchenUnit({
   function canSnap(unit) {
     return (
       unit.id !== id &&
-      (type === 'base' ||
-        unit.type === 'wall' ||
-        (type === 'wall' && unit.type === 'base'))
+      ((type === 'wall' && unit.type !== 'base') || type !== 'wall')
     )
   }
 
@@ -372,6 +370,10 @@ export default function KitchenUnit({
     const edges = getEdges(id, myCorners)
     for (const edgeA of edges) {
       for (const edgeB of allEdges.current) {
+        // Only snap edges that are nearly parallel.
+        const dRot = Math.abs(normalise(edgeA.rot - edgeB.rot))
+        if (dRot < Math.PI - 0.1 && dRot > 0.1 - Math.PI) continue // not parallel
+        // And within snapping distance.
         const dist = edgeDistance(edgeA, edgeB)
         if (minDist > 0.0001 && dist < minDist) {
           minDist = dist
@@ -388,7 +390,12 @@ export default function KitchenUnit({
       if (target.type === 'base' && target.style?.includes('corner'))
         dx += 0.295
       const dz = target.depth / 2000 + size.z / 2
-      const dd = target.depth / 2000 - size.z / 2
+      let dd = target.depth / 2000 - size.z / 2
+      if (type === 'wall') {
+        dd = size.z / 2 - target.depth / 2000
+      } else if (target.type === 'wall') {
+        dd = size.z / 2 - target.depth / 2000
+      }
       // console.log('Snap to', ['left', 'back', 'right'][snapTo.side], minDist)
       switch (snapTo.side) {
         case 0: // left edge
