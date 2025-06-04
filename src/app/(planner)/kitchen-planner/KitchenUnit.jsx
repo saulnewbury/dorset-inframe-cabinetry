@@ -1,6 +1,6 @@
 import { forwardRef, useContext, useMemo, useRef, useState } from 'react'
 import { DragControls } from '@react-three/drei'
-import { Matrix4, Vector3, Vector2, Shape } from 'three'
+import { Matrix4, Vector3, Vector2, Shape, Box3 } from 'three'
 import clsx from 'clsx'
 
 import { ModelContext } from '@/model/context'
@@ -79,12 +79,13 @@ export default function KitchenUnit({
   onHover = () => {},
   onDrag = () => {}
 }) {
-  // const { is3D } = useContext(AppContext)
   const { is3D } = useAppState()
   const [model, dispatch] = useContext(ModelContext)
   const [dragging, setDragging] = useState(false)
   const info = useRef()
-  const allEdges = useRef([])
+  const otherUnits = useRef([])
+  const lastValidPosition = useRef(null)
+  const ghostColor = useRef('#20ff20')
 
   const size = new Vector3(width / 1000, height / 1000, depth / 1000)
   if (type === 'base' && style?.includes('corner')) size.x += 0.295
@@ -117,13 +118,6 @@ export default function KitchenUnit({
               <planeGeometry args={[size.x, size.z]} />
             </mesh>
             <InfoPanel ref={info} {...{ id, type, width, variant, style }} />
-            {/* <DimensionLine
-              from={0}
-              to={0.764 + 0.036}
-              value={0.818}
-              depth={0.575}
-              cab={true}
-            /> */}
           </>
         )}
         {type === 'base' && <BaseUnit {...{ width, variant, style }} />}
@@ -144,7 +138,7 @@ export default function KitchenUnit({
             rotation-z={rotation}
           >
             <planeGeometry args={[size.x, size.z]} />
-            <meshStandardMaterial color="#20ff20" />
+            <meshStandardMaterial color={ghostColor.current} />
           </mesh>
           <DragControls
             matrix={matrix}
@@ -160,14 +154,14 @@ export default function KitchenUnit({
               <mesh rotation-x={Math.PI / -2}>
                 <circleGeometry args={[0.1]} />
                 <meshStandardMaterial
-                  color="#4080bf"
+                  color='#4080bf'
                   transparent
                   opacity={0.6}
                 />
               </mesh>
               <mesh rotation-x={Math.PI / -2} position-y={0.001}>
                 <shapeGeometry args={[crossMove]} />
-                <meshStandardMaterial color="#ffffff" />
+                <meshStandardMaterial color='#ffffff' />
               </mesh>
             </group>
           </DragControls>
@@ -184,7 +178,7 @@ export default function KitchenUnit({
             >
               <mesh rotation-x={Math.PI / -2} position-x={0.2}>
                 <circleGeometry args={[0.03]} />
-                <meshStandardMaterial color="#004088" />
+                <meshStandardMaterial color='#004088' />
               </mesh>
             </group>
           </DragControls>
@@ -202,27 +196,20 @@ export default function KitchenUnit({
   }
 
   /**
-   * Returns true if the current unit is allowed to snap to the given one.
-   */
-  function canSnap(unit) {
-    return (
-      unit.id !== id &&
-      (type === 'base' ||
-        unit.type === 'wall' ||
-        (type === 'wall' && unit.type === 'base'))
-    )
-  }
-
-  /**
    * Calculates the four corners of a unit.
    */
-  function getCorners(unit) {
-    const pos = new Vector3(unit.pos.x, 0, unit.pos.z)
+  function getCorners(unit, position = unit.pos, rot = unit.rotation) {
+    // Ensure position is a Vector3
+    const pos =
+      position instanceof Vector3
+        ? position.clone()
+        : new Vector3(position.x, 0, position.z)
+
     let w = unit.width / 1000
     if (unit.type === 'base' && unit.style?.includes('corner')) {
       const offset = unit.style?.includes('left') ? -0.1475 : 0.1475
       w += 0.295
-      pos.add(new Vector3(offset, 0, 0).applyAxisAngle(vectorY, unit.rotation))
+      pos.add(new Vector3(offset, 0, 0).applyAxisAngle(vectorY, rot))
     }
     const d = unit.depth / 1000
     return [
@@ -230,209 +217,177 @@ export default function KitchenUnit({
       new Vector3(-w / 2, 0, -d / 2), // back left
       new Vector3(w / 2, 0, -d / 2), // back right
       new Vector3(w / 2, 0, d / 2) // front right
-    ].map((p) => p.applyAxisAngle(vectorY, unit.rotation).add(pos))
+    ].map((p) => p.applyAxisAngle(vectorY, rot).add(pos))
   }
 
   /**
-   * Calculates the edges of a unit, based on its corners.
+   * Calculates the axis-aligned bounding box for a unit at a given position and rotation.
    */
-  function getEdges(id, corners) {
-    return corners.map((c, i) => {
-      const next = corners[(i + 1) % corners.length]
-      return {
-        id,
-        start: [c.x, c.z],
-        end: [next.x, next.z],
-        rot: Math.atan2(next.x - c.x, next.z - c.z),
-        side: i
-      }
+  function getUnitBoundingBox(unit, position = unit.pos, rot = unit.rotation) {
+    const corners = getCorners(unit, position, rot)
+    const box = new Box3()
+
+    // Add bottom corners
+    corners.forEach((corner) => {
+      box.expandByPoint(corner)
     })
+
+    // Add top corners to account for height
+    const unitHeight = unit.height / 1000
+    corners.forEach((corner) => {
+      const topCorner = corner.clone()
+      topCorner.y = unitHeight
+      box.expandByPoint(topCorner)
+    })
+
+    return box
   }
 
   /**
-   * Calculate the shortest distance between two edges, a and b.
+   * Checks if two units' actual shapes collide using SAT (Separating Axis Theorem)
    */
-  function edgeDistance(a, b) {
-    const { start: a1, end: a2 } = a
-    const { start: b1, end: b2 } = b
-    function pointToSegment([px, pz], [sx, sz], [ex, ez]) {
-      const dx = ex - sx
-      const dz = ez - sz
-      if (dx === 0 && dz === 0) return Math.hypot(px - sx, pz - sz)
-      const t = Math.max(
-        0,
-        Math.min(1, ((px - sx) * dx + (pz - sz) * dz) / (dx * dx + dz * dz))
-      )
-      const projX = sx + t * dx
-      const projZ = sz + t * dz
-      return Math.hypot(px - projX, pz - projZ)
+  function checkUnitCollision(unit1Corners, unit2Corners) {
+    // Get the 2D projections (x,z) of the corners for both units
+    const poly1 = unit1Corners.map((c) => new Vector2(c.x, c.z))
+    const poly2 = unit2Corners.map((c) => new Vector2(c.x, c.z))
+
+    // Check using SAT - test all edges as potential separating axes
+    const edges = []
+
+    // Get edges from both polygons
+    for (let i = 0; i < poly1.length; i++) {
+      const next = (i + 1) % poly1.length
+      const edge = new Vector2().subVectors(poly1[next], poly1[i])
+      // Get perpendicular (normal) to edge
+      edges.push(new Vector2(-edge.y, edge.x).normalize())
     }
-    return Math.min(
-      pointToSegment(a1, b1, b2),
-      pointToSegment(a2, b1, b2),
-      pointToSegment(b1, a1, a2),
-      pointToSegment(b2, a1, a2)
-    )
+
+    for (let i = 0; i < poly2.length; i++) {
+      const next = (i + 1) % poly2.length
+      const edge = new Vector2().subVectors(poly2[next], poly2[i])
+      edges.push(new Vector2(-edge.y, edge.x).normalize())
+    }
+
+    // Test each potential separating axis
+    for (const axis of edges) {
+      // Project both polygons onto this axis
+      let min1 = Infinity,
+        max1 = -Infinity
+      let min2 = Infinity,
+        max2 = -Infinity
+
+      for (const point of poly1) {
+        const projection = point.dot(axis)
+        min1 = Math.min(min1, projection)
+        max1 = Math.max(max1, projection)
+      }
+
+      for (const point of poly2) {
+        const projection = point.dot(axis)
+        min2 = Math.min(min2, projection)
+        max2 = Math.max(max2, projection)
+      }
+
+      // Check if projections overlap (with small tolerance to allow touching)
+      const tolerance = 0.001
+      if (max1 < min2 + tolerance || max2 < min1 + tolerance) {
+        // Found a separating axis - no collision
+        return false
+      }
+    }
+
+    // No separating axis found - collision detected
+    return true
   }
 
   /**
-   * Callback for 'drag start' event. Calculate the corners and edges of all
-   * units and set the dragging state to true. Only keep the first three
-   * edges of each unit, as we don't snap to front.
+   * Callback for 'drag start' event.
    */
   function startDrag() {
-    allEdges.current = model.units
-      .filter((u) => canSnap(u))
-      .map((u) => getEdges(u.id, getCorners(u)).slice(0, 3))
-      .flat()
+    // Store other units for collision detection
+    otherUnits.current = model.units.filter((u) => u.id !== id)
+
+    // Store current position as last valid
+    lastValidPosition.current = {
+      pos: new Vector3(pos.x, pos.y, pos.z),
+      rotation
+    }
+    ghostColor.current = '#20ff20'
+
     setDragging(true)
     onDrag(true)
   }
 
   /**
-   * Callback for 'drag' event. Updates the position of the unit, snapping to
-   * the nearest wall (if close enough).
+   * Callback for 'drag' event. Updates the position of the unit.
    */
   function moveUnit(lm) {
-    const snap = wt * wt
-    const wrap = (a, n, s) => (s ? a[n] : a[(n + a.length) % a.length])
-    const normalise = (r) => (r < Math.PI ? r : r - Math.PI * 2)
     let newPos = new Vector3().setFromMatrixPosition(lm).add(handle)
-    let rotation = ry
 
-    // Get the four corners of the unit.
-    let myCorners = [
-      new Vector3(-size.x / 2, 0, size.z / 2), // front left
-      new Vector3(-size.x / 2, 0, -size.z / 2), // back left
-      new Vector3(size.x / 2, 0, -size.z / 2), // back right
-      new Vector3(size.x / 2, 0, size.z / 2) // front right
-    ].map((p) => p.applyAxisAngle(vectorY, rotation).add(newPos))
-
-    // Find all walls where any corner of the current unit is within snap
-    // radius.
-    const snapable = model.walls.flat().reduce((list, pt, n) => {
-      const s = pt.segment
-      const end = wrap(model.walls[s], n + 1, s)
-      if (!end) return list
-      const len2 = (end.x - pt.x) ** 2 + (end.z - pt.z) ** 2
-      if (len2 === 0) return list // wall zero length
-      for (const corner of myCorners) {
-        const { x: cx, z: cz } = corner
-        // Get distance of corner to wall segment.
-        const dot =
-          ((cx - pt.x) * (end.x - pt.x) + (cz - pt.z) * (end.z - pt.z)) / len2
-        if (dot < 0 || dot > 1) return list // projection outside wall
-        const xx = pt.x + dot * (end.x - pt.x)
-        const zz = pt.z + dot * (end.z - pt.z)
-        const d2 = (cx - xx) ** 2 + (cz - zz) ** 2
-        if (d2 < snap) {
-          list.push({ n, s, d2, len2 })
-          break // only need one corner to snap
-        }
-      }
-      return list
-    }, [])
-
-    // If we found a wall to snap to then we need to find the perpendicular
-    // projection from the centre of the unit to the centre line of the wall.
-    // We then use this to calculate an offset that puts the unit right
-    // against the wall.
-    if (snapable.length > 0) {
-      const dMin = Math.min(...snapable.map((s) => s.d2))
-      const { n, s, len2 } = snapable.find((s) => s.d2 === dMin) ?? {}
-      const pt = model.walls[s][n]
-      const end = wrap(model.walls[s], n + 1, s)
-      const { x: cx, z: cz } = newPos
-      const dot =
-        ((cx - pt.x) * (end.x - pt.x) + (cz - pt.z) * (end.z - pt.z)) / len2
-      const xx = pt.x + dot * (end.x - pt.x)
-      const zz = pt.z + dot * (end.z - pt.z)
-      const theta = Math.atan2(end.x - pt.x, end.z - pt.z)
-      rotation = theta - Math.PI / 2
-      newPos = new Vector3(
-        xx - ((size.z + wt) / 2) * Math.cos(theta),
-        0,
-        zz + ((size.z + wt) / 2) * Math.sin(theta)
-      )
-      // Recalculate corners based on new position and rotation.
-      myCorners = [
-        new Vector3(-size.x / 2, 0, size.z / 2),
-        new Vector3(-size.x / 2, 0, -size.z / 2),
-        new Vector3(size.x / 2, 0, -size.z / 2),
-        new Vector3(size.x / 2, 0, size.z / 2)
-      ].map((p) => p.applyAxisAngle(vectorY, rotation).add(newPos))
+    // Get corners of current unit at new position
+    const currentUnit = {
+      width: width,
+      depth: depth,
+      height: height,
+      type: type,
+      style: style,
+      pos: newPos,
+      rotation: ry
     }
 
-    // Now work out whether any other unit is close enough to snap. We do this
-    // by finding the closest distance between any edge of the current unit and
-    // any edge of any other (compatible) unit.
-    let minDist = wt // minimum distance to snap
-    let snapTo = null
+    const myCorners = getCorners(currentUnit, newPos, ry)
+    let hasCollision = false
 
-    const edges = getEdges(id, myCorners)
-    for (const edgeA of edges) {
-      for (const edgeB of allEdges.current) {
-        const dist = edgeDistance(edgeA, edgeB)
-        if (minDist > 0.0001 && dist < minDist) {
-          minDist = dist
-          snapTo = edgeB
-        }
+    // First do a quick AABB check for performance
+    const myBox = getUnitBoundingBox(currentUnit, newPos, ry)
+
+    for (const otherUnit of otherUnits.current) {
+      // Quick AABB check first
+      const otherBox = getUnitBoundingBox(otherUnit)
+
+      // If AABBs don't intersect, no need for detailed check
+      if (!myBox.intersectsBox(otherBox)) {
+        continue
+      }
+
+      // AABBs intersect, do detailed polygon collision check
+      const otherCorners = getCorners(otherUnit)
+
+      if (checkUnitCollision(myCorners, otherCorners)) {
+        console.log('Collision detected with unit', otherUnit.id)
+        hasCollision = true
+        break
       }
     }
 
-    // If we found a snap, then calculate new position and rotation
-    // to match the snap.
-    if (snapTo) {
-      const target = model.units.find((u) => u.id === snapTo.id)
-      let dx = target.width / 2000 + size.x / 2
-      if (target.type === 'base' && target.style?.includes('corner'))
-        dx += 0.295
-      const dz = target.depth / 2000 + size.z / 2
-      const dd = target.depth / 2000 - size.z / 2
-      // console.log('Snap to', ['left', 'back', 'right'][snapTo.side], minDist)
-      switch (snapTo.side) {
-        case 0: // left edge
-          rotation = target.rotation
-          newPos = new Vector3(-dx, 0, dd)
-            .applyAxisAngle(vectorY, rotation)
-            .add(target.pos)
-          break
-        case 1: // back edge
-          rotation = normalise(target.rotation + Math.PI)
-          newPos = new Vector3(0, 0, dz)
-            .applyAxisAngle(vectorY, rotation)
-            .add(target.pos)
-          break
-        case 2: // right edge
-          rotation = target.rotation
-          newPos = new Vector3(dx, 0, dd)
-            .applyAxisAngle(vectorY, rotation)
-            .add(target.pos)
-          break
+    // Update ghost color based on collision state
+    ghostColor.current = hasCollision ? '#ff2020' : '#20ff20'
+
+    // Only update position if no collision
+    if (!hasCollision) {
+      lastValidPosition.current = {
+        pos: new Vector3(newPos.x, newPos.y, newPos.z),
+        rotation: ry
       }
+      dispatch({ id: 'moveUnit', unit: id, pos: newPos, rotation: ry })
+
+      const { x, z } = newPos
+      matrix.copy(lm)
+      mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
     }
-
-    // Update unit position and rotation
-    dispatch({ id: 'moveUnit', unit: id, pos: newPos, rotation })
-
-    const { x, z } = newPos
-    matrix.copy(lm)
-    mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
+    // If there's a collision, don't update anything - the unit stays at its current position
   }
 
   /**
    * Handles the rotation of the unit when dragging the handle.
    */
   function rotateUnit(lm) {
-    // Get the current position of the handle, relative to the centre of the
-    // unit.
+    // Get the current position of the handle, relative to the centre of the unit.
     const t = new Matrix4().makeRotationY(ry)
     const v = new Vector3(0.2, 0, 0).applyMatrix4(t)
     const { x, z } = new Vector3().setFromMatrixPosition(lm).add(v)
 
-    // Calculate the new position of the handle, relative to the centre of
-    // the unit. This is done by rotating the handle around the centre of
-    // the unit.
+    // Calculate the new position of the handle, relative to the centre of the unit.
     let theta = Math.atan2(z, x)
     const px = 0.2 * Math.cos(theta)
     const pz = 0.2 * Math.sin(theta)
@@ -441,18 +396,56 @@ export default function KitchenUnit({
     const snap = Math.round(theta / (Math.PI / 2)) * (Math.PI / 2)
     if (Math.abs(snap - theta) < 0.1) theta = snap
 
-    // Update the rotation of the unit to match the new angle.
-    dispatch({ id: 'moveUnit', unit: id, pos, rotation: -theta })
+    // Check if rotation would cause collision
+    const myCorners = getCorners(
+      { width, depth, height, type, style },
+      pos,
+      -theta
+    )
+    let hasCollision = false
 
-    // Now update the position of the handle.
-    mrotate.makeTranslation(px - v.x, 0, pz - v.z)
+    // Quick AABB check first
+    const myBox = getUnitBoundingBox(
+      { width, depth, height, type, style },
+      pos,
+      -theta
+    )
+
+    for (const otherUnit of otherUnits.current) {
+      const otherBox = getUnitBoundingBox(otherUnit)
+
+      // If AABBs don't intersect, skip detailed check
+      if (!myBox.intersectsBox(otherBox)) {
+        continue
+      }
+
+      // Do detailed collision check
+      const otherCorners = getCorners(otherUnit)
+      if (checkUnitCollision(myCorners, otherCorners)) {
+        hasCollision = true
+        break
+      }
+    }
+
+    // Update ghost color
+    ghostColor.current = hasCollision ? '#ff2020' : '#20ff20'
+
+    // Only update rotation if no collision
+    if (!hasCollision) {
+      lastValidPosition.current.rotation = -theta
+      dispatch({ id: 'moveUnit', unit: id, pos, rotation: -theta })
+      // Update the position of the handle.
+      mrotate.makeTranslation(px - v.x, 0, pz - v.z)
+    }
   }
 
   /**
    * Callback for 'drag end' event.
    */
   function endDrag() {
-    allEdges.current = []
+    otherUnits.current = []
+    lastValidPosition.current = null
+    ghostColor.current = '#20ff20'
     setDragging(false)
     onDrag(false)
   }
@@ -479,7 +472,7 @@ const InfoPanel = forwardRef((props, ref) => {
   return (
     <ItemInfo ref={ref}>
       <div className={clsx(style && 'flex gap-5 items-start')}>
-        {style && <img src={image} alt="" className="w-28" />}
+        {style && <img src={image} alt='' className='w-28' />}
         <div>
           <p>
             Item: {type} {props.variant?.toLowerCase()}
@@ -488,9 +481,9 @@ const InfoPanel = forwardRef((props, ref) => {
           <p>Width: {props.width}mm</p>
         </div>
       </div>
-      <p className="text-right">
+      <p className='text-right'>
         <button onClick={deleteItem}>
-          <img src={ic_delete.src} alt="Delete" className="size-4" />
+          <img src={ic_delete.src} alt='Delete' className='size-4' />
         </button>
       </p>
     </ItemInfo>
