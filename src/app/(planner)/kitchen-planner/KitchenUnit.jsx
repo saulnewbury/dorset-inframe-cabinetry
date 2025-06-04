@@ -359,6 +359,64 @@ export default function KitchenUnit({
   }
 
   /**
+   * Find the best sliding direction when collision occurs
+   */
+  function findSlidingVector(fromPos, toPos, unit) {
+    const movement = new Vector3().subVectors(toPos, fromPos)
+    if (movement.length() < 0.001) return null
+
+    // Check collision at target position
+    const corners = getCorners(unit, toPos, unit.rotation)
+    let collisionNormal = null
+    let minDistance = Infinity
+
+    // Find which edge we're colliding with
+    for (const otherUnit of otherUnits.current) {
+      const otherBox = getUnitBoundingBox(otherUnit)
+      const myBox = getUnitBoundingBox(unit, toPos, unit.rotation)
+
+      if (!myBox.intersectsBox(otherBox)) continue
+
+      const otherCorners = getCorners(otherUnit)
+      if (!checkUnitCollision(corners, otherCorners)) continue
+
+      // Find the closest edge of the other unit
+      for (let i = 0; i < otherCorners.length; i++) {
+        const start = otherCorners[i]
+        const end = otherCorners[(i + 1) % otherCorners.length]
+        const edge = new Vector3().subVectors(end, start)
+        const edgeNormal = new Vector3(edge.z, 0, -edge.x).normalize()
+
+        // Check distance from our corners to this edge
+        for (const corner of corners) {
+          const toCorner = new Vector3().subVectors(corner, start)
+          const dist = Math.abs(toCorner.dot(edgeNormal))
+
+          if (dist < minDistance) {
+            minDistance = dist
+            // Make sure normal points away from the other unit
+            const otherCenter = new Vector3(otherUnit.pos.x, 0, otherUnit.pos.z)
+            const toCenter = new Vector3().subVectors(toPos, otherCenter)
+            collisionNormal =
+              toCenter.dot(edgeNormal) > 0 ? edgeNormal : edgeNormal.negate()
+          }
+        }
+      }
+    }
+
+    if (!collisionNormal) return null
+
+    // Project movement onto the plane perpendicular to collision normal
+    const slidingMovement = movement.clone()
+    const normalComponent = collisionNormal.multiplyScalar(
+      movement.dot(collisionNormal)
+    )
+    slidingMovement.sub(normalComponent)
+
+    return slidingMovement.length() > 0.001 ? slidingMovement : null
+  }
+
+  /**
    * Callback for 'drag' event. Updates the position of the unit.
    */
   function moveUnit(lm) {
@@ -399,12 +457,10 @@ export default function KitchenUnit({
       }
     }
 
-    // Update ghost color based on collision state
-    ghostColor.current = hasCollision ? '#ff2020' : '#20ff20'
-
     // Handle position update
     if (!hasCollision) {
       // No collision - update normally
+      ghostColor.current = '#20ff20'
       lastValidPosition.current = {
         pos: new Vector3(newPos.x, newPos.y, newPos.z),
         rotation: ry
@@ -415,20 +471,88 @@ export default function KitchenUnit({
       matrix.copy(lm)
       mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
     } else {
-      // Collision detected - find closest valid position
+      // Collision detected
+      ghostColor.current = '#ff2020'
+
       if (lastValidPosition.current) {
-        const closestValid = findClosestValidPosition(
+        // Try sliding along the collision surface
+        const slidingVector = findSlidingVector(
           lastValidPosition.current.pos,
           newPos,
           currentUnit
         )
 
-        lastValidPosition.current = { pos: closestValid, rotation: ry }
-        dispatch({ id: 'moveUnit', unit: id, pos: closestValid, rotation: ry })
+        if (slidingVector) {
+          // Apply sliding movement
+          const slidePos = lastValidPosition.current.pos
+            .clone()
+            .add(slidingVector)
 
-        const { x, z } = closestValid
-        matrix.copy(lm)
-        mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
+          // Verify the slide position is valid
+          const slideCorners = getCorners(currentUnit, slidePos, ry)
+          let slideHasCollision = false
+
+          for (const otherUnit of otherUnits.current) {
+            const otherBox = getUnitBoundingBox(otherUnit)
+            const slideBox = getUnitBoundingBox(currentUnit, slidePos, ry)
+
+            if (!slideBox.intersectsBox(otherBox)) continue
+
+            const otherCorners = getCorners(otherUnit)
+            if (checkUnitCollision(slideCorners, otherCorners)) {
+              slideHasCollision = true
+              break
+            }
+          }
+
+          if (!slideHasCollision) {
+            // Sliding position is valid
+            lastValidPosition.current = { pos: slidePos, rotation: ry }
+            dispatch({ id: 'moveUnit', unit: id, pos: slidePos, rotation: ry })
+
+            const { x, z } = slidePos
+            matrix.copy(lm)
+            mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
+          } else {
+            // Can't slide, find closest valid position
+            const closestValid = findClosestValidPosition(
+              lastValidPosition.current.pos,
+              newPos,
+              currentUnit
+            )
+
+            lastValidPosition.current = { pos: closestValid, rotation: ry }
+            dispatch({
+              id: 'moveUnit',
+              unit: id,
+              pos: closestValid,
+              rotation: ry
+            })
+
+            const { x, z } = closestValid
+            matrix.copy(lm)
+            mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
+          }
+        } else {
+          // No valid sliding direction, just find closest valid position
+          const closestValid = findClosestValidPosition(
+            lastValidPosition.current.pos,
+            newPos,
+            currentUnit
+          )
+
+          lastValidPosition.current = { pos: closestValid, rotation: ry }
+          dispatch({
+            id: 'moveUnit',
+            unit: id,
+            pos: closestValid,
+            rotation: ry
+          })
+
+          const { x, z } = closestValid
+          matrix.copy(lm)
+          mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
+        }
       }
     }
   }
