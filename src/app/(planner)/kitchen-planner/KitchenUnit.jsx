@@ -102,91 +102,323 @@ export default function KitchenUnit({
     ]
   }, [dragging])
 
-  return (
-    <>
-      <group position={[pos.x, 0, pos.z]} rotation-y={rotation}>
-        {!is3D && (
-          <>
-            <mesh
-              position={[0, size.y + 0.05, 0]}
-              rotation-x={Math.PI / -2}
-              material={hoverMaterial}
-              onPointerOver={(ev) => onHover(ev, true)}
-              onPointerOut={(ev) => onHover(ev, false)}
-              onClick={showInfo}
-              userData={{ id, type: 'unit' }}
-            >
-              <planeGeometry args={[size.x, size.z]} />
-            </mesh>
-            <InfoPanel ref={info} {...{ id, type, width, variant, style }} />
-          </>
-        )}
-        {type === 'base' && <BaseUnit {...{ width, variant, style }} />}
-        {type === 'tall' && <TallUnit {...{ width, variant, style }} />}
-        {type === 'wall' && (
-          <CabinetWall
-            carcassInnerWidth={width / 1000 - 0.036}
-            carcassDepth={0.282}
-            style={style}
-          />
-        )}
-      </group>
-      {(showHandle || dragging) && (
-        <>
-          <mesh
-            position={[pos.x, size.y + 0.08, pos.z]}
-            rotation-x={Math.PI / -2}
-            rotation-z={rotation}
-          >
-            <planeGeometry args={[size.x, size.z]} />
-            <meshStandardMaterial color={ghostColor.current} />
-          </mesh>
-          <DragControls
-            matrix={matrix}
-            autoTransform={false}
-            onDragStart={startDrag}
-            onDrag={moveUnit}
-            onDragEnd={endDrag}
-          >
-            <group
-              position={[handle.x, size.y + 0.1, handle.z]}
-              rotation-y={rotation}
-            >
-              <mesh rotation-x={Math.PI / -2}>
-                <circleGeometry args={[0.1]} />
-                <meshStandardMaterial
-                  color='#4080bf'
-                  transparent
-                  opacity={0.6}
-                />
-              </mesh>
-              <mesh rotation-x={Math.PI / -2} position-y={0.001}>
-                <shapeGeometry args={[crossMove]} />
-                <meshStandardMaterial color='#ffffff' />
-              </mesh>
-            </group>
-          </DragControls>
-          <DragControls
-            matrix={mrotate}
-            autoTransform={false}
-            onDragStart={startDrag}
-            onDrag={rotateUnit}
-            onDragEnd={endDrag}
-          >
-            <group
-              position={[handle.x, size.y + 0.1, handle.z]}
-              rotation-y={ry}
-            >
-              <mesh rotation-x={Math.PI / -2} position-x={0.2}>
-                <circleGeometry args={[0.03]} />
-                <meshStandardMaterial color='#004088' />
-              </mesh>
-            </group>
-          </DragControls>
-        </>
-      )}
-    </>
-  )
+  /**
+   * Converts wall segments into line segments for collision detection
+   */
+  function getWallSegments(walls) {
+    console.log('🏠 Processing walls:', walls)
+    const segments = []
+
+    // Process each wall segment (outer walls and inner walls)
+    walls.forEach((wallSegment, segmentIndex) => {
+      console.log(`📐 Processing wall segment ${segmentIndex}:`, wallSegment)
+
+      for (let i = 0; i < wallSegment.length; i++) {
+        const start = wallSegment[i]
+        const end = wallSegment[(i + 1) % wallSegment.length]
+
+        const segment = {
+          start: new Vector3(start.x, 0, start.z),
+          end: new Vector3(end.x, 0, end.z),
+          wallId: start.id,
+          segment: start.segment
+        }
+
+        console.log(
+          `  📏 Wall segment ${i}: from (${start.x}, ${start.z}) to (${end.x}, ${end.z})`
+        )
+        segments.push(segment)
+      }
+    })
+
+    console.log('📋 Total wall segments created:', segments.length)
+    return segments
+  }
+
+  /**
+   * Check if unit collides with walls
+   */
+  function checkWallCollision(unitCorners, wallSegments) {
+    console.log(
+      '🔍 Checking wall collision for unit corners:',
+      unitCorners.map((c) => `(${c.x.toFixed(2)}, ${c.z.toFixed(2)})`)
+    )
+
+    const unitPoly = unitCorners.map((c) => new Vector2(c.x, c.z))
+
+    for (let i = 0; i < wallSegments.length; i++) {
+      const segment = wallSegments[i]
+      const wallStart = new Vector2(segment.start.x, segment.start.z)
+      const wallEnd = new Vector2(segment.end.x, segment.end.z)
+
+      console.log(`  🧱 Testing wall segment ${i}`)
+
+      // Calculate wall properties
+      const wallVector = new Vector2().subVectors(wallEnd, wallStart)
+      const wallLength = wallVector.length()
+      const wallDir = wallVector.clone().normalize()
+      const wallNormal = new Vector2(-wallVector.y, wallVector.x).normalize()
+
+      // Wall thickness
+      const wallThickness = 0.1 // 10cm thick walls
+      const halfThickness = wallThickness / 2
+
+      // Calculate the inside face of the wall (room-facing surface)
+      const insideFaceStart = wallStart
+        .clone()
+        .add(wallNormal.clone().multiplyScalar(halfThickness))
+      const insideFaceEnd = wallEnd
+        .clone()
+        .add(wallNormal.clone().multiplyScalar(halfThickness))
+
+      console.log(
+        `    📐 Wall center: (${wallStart.x.toFixed(2)}, ${wallStart.y.toFixed(
+          2
+        )}) to (${wallEnd.x.toFixed(2)}, ${wallEnd.y.toFixed(2)})`
+      )
+      console.log(
+        `    📐 Inside face: (${insideFaceStart.x.toFixed(
+          2
+        )}, ${insideFaceStart.y.toFixed(2)}) to (${insideFaceEnd.x.toFixed(
+          2
+        )}, ${insideFaceEnd.y.toFixed(2)})`
+      )
+
+      // Check each unit corner against the inside face of the wall
+      for (let j = 0; j < unitPoly.length; j++) {
+        const corner = unitPoly[j]
+
+        // Calculate the closest point on the inside face line segment
+        const toCorner = new Vector2().subVectors(corner, insideFaceStart)
+        const projectionLength = toCorner.dot(wallDir)
+
+        // Clamp projection to wall segment bounds
+        const clampedProjection = Math.max(
+          0,
+          Math.min(wallLength, projectionLength)
+        )
+        const closestPointOnInsideFace = insideFaceStart
+          .clone()
+          .add(wallDir.clone().multiplyScalar(clampedProjection))
+
+        // Calculate SIGNED distance (negative = inside wall, positive = outside wall)
+        const vectorToCorner = new Vector2().subVectors(
+          corner,
+          closestPointOnInsideFace
+        )
+        const signedDistance = vectorToCorner.dot(wallNormal)
+
+        console.log(
+          `    🔹 Corner ${j}: signed distance=${signedDistance.toFixed(
+            3
+          )} (negative=inside wall)`
+        )
+
+        // Collision occurs if corner is inside the wall OR very close to the inside face
+        const collisionThreshold = 0.02 // 2cm safety margin
+        if (signedDistance < collisionThreshold) {
+          console.log(
+            '❌ COLLISION DETECTED - corner inside or too close to wall'
+          )
+          return {
+            collides: true,
+            segment: segment,
+            wallId: segment.wallId,
+            insideFace: { start: insideFaceStart, end: insideFaceEnd },
+            penetrationDepth: Math.abs(Math.min(0, signedDistance)) // How far inside the wall
+          }
+        }
+      }
+    }
+
+    console.log('✅ No wall collision detected')
+    return { collides: false }
+  }
+
+  /**
+   * Find the closest valid position when colliding with walls
+   */
+  function findClosestValidPositionWithWalls(
+    fromPos,
+    toPos,
+    unit,
+    wallSegments,
+    otherUnits,
+    iterations = 10
+  ) {
+    console.log('🔍 BINARY SEARCH: Finding closest valid position')
+    console.log(`   From: (${fromPos.x.toFixed(2)}, ${fromPos.z.toFixed(2)})`)
+    console.log(`   To: (${toPos.x.toFixed(2)}, ${toPos.z.toFixed(2)})`)
+
+    let validPos = fromPos.clone()
+    let invalidPos = toPos.clone()
+
+    // Binary search for the boundary
+    for (let i = 0; i < iterations; i++) {
+      const midPos = new Vector3().lerpVectors(validPos, invalidPos, 0.5)
+      console.log(
+        `   Iteration ${i + 1}: Testing (${midPos.x.toFixed(
+          3
+        )}, ${midPos.z.toFixed(3)})`
+      )
+
+      // Check collision at midpoint
+      const corners = getCorners(unit, midPos, unit.rotation)
+      let hasCollision = false
+      let collisionType = null
+
+      // Check wall collisions first
+      const wallCollision = checkWallCollision(corners, wallSegments)
+      if (wallCollision.collides) {
+        hasCollision = true
+        collisionType = 'wall'
+        console.log(`     ❌ Wall collision detected`)
+      }
+
+      // Check unit collisions if no wall collision
+      if (!hasCollision) {
+        for (const otherUnit of otherUnits) {
+          const otherBox = getUnitBoundingBox(otherUnit)
+          const myBox = getUnitBoundingBox(unit, midPos, unit.rotation)
+
+          if (!myBox.intersectsBox(otherBox)) continue
+
+          const otherCorners = getCorners(otherUnit)
+          if (checkUnitCollision(corners, otherCorners)) {
+            hasCollision = true
+            collisionType = 'unit'
+            console.log(`     ❌ Unit collision detected`)
+            break
+          }
+        }
+      }
+
+      if (hasCollision) {
+        console.log(
+          `     → Moving invalid boundary closer: collision with ${collisionType}`
+        )
+        invalidPos = midPos
+      } else {
+        console.log(`     → Moving valid boundary further: no collision`)
+        validPos = midPos
+      }
+
+      const distance = validPos.distanceTo(invalidPos)
+      console.log(`     → Distance between boundaries: ${distance.toFixed(4)}`)
+
+      // Early exit if we're close enough
+      if (distance < 0.001) {
+        console.log(`     → Converged early at iteration ${i + 1}`)
+        break
+      }
+    }
+
+    // Back off slightly from the exact collision point
+    const direction = new Vector3().subVectors(validPos, invalidPos).normalize()
+    const finalPos = validPos.add(direction.multiplyScalar(0.001))
+
+    console.log(
+      `🎯 BINARY SEARCH RESULT: (${finalPos.x.toFixed(3)}, ${finalPos.z.toFixed(
+        3
+      )})`
+    )
+    console.log(
+      `   Distance from start: ${fromPos.distanceTo(finalPos).toFixed(3)}`
+    )
+    console.log(
+      `   Distance from target: ${toPos.distanceTo(finalPos).toFixed(3)}`
+    )
+
+    return finalPos
+  }
+
+  /**
+   * Find wall collision edge for sliding
+   */
+  function findWallCollisionEdge(unit, targetPos, currentPos, wallSegments) {
+    console.log('🔍 findWallCollisionEdge called')
+    const corners = getCorners(unit, targetPos, unit.rotation)
+    const currentCorners = getCorners(unit, currentPos, unit.rotation)
+    let bestEdge = null
+    let minDistance = Infinity
+
+    const wallThickness = 0.1
+    const halfThickness = wallThickness / 2
+
+    for (const wallSegment of wallSegments) {
+      const wallCollision = checkWallCollision(corners, [wallSegment])
+      if (!wallCollision.collides) continue
+
+      // Calculate wall properties
+      const wallStart = new Vector2(wallSegment.start.x, wallSegment.start.z)
+      const wallEnd = new Vector2(wallSegment.end.x, wallSegment.end.z)
+      const wallVector = new Vector2().subVectors(wallEnd, wallStart)
+      const wallDir = wallVector.clone().normalize()
+      const wallNormal = new Vector2(-wallVector.y, wallVector.x).normalize()
+
+      // Use the inside face for sliding calculations
+      const insideFaceStart = wallStart
+        .clone()
+        .add(wallNormal.clone().multiplyScalar(halfThickness))
+      const insideFaceEnd = wallEnd
+        .clone()
+        .add(wallNormal.clone().multiplyScalar(halfThickness))
+
+      // Convert back to Vector3 for sliding calculations
+      const insideFaceStart3D = new Vector3(
+        insideFaceStart.x,
+        0,
+        insideFaceStart.y
+      )
+      const insideFaceEnd3D = new Vector3(insideFaceEnd.x, 0, insideFaceEnd.y)
+      const wallDir3D = new Vector3(wallDir.x, 0, wallDir.y)
+      const wallNormal3D = new Vector3(wallNormal.x, 0, wallNormal.y)
+
+      // Calculate average distance from current corners to this inside face
+      let totalDist = 0
+      for (const corner of currentCorners) {
+        const toStart = new Vector3().subVectors(corner, insideFaceStart3D)
+        const projection = toStart.dot(wallDir3D)
+        const wallLength = wallVector.length()
+        const clamped = Math.max(0, Math.min(wallLength, projection))
+        const closestPoint = insideFaceStart3D
+          .clone()
+          .add(wallDir3D.clone().multiplyScalar(clamped))
+        const dist = corner.distanceTo(closestPoint)
+        totalDist += dist
+      }
+      const avgDist = totalDist / currentCorners.length
+
+      if (avgDist < minDistance) {
+        minDistance = avgDist
+
+        // Determine which side of the wall the unit is on
+        const toCenter = new Vector3().subVectors(currentPos, insideFaceStart3D)
+        const normal =
+          toCenter.dot(wallNormal3D) > 0 ? wallNormal3D : wallNormal3D.negate()
+
+        // Calculate the current distance to maintain (from inside face)
+        const centerToWall = new Vector3().subVectors(
+          currentPos,
+          insideFaceStart3D
+        )
+        const currentDistance = Math.abs(centerToWall.dot(normal))
+
+        bestEdge = {
+          start: insideFaceStart3D,
+          end: insideFaceEnd3D,
+          direction: wallDir3D,
+          normal: normal,
+          wallId: wallSegment.wallId,
+          isWall: true,
+          maintainDistance: currentDistance
+        }
+      }
+    }
+
+    console.log('🎯 Best wall edge found:', bestEdge)
+    return bestEdge
+  }
 
   /**
    * Callback for 'click' event on 2D opening. Shows information about the
@@ -429,12 +661,25 @@ export default function KitchenUnit({
 
   /**
    * Callback for 'drag' event. Updates the position of the unit.
+   * COMPLETE VERSION WITH WALL COLLISION AND SLIDING
    */
   function moveUnit(lm) {
+    console.log('🚀 moveUnit called - checking walls!')
+
     let newPos = new Vector3().setFromMatrixPosition(lm).add(handle)
     const prevPos = lastValidPosition.current
       ? lastValidPosition.current.pos
       : pos
+
+    console.log('📍 Moving from:', prevPos, 'to:', newPos)
+
+    // Get wall segments from the model
+    const wallSegments = getWallSegments(model.walls)
+
+    if (wallSegments.length === 0) {
+      console.log('⚠️ No wall segments found!')
+      console.log('model.walls:', model.walls)
+    }
 
     // Get corners of current unit at new position
     const currentUnit = {
@@ -450,20 +695,38 @@ export default function KitchenUnit({
     // Check for collision at target position
     const myCorners = getCorners(currentUnit, newPos, ry)
     let hasCollision = false
-    const myBox = getUnitBoundingBox(currentUnit, newPos, ry)
+    let collisionType = null
 
-    for (const otherUnit of otherUnits.current) {
-      const otherBox = getUnitBoundingBox(otherUnit)
-      if (!myBox.intersectsBox(otherBox)) continue
+    // Check wall collisions FIRST
+    console.log('🔍 Checking wall collision...')
+    const wallCollision = checkWallCollision(myCorners, wallSegments)
+    if (wallCollision.collides) {
+      console.log('❌ WALL COLLISION DETECTED!')
+      hasCollision = true
+      collisionType = 'wall'
+    }
 
-      const otherCorners = getCorners(otherUnit)
-      if (checkUnitCollision(myCorners, otherCorners)) {
-        hasCollision = true
-        break
+    // Check unit collisions if no wall collision
+    if (!hasCollision) {
+      console.log('🔍 Checking unit collisions...')
+      const myBox = getUnitBoundingBox(currentUnit, newPos, ry)
+
+      for (const otherUnit of otherUnits.current) {
+        const otherBox = getUnitBoundingBox(otherUnit)
+        if (!myBox.intersectsBox(otherBox)) continue
+
+        const otherCorners = getCorners(otherUnit)
+        if (checkUnitCollision(myCorners, otherCorners)) {
+          console.log('❌ UNIT COLLISION DETECTED!')
+          hasCollision = true
+          collisionType = 'unit'
+          break
+        }
       }
     }
 
     if (!hasCollision) {
+      console.log('✅ No collision - moving freely')
       // No collision - move freely
       ghostColor.current = '#20ff20'
       slidingState.current = null // Clear sliding state
@@ -475,22 +738,39 @@ export default function KitchenUnit({
       matrix.copy(lm)
       mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
     } else {
+      console.log('❌ Collision detected, type:', collisionType)
       // Collision detected
       ghostColor.current = '#ff2020'
 
       // If we're not already sliding, find the collision edge
       if (!slidingState.current) {
+        console.log('🔍 Finding collision edge...')
         // First find the exact collision point using binary search
-        const exactCollisionPos = findClosestValidPosition(
+        const exactCollisionPos = findClosestValidPositionWithWalls(
           prevPos,
           newPos,
-          currentUnit
+          currentUnit,
+          wallSegments,
+          otherUnits.current
         )
 
-        // Now find the edge we're colliding with at that exact position
-        const edge = findCollisionEdge(currentUnit, newPos, exactCollisionPos)
+        console.log('🎯 Binary search completed, finding collision edge...')
+
+        // Now find the edge we're colliding with
+        let edge = null
+        if (collisionType === 'wall') {
+          edge = findWallCollisionEdge(
+            currentUnit,
+            newPos,
+            exactCollisionPos,
+            wallSegments
+          )
+        } else {
+          edge = findCollisionEdge(currentUnit, newPos, exactCollisionPos) // Existing unit collision logic
+        }
+
         if (edge) {
-          // Recalculate the maintain distance using the exact collision position
+          console.log('🎯 Setting up sliding state with precise position')
           const centerToEdge = new Vector3().subVectors(
             exactCollisionPos,
             edge.start
@@ -498,7 +778,7 @@ export default function KitchenUnit({
           edge.maintainDistance = Math.abs(centerToEdge.dot(edge.normal))
           slidingState.current = edge
 
-          // Update to the exact collision position first
+          // Position at the precise collision point
           lastValidPosition.current = { pos: exactCollisionPos, rotation: ry }
           dispatch({
             id: 'moveUnit',
@@ -510,11 +790,12 @@ export default function KitchenUnit({
           const { x, z } = exactCollisionPos
           matrix.copy(lm)
           mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
-          return // Exit early since we've positioned at the exact collision point
+          return
         }
       }
 
       if (slidingState.current) {
+        console.log('🏄 Sliding along edge...')
         // Project movement onto sliding direction
         const movement = new Vector3().subVectors(newPos, prevPos)
         const slideAmount = movement.dot(slidingState.current.direction)
@@ -526,7 +807,7 @@ export default function KitchenUnit({
             slidingState.current.direction.clone().multiplyScalar(slideAmount)
           )
 
-        // Maintain the distance that was established at collision time
+        // Maintain the distance established at collision time
         const toEdge = new Vector3().subVectors(
           slidingState.current.start,
           slidePos
@@ -536,7 +817,6 @@ export default function KitchenUnit({
         if (
           Math.abs(distToEdge - slidingState.current.maintainDistance) > 0.01
         ) {
-          // Adjust position to maintain proper distance
           const adjustment = slidingState.current.normal
             .clone()
             .multiplyScalar(slidingState.current.maintainDistance - distToEdge)
@@ -547,36 +827,55 @@ export default function KitchenUnit({
         const slideCorners = getCorners(currentUnit, slidePos, ry)
         let slideValid = true
 
-        for (const otherUnit of otherUnits.current) {
-          const otherBox = getUnitBoundingBox(otherUnit)
-          const slideBox = getUnitBoundingBox(currentUnit, slidePos, ry)
+        // Check wall collisions for sliding position
+        if (slidingState.current.isWall) {
+          const wallCollision = checkWallCollision(slideCorners, wallSegments)
+          if (
+            wallCollision.collides &&
+            wallCollision.wallId !== slidingState.current.wallId
+          ) {
+            slideValid = false
+          }
+        }
 
-          if (!slideBox.intersectsBox(otherBox)) continue
+        // Check unit collisions for sliding position
+        if (slideValid && !slidingState.current.isWall) {
+          for (const otherUnit of otherUnits.current) {
+            const otherBox = getUnitBoundingBox(otherUnit)
+            const slideBox = getUnitBoundingBox(currentUnit, slidePos, ry)
 
-          const otherCorners = getCorners(otherUnit)
-          if (checkUnitCollision(slideCorners, otherCorners)) {
-            // Check if it's the same unit we're sliding against
-            if (otherUnit.id !== slidingState.current.unitId) {
-              slideValid = false
-              break
+            if (!slideBox.intersectsBox(otherBox)) continue
+
+            const otherCorners = getCorners(otherUnit)
+            if (checkUnitCollision(slideCorners, otherCorners)) {
+              if (otherUnit.id !== slidingState.current.unitId) {
+                slideValid = false
+                break
+              }
             }
           }
         }
 
         if (slideValid) {
+          console.log('✅ Sliding to valid position')
           lastValidPosition.current = { pos: slidePos, rotation: ry }
           dispatch({ id: 'moveUnit', unit: id, pos: slidePos, rotation: ry })
 
           const { x, z } = slidePos
           matrix.copy(lm)
           mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
+        } else {
+          console.log('❌ Sliding position invalid')
         }
       } else {
-        // No sliding possible, just stay at last valid position
-        const closestValid = findClosestValidPosition(
+        console.log('🛑 No sliding possible, staying at previous position')
+        // No sliding possible, stay at last valid position
+        const closestValid = findClosestValidPositionWithWalls(
           prevPos,
           newPos,
-          currentUnit
+          currentUnit,
+          wallSegments,
+          otherUnits.current
         )
 
         lastValidPosition.current = { pos: closestValid, rotation: ry }
@@ -615,26 +914,33 @@ export default function KitchenUnit({
     )
     let hasCollision = false
 
-    // Quick AABB check first
-    const myBox = getUnitBoundingBox(
-      { width, depth, height, type, style },
-      pos,
-      -theta
-    )
+    // Check wall collisions
+    const wallSegments = getWallSegments(model.walls)
+    const wallCollision = checkWallCollision(myCorners, wallSegments)
+    if (wallCollision.collides) {
+      hasCollision = true
+    }
 
-    for (const otherUnit of otherUnits.current) {
-      const otherBox = getUnitBoundingBox(otherUnit)
+    // Check unit collisions if no wall collision
+    if (!hasCollision) {
+      const myBox = getUnitBoundingBox(
+        { width, depth, height, type, style },
+        pos,
+        -theta
+      )
 
-      // If AABBs don't intersect, skip detailed check
-      if (!myBox.intersectsBox(otherBox)) {
-        continue
-      }
+      for (const otherUnit of otherUnits.current) {
+        const otherBox = getUnitBoundingBox(otherUnit)
 
-      // Do detailed collision check
-      const otherCorners = getCorners(otherUnit)
-      if (checkUnitCollision(myCorners, otherCorners)) {
-        hasCollision = true
-        break
+        if (!myBox.intersectsBox(otherBox)) {
+          continue
+        }
+
+        const otherCorners = getCorners(otherUnit)
+        if (checkUnitCollision(myCorners, otherCorners)) {
+          hasCollision = true
+          break
+        }
       }
     }
 
@@ -661,6 +967,92 @@ export default function KitchenUnit({
     setDragging(false)
     onDrag(false)
   }
+
+  return (
+    <>
+      <group position={[pos.x, 0, pos.z]} rotation-y={rotation}>
+        {!is3D && (
+          <>
+            <mesh
+              position={[0, size.y + 0.05, 0]}
+              rotation-x={Math.PI / -2}
+              material={hoverMaterial}
+              onPointerOver={(ev) => onHover(ev, true)}
+              onPointerOut={(ev) => onHover(ev, false)}
+              onClick={showInfo}
+              userData={{ id, type: 'unit' }}
+            >
+              <planeGeometry args={[size.x, size.z]} />
+            </mesh>
+            <InfoPanel ref={info} {...{ id, type, width, variant, style }} />
+          </>
+        )}
+        {type === 'base' && <BaseUnit {...{ width, variant, style }} />}
+        {type === 'tall' && <TallUnit {...{ width, variant, style }} />}
+        {type === 'wall' && (
+          <CabinetWall
+            carcassInnerWidth={width / 1000 - 0.036}
+            carcassDepth={0.282}
+            style={style}
+          />
+        )}
+      </group>
+      {(showHandle || dragging) && (
+        <>
+          <mesh
+            position={[pos.x, size.y + 0.08, pos.z]}
+            rotation-x={Math.PI / -2}
+            rotation-z={rotation}
+          >
+            <planeGeometry args={[size.x, size.z]} />
+            <meshStandardMaterial color={ghostColor.current} />
+          </mesh>
+          <DragControls
+            matrix={matrix}
+            autoTransform={false}
+            onDragStart={startDrag}
+            onDrag={moveUnit}
+            onDragEnd={endDrag}
+          >
+            <group
+              position={[handle.x, size.y + 0.1, handle.z]}
+              rotation-y={rotation}
+            >
+              <mesh rotation-x={Math.PI / -2}>
+                <circleGeometry args={[0.1]} />
+                <meshStandardMaterial
+                  color='#4080bf'
+                  transparent
+                  opacity={0.6}
+                />
+              </mesh>
+              <mesh rotation-x={Math.PI / -2} position-y={0.001}>
+                <shapeGeometry args={[crossMove]} />
+                <meshStandardMaterial color='#ffffff' />
+              </mesh>
+            </group>
+          </DragControls>
+          <DragControls
+            matrix={mrotate}
+            autoTransform={false}
+            onDragStart={startDrag}
+            onDrag={rotateUnit}
+            onDragEnd={endDrag}
+          >
+            <group
+              position={[handle.x, size.y + 0.1, handle.z]}
+              rotation-y={ry}
+            >
+              <mesh rotation-x={Math.PI / -2} position-x={0.2}>
+                <circleGeometry args={[0.03]} />
+                <meshStandardMaterial color='#004088' />
+              </mesh>
+            </group>
+          </DragControls>
+        </>
+      )}
+    </>
+  )
 }
 
 /**
