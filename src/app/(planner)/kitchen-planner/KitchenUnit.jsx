@@ -86,6 +86,7 @@ export default function KitchenUnit({
   const otherUnits = useRef([])
   const lastValidPosition = useRef(null)
   const ghostColor = useRef('#20ff20')
+  const slidingState = useRef(null) // Track active sliding
 
   const size = new Vector3(width / 1000, height / 1000, depth / 1000)
   if (type === 'base' && style?.includes('corner')) size.x += 0.295
@@ -359,61 +360,71 @@ export default function KitchenUnit({
   }
 
   /**
-   * Find the best sliding direction when collision occurs
+   * Find the collision edge and normal for sliding
    */
-  function findSlidingVector(fromPos, toPos, unit) {
-    const movement = new Vector3().subVectors(toPos, fromPos)
-    if (movement.length() < 0.001) return null
-
-    // Check collision at target position
-    const corners = getCorners(unit, toPos, unit.rotation)
-    let collisionNormal = null
+  function findCollisionEdge(unit, targetPos, currentPos) {
+    const corners = getCorners(unit, targetPos, unit.rotation)
+    const currentCorners = getCorners(unit, currentPos, unit.rotation)
+    let bestEdge = null
     let minDistance = Infinity
 
-    // Find which edge we're colliding with
     for (const otherUnit of otherUnits.current) {
       const otherBox = getUnitBoundingBox(otherUnit)
-      const myBox = getUnitBoundingBox(unit, toPos, unit.rotation)
+      const myBox = getUnitBoundingBox(unit, targetPos, unit.rotation)
 
       if (!myBox.intersectsBox(otherBox)) continue
 
       const otherCorners = getCorners(otherUnit)
       if (!checkUnitCollision(corners, otherCorners)) continue
 
-      // Find the closest edge of the other unit
+      // Find the closest edge
       for (let i = 0; i < otherCorners.length; i++) {
         const start = otherCorners[i]
         const end = otherCorners[(i + 1) % otherCorners.length]
         const edge = new Vector3().subVectors(end, start)
+        const edgeDir = edge.clone().normalize()
         const edgeNormal = new Vector3(edge.z, 0, -edge.x).normalize()
 
-        // Check distance from our corners to this edge
-        for (const corner of corners) {
-          const toCorner = new Vector3().subVectors(corner, start)
-          const dist = Math.abs(toCorner.dot(edgeNormal))
+        // Calculate average distance from our CURRENT corners to this edge
+        let totalDist = 0
+        let closestDist = Infinity
+        for (const corner of currentCorners) {
+          const toStart = new Vector3().subVectors(corner, start)
+          const projection = toStart.dot(edgeDir)
+          const clamped = Math.max(0, Math.min(edge.length(), projection))
+          const closestPoint = start
+            .clone()
+            .add(edgeDir.clone().multiplyScalar(clamped))
+          const dist = corner.distanceTo(closestPoint)
+          totalDist += dist
+          closestDist = Math.min(closestDist, dist)
+        }
+        const avgDist = totalDist / currentCorners.length
 
-          if (dist < minDistance) {
-            minDistance = dist
-            // Make sure normal points away from the other unit
-            const otherCenter = new Vector3(otherUnit.pos.x, 0, otherUnit.pos.z)
-            const toCenter = new Vector3().subVectors(toPos, otherCenter)
-            collisionNormal =
-              toCenter.dot(edgeNormal) > 0 ? edgeNormal : edgeNormal.negate()
+        if (avgDist < minDistance) {
+          minDistance = avgDist
+          const otherCenter = new Vector3(otherUnit.pos.x, 0, otherUnit.pos.z)
+          const toCenter = new Vector3().subVectors(currentPos, otherCenter)
+          const normal =
+            toCenter.dot(edgeNormal) > 0 ? edgeNormal : edgeNormal.negate()
+
+          // Calculate the actual current distance to maintain
+          const centerToEdge = new Vector3().subVectors(currentPos, start)
+          const currentDistance = Math.abs(centerToEdge.dot(normal))
+
+          bestEdge = {
+            start: start,
+            end: end,
+            direction: edgeDir,
+            normal: normal,
+            unitId: otherUnit.id,
+            maintainDistance: currentDistance // Store the distance at collision time
           }
         }
       }
     }
 
-    if (!collisionNormal) return null
-
-    // Project movement onto the plane perpendicular to collision normal
-    const slidingMovement = movement.clone()
-    const normalComponent = collisionNormal.multiplyScalar(
-      movement.dot(collisionNormal)
-    )
-    slidingMovement.sub(normalComponent)
-
-    return slidingMovement.length() > 0.001 ? slidingMovement : null
+    return bestEdge
   }
 
   /**
@@ -421,6 +432,9 @@ export default function KitchenUnit({
    */
   function moveUnit(lm) {
     let newPos = new Vector3().setFromMatrixPosition(lm).add(handle)
+    const prevPos = lastValidPosition.current
+      ? lastValidPosition.current.pos
+      : pos
 
     // Get corners of current unit at new position
     const currentUnit = {
@@ -433,38 +447,28 @@ export default function KitchenUnit({
       rotation: ry
     }
 
+    // Check for collision at target position
     const myCorners = getCorners(currentUnit, newPos, ry)
     let hasCollision = false
-
-    // First do a quick AABB check for performance
     const myBox = getUnitBoundingBox(currentUnit, newPos, ry)
 
     for (const otherUnit of otherUnits.current) {
-      // Quick AABB check first
       const otherBox = getUnitBoundingBox(otherUnit)
+      if (!myBox.intersectsBox(otherBox)) continue
 
-      // If AABBs don't intersect, no need for detailed check
-      if (!myBox.intersectsBox(otherBox)) {
-        continue
-      }
-
-      // AABBs intersect, do detailed polygon collision check
       const otherCorners = getCorners(otherUnit)
-
       if (checkUnitCollision(myCorners, otherCorners)) {
         hasCollision = true
         break
       }
     }
 
-    // Handle position update
     if (!hasCollision) {
-      // No collision - update normally
+      // No collision - move freely
       ghostColor.current = '#20ff20'
-      lastValidPosition.current = {
-        pos: new Vector3(newPos.x, newPos.y, newPos.z),
-        rotation: ry
-      }
+      slidingState.current = null // Clear sliding state
+
+      lastValidPosition.current = { pos: newPos.clone(), rotation: ry }
       dispatch({ id: 'moveUnit', unit: id, pos: newPos, rotation: ry })
 
       const { x, z } = newPos
@@ -474,85 +478,113 @@ export default function KitchenUnit({
       // Collision detected
       ghostColor.current = '#ff2020'
 
-      if (lastValidPosition.current) {
-        // Try sliding along the collision surface
-        const slidingVector = findSlidingVector(
-          lastValidPosition.current.pos,
+      // If we're not already sliding, find the collision edge
+      if (!slidingState.current) {
+        // First find the exact collision point using binary search
+        const exactCollisionPos = findClosestValidPosition(
+          prevPos,
           newPos,
           currentUnit
         )
 
-        if (slidingVector) {
-          // Apply sliding movement
-          const slidePos = lastValidPosition.current.pos
-            .clone()
-            .add(slidingVector)
-
-          // Verify the slide position is valid
-          const slideCorners = getCorners(currentUnit, slidePos, ry)
-          let slideHasCollision = false
-
-          for (const otherUnit of otherUnits.current) {
-            const otherBox = getUnitBoundingBox(otherUnit)
-            const slideBox = getUnitBoundingBox(currentUnit, slidePos, ry)
-
-            if (!slideBox.intersectsBox(otherBox)) continue
-
-            const otherCorners = getCorners(otherUnit)
-            if (checkUnitCollision(slideCorners, otherCorners)) {
-              slideHasCollision = true
-              break
-            }
-          }
-
-          if (!slideHasCollision) {
-            // Sliding position is valid
-            lastValidPosition.current = { pos: slidePos, rotation: ry }
-            dispatch({ id: 'moveUnit', unit: id, pos: slidePos, rotation: ry })
-
-            const { x, z } = slidePos
-            matrix.copy(lm)
-            mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
-          } else {
-            // Can't slide, find closest valid position
-            const closestValid = findClosestValidPosition(
-              lastValidPosition.current.pos,
-              newPos,
-              currentUnit
-            )
-
-            lastValidPosition.current = { pos: closestValid, rotation: ry }
-            dispatch({
-              id: 'moveUnit',
-              unit: id,
-              pos: closestValid,
-              rotation: ry
-            })
-
-            const { x, z } = closestValid
-            matrix.copy(lm)
-            mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
-          }
-        } else {
-          // No valid sliding direction, just find closest valid position
-          const closestValid = findClosestValidPosition(
-            lastValidPosition.current.pos,
-            newPos,
-            currentUnit
+        // Now find the edge we're colliding with at that exact position
+        const edge = findCollisionEdge(currentUnit, newPos, exactCollisionPos)
+        if (edge) {
+          // Recalculate the maintain distance using the exact collision position
+          const centerToEdge = new Vector3().subVectors(
+            exactCollisionPos,
+            edge.start
           )
+          edge.maintainDistance = Math.abs(centerToEdge.dot(edge.normal))
+          slidingState.current = edge
 
-          lastValidPosition.current = { pos: closestValid, rotation: ry }
+          // Update to the exact collision position first
+          lastValidPosition.current = { pos: exactCollisionPos, rotation: ry }
           dispatch({
             id: 'moveUnit',
             unit: id,
-            pos: closestValid,
+            pos: exactCollisionPos,
             rotation: ry
           })
 
-          const { x, z } = closestValid
+          const { x, z } = exactCollisionPos
+          matrix.copy(lm)
+          mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
+          return // Exit early since we've positioned at the exact collision point
+        }
+      }
+
+      if (slidingState.current) {
+        // Project movement onto sliding direction
+        const movement = new Vector3().subVectors(newPos, prevPos)
+        const slideAmount = movement.dot(slidingState.current.direction)
+
+        // Apply sliding movement
+        const slidePos = prevPos
+          .clone()
+          .add(
+            slidingState.current.direction.clone().multiplyScalar(slideAmount)
+          )
+
+        // Maintain the distance that was established at collision time
+        const toEdge = new Vector3().subVectors(
+          slidingState.current.start,
+          slidePos
+        )
+        const distToEdge = Math.abs(toEdge.dot(slidingState.current.normal))
+
+        if (
+          Math.abs(distToEdge - slidingState.current.maintainDistance) > 0.01
+        ) {
+          // Adjust position to maintain proper distance
+          const adjustment = slidingState.current.normal
+            .clone()
+            .multiplyScalar(slidingState.current.maintainDistance - distToEdge)
+          slidePos.add(adjustment)
+        }
+
+        // Verify sliding position is valid
+        const slideCorners = getCorners(currentUnit, slidePos, ry)
+        let slideValid = true
+
+        for (const otherUnit of otherUnits.current) {
+          const otherBox = getUnitBoundingBox(otherUnit)
+          const slideBox = getUnitBoundingBox(currentUnit, slidePos, ry)
+
+          if (!slideBox.intersectsBox(otherBox)) continue
+
+          const otherCorners = getCorners(otherUnit)
+          if (checkUnitCollision(slideCorners, otherCorners)) {
+            // Check if it's the same unit we're sliding against
+            if (otherUnit.id !== slidingState.current.unitId) {
+              slideValid = false
+              break
+            }
+          }
+        }
+
+        if (slideValid) {
+          lastValidPosition.current = { pos: slidePos, rotation: ry }
+          dispatch({ id: 'moveUnit', unit: id, pos: slidePos, rotation: ry })
+
+          const { x, z } = slidePos
           matrix.copy(lm)
           mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
         }
+      } else {
+        // No sliding possible, just stay at last valid position
+        const closestValid = findClosestValidPosition(
+          prevPos,
+          newPos,
+          currentUnit
+        )
+
+        lastValidPosition.current = { pos: closestValid, rotation: ry }
+        dispatch({ id: 'moveUnit', unit: id, pos: closestValid, rotation: ry })
+
+        const { x, z } = closestValid
+        matrix.copy(lm)
+        mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
       }
     }
   }
@@ -625,6 +657,7 @@ export default function KitchenUnit({
     otherUnits.current = []
     lastValidPosition.current = null
     ghostColor.current = '#20ff20'
+    slidingState.current = null
     setDragging(false)
     onDrag(false)
   }
