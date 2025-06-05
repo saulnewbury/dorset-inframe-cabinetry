@@ -834,6 +834,7 @@ export default function KitchenUnit({
             wallCollision.collides &&
             wallCollision.wallId !== slidingState.current.wallId
           ) {
+            console.log('❌ MULTI-WALL collision detected during slide!')
             slideValid = false
           }
         }
@@ -865,7 +866,37 @@ export default function KitchenUnit({
           matrix.copy(lm)
           mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
         } else {
-          console.log('❌ Sliding position invalid')
+          console.log(
+            '❌ Sliding position invalid - doing PRECISE binary search for multi-wall'
+          )
+
+          // THIS IS THE KEY FIX: When sliding hits a second wall, do a precise binary search
+          // from the last valid position to the attempted slide position
+          const preciseStopPos = findClosestValidPositionWithWalls(
+            prevPos, // Start from last valid position
+            slidePos, // Search towards the attempted slide position
+            currentUnit,
+            wallSegments,
+            otherUnits.current
+          )
+
+          console.log('🎯 Precise stop position found for multi-wall scenario')
+
+          // Reset sliding state since we hit a corner/multiple walls
+          slidingState.current = null
+
+          // Position at the precise boundary
+          lastValidPosition.current = { pos: preciseStopPos, rotation: ry }
+          dispatch({
+            id: 'moveUnit',
+            unit: id,
+            pos: preciseStopPos,
+            rotation: ry
+          })
+
+          const { x, z } = preciseStopPos
+          matrix.copy(lm)
+          mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
         }
       } else {
         console.log('🛑 No sliding possible, staying at previous position')
