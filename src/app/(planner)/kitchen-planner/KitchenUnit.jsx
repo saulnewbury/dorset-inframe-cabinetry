@@ -136,7 +136,7 @@ export default function KitchenUnit({
   }
 
   /**
-   * Check if unit collides with walls
+   * Check if unit collides with walls (accounting for wall thickness)
    */
   function checkWallCollision(unitCorners, wallSegments) {
     console.log(
@@ -236,104 +236,128 @@ export default function KitchenUnit({
   }
 
   /**
-   * Find the closest valid position when colliding with walls
+   * Enhanced collision detection that can detect multiple collision types simultaneously
    */
-  function findClosestValidPositionWithWalls(
+  function detectAllCollisions(unitCorners, unit, wallSegments, otherUnits) {
+    console.log('🔍 COMPREHENSIVE collision detection')
+
+    const collisions = {
+      walls: [],
+      units: [],
+      hasAnyCollision: false
+    }
+
+    // Check ALL wall collisions (not just first one)
+    for (let i = 0; i < wallSegments.length; i++) {
+      const wallCollision = checkWallCollision(unitCorners, [wallSegments[i]])
+      if (wallCollision.collides) {
+        console.log(
+          `❌ Wall collision detected: wall ${wallSegments[i].wallId}`
+        )
+        collisions.walls.push({
+          wallId: wallSegments[i].wallId,
+          segment: wallSegments[i],
+          collision: wallCollision
+        })
+        collisions.hasAnyCollision = true
+      }
+    }
+
+    // Check ALL unit collisions (regardless of wall collisions)
+    const myBox = getUnitBoundingBox(unit, unit.pos, unit.rotation)
+
+    for (const otherUnit of otherUnits) {
+      const otherBox = getUnitBoundingBox(otherUnit)
+      if (!myBox.intersectsBox(otherBox)) continue
+
+      const otherCorners = getCorners(otherUnit)
+      if (checkUnitCollision(unitCorners, otherCorners)) {
+        console.log(`❌ Unit collision detected: unit ${otherUnit.id}`)
+        collisions.units.push({
+          unitId: otherUnit.id,
+          unit: otherUnit,
+          corners: otherCorners
+        })
+        collisions.hasAnyCollision = true
+      }
+    }
+
+    console.log(
+      `🎯 Collision summary: ${collisions.walls.length} walls, ${collisions.units.length} units`
+    )
+    return collisions
+  }
+
+  /**
+   * Enhanced binary search that handles multiple collision types
+   */
+  function findClosestValidPositionMultiCollision(
     fromPos,
     toPos,
     unit,
     wallSegments,
     otherUnits,
-    iterations = 10
+    iterations = 12
   ) {
-    console.log('🔍 BINARY SEARCH: Finding closest valid position')
-    console.log(`   From: (${fromPos.x.toFixed(2)}, ${fromPos.z.toFixed(2)})`)
-    console.log(`   To: (${toPos.x.toFixed(2)}, ${toPos.z.toFixed(2)})`)
+    console.log('🔍 MULTI-COLLISION BINARY SEARCH')
+    console.log(`   From: (${fromPos.x.toFixed(3)}, ${fromPos.z.toFixed(3)})`)
+    console.log(`   To: (${toPos.x.toFixed(3)}, ${toPos.z.toFixed(3)})`)
 
     let validPos = fromPos.clone()
     let invalidPos = toPos.clone()
 
-    // Binary search for the boundary
+    const targetPrecision = 0.001 // 1mm precision
+
     for (let i = 0; i < iterations; i++) {
       const midPos = new Vector3().lerpVectors(validPos, invalidPos, 0.5)
       console.log(
         `   Iteration ${i + 1}: Testing (${midPos.x.toFixed(
-          3
-        )}, ${midPos.z.toFixed(3)})`
+          4
+        )}, ${midPos.z.toFixed(4)})`
       )
 
-      // Check collision at midpoint
-      const corners = getCorners(unit, midPos, unit.rotation)
-      let hasCollision = false
-      let collisionType = null
+      // Check ALL collision types at this position
+      const testUnit = { ...unit, pos: midPos }
+      const corners = getCorners(testUnit, midPos, unit.rotation)
+      const collisions = detectAllCollisions(
+        corners,
+        testUnit,
+        wallSegments,
+        otherUnits
+      )
 
-      // Check wall collisions first
-      const wallCollision = checkWallCollision(corners, wallSegments)
-      if (wallCollision.collides) {
-        hasCollision = true
-        collisionType = 'wall'
-        console.log(`     ❌ Wall collision detected`)
-      }
-
-      // Check unit collisions if no wall collision
-      if (!hasCollision) {
-        for (const otherUnit of otherUnits) {
-          const otherBox = getUnitBoundingBox(otherUnit)
-          const myBox = getUnitBoundingBox(unit, midPos, unit.rotation)
-
-          if (!myBox.intersectsBox(otherBox)) continue
-
-          const otherCorners = getCorners(otherUnit)
-          if (checkUnitCollision(corners, otherCorners)) {
-            hasCollision = true
-            collisionType = 'unit'
-            console.log(`     ❌ Unit collision detected`)
-            break
-          }
-        }
-      }
-
-      if (hasCollision) {
+      if (collisions.hasAnyCollision) {
         console.log(
-          `     → Moving invalid boundary closer: collision with ${collisionType}`
+          `     ❌ Collision: ${collisions.walls.length} walls + ${collisions.units.length} units`
         )
         invalidPos = midPos
       } else {
-        console.log(`     → Moving valid boundary further: no collision`)
+        console.log(`     ✅ Valid: no collisions`)
         validPos = midPos
       }
 
       const distance = validPos.distanceTo(invalidPos)
-      console.log(`     → Distance between boundaries: ${distance.toFixed(4)}`)
+      console.log(`     → Boundary distance: ${distance.toFixed(5)}`)
 
-      // Early exit if we're close enough
-      if (distance < 0.001) {
-        console.log(`     → Converged early at iteration ${i + 1}`)
+      if (distance < targetPrecision) {
+        console.log(`     → Converged at iteration ${i + 1}`)
         break
       }
     }
 
-    // Back off slightly from the exact collision point
     const direction = new Vector3().subVectors(validPos, invalidPos).normalize()
     const finalPos = validPos.add(direction.multiplyScalar(0.001))
 
     console.log(
-      `🎯 BINARY SEARCH RESULT: (${finalPos.x.toFixed(3)}, ${finalPos.z.toFixed(
-        3
-      )})`
+      `🎯 MULTI-COLLISION RESULT: (${finalPos.x.toFixed(
+        4
+      )}, ${finalPos.z.toFixed(4)})`
     )
-    console.log(
-      `   Distance from start: ${fromPos.distanceTo(finalPos).toFixed(3)}`
-    )
-    console.log(
-      `   Distance from target: ${toPos.distanceTo(finalPos).toFixed(3)}`
-    )
-
     return finalPos
   }
 
   /**
-   * Find wall collision edge for sliding
+   * Find wall collision edge for sliding (using inside face)
    */
   function findWallCollisionEdge(unit, targetPos, currentPos, wallSegments) {
     console.log('🔍 findWallCollisionEdge called')
@@ -552,46 +576,6 @@ export default function KitchenUnit({
   }
 
   /**
-   * Binary search to find the closest valid position along a movement vector
-   */
-  function findClosestValidPosition(fromPos, toPos, unit, iterations = 10) {
-    let validPos = fromPos.clone()
-    let invalidPos = toPos.clone()
-
-    // Binary search for the boundary
-    for (let i = 0; i < iterations; i++) {
-      const midPos = new Vector3().lerpVectors(validPos, invalidPos, 0.5)
-
-      // Check collision at midpoint
-      const corners = getCorners(unit, midPos, unit.rotation)
-      let hasCollision = false
-
-      for (const otherUnit of otherUnits.current) {
-        const otherBox = getUnitBoundingBox(otherUnit)
-        const myBox = getUnitBoundingBox(unit, midPos, unit.rotation)
-
-        if (!myBox.intersectsBox(otherBox)) continue
-
-        const otherCorners = getCorners(otherUnit)
-        if (checkUnitCollision(corners, otherCorners)) {
-          hasCollision = true
-          break
-        }
-      }
-
-      if (hasCollision) {
-        invalidPos = midPos
-      } else {
-        validPos = midPos
-      }
-    }
-
-    // Back off slightly from the exact collision point
-    const direction = new Vector3().subVectors(validPos, invalidPos).normalize()
-    return validPos.add(direction.multiplyScalar(0.001))
-  }
-
-  /**
    * Find the collision edge and normal for sliding
    */
   function findCollisionEdge(unit, targetPos, currentPos) {
@@ -660,11 +644,10 @@ export default function KitchenUnit({
   }
 
   /**
-   * Callback for 'drag' event. Updates the position of the unit.
-   * COMPLETE VERSION WITH WALL COLLISION AND SLIDING
+   * Enhanced moveUnit with simultaneous wall + cabinet collision detection
    */
   function moveUnit(lm) {
-    console.log('🚀 moveUnit called - checking walls!')
+    console.log('🚀 moveUnit called - MULTI-COLLISION detection!')
 
     let newPos = new Vector3().setFromMatrixPosition(lm).add(handle)
     const prevPos = lastValidPosition.current
@@ -673,15 +656,12 @@ export default function KitchenUnit({
 
     console.log('📍 Moving from:', prevPos, 'to:', newPos)
 
-    // Get wall segments from the model
     const wallSegments = getWallSegments(model.walls)
-
     if (wallSegments.length === 0) {
       console.log('⚠️ No wall segments found!')
-      console.log('model.walls:', model.walls)
+      return
     }
 
-    // Get corners of current unit at new position
     const currentUnit = {
       width: width,
       depth: depth,
@@ -692,44 +672,20 @@ export default function KitchenUnit({
       rotation: ry
     }
 
-    // Check for collision at target position
+    // COMPREHENSIVE collision detection at target position
     const myCorners = getCorners(currentUnit, newPos, ry)
-    let hasCollision = false
-    let collisionType = null
+    const collisions = detectAllCollisions(
+      myCorners,
+      currentUnit,
+      wallSegments,
+      otherUnits.current
+    )
 
-    // Check wall collisions FIRST
-    console.log('🔍 Checking wall collision...')
-    const wallCollision = checkWallCollision(myCorners, wallSegments)
-    if (wallCollision.collides) {
-      console.log('❌ WALL COLLISION DETECTED!')
-      hasCollision = true
-      collisionType = 'wall'
-    }
-
-    // Check unit collisions if no wall collision
-    if (!hasCollision) {
-      console.log('🔍 Checking unit collisions...')
-      const myBox = getUnitBoundingBox(currentUnit, newPos, ry)
-
-      for (const otherUnit of otherUnits.current) {
-        const otherBox = getUnitBoundingBox(otherUnit)
-        if (!myBox.intersectsBox(otherBox)) continue
-
-        const otherCorners = getCorners(otherUnit)
-        if (checkUnitCollision(myCorners, otherCorners)) {
-          console.log('❌ UNIT COLLISION DETECTED!')
-          hasCollision = true
-          collisionType = 'unit'
-          break
-        }
-      }
-    }
-
-    if (!hasCollision) {
-      console.log('✅ No collision - moving freely')
+    if (!collisions.hasAnyCollision) {
+      console.log('✅ No collisions - moving freely')
       // No collision - move freely
       ghostColor.current = '#20ff20'
-      slidingState.current = null // Clear sliding state
+      slidingState.current = null
 
       lastValidPosition.current = { pos: newPos.clone(), rotation: ry }
       dispatch({ id: 'moveUnit', unit: id, pos: newPos, rotation: ry })
@@ -738,15 +694,19 @@ export default function KitchenUnit({
       matrix.copy(lm)
       mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
     } else {
-      console.log('❌ Collision detected, type:', collisionType)
-      // Collision detected
+      console.log(
+        `❌ MULTI-COLLISION detected: ${collisions.walls.length} walls + ${collisions.units.length} units`
+      )
       ghostColor.current = '#ff2020'
 
       // If we're not already sliding, find the collision edge
       if (!slidingState.current) {
-        console.log('🔍 Finding collision edge...')
-        // First find the exact collision point using binary search
-        const exactCollisionPos = findClosestValidPositionWithWalls(
+        console.log(
+          '🔍 Not sliding yet - initiating MULTI-COLLISION binary search...'
+        )
+
+        // Use enhanced binary search that handles multiple collision types
+        const exactCollisionPos = findClosestValidPositionMultiCollision(
           prevPos,
           newPos,
           currentUnit,
@@ -754,23 +714,33 @@ export default function KitchenUnit({
           otherUnits.current
         )
 
-        console.log('🎯 Binary search completed, finding collision edge...')
+        console.log(
+          '🎯 Multi-collision binary search completed, finding collision edge...'
+        )
 
-        // Now find the edge we're colliding with
+        // SIMPLIFIED: check collisions and pick the first viable edge
         let edge = null
-        if (collisionType === 'wall') {
-          edge = findWallCollisionEdge(
-            currentUnit,
-            newPos,
-            exactCollisionPos,
-            wallSegments
-          )
+
+        // Try wall edge first (walls take priority)
+        edge = findWallCollisionEdge(
+          currentUnit,
+          newPos,
+          exactCollisionPos,
+          wallSegments
+        )
+        if (edge) {
+          edge.isWall = true
+          console.log('🎯 Using wall edge for sliding')
         } else {
-          edge = findCollisionEdge(currentUnit, newPos, exactCollisionPos) // Existing unit collision logic
+          // Fall back to unit edge
+          edge = findCollisionEdge(currentUnit, newPos, exactCollisionPos)
+          if (edge) {
+            console.log('🎯 Using unit edge for sliding')
+          }
         }
 
         if (edge) {
-          console.log('🎯 Setting up sliding state with precise position')
+          console.log(`🎯 Setting up sliding state`)
           const centerToEdge = new Vector3().subVectors(
             exactCollisionPos,
             edge.start
@@ -795,7 +765,7 @@ export default function KitchenUnit({
       }
 
       if (slidingState.current) {
-        console.log('🏄 Sliding along edge...')
+        console.log('🏄 Sliding with MULTI-COLLISION validation...')
         // Project movement onto sliding direction
         const movement = new Vector3().subVectors(newPos, prevPos)
         const slideAmount = movement.dot(slidingState.current.direction)
@@ -823,42 +793,35 @@ export default function KitchenUnit({
           slidePos.add(adjustment)
         }
 
-        // Verify sliding position is valid
-        const slideCorners = getCorners(currentUnit, slidePos, ry)
-        let slideValid = true
+        // Check for NEW collisions while sliding
+        const slideUnit = { ...currentUnit, pos: slidePos }
+        const slideCorners = getCorners(slideUnit, slidePos, ry)
+        const slideCollisions = detectAllCollisions(
+          slideCorners,
+          slideUnit,
+          wallSegments,
+          otherUnits.current
+        )
 
-        // Check wall collisions for sliding position
-        if (slidingState.current.isWall) {
-          const wallCollision = checkWallCollision(slideCorners, wallSegments)
-          if (
-            wallCollision.collides &&
-            wallCollision.wallId !== slidingState.current.wallId
-          ) {
-            console.log('❌ MULTI-WALL collision detected during slide!')
-            slideValid = false
-          }
+        // Filter out the collision we're already sliding against
+        const newCollisions = {
+          walls: slideCollisions.walls.filter(
+            (w) =>
+              !slidingState.current.isWall ||
+              w.wallId !== slidingState.current.wallId
+          ),
+          units: slideCollisions.units.filter(
+            (u) =>
+              slidingState.current.isWall ||
+              u.unitId !== slidingState.current.unitId
+          )
         }
 
-        // Check unit collisions for sliding position
-        if (slideValid && !slidingState.current.isWall) {
-          for (const otherUnit of otherUnits.current) {
-            const otherBox = getUnitBoundingBox(otherUnit)
-            const slideBox = getUnitBoundingBox(currentUnit, slidePos, ry)
+        const hasNewCollisions =
+          newCollisions.walls.length > 0 || newCollisions.units.length > 0
 
-            if (!slideBox.intersectsBox(otherBox)) continue
-
-            const otherCorners = getCorners(otherUnit)
-            if (checkUnitCollision(slideCorners, otherCorners)) {
-              if (otherUnit.id !== slidingState.current.unitId) {
-                slideValid = false
-                break
-              }
-            }
-          }
-        }
-
-        if (slideValid) {
-          console.log('✅ Sliding to valid position')
+        if (!hasNewCollisions) {
+          console.log('✅ Sliding to valid position (no new collisions)')
           lastValidPosition.current = { pos: slidePos, rotation: ry }
           dispatch({ id: 'moveUnit', unit: id, pos: slidePos, rotation: ry })
 
@@ -867,25 +830,21 @@ export default function KitchenUnit({
           mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
         } else {
           console.log(
-            '❌ Sliding position invalid - doing PRECISE binary search for multi-wall'
+            `❌ NEW collisions during slide: ${newCollisions.walls.length} walls + ${newCollisions.units.length} units`
           )
 
-          // THIS IS THE KEY FIX: When sliding hits a second wall, do a precise binary search
-          // from the last valid position to the attempted slide position
-          const preciseStopPos = findClosestValidPositionWithWalls(
-            prevPos, // Start from last valid position
-            slidePos, // Search towards the attempted slide position
+          // When sliding hits new obstacles, do a precise binary search
+          const preciseStopPos = findClosestValidPositionMultiCollision(
+            prevPos,
+            slidePos,
             currentUnit,
             wallSegments,
             otherUnits.current
           )
 
-          console.log('🎯 Precise stop position found for multi-wall scenario')
-
-          // Reset sliding state since we hit a corner/multiple walls
+          // Reset sliding state since we hit new obstacles
           slidingState.current = null
 
-          // Position at the precise boundary
           lastValidPosition.current = { pos: preciseStopPos, rotation: ry }
           dispatch({
             id: 'moveUnit',
@@ -899,9 +858,8 @@ export default function KitchenUnit({
           mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
         }
       } else {
-        console.log('🛑 No sliding possible, staying at previous position')
-        // No sliding possible, stay at last valid position
-        const closestValid = findClosestValidPositionWithWalls(
+        console.log('🛑 No sliding possible, positioning at boundary')
+        const closestValid = findClosestValidPositionMultiCollision(
           prevPos,
           newPos,
           currentUnit,
@@ -937,49 +895,30 @@ export default function KitchenUnit({
     const snap = Math.round(theta / (Math.PI / 2)) * (Math.PI / 2)
     if (Math.abs(snap - theta) < 0.1) theta = snap
 
-    // Check if rotation would cause collision
-    const myCorners = getCorners(
-      { width, depth, height, type, style },
+    // Check if rotation would cause collision using comprehensive detection
+    const testUnit = {
+      width,
+      depth,
+      height,
+      type,
+      style,
       pos,
-      -theta
-    )
-    let hasCollision = false
-
-    // Check wall collisions
+      rotation: -theta
+    }
+    const myCorners = getCorners(testUnit, pos, -theta)
     const wallSegments = getWallSegments(model.walls)
-    const wallCollision = checkWallCollision(myCorners, wallSegments)
-    if (wallCollision.collides) {
-      hasCollision = true
-    }
-
-    // Check unit collisions if no wall collision
-    if (!hasCollision) {
-      const myBox = getUnitBoundingBox(
-        { width, depth, height, type, style },
-        pos,
-        -theta
-      )
-
-      for (const otherUnit of otherUnits.current) {
-        const otherBox = getUnitBoundingBox(otherUnit)
-
-        if (!myBox.intersectsBox(otherBox)) {
-          continue
-        }
-
-        const otherCorners = getCorners(otherUnit)
-        if (checkUnitCollision(myCorners, otherCorners)) {
-          hasCollision = true
-          break
-        }
-      }
-    }
+    const collisions = detectAllCollisions(
+      myCorners,
+      testUnit,
+      wallSegments,
+      otherUnits.current
+    )
 
     // Update ghost color
-    ghostColor.current = hasCollision ? '#ff2020' : '#20ff20'
+    ghostColor.current = collisions.hasAnyCollision ? '#ff2020' : '#20ff20'
 
     // Only update rotation if no collision
-    if (!hasCollision) {
+    if (!collisions.hasAnyCollision) {
       lastValidPosition.current.rotation = -theta
       dispatch({ id: 'moveUnit', unit: id, pos, rotation: -theta })
       // Update the position of the handle.
