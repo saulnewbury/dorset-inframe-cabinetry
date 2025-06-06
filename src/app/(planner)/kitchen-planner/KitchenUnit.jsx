@@ -106,32 +106,74 @@ export default function KitchenUnit({
    * Converts wall segments into line segments for collision detection
    */
   function getWallSegments(walls) {
-    console.log('🏠 Processing walls:', walls)
+    console.log('🏠 Processing ALL walls - perimeter + internal')
+    console.log(`Total wall arrays: ${walls.length}`)
     const segments = []
 
-    // Process each wall segment (outer walls and inner walls)
+    // Process ALL wall segments
     walls.forEach((wallSegment, segmentIndex) => {
-      console.log(`📐 Processing wall segment ${segmentIndex}:`, wallSegment)
-
-      for (let i = 0; i < wallSegment.length; i++) {
-        const start = wallSegment[i]
-        const end = wallSegment[(i + 1) % wallSegment.length]
-
-        const segment = {
-          start: new Vector3(start.x, 0, start.z),
-          end: new Vector3(end.x, 0, end.z),
-          wallId: start.id,
-          segment: start.segment
-        }
-
+      if (segmentIndex === 0) {
         console.log(
-          `  📏 Wall segment ${i}: from (${start.x}, ${start.z}) to (${end.x}, ${end.z})`
+          `📐 Processing PERIMETER walls (${wallSegment.length} points)`
         )
-        segments.push(segment)
+
+        // Perimeter walls - closed loop
+        for (let i = 0; i < wallSegment.length; i++) {
+          const start = wallSegment[i]
+          const end = wallSegment[(i + 1) % wallSegment.length] // Wrap around for closed loop
+
+          const segment = {
+            start: new Vector3(start.x, 0, start.z),
+            end: new Vector3(end.x, 0, end.z),
+            wallId: start.id,
+            segment: start.segment,
+            type: 'perimeter-wall',
+            segmentIndex: segmentIndex
+          }
+
+          console.log(
+            `  📏 Perimeter segment ${i}: from (${start.x}, ${start.z}) to (${end.x}, ${end.z})`
+          )
+          segments.push(segment)
+        }
+      } else {
+        console.log(
+          `🧱 Processing INTERNAL wall ${segmentIndex} (${wallSegment.length} points)`
+        )
+
+        // Internal walls - NOT a closed loop (just connect point to point)
+        for (let i = 0; i < wallSegment.length - 1; i++) {
+          const start = wallSegment[i]
+          const end = wallSegment[i + 1] // No wrapping - just next point
+
+          const segment = {
+            start: new Vector3(start.x, 0, start.z),
+            end: new Vector3(end.x, 0, end.z),
+            wallId: start.id,
+            segment: start.segment,
+            type: 'internal-wall',
+            segmentIndex: segmentIndex
+          }
+
+          console.log(
+            `  📏 Internal segment ${segmentIndex}-${i}: from (${start.x}, ${start.z}) to (${end.x}, ${end.z})`
+          )
+          segments.push(segment)
+        }
       }
     })
 
-    console.log('📋 Total wall segments created:', segments.length)
+    const perimeterCount = segments.filter(
+      (s) => s.type === 'perimeter-wall'
+    ).length
+    const internalCount = segments.filter(
+      (s) => s.type === 'internal-wall'
+    ).length
+
+    console.log(`📋 Total wall segments: ${segments.length}`)
+    console.log(`   - Perimeter: ${perimeterCount}`)
+    console.log(`   - Internal: ${internalCount}`)
+
     return segments
   }
 
@@ -151,7 +193,7 @@ export default function KitchenUnit({
       const wallStart = new Vector2(segment.start.x, segment.start.z)
       const wallEnd = new Vector2(segment.end.x, segment.end.z)
 
-      console.log(`  🧱 Testing wall segment ${i}`)
+      console.log(`  🧱 Testing ${segment.type} segment ${i}`)
 
       // Calculate wall properties
       const wallVector = new Vector2().subVectors(wallEnd, wallStart)
@@ -159,73 +201,105 @@ export default function KitchenUnit({
       const wallDir = wallVector.clone().normalize()
       const wallNormal = new Vector2(-wallVector.y, wallVector.x).normalize()
 
-      // Wall thickness
       const wallThickness = 0.1 // 10cm thick walls
       const halfThickness = wallThickness / 2
+      const collisionThreshold = 0.02 // 2cm safety margin - SAME FOR ALL WALLS
 
-      // Calculate the inside face of the wall (room-facing surface)
-      const insideFaceStart = wallStart
-        .clone()
-        .add(wallNormal.clone().multiplyScalar(halfThickness))
-      const insideFaceEnd = wallEnd
-        .clone()
-        .add(wallNormal.clone().multiplyScalar(halfThickness))
+      if (segment.type === 'perimeter-wall') {
+        console.log(`    🏠 PERIMETER WALL - checking against inside face`)
 
-      console.log(
-        `    📐 Wall center: (${wallStart.x.toFixed(2)}, ${wallStart.y.toFixed(
-          2
-        )}) to (${wallEnd.x.toFixed(2)}, ${wallEnd.y.toFixed(2)})`
-      )
-      console.log(
-        `    📐 Inside face: (${insideFaceStart.x.toFixed(
-          2
-        )}, ${insideFaceStart.y.toFixed(2)}) to (${insideFaceEnd.x.toFixed(
-          2
-        )}, ${insideFaceEnd.y.toFixed(2)})`
-      )
-
-      // Check each unit corner against the inside face of the wall
-      for (let j = 0; j < unitPoly.length; j++) {
-        const corner = unitPoly[j]
-
-        // Calculate the closest point on the inside face line segment
-        const toCorner = new Vector2().subVectors(corner, insideFaceStart)
-        const projectionLength = toCorner.dot(wallDir)
-
-        // Clamp projection to wall segment bounds
-        const clampedProjection = Math.max(
-          0,
-          Math.min(wallLength, projectionLength)
-        )
-        const closestPointOnInsideFace = insideFaceStart
+        // PERIMETER WALLS: Use existing logic (inside face detection)
+        const insideFaceStart = wallStart
           .clone()
-          .add(wallDir.clone().multiplyScalar(clampedProjection))
+          .add(wallNormal.clone().multiplyScalar(halfThickness))
+        const insideFaceEnd = wallEnd
+          .clone()
+          .add(wallNormal.clone().multiplyScalar(halfThickness))
 
-        // Calculate SIGNED distance (negative = inside wall, positive = outside wall)
-        const vectorToCorner = new Vector2().subVectors(
-          corner,
-          closestPointOnInsideFace
+        for (let j = 0; j < unitPoly.length; j++) {
+          const corner = unitPoly[j]
+
+          const toCorner = new Vector2().subVectors(corner, insideFaceStart)
+          const projectionLength = toCorner.dot(wallDir)
+          const clampedProjection = Math.max(
+            0,
+            Math.min(wallLength, projectionLength)
+          )
+          const closestPointOnInsideFace = insideFaceStart
+            .clone()
+            .add(wallDir.clone().multiplyScalar(clampedProjection))
+
+          const vectorToCorner = new Vector2().subVectors(
+            corner,
+            closestPointOnInsideFace
+          )
+          const signedDistance = vectorToCorner.dot(wallNormal)
+
+          console.log(
+            `    🔹 Corner ${j}: signed distance=${signedDistance.toFixed(
+              3
+            )} (negative=inside room)`
+          )
+
+          if (signedDistance < collisionThreshold) {
+            console.log(
+              '❌ PERIMETER COLLISION - corner inside or too close to room boundary'
+            )
+            return {
+              collides: true,
+              segment: segment,
+              wallId: segment.wallId,
+              wallType: 'perimeter'
+            }
+          }
+        }
+      } else if (segment.type === 'internal-wall') {
+        console.log(
+          `    🧱 INTERNAL WALL - checking collision with expanded wall volume`
         )
-        const signedDistance = vectorToCorner.dot(wallNormal)
+
+        // INTERNAL WALLS: Create an EXPANDED wall rectangle that includes the safety margin
+        const expandedHalfThickness = halfThickness + collisionThreshold
+
+        const wallCorner1 = wallStart
+          .clone()
+          .add(wallNormal.clone().multiplyScalar(expandedHalfThickness))
+        const wallCorner2 = wallEnd
+          .clone()
+          .add(wallNormal.clone().multiplyScalar(expandedHalfThickness))
+        const wallCorner3 = wallEnd
+          .clone()
+          .sub(wallNormal.clone().multiplyScalar(expandedHalfThickness))
+        const wallCorner4 = wallStart
+          .clone()
+          .sub(wallNormal.clone().multiplyScalar(expandedHalfThickness))
+
+        const expandedWallPoly = [
+          wallCorner1,
+          wallCorner2,
+          wallCorner3,
+          wallCorner4
+        ]
 
         console.log(
-          `    🔹 Corner ${j}: signed distance=${signedDistance.toFixed(
+          `    📐 Expanded wall rectangle: thickness ${(
+            expandedHalfThickness * 2
+          ).toFixed(3)}m (includes ${collisionThreshold.toFixed(
             3
-          )} (negative=inside wall)`
+          )}m safety margin)`
         )
 
-        // Collision occurs if corner is inside the wall OR very close to the inside face
-        const collisionThreshold = 0.02 // 2cm safety margin
-        if (signedDistance < collisionThreshold) {
+        // Check if unit polygon intersects with EXPANDED wall rectangle
+        if (polygonsIntersect(unitPoly, expandedWallPoly)) {
           console.log(
-            '❌ COLLISION DETECTED - corner inside or too close to wall'
+            '❌ INTERNAL WALL COLLISION - cabinet too close to wall volume'
           )
           return {
             collides: true,
             segment: segment,
             wallId: segment.wallId,
-            insideFace: { start: insideFaceStart, end: insideFaceEnd },
-            penetrationDepth: Math.abs(Math.min(0, signedDistance)) // How far inside the wall
+            wallType: 'internal',
+            wallRectangle: expandedWallPoly
           }
         }
       }
@@ -233,6 +307,50 @@ export default function KitchenUnit({
 
     console.log('✅ No wall collision detected')
     return { collides: false }
+  }
+
+  /**
+   * Polygon intersection using Separating Axis Theorem (SAT)
+   * (This function is needed for internal wall collision detection)
+   */
+  function polygonsIntersect(poly1, poly2) {
+    const polygons = [poly1, poly2]
+
+    for (let p = 0; p < polygons.length; p++) {
+      const polygon = polygons[p]
+
+      for (let i = 0; i < polygon.length; i++) {
+        const j = (i + 1) % polygon.length
+        const edge = new Vector2().subVectors(polygon[j], polygon[i])
+        const normal = new Vector2(-edge.y, edge.x).normalize()
+
+        let min1 = Infinity,
+          max1 = -Infinity
+        let min2 = Infinity,
+          max2 = -Infinity
+
+        // Project poly1 onto normal
+        for (const vertex of poly1) {
+          const projection = vertex.dot(normal)
+          min1 = Math.min(min1, projection)
+          max1 = Math.max(max1, projection)
+        }
+
+        // Project poly2 onto normal
+        for (const vertex of poly2) {
+          const projection = vertex.dot(normal)
+          min2 = Math.min(min2, projection)
+          max2 = Math.max(max2, projection)
+        }
+
+        // Check for separation
+        if (max1 < min2 || max2 < min1) {
+          return false // Polygons are separated
+        }
+      }
+    }
+
+    return true // No separating axis found = intersection
   }
 
   /**
@@ -373,6 +491,10 @@ export default function KitchenUnit({
       const wallCollision = checkWallCollision(corners, [wallSegment])
       if (!wallCollision.collides) continue
 
+      console.log(
+        `🎯 Finding edge for ${wallSegment.type} wall ${wallSegment.wallId}`
+      )
+
       // Calculate wall properties
       const wallStart = new Vector2(wallSegment.start.x, wallSegment.start.z)
       const wallEnd = new Vector2(wallSegment.end.x, wallSegment.end.z)
@@ -380,34 +502,75 @@ export default function KitchenUnit({
       const wallDir = wallVector.clone().normalize()
       const wallNormal = new Vector2(-wallVector.y, wallVector.x).normalize()
 
-      // Use the inside face for sliding calculations
-      const insideFaceStart = wallStart
-        .clone()
-        .add(wallNormal.clone().multiplyScalar(halfThickness))
-      const insideFaceEnd = wallEnd
-        .clone()
-        .add(wallNormal.clone().multiplyScalar(halfThickness))
+      let slidingFace, slidingFace3D, slidingDir3D, slidingNormal3D
 
-      // Convert back to Vector3 for sliding calculations
-      const insideFaceStart3D = new Vector3(
-        insideFaceStart.x,
-        0,
-        insideFaceStart.y
-      )
-      const insideFaceEnd3D = new Vector3(insideFaceEnd.x, 0, insideFaceEnd.y)
-      const wallDir3D = new Vector3(wallDir.x, 0, wallDir.y)
-      const wallNormal3D = new Vector3(wallNormal.x, 0, wallNormal.y)
+      if (wallSegment.type === 'perimeter-wall') {
+        // PERIMETER WALLS: Use inside face for sliding
+        const insideFaceStart = wallStart
+          .clone()
+          .add(wallNormal.clone().multiplyScalar(halfThickness))
+        const insideFaceEnd = wallEnd
+          .clone()
+          .add(wallNormal.clone().multiplyScalar(halfThickness))
 
-      // Calculate average distance from current corners to this inside face
+        slidingFace3D = {
+          start: new Vector3(insideFaceStart.x, 0, insideFaceStart.y),
+          end: new Vector3(insideFaceEnd.x, 0, insideFaceEnd.y)
+        }
+        slidingDir3D = new Vector3(wallDir.x, 0, wallDir.y)
+        slidingNormal3D = new Vector3(wallNormal.x, 0, wallNormal.y)
+      } else if (wallSegment.type === 'internal-wall') {
+        // INTERNAL WALLS: Find which face of the rectangle to slide against
+        // Check which side of the wall the cabinet is approaching from
+        const centerToWallStart = new Vector2().subVectors(
+          new Vector2(currentPos.x, currentPos.z),
+          wallStart
+        )
+        const sideOfWall = centerToWallStart.dot(wallNormal)
+
+        if (sideOfWall > 0) {
+          // Cabinet is on the "positive normal" side - slide against that face
+          const slideFaceStart = wallStart
+            .clone()
+            .add(wallNormal.clone().multiplyScalar(halfThickness))
+          const slideFaceEnd = wallEnd
+            .clone()
+            .add(wallNormal.clone().multiplyScalar(halfThickness))
+
+          slidingFace3D = {
+            start: new Vector3(slideFaceStart.x, 0, slideFaceStart.y),
+            end: new Vector3(slideFaceEnd.x, 0, slideFaceEnd.y)
+          }
+          slidingNormal3D = new Vector3(wallNormal.x, 0, wallNormal.y)
+        } else {
+          // Cabinet is on the "negative normal" side - slide against that face
+          const slideFaceStart = wallStart
+            .clone()
+            .sub(wallNormal.clone().multiplyScalar(halfThickness))
+          const slideFaceEnd = wallEnd
+            .clone()
+            .sub(wallNormal.clone().multiplyScalar(halfThickness))
+
+          slidingFace3D = {
+            start: new Vector3(slideFaceStart.x, 0, slideFaceStart.y),
+            end: new Vector3(slideFaceEnd.x, 0, slideFaceEnd.y)
+          }
+          slidingNormal3D = new Vector3(-wallNormal.x, 0, -wallNormal.y)
+        }
+
+        slidingDir3D = new Vector3(wallDir.x, 0, wallDir.y)
+      }
+
+      // Calculate distance from current position to sliding face
       let totalDist = 0
       for (const corner of currentCorners) {
-        const toStart = new Vector3().subVectors(corner, insideFaceStart3D)
-        const projection = toStart.dot(wallDir3D)
+        const toStart = new Vector3().subVectors(corner, slidingFace3D.start)
+        const projection = toStart.dot(slidingDir3D)
         const wallLength = wallVector.length()
         const clamped = Math.max(0, Math.min(wallLength, projection))
-        const closestPoint = insideFaceStart3D
+        const closestPoint = slidingFace3D.start
           .clone()
-          .add(wallDir3D.clone().multiplyScalar(clamped))
+          .add(slidingDir3D.clone().multiplyScalar(clamped))
         const dist = corner.distanceTo(closestPoint)
         totalDist += dist
       }
@@ -416,27 +579,24 @@ export default function KitchenUnit({
       if (avgDist < minDistance) {
         minDistance = avgDist
 
-        // Determine which side of the wall the unit is on
-        const toCenter = new Vector3().subVectors(currentPos, insideFaceStart3D)
-        const normal =
-          toCenter.dot(wallNormal3D) > 0 ? wallNormal3D : wallNormal3D.negate()
-
-        // Calculate the current distance to maintain (from inside face)
         const centerToWall = new Vector3().subVectors(
           currentPos,
-          insideFaceStart3D
+          slidingFace3D.start
         )
-        const currentDistance = Math.abs(centerToWall.dot(normal))
+        const currentDistance = Math.abs(centerToWall.dot(slidingNormal3D))
 
         bestEdge = {
-          start: insideFaceStart3D,
-          end: insideFaceEnd3D,
-          direction: wallDir3D,
-          normal: normal,
+          start: slidingFace3D.start,
+          end: slidingFace3D.end,
+          direction: slidingDir3D,
+          normal: slidingNormal3D,
           wallId: wallSegment.wallId,
           isWall: true,
+          wallType: wallSegment.type,
           maintainDistance: currentDistance
         }
+
+        console.log(`🎯 Selected ${wallSegment.type} sliding face`)
       }
     }
 

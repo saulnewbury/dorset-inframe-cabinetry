@@ -73,6 +73,13 @@ export const initialState = {
   floor: { patterns: initialPatterns, id: 0 }
 }
 
+// wall[0] is the main external walls and wall[1 onwards] is the internal walls.
+
+// walls (see initial state in appModel) is an array of arrays. The first arrey/element, holds the points for the outer walls which is a closed loop. Each array after the first holds the point for an internal stand-alone wall
+// It has a point (x and z) and it has a segment id.
+// You can add corners to walls which makes them have multiple.
+// The outer wall is a closed loop, after the end point you return to the first point - its' the only wall that is a closed loop.
+
 let keepCopy = true
 
 const wrap = (a, n, s) => (s ? a[n] : a[(n + a.length) % a.length])
