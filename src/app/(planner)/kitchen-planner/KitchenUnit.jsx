@@ -623,53 +623,55 @@ export default function KitchenUnit({
     let w = unit.width / 1000
     let d = unit.depth / 1000
 
+    // ADD FRONT PANEL THICKNESS (36mm total) to ALL cabinet types
+    // This accounts for both carcass front panel (18mm) + door/front panel (18mm)
+    const panelThickness = 0.018
+    const frontPanelTotal = panelThickness * 2 // 36mm total front extension
+    const collisionDepth = d + frontPanelTotal // Add 36mm to depth
+
+    // Offset position forward by half the total front panel thickness so it extends from the front
+    const frontOffset = new Vector3(0, 0, frontPanelTotal / 2).applyAxisAngle(
+      vectorY,
+      rot
+    )
+    pos.add(frontOffset)
+
     if (unit.type === 'base' && unit.style?.includes('corner')) {
-      // OPTIMIZATION: Cache expensive corner calculations
+      // CORNER CABINETS: Use cached calculations for width + existing front panel logic
       if (!unit._cornerCache) {
-        // Calculate once and cache the results
         const isLeftOpening = unit.style.includes('left')
-        const carcassDepth = d
-        const panelThickness = 0.018
-
-        // Calculate interior opening width (expensive lookup)
-        const cornerSizes = [400, 450, 500, 600]
-        const openingWidths = [0.38, 0.43, 0.48, 0.58]
-        const index = cornerSizes.indexOf(unit.width)
-        const interiorOpeningWidth =
-          index !== -1
-            ? openingWidths[index]
-            : (unit.width / 1000) * (0.58 / 0.6)
-
-        // Calculate corner dimensions (expensive math)
+        const carcassDepth = d // Original depth before adding front panel
+        const interiorOpeningWidth = getInteriorOpeningWidth(unit.width)
         const cornerFullWidth =
           interiorOpeningWidth + panelThickness + carcassDepth
         const collisionWidth = cornerFullWidth + panelThickness * 2
         const cornerOffset = -carcassDepth / 4 - 0.0135
         const offsetX = isLeftOpening ? cornerOffset : -cornerOffset
 
-        // Cache all the calculated values
         unit._cornerCache = {
           width: collisionWidth,
-          depth: carcassDepth,
-          offsetX: offsetX,
-          isLeftOpening: isLeftOpening
+          depth: collisionDepth, // Use depth that includes front panel
+          offsetX: offsetX
         }
       }
 
-      // Use cached values (fast!)
+      // Use cached values for corner cabinets
       w = unit._cornerCache.width
-      d = unit._cornerCache.depth
+      d = unit._cornerCache.depth // This already includes the front panel thickness
 
-      // Apply cached offset
-      const offset = new Vector3(
+      // Apply corner-specific position offset
+      const cornerOffset = new Vector3(
         unit._cornerCache.offsetX,
         0,
         0
       ).applyAxisAngle(vectorY, rot)
-      pos.add(offset)
+      pos.add(cornerOffset)
+    } else {
+      // REGULAR CABINETS: Use collision depth that includes front panel
+      d = collisionDepth
     }
 
-    // Standard corner calculation (same for all cabinet types)
+    // Calculate the four corners based on the adjusted width and depth
     return [
       new Vector3(-w / 2, 0, d / 2), // front left
       new Vector3(-w / 2, 0, -d / 2), // back left
@@ -679,7 +681,7 @@ export default function KitchenUnit({
   }
 
   /**
-   * Helper function to determine interior opening width based on cabinet width
+   * Helper function for corner cabinet interior opening width
    */
   function getInteriorOpeningWidth(widthMm) {
     const cornerSizes = [400, 450, 500, 600]
@@ -692,9 +694,6 @@ export default function KitchenUnit({
     }
 
     // Fallback for non-standard sizes
-    console.warn(
-      `⚠️ Non-standard corner cabinet width: ${widthMm}mm, using proportional calculation`
-    )
     return (widthMm / 1000) * (0.58 / 0.6)
   }
 
