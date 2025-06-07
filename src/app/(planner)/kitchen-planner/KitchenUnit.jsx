@@ -805,6 +805,203 @@ export default function KitchenUnit({
     otherUnits,
     snapDistance = 0.01
   ) {
+    // Get wall segments from the model (access from the component scope)
+    const wallSegments = getWallSegments(model.walls)
+
+    // TRY WALL SNAPPING FIRST (higher priority than cabinet snapping)
+    const wallSnappedPos = snapToNearbyWalls(
+      newPos,
+      currentUnit,
+      wallSegments,
+      snapDistance
+    )
+    if (wallSnappedPos !== newPos) {
+      return wallSnappedPos // Wall snapping succeeded
+    }
+
+    // THEN TRY CABINET SNAPPING (existing functionality)
+    return snapToNearbyCabinets(newPos, currentUnit, otherUnits, snapDistance)
+  }
+
+  /**
+   * Snap cabinets to nearby walls for perfect positioning
+   */
+
+  function snapToNearbyWalls(
+    newPos,
+    currentUnit,
+    wallSegments,
+    snapDistance = 0.01
+  ) {
+    const myCorners = getCorners(currentUnit, newPos, currentUnit.rotation)
+
+    for (const wallSegment of wallSegments) {
+      const wallStart = new Vector2(wallSegment.start.x, wallSegment.start.z)
+      const wallEnd = new Vector2(wallSegment.end.x, wallSegment.end.z)
+      const wallVector = new Vector2().subVectors(wallEnd, wallStart)
+      const wallLength = wallVector.length()
+      const wallDir = wallVector.clone().normalize()
+      const wallNormal = new Vector2(-wallVector.y, wallVector.x).normalize()
+
+      // Calculate wall faces based on wall type
+      let snapFaces = []
+
+      if (wallSegment.type === 'perimeter-wall') {
+        // PERIMETER WALLS: Only snap to inside face (room side)
+        const wallThickness = 0.1
+        const halfThickness = wallThickness / 2
+        const insideFace = {
+          start: wallStart
+            .clone()
+            .add(wallNormal.clone().multiplyScalar(halfThickness)),
+          end: wallEnd
+            .clone()
+            .add(wallNormal.clone().multiplyScalar(halfThickness)),
+          normal: wallNormal.clone()
+        }
+        snapFaces.push(insideFace)
+      } else if (wallSegment.type === 'internal-wall') {
+        // INTERNAL WALLS: Snap to both faces (can approach from either side)
+        const wallThickness = 0.1
+        const halfThickness = wallThickness / 2
+
+        const face1 = {
+          start: wallStart
+            .clone()
+            .add(wallNormal.clone().multiplyScalar(halfThickness)),
+          end: wallEnd
+            .clone()
+            .add(wallNormal.clone().multiplyScalar(halfThickness)),
+          normal: wallNormal.clone()
+        }
+        const face2 = {
+          start: wallStart
+            .clone()
+            .sub(wallNormal.clone().multiplyScalar(halfThickness)),
+          end: wallEnd
+            .clone()
+            .sub(wallNormal.clone().multiplyScalar(halfThickness)),
+          normal: wallNormal.clone().negate()
+        }
+        snapFaces.push(face1, face2)
+      }
+
+      // Check each wall face for snapping opportunities
+      for (const face of snapFaces) {
+        // Check each cabinet corner against this wall face
+        for (const corner of myCorners) {
+          const corner2D = new Vector2(corner.x, corner.z)
+
+          // Find closest point on the wall face
+          const toCorner = new Vector2().subVectors(corner2D, face.start)
+          const projection = toCorner.dot(wallDir)
+          const clampedProjection = Math.max(
+            0,
+            Math.min(wallLength, projection)
+          )
+          const closestPointOnWall = face.start
+            .clone()
+            .add(wallDir.clone().multiplyScalar(clampedProjection))
+
+          const distanceToWall = corner2D.distanceTo(closestPointOnWall)
+
+          // If corner is close to wall, try snapping
+          if (distanceToWall < snapDistance) {
+            // Calculate snap vector to align cabinet with wall
+            const snapVector = new Vector2().subVectors(
+              closestPointOnWall,
+              corner2D
+            )
+            const snappedPos2D = new Vector2(newPos.x, newPos.z).add(snapVector)
+            const snappedPos = new Vector3(
+              snappedPos2D.x,
+              newPos.y,
+              snappedPos2D.y
+            )
+
+            // Verify the snapped position doesn't cause collisions
+            if (
+              isSnappedPositionValid(snappedPos, currentUnit, wallSegments, [])
+            ) {
+              return snappedPos
+            }
+          }
+        }
+
+        // Also try snapping cabinet edges parallel to wall
+        for (let i = 0; i < myCorners.length; i++) {
+          const edgeStart = myCorners[i]
+          const edgeEnd = myCorners[(i + 1) % myCorners.length]
+          const cabinetEdge = new Vector3().subVectors(edgeEnd, edgeStart)
+          const cabinetEdgeDir = cabinetEdge.clone().normalize()
+
+          // Check if cabinet edge is roughly parallel to wall
+          const wallDir3D = new Vector3(wallDir.x, 0, wallDir.y)
+          const parallelness = Math.abs(cabinetEdgeDir.dot(wallDir3D))
+
+          if (parallelness > 0.9) {
+            // Nearly parallel (within ~25 degrees)
+            // Calculate distance from cabinet edge to wall
+            const edgeCenter = new Vector3()
+              .addVectors(edgeStart, edgeEnd)
+              .multiplyScalar(0.5)
+            const edgeCenter2D = new Vector2(edgeCenter.x, edgeCenter.z)
+
+            const toEdge = new Vector2().subVectors(edgeCenter2D, face.start)
+            const edgeProjection = toEdge.dot(wallDir)
+            const clampedEdgeProjection = Math.max(
+              0,
+              Math.min(wallLength, edgeProjection)
+            )
+            const closestWallPoint = face.start
+              .clone()
+              .add(wallDir.clone().multiplyScalar(clampedEdgeProjection))
+
+            const edgeDistanceToWall = edgeCenter2D.distanceTo(closestWallPoint)
+
+            if (edgeDistanceToWall < snapDistance) {
+              // Snap cabinet edge to be parallel and aligned with wall
+              const snapVector = new Vector2().subVectors(
+                closestWallPoint,
+                edgeCenter2D
+              )
+              const snappedPos2D = new Vector2(newPos.x, newPos.z).add(
+                snapVector
+              )
+              const snappedPos = new Vector3(
+                snappedPos2D.x,
+                newPos.y,
+                snappedPos2D.y
+              )
+
+              if (
+                isSnappedPositionValid(
+                  snappedPos,
+                  currentUnit,
+                  wallSegments,
+                  []
+                )
+              ) {
+                return snappedPos
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return newPos // No wall snapping occurred
+  }
+
+  /**
+   * Renamed existing cabinet snapping function for clarity
+   */
+  function snapToNearbyCabinets(
+    newPos,
+    currentUnit,
+    otherUnits,
+    snapDistance = 0.01
+  ) {
     // Find nearby units that this cabinet could snap to
     for (const otherUnit of otherUnits) {
       // TYPE FILTERING: Only snap to compatible cabinet types
@@ -856,29 +1053,9 @@ export default function KitchenUnit({
               newPos.z + snapVector.z
             )
 
-            // Verify the snapped position doesn't cause collisions
-            const snappedUnit = { ...currentUnit, pos: snappedPos }
-            const snappedCorners = getCorners(
-              snappedUnit,
-              snappedPos,
-              currentUnit.rotation
-            )
-
-            // Quick collision check with TYPE FILTERING
-            let wouldOverlap = false
-            for (const checkUnit of otherUnits) {
-              if (checkUnit.id === otherUnit.id) continue // Skip the unit we're snapping to
-              if (!shouldCabinetsCollide(currentUnit.type, checkUnit.type))
-                continue // Skip incompatible types
-
-              const checkCorners = getCorners(checkUnit)
-              if (checkUnitCollision(snappedCorners, checkCorners)) {
-                wouldOverlap = true
-                break
-              }
-            }
-
-            if (!wouldOverlap) {
+            if (
+              isSnappedPositionValid(snappedPos, currentUnit, [], otherUnits)
+            ) {
               return snappedPos
             }
           }
@@ -898,28 +1075,9 @@ export default function KitchenUnit({
               newPos.z + snapVector.z
             )
 
-            // Verify no overlap with TYPE FILTERING
-            const snappedUnit = { ...currentUnit, pos: snappedPos }
-            const snappedCorners = getCorners(
-              snappedUnit,
-              snappedPos,
-              currentUnit.rotation
-            )
-
-            let wouldOverlap = false
-            for (const checkUnit of otherUnits) {
-              if (checkUnit.id === otherUnit.id) continue
-              if (!shouldCabinetsCollide(currentUnit.type, checkUnit.type))
-                continue
-
-              const checkCorners = getCorners(checkUnit)
-              if (checkUnitCollision(snappedCorners, checkCorners)) {
-                wouldOverlap = true
-                break
-              }
-            }
-
-            if (!wouldOverlap) {
+            if (
+              isSnappedPositionValid(snappedPos, currentUnit, [], otherUnits)
+            ) {
               return snappedPos
             }
           }
@@ -927,7 +1085,44 @@ export default function KitchenUnit({
       }
     }
 
-    return newPos // No snapping needed
+    return newPos // No cabinet snapping needed
+  }
+
+  /**
+   * Helper function to validate snapped positions
+   */
+  function isSnappedPositionValid(
+    snappedPos,
+    currentUnit,
+    wallSegments,
+    otherUnits
+  ) {
+    const snappedUnit = { ...currentUnit, pos: snappedPos }
+    const snappedCorners = getCorners(
+      snappedUnit,
+      snappedPos,
+      currentUnit.rotation
+    )
+
+    // Check wall collisions if walls provided
+    if (wallSegments.length > 0) {
+      const wallCollision = checkWallCollision(snappedCorners, wallSegments)
+      if (wallCollision.collides) {
+        return false
+      }
+    }
+
+    // Check unit collisions if units provided
+    for (const checkUnit of otherUnits) {
+      if (!shouldCabinetsCollide(currentUnit.type, checkUnit.type)) continue
+
+      const checkCorners = getCorners(checkUnit)
+      if (checkUnitCollision(snappedCorners, checkCorners)) {
+        return false
+      }
+    }
+
+    return true // Position is valid
   }
 
   /**
@@ -1076,8 +1271,7 @@ export default function KitchenUnit({
       rotation: ry
     }
 
-    // OPTIONAL: Try snapping to nearby units for perfect alignment
-    // Enable/disable snapping here:
+    // ENHANCED: Try snapping to walls AND cabinets for perfect alignment
     newPos = snapToNearbyUnits(newPos, currentUnit, otherUnits.current)
 
     const myCorners = getCorners(currentUnit, newPos, ry)
