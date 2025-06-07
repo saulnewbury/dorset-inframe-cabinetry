@@ -17,7 +17,7 @@ export default function Worktop({
 
   const color = model.worktop
 
-  const w = distance + thickness * 2
+  const w = distance + thickness * 2 + 0.004
   const d = depth + thickness
   const basinDepth = basin?.depth
   const basinHeight = basin?.height
