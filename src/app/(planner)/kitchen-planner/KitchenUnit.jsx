@@ -326,21 +326,16 @@ export default function KitchenUnit({
    * Enhanced collision detection that can detect multiple collision types simultaneously
    */
   function detectAllCollisions(unitCorners, unit, wallSegments, otherUnits) {
-    console.log('🔍 COMPREHENSIVE collision detection')
-
     const collisions = {
       walls: [],
       units: [],
       hasAnyCollision: false
     }
 
-    // Check ALL wall collisions (not just first one)
+    // Check ALL wall collisions (walls affect all cabinet types)
     for (let i = 0; i < wallSegments.length; i++) {
       const wallCollision = checkWallCollision(unitCorners, [wallSegments[i]])
       if (wallCollision.collides) {
-        console.log(
-          `❌ Wall collision detected: wall ${wallSegments[i].wallId}`
-        )
         collisions.walls.push({
           wallId: wallSegments[i].wallId,
           segment: wallSegments[i],
@@ -350,16 +345,20 @@ export default function KitchenUnit({
       }
     }
 
-    // Check ALL unit collisions (regardless of wall collisions)
+    // Check unit collisions with TYPE FILTERING
     const myBox = getUnitBoundingBox(unit, unit.pos, unit.rotation)
 
     for (const otherUnit of otherUnits) {
+      // CABINET TYPE COLLISION RULES:
+      if (!shouldCabinetsCollide(unit.type, otherUnit.type)) {
+        continue // Skip this unit - different height levels
+      }
+
       const otherBox = getUnitBoundingBox(otherUnit)
       if (!myBox.intersectsBox(otherBox)) continue
 
       const otherCorners = getCorners(otherUnit)
       if (checkUnitCollision(unitCorners, otherCorners)) {
-        console.log(`❌ Unit collision detected: unit ${otherUnit.id}`)
         collisions.units.push({
           unitId: otherUnit.id,
           unit: otherUnit,
@@ -369,10 +368,41 @@ export default function KitchenUnit({
       }
     }
 
-    console.log(
-      `🎯 Collision summary: ${collisions.walls.length} walls, ${collisions.units.length} units`
-    )
     return collisions
+  }
+
+  /*
+   * Determines if two cabinet types should collide with each other
+   * Based on their physical height and mounting position
+   */
+  function shouldCabinetsCollide(type1, type2) {
+    // COLLISION MATRIX:
+    // base vs base: YES (same level)
+    // base vs tall: YES (tall extends to base level)
+    // base vs wall: NO (wall is mounted high above base)
+    // tall vs tall: YES (same height range)
+    // tall vs wall: YES (both extend to upper areas)
+    // wall vs wall: YES (same mounting height)
+
+    const collisionMatrix = {
+      base: {
+        base: true, // Base cabinets collide with each other
+        tall: true, // Tall cabinets extend down to base level
+        wall: false // Wall cabinets are mounted high above
+      },
+      tall: {
+        base: true, // Tall cabinets extend down to base level
+        tall: true, // Tall cabinets collide with each other
+        wall: true // Tall cabinets extend up to wall cabinet level
+      },
+      wall: {
+        base: false, // Wall cabinets don't reach down to base level
+        tall: true, // Tall cabinets extend up to wall level
+        wall: true // Wall cabinets collide with each other
+      }
+    }
+
+    return collisionMatrix[type1]?.[type2] ?? false
   }
 
   /**
@@ -767,6 +797,9 @@ export default function KitchenUnit({
     return true // Collision detected
   }
 
+  /**
+   * Enhanced snapToNearbyUnits with cabinet type filtering
+   */
   function snapToNearbyUnits(
     newPos,
     currentUnit,
@@ -775,6 +808,11 @@ export default function KitchenUnit({
   ) {
     // Find nearby units that this cabinet could snap to
     for (const otherUnit of otherUnits) {
+      // TYPE FILTERING: Only snap to compatible cabinet types
+      if (!shouldCabinetsCollide(currentUnit.type, otherUnit.type)) {
+        continue // Skip incompatible cabinet types
+      }
+
       const distance = new Vector3(newPos.x, 0, newPos.z).distanceTo(
         new Vector3(otherUnit.pos.x, 0, otherUnit.pos.z)
       )
@@ -827,10 +865,12 @@ export default function KitchenUnit({
               currentUnit.rotation
             )
 
-            // Quick collision check - if snapping would cause overlap, skip it
+            // Quick collision check with TYPE FILTERING
             let wouldOverlap = false
             for (const checkUnit of otherUnits) {
               if (checkUnit.id === otherUnit.id) continue // Skip the unit we're snapping to
+              if (!shouldCabinetsCollide(currentUnit.type, checkUnit.type))
+                continue // Skip incompatible types
 
               const checkCorners = getCorners(checkUnit)
               if (checkUnitCollision(snappedCorners, checkCorners)) {
@@ -846,7 +886,7 @@ export default function KitchenUnit({
         }
       }
 
-      // Also check for corner-to-corner snapping (perfect corner alignment)
+      // Also check for corner-to-corner snapping
       for (const myCorner of myCorners) {
         for (const otherCorner of otherCorners) {
           const cornerDistance = myCorner.distanceTo(otherCorner)
@@ -859,7 +899,7 @@ export default function KitchenUnit({
               newPos.z + snapVector.z
             )
 
-            // Verify no overlap
+            // Verify no overlap with TYPE FILTERING
             const snappedUnit = { ...currentUnit, pos: snappedPos }
             const snappedCorners = getCorners(
               snappedUnit,
@@ -870,6 +910,8 @@ export default function KitchenUnit({
             let wouldOverlap = false
             for (const checkUnit of otherUnits) {
               if (checkUnit.id === otherUnit.id) continue
+              if (!shouldCabinetsCollide(currentUnit.type, checkUnit.type))
+                continue
 
               const checkCorners = getCorners(checkUnit)
               if (checkUnitCollision(snappedCorners, checkCorners)) {
@@ -889,6 +931,9 @@ export default function KitchenUnit({
     return newPos // No snapping needed
   }
 
+  /**
+   * Enhanced optimizedSlidingCollisionCheck with cabinet type filtering
+   */
   function optimizedSlidingCollisionCheck(
     slideCorners,
     slideUnit,
@@ -903,8 +948,16 @@ export default function KitchenUnit({
     })
 
     const relevantUnits = otherUnits.filter((unit) => {
-      if (slidingState.isWall) return true // Sliding against wall, check all units
-      return unit.id !== slidingState.unitId // Skip the unit we're sliding against
+      if (slidingState.isWall) {
+        // Sliding against wall, check all compatible unit types
+        return shouldCabinetsCollide(slideUnit.type, unit.type)
+      } else {
+        // Sliding against unit, check all compatible types except the sliding target
+        return (
+          unit.id !== slidingState.unitId &&
+          shouldCabinetsCollide(slideUnit.type, unit.type)
+        )
+      }
     })
 
     // Use the filtered lists for collision detection
