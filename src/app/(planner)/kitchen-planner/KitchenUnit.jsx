@@ -106,17 +106,11 @@ export default function KitchenUnit({
    * Converts wall segments into line segments for collision detection
    */
   function getWallSegments(walls) {
-    console.log('🏠 Processing ALL walls - perimeter + internal')
-    console.log(`Total wall arrays: ${walls.length}`)
     const segments = []
 
     // Process ALL wall segments
     walls.forEach((wallSegment, segmentIndex) => {
       if (segmentIndex === 0) {
-        console.log(
-          `📐 Processing PERIMETER walls (${wallSegment.length} points)`
-        )
-
         // Perimeter walls - closed loop
         for (let i = 0; i < wallSegment.length; i++) {
           const start = wallSegment[i]
@@ -130,17 +124,9 @@ export default function KitchenUnit({
             type: 'perimeter-wall',
             segmentIndex: segmentIndex
           }
-
-          console.log(
-            `  📏 Perimeter segment ${i}: from (${start.x}, ${start.z}) to (${end.x}, ${end.z})`
-          )
           segments.push(segment)
         }
       } else {
-        console.log(
-          `🧱 Processing INTERNAL wall ${segmentIndex} (${wallSegment.length} points)`
-        )
-
         // Internal walls - NOT a closed loop (just connect point to point)
         for (let i = 0; i < wallSegment.length - 1; i++) {
           const start = wallSegment[i]
@@ -155,9 +141,6 @@ export default function KitchenUnit({
             segmentIndex: segmentIndex
           }
 
-          console.log(
-            `  📏 Internal segment ${segmentIndex}-${i}: from (${start.x}, ${start.z}) to (${end.x}, ${end.z})`
-          )
           segments.push(segment)
         }
       }
@@ -181,34 +164,52 @@ export default function KitchenUnit({
    * Check if unit collides with walls (accounting for wall thickness)
    */
   function checkWallCollision(unitCorners, wallSegments) {
-    console.log(
-      '🔍 Checking wall collision for unit corners:',
-      unitCorners.map((c) => `(${c.x.toFixed(2)}, ${c.z.toFixed(2)})`)
-    )
-
     const unitPoly = unitCorners.map((c) => new Vector2(c.x, c.z))
+
+    // Calculate unit bounding box center for distance culling
+    const unitMinX = Math.min(...unitPoly.map((p) => p.x))
+    const unitMaxX = Math.max(...unitPoly.map((p) => p.x))
+    const unitMinY = Math.min(...unitPoly.map((p) => p.y))
+    const unitMaxY = Math.max(...unitPoly.map((p) => p.y))
+    const unitCenter = new Vector2(
+      (unitMinX + unitMaxX) / 2,
+      (unitMinY + unitMaxY) / 2
+    )
+    const unitRadius = Math.max(unitMaxX - unitMinX, unitMaxY - unitMinY) / 2
 
     for (let i = 0; i < wallSegments.length; i++) {
       const segment = wallSegments[i]
+
+      // OPTIMIZATION: Distance culling - skip walls that are obviously too far away
+      const wallCenter = new Vector2(
+        (segment.start.x + segment.end.x) / 2,
+        (segment.start.z + segment.end.z) / 2
+      )
+      const distance = unitCenter.distanceTo(wallCenter)
+
+      // Skip if unit is obviously too far from this wall segment
+      // Use a conservative threshold that accounts for unit size and wall length
+      const wallLength = segment.start.distanceTo(segment.end)
+      const maxReasonableDistance = unitRadius + wallLength / 2 + 1.0 // 1m safety margin
+
+      if (distance > maxReasonableDistance) {
+        continue // Skip this wall segment
+      }
+
+      // Continue with existing collision detection for nearby walls
       const wallStart = new Vector2(segment.start.x, segment.start.z)
       const wallEnd = new Vector2(segment.end.x, segment.end.z)
 
-      console.log(`  🧱 Testing ${segment.type} segment ${i}`)
-
-      // Calculate wall properties
       const wallVector = new Vector2().subVectors(wallEnd, wallStart)
-      const wallLength = wallVector.length()
+      const wallLength2 = wallVector.length()
       const wallDir = wallVector.clone().normalize()
       const wallNormal = new Vector2(-wallVector.y, wallVector.x).normalize()
 
-      const wallThickness = 0.1 // 10cm thick walls
+      const wallThickness = 0.1
       const halfThickness = wallThickness / 2
-      const collisionThreshold = 0.02 // 2cm safety margin - SAME FOR ALL WALLS
+      const collisionThreshold = 0.02
 
       if (segment.type === 'perimeter-wall') {
-        console.log(`    🏠 PERIMETER WALL - checking against inside face`)
-
-        // PERIMETER WALLS: Use existing logic (inside face detection)
         const insideFaceStart = wallStart
           .clone()
           .add(wallNormal.clone().multiplyScalar(halfThickness))
@@ -218,33 +219,22 @@ export default function KitchenUnit({
 
         for (let j = 0; j < unitPoly.length; j++) {
           const corner = unitPoly[j]
-
           const toCorner = new Vector2().subVectors(corner, insideFaceStart)
           const projectionLength = toCorner.dot(wallDir)
           const clampedProjection = Math.max(
             0,
-            Math.min(wallLength, projectionLength)
+            Math.min(wallLength2, projectionLength)
           )
           const closestPointOnInsideFace = insideFaceStart
             .clone()
             .add(wallDir.clone().multiplyScalar(clampedProjection))
-
           const vectorToCorner = new Vector2().subVectors(
             corner,
             closestPointOnInsideFace
           )
           const signedDistance = vectorToCorner.dot(wallNormal)
 
-          console.log(
-            `    🔹 Corner ${j}: signed distance=${signedDistance.toFixed(
-              3
-            )} (negative=inside room)`
-          )
-
           if (signedDistance < collisionThreshold) {
-            console.log(
-              '❌ PERIMETER COLLISION - corner inside or too close to room boundary'
-            )
             return {
               collides: true,
               segment: segment,
@@ -254,11 +244,6 @@ export default function KitchenUnit({
           }
         }
       } else if (segment.type === 'internal-wall') {
-        console.log(
-          `    🧱 INTERNAL WALL - checking collision with expanded wall volume`
-        )
-
-        // INTERNAL WALLS: Create an EXPANDED wall rectangle that includes the safety margin
         const expandedHalfThickness = halfThickness + collisionThreshold
 
         const wallCorner1 = wallStart
@@ -281,19 +266,7 @@ export default function KitchenUnit({
           wallCorner4
         ]
 
-        console.log(
-          `    📐 Expanded wall rectangle: thickness ${(
-            expandedHalfThickness * 2
-          ).toFixed(3)}m (includes ${collisionThreshold.toFixed(
-            3
-          )}m safety margin)`
-        )
-
-        // Check if unit polygon intersects with EXPANDED wall rectangle
         if (polygonsIntersect(unitPoly, expandedWallPoly)) {
-          console.log(
-            '❌ INTERNAL WALL COLLISION - cabinet too close to wall volume'
-          )
           return {
             collides: true,
             segment: segment,
@@ -305,7 +278,6 @@ export default function KitchenUnit({
       }
     }
 
-    console.log('✅ No wall collision detected')
     return { collides: false }
   }
 
@@ -616,25 +588,108 @@ export default function KitchenUnit({
    * Calculates the four corners of a unit.
    */
   function getCorners(unit, position = unit.pos, rot = unit.rotation) {
-    // Ensure position is a Vector3
     const pos =
       position instanceof Vector3
         ? position.clone()
         : new Vector3(position.x, 0, position.z)
 
     let w = unit.width / 1000
+    let d = unit.depth / 1000
+
     if (unit.type === 'base' && unit.style?.includes('corner')) {
-      const offset = unit.style?.includes('left') ? -0.1475 : 0.1475
-      w += 0.295
-      pos.add(new Vector3(offset, 0, 0).applyAxisAngle(vectorY, rot))
+      // OPTIMIZATION: Cache expensive corner calculations
+      if (!unit._cornerCache) {
+        // Calculate once and cache the results
+        const isLeftOpening = unit.style.includes('left')
+        const carcassDepth = d
+        const panelThickness = 0.018
+
+        // Calculate interior opening width (expensive lookup)
+        const cornerSizes = [400, 450, 500, 600]
+        const openingWidths = [0.38, 0.43, 0.48, 0.58]
+        const index = cornerSizes.indexOf(unit.width)
+        const interiorOpeningWidth =
+          index !== -1
+            ? openingWidths[index]
+            : (unit.width / 1000) * (0.58 / 0.6)
+
+        // Calculate corner dimensions (expensive math)
+        const cornerFullWidth =
+          interiorOpeningWidth + panelThickness + carcassDepth
+        const collisionWidth = cornerFullWidth + panelThickness * 2
+        const cornerOffset = -carcassDepth / 4 - 0.0135
+        const offsetX = isLeftOpening ? cornerOffset : -cornerOffset
+
+        // Cache all the calculated values
+        unit._cornerCache = {
+          width: collisionWidth,
+          depth: carcassDepth,
+          offsetX: offsetX,
+          isLeftOpening: isLeftOpening
+        }
+      }
+
+      // Use cached values (fast!)
+      w = unit._cornerCache.width
+      d = unit._cornerCache.depth
+
+      // Apply cached offset
+      const offset = new Vector3(
+        unit._cornerCache.offsetX,
+        0,
+        0
+      ).applyAxisAngle(vectorY, rot)
+      pos.add(offset)
     }
-    const d = unit.depth / 1000
+
+    // Standard corner calculation (same for all cabinet types)
     return [
       new Vector3(-w / 2, 0, d / 2), // front left
       new Vector3(-w / 2, 0, -d / 2), // back left
       new Vector3(w / 2, 0, -d / 2), // back right
       new Vector3(w / 2, 0, d / 2) // front right
     ].map((p) => p.applyAxisAngle(vectorY, rot).add(pos))
+  }
+
+  /**
+   * Helper function to determine interior opening width based on cabinet width
+   */
+  function getInteriorOpeningWidth(widthMm) {
+    const cornerSizes = [400, 450, 500, 600]
+    const openingWidths = [0.38, 0.43, 0.48, 0.58]
+
+    const index = cornerSizes.indexOf(widthMm)
+
+    if (index !== -1) {
+      return openingWidths[index]
+    }
+
+    // Fallback for non-standard sizes
+    console.warn(
+      `⚠️ Non-standard corner cabinet width: ${widthMm}mm, using proportional calculation`
+    )
+    return (widthMm / 1000) * (0.58 / 0.6)
+  }
+
+  /**
+   * Helper function to determine interior opening width based on cabinet width
+   * This matches the logic from itemStyles.js and CabinetCorner.jsx
+   */
+  function getInteriorOpeningWidth(widthMm) {
+    const cornerSizes = [400, 450, 500, 600]
+    const openingWidths = [0.38, 0.43, 0.48, 0.58]
+
+    const index = cornerSizes.indexOf(widthMm)
+
+    if (index !== -1) {
+      return openingWidths[index]
+    }
+
+    // Fallback for non-standard sizes
+    console.warn(
+      `⚠️ Non-standard corner cabinet width: ${widthMm}mm, using proportional calculation`
+    )
+    return (widthMm / 1000) * (0.58 / 0.6)
   }
 
   /**
