@@ -42,6 +42,7 @@ export default function Wall({
         .sort((a, b) => a.offset - b.offset),
     [model]
   )
+  const segName = from.segment ? 'segment-' + from.segment : 'wall-'
 
   const showHandle = !is3D && hover?.type === 'wall' && hover.id === from.id
   const highlight =
@@ -114,7 +115,7 @@ export default function Wall({
 
   return (
     <>
-      <group name={'wall-' + from.id} position={pos} rotation-y={-angle}>
+      <group name={segName + from.id} position={pos} rotation-y={-angle}>
         {/* Hover target */}
         <mesh
           position={[0, wh + 0.01, 0]}
@@ -173,36 +174,36 @@ export default function Wall({
           >
             <mesh>
               <boxGeometry args={[wt * 2, 0, wt * 2]} />
-              <meshStandardMaterial color='green' transparent opacity={0} />
+              <meshStandardMaterial color="green" transparent opacity={0} />
             </mesh>
-            <group position-z='-0.08'>
-              <Html center as='div' className='pointer-events-none'>
+            <group position-z="-0.08">
+              <Html center as="div" className="pointer-events-none">
                 <div
-                  className='flex items-center justify-center'
+                  className="flex items-center justify-center"
                   style={{
                     transform: `rotateZ(${angle + 1.5708}rad) translateX(-80%)`
                   }}
                 >
                   <img
                     src={wallHandleLeft.src}
-                    alt=''
-                    className='scale-125 max-w-none'
+                    alt=""
+                    className="scale-125 max-w-none"
                   />
                 </div>
               </Html>
             </group>
-            <group position-z='0.08'>
-              <Html center as='div' className='pointer-events-none'>
+            <group position-z="0.08">
+              <Html center as="div" className="pointer-events-none">
                 <div
-                  className='flex items-center justify-center'
+                  className="flex items-center justify-center"
                   style={{
                     transform: `rotateZ(${angle + 1.5708}rad) translateX(80%)`
                   }}
                 >
                   <img
                     src={wallHandleRight.src}
-                    alt=''
-                    className='scale-125 max-w-none'
+                    alt=""
+                    className="scale-125 max-w-none"
                   />
                 </div>
               </Html>
