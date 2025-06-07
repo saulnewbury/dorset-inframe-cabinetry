@@ -166,7 +166,7 @@ export default function KitchenUnit({
   function checkWallCollision(unitCorners, wallSegments) {
     const unitPoly = unitCorners.map((c) => new Vector2(c.x, c.z))
 
-    // Calculate unit bounding box center for distance culling
+    // Calculate unit center for distance culling
     const unitMinX = Math.min(...unitPoly.map((p) => p.x))
     const unitMaxX = Math.max(...unitPoly.map((p) => p.x))
     const unitMinY = Math.min(...unitPoly.map((p) => p.y))
@@ -180,26 +180,21 @@ export default function KitchenUnit({
     for (let i = 0; i < wallSegments.length; i++) {
       const segment = wallSegments[i]
 
-      // OPTIMIZATION: Distance culling - skip walls that are obviously too far away
+      // Distance culling optimization
       const wallCenter = new Vector2(
         (segment.start.x + segment.end.x) / 2,
         (segment.start.z + segment.end.z) / 2
       )
       const distance = unitCenter.distanceTo(wallCenter)
-
-      // Skip if unit is obviously too far from this wall segment
-      // Use a conservative threshold that accounts for unit size and wall length
       const wallLength = segment.start.distanceTo(segment.end)
-      const maxReasonableDistance = unitRadius + wallLength / 2 + 1.0 // 1m safety margin
+      const maxReasonableDistance = unitRadius + wallLength / 2 + 1.0
 
       if (distance > maxReasonableDistance) {
-        continue // Skip this wall segment
+        continue
       }
 
-      // Continue with existing collision detection for nearby walls
       const wallStart = new Vector2(segment.start.x, segment.start.z)
       const wallEnd = new Vector2(segment.end.x, segment.end.z)
-
       const wallVector = new Vector2().subVectors(wallEnd, wallStart)
       const wallLength2 = wallVector.length()
       const wallDir = wallVector.clone().normalize()
@@ -207,7 +202,9 @@ export default function KitchenUnit({
 
       const wallThickness = 0.1
       const halfThickness = wallThickness / 2
-      const collisionThreshold = 0.02
+
+      // DIFFERENT THRESHOLDS FOR DIFFERENT WALL TYPES
+      const wallCollisionThreshold = 0.02 // Keep 2cm margin for walls (safety)
 
       if (segment.type === 'perimeter-wall') {
         const insideFaceStart = wallStart
@@ -234,7 +231,7 @@ export default function KitchenUnit({
           )
           const signedDistance = vectorToCorner.dot(wallNormal)
 
-          if (signedDistance < collisionThreshold) {
+          if (signedDistance < wallCollisionThreshold) {
             return {
               collides: true,
               segment: segment,
@@ -244,7 +241,7 @@ export default function KitchenUnit({
           }
         }
       } else if (segment.type === 'internal-wall') {
-        const expandedHalfThickness = halfThickness + collisionThreshold
+        const expandedHalfThickness = halfThickness + wallCollisionThreshold
 
         const wallCorner1 = wallStart
           .clone()
@@ -730,7 +727,6 @@ export default function KitchenUnit({
     for (let i = 0; i < poly1.length; i++) {
       const next = (i + 1) % poly1.length
       const edge = new Vector2().subVectors(poly1[next], poly1[i])
-      // Get perpendicular (normal) to edge
       edges.push(new Vector2(-edge.y, edge.x).normalize())
     }
 
@@ -742,7 +738,6 @@ export default function KitchenUnit({
 
     // Test each potential separating axis
     for (const axis of edges) {
-      // Project both polygons onto this axis
       let min1 = Infinity,
         max1 = -Infinity
       let min2 = Infinity,
@@ -760,16 +755,165 @@ export default function KitchenUnit({
         max2 = Math.max(max2, projection)
       }
 
-      // Check if projections overlap (with small tolerance to allow touching)
-      const tolerance = 0.001
-      if (max1 < min2 + tolerance || max2 < min1 + tolerance) {
-        // Found a separating axis - no collision
-        return false
+      // MINIMAL TOLERANCE FOR CABINET-TO-CABINET COLLISIONS
+      // This allows cabinets to touch without gaps
+      const cabinetTolerance = 0.0005 // 0.5mm - just enough to prevent overlap
+
+      if (max1 < min2 + cabinetTolerance || max2 < min1 + cabinetTolerance) {
+        return false // No collision - cabinets can touch
       }
     }
 
-    // No separating axis found - collision detected
-    return true
+    return true // Collision detected
+  }
+
+  function snapToNearbyUnits(
+    newPos,
+    currentUnit,
+    otherUnits,
+    snapDistance = 0.01
+  ) {
+    // Find nearby units that this cabinet could snap to
+    for (const otherUnit of otherUnits) {
+      const distance = new Vector3(newPos.x, 0, newPos.z).distanceTo(
+        new Vector3(otherUnit.pos.x, 0, otherUnit.pos.z)
+      )
+
+      // Only consider nearby units for snapping
+      if (distance > 2.0) continue
+
+      const otherCorners = getCorners(otherUnit)
+      const myCorners = getCorners(currentUnit, newPos, currentUnit.rotation)
+
+      // Check if any of our corners are very close to their corners/edges
+      for (const myCorner of myCorners) {
+        for (let i = 0; i < otherCorners.length; i++) {
+          const otherStart = otherCorners[i]
+          const otherEnd = otherCorners[(i + 1) % otherCorners.length]
+
+          // Calculate closest point on the other unit's edge
+          const edge = new Vector3().subVectors(otherEnd, otherStart)
+          const edgeLength = edge.length()
+
+          if (edgeLength < 0.001) continue // Skip very short edges
+
+          const edgeDir = edge.clone().normalize()
+          const toCorner = new Vector3().subVectors(myCorner, otherStart)
+          const projection = toCorner.dot(edgeDir)
+          const clampedProjection = Math.max(
+            0,
+            Math.min(edgeLength, projection)
+          )
+          const closestPoint = otherStart
+            .clone()
+            .add(edgeDir.multiplyScalar(clampedProjection))
+
+          const snapDist = myCorner.distanceTo(closestPoint)
+
+          // If very close, snap to perfect alignment
+          if (snapDist < snapDistance) {
+            const snapVector = new Vector3().subVectors(closestPoint, myCorner)
+            const snappedPos = new Vector3(
+              newPos.x + snapVector.x,
+              newPos.y,
+              newPos.z + snapVector.z
+            )
+
+            // Verify the snapped position doesn't cause collisions
+            const snappedUnit = { ...currentUnit, pos: snappedPos }
+            const snappedCorners = getCorners(
+              snappedUnit,
+              snappedPos,
+              currentUnit.rotation
+            )
+
+            // Quick collision check - if snapping would cause overlap, skip it
+            let wouldOverlap = false
+            for (const checkUnit of otherUnits) {
+              if (checkUnit.id === otherUnit.id) continue // Skip the unit we're snapping to
+
+              const checkCorners = getCorners(checkUnit)
+              if (checkUnitCollision(snappedCorners, checkCorners)) {
+                wouldOverlap = true
+                break
+              }
+            }
+
+            if (!wouldOverlap) {
+              return snappedPos
+            }
+          }
+        }
+      }
+
+      // Also check for corner-to-corner snapping (perfect corner alignment)
+      for (const myCorner of myCorners) {
+        for (const otherCorner of otherCorners) {
+          const cornerDistance = myCorner.distanceTo(otherCorner)
+
+          if (cornerDistance < snapDistance) {
+            const snapVector = new Vector3().subVectors(otherCorner, myCorner)
+            const snappedPos = new Vector3(
+              newPos.x + snapVector.x,
+              newPos.y,
+              newPos.z + snapVector.z
+            )
+
+            // Verify no overlap
+            const snappedUnit = { ...currentUnit, pos: snappedPos }
+            const snappedCorners = getCorners(
+              snappedUnit,
+              snappedPos,
+              currentUnit.rotation
+            )
+
+            let wouldOverlap = false
+            for (const checkUnit of otherUnits) {
+              if (checkUnit.id === otherUnit.id) continue
+
+              const checkCorners = getCorners(checkUnit)
+              if (checkUnitCollision(snappedCorners, checkCorners)) {
+                wouldOverlap = true
+                break
+              }
+            }
+
+            if (!wouldOverlap) {
+              return snappedPos
+            }
+          }
+        }
+      }
+    }
+
+    return newPos // No snapping needed
+  }
+
+  function optimizedSlidingCollisionCheck(
+    slideCorners,
+    slideUnit,
+    wallSegments,
+    otherUnits,
+    slidingState
+  ) {
+    // Filter out the collision we're already sliding against
+    const relevantWallSegments = wallSegments.filter((segment) => {
+      if (!slidingState.isWall) return true // Not sliding against a wall, check all walls
+      return segment.wallId !== slidingState.wallId // Skip the wall we're sliding against
+    })
+
+    const relevantUnits = otherUnits.filter((unit) => {
+      if (slidingState.isWall) return true // Sliding against wall, check all units
+      return unit.id !== slidingState.unitId // Skip the unit we're sliding against
+    })
+
+    // Use the filtered lists for collision detection
+    return detectAllCollisions(
+      slideCorners,
+      slideUnit,
+      relevantWallSegments,
+      relevantUnits
+    )
   }
 
   /**
@@ -862,20 +1006,13 @@ export default function KitchenUnit({
    * Enhanced moveUnit with simultaneous wall + cabinet collision detection
    */
   function moveUnit(lm) {
-    console.log('🚀 moveUnit called - MULTI-COLLISION detection!')
-
     let newPos = new Vector3().setFromMatrixPosition(lm).add(handle)
     const prevPos = lastValidPosition.current
       ? lastValidPosition.current.pos
       : pos
 
-    console.log('📍 Moving from:', prevPos, 'to:', newPos)
-
     const wallSegments = getWallSegments(model.walls)
-    if (wallSegments.length === 0) {
-      console.log('⚠️ No wall segments found!')
-      return
-    }
+    if (wallSegments.length === 0) return
 
     const currentUnit = {
       width: width,
@@ -887,7 +1024,10 @@ export default function KitchenUnit({
       rotation: ry
     }
 
-    // COMPREHENSIVE collision detection at target position
+    // OPTIONAL: Try snapping to nearby units for perfect alignment
+    // Enable/disable snapping here:
+    newPos = snapToNearbyUnits(newPos, currentUnit, otherUnits.current)
+
     const myCorners = getCorners(currentUnit, newPos, ry)
     const collisions = detectAllCollisions(
       myCorners,
@@ -897,7 +1037,6 @@ export default function KitchenUnit({
     )
 
     if (!collisions.hasAnyCollision) {
-      console.log('✅ No collisions - moving freely')
       // No collision - move freely
       ghostColor.current = '#20ff20'
       slidingState.current = null
@@ -909,17 +1048,11 @@ export default function KitchenUnit({
       matrix.copy(lm)
       mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
     } else {
-      console.log(
-        `❌ MULTI-COLLISION detected: ${collisions.walls.length} walls + ${collisions.units.length} units`
-      )
+      // Collision detected
       ghostColor.current = '#ff2020'
 
       // If we're not already sliding, find the collision edge
       if (!slidingState.current) {
-        console.log(
-          '🔍 Not sliding yet - initiating MULTI-COLLISION binary search...'
-        )
-
         // Use enhanced binary search that handles multiple collision types
         const exactCollisionPos = findClosestValidPositionMultiCollision(
           prevPos,
@@ -929,15 +1062,8 @@ export default function KitchenUnit({
           otherUnits.current
         )
 
-        console.log(
-          '🎯 Multi-collision binary search completed, finding collision edge...'
-        )
-
-        // SIMPLIFIED: check collisions and pick the first viable edge
-        let edge = null
-
         // Try wall edge first (walls take priority)
-        edge = findWallCollisionEdge(
+        let edge = findWallCollisionEdge(
           currentUnit,
           newPos,
           exactCollisionPos,
@@ -945,17 +1071,12 @@ export default function KitchenUnit({
         )
         if (edge) {
           edge.isWall = true
-          console.log('🎯 Using wall edge for sliding')
         } else {
           // Fall back to unit edge
           edge = findCollisionEdge(currentUnit, newPos, exactCollisionPos)
-          if (edge) {
-            console.log('🎯 Using unit edge for sliding')
-          }
         }
 
         if (edge) {
-          console.log(`🎯 Setting up sliding state`)
           const centerToEdge = new Vector3().subVectors(
             exactCollisionPos,
             edge.start
@@ -980,13 +1101,12 @@ export default function KitchenUnit({
       }
 
       if (slidingState.current) {
-        console.log('🏄 Sliding with MULTI-COLLISION validation...')
-        // Project movement onto sliding direction
+        // Sliding along edge with multi-collision validation
         const movement = new Vector3().subVectors(newPos, prevPos)
         const slideAmount = movement.dot(slidingState.current.direction)
 
         // Apply sliding movement
-        const slidePos = prevPos
+        let slidePos = prevPos
           .clone()
           .add(
             slidingState.current.direction.clone().multiplyScalar(slideAmount)
@@ -1008,35 +1128,26 @@ export default function KitchenUnit({
           slidePos.add(adjustment)
         }
 
-        // Check for NEW collisions while sliding
+        // SNAPPING DURING SLIDING: Try to snap to nearby units while sliding
         const slideUnit = { ...currentUnit, pos: slidePos }
+        slidePos = snapToNearbyUnits(slidePos, slideUnit, otherUnits.current)
+
+        // Check for NEW collisions while sliding
         const slideCorners = getCorners(slideUnit, slidePos, ry)
-        const slideCollisions = detectAllCollisions(
+
+        // Use optimized collision check that filters out current sliding target
+        const slideCollisions = optimizedSlidingCollisionCheck(
           slideCorners,
           slideUnit,
           wallSegments,
-          otherUnits.current
+          otherUnits.current,
+          slidingState.current
         )
 
-        // Filter out the collision we're already sliding against
-        const newCollisions = {
-          walls: slideCollisions.walls.filter(
-            (w) =>
-              !slidingState.current.isWall ||
-              w.wallId !== slidingState.current.wallId
-          ),
-          units: slideCollisions.units.filter(
-            (u) =>
-              slidingState.current.isWall ||
-              u.unitId !== slidingState.current.unitId
-          )
-        }
-
         const hasNewCollisions =
-          newCollisions.walls.length > 0 || newCollisions.units.length > 0
+          slideCollisions.walls.length > 0 || slideCollisions.units.length > 0
 
         if (!hasNewCollisions) {
-          console.log('✅ Sliding to valid position (no new collisions)')
           lastValidPosition.current = { pos: slidePos, rotation: ry }
           dispatch({ id: 'moveUnit', unit: id, pos: slidePos, rotation: ry })
 
@@ -1044,10 +1155,6 @@ export default function KitchenUnit({
           matrix.copy(lm)
           mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
         } else {
-          console.log(
-            `❌ NEW collisions during slide: ${newCollisions.walls.length} walls + ${newCollisions.units.length} units`
-          )
-
           // When sliding hits new obstacles, do a precise binary search
           const preciseStopPos = findClosestValidPositionMultiCollision(
             prevPos,
@@ -1073,7 +1180,7 @@ export default function KitchenUnit({
           mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
         }
       } else {
-        console.log('🛑 No sliding possible, positioning at boundary')
+        // No sliding possible, positioning at boundary
         const closestValid = findClosestValidPositionMultiCollision(
           prevPos,
           newPos,
