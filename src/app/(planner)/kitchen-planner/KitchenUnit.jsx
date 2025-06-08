@@ -803,194 +803,196 @@ export default function KitchenUnit({
     newPos,
     currentUnit,
     otherUnits,
-    snapDistance = 0.01
+    snapDistance = 0.05
   ) {
-    // Get wall segments from the model (access from the component scope)
     const wallSegments = getWallSegments(model.walls)
 
-    // TRY WALL SNAPPING FIRST (higher priority than cabinet snapping)
+    console.log(`\n🎯 === SNAP ATTEMPT ===`)
+    console.log(`Position: (${newPos.x.toFixed(2)}, ${newPos.z.toFixed(2)})`)
+    console.log(`Walls available: ${wallSegments.length}`)
+    console.log(`Units available: ${otherUnits.length}`)
+    console.log(`Snap distance: ${snapDistance}m`)
+
+    // Start with the current position
+    let snappedPos = newPos
+
+    // FIRST: Try wall snapping
     const wallSnappedPos = snapToNearbyWalls(
-      newPos,
+      snappedPos,
       currentUnit,
       wallSegments,
       snapDistance
     )
-    if (wallSnappedPos !== newPos) {
-      return wallSnappedPos // Wall snapping succeeded
+
+    if (wallSnappedPos !== snappedPos) {
+      console.log('✅ WALL SNAP APPLIED')
+      snappedPos = wallSnappedPos
+
+      // Update the current unit position for cabinet snapping
+      currentUnit = { ...currentUnit, pos: snappedPos }
     }
 
-    // THEN TRY CABINET SNAPPING (existing functionality)
-    return snapToNearbyCabinets(newPos, currentUnit, otherUnits, snapDistance)
+    // SECOND: Try cabinet snapping from the (possibly wall-snapped) position
+    console.log(
+      '🔍 Trying cabinet snapping from position:',
+      snappedPos.x.toFixed(2),
+      snappedPos.z.toFixed(2)
+    )
+    const cabinetSnappedPos = snapToNearbyCabinets(
+      snappedPos,
+      currentUnit,
+      otherUnits,
+      snapDistance
+    )
+
+    if (cabinetSnappedPos !== snappedPos) {
+      console.log('✅ CABINET SNAP APPLIED')
+      snappedPos = cabinetSnappedPos
+    }
+
+    // Check if we moved at all
+    if (snappedPos !== newPos) {
+      console.log(
+        `🎯 FINAL SNAP: (${newPos.x.toFixed(2)}, ${newPos.z.toFixed(
+          2
+        )}) → (${snappedPos.x.toFixed(2)}, ${snappedPos.z.toFixed(2)})`
+      )
+    } else {
+      console.log('❌ NO SNAP APPLIED')
+    }
+
+    return snappedPos
   }
 
   /**
    * Snap cabinets to nearby walls for perfect positioning
    */
-
   function snapToNearbyWalls(
     newPos,
     currentUnit,
     wallSegments,
-    snapDistance = 0.01
+    snapDistance = 0.05 // Default 5cm
   ) {
+    console.log('\n📏 WALL SNAP CHECK')
+    console.log(`  Position: (${newPos.x.toFixed(2)}, ${newPos.z.toFixed(2)})`)
+    console.log(`  Snap radius: ${snapDistance}m`)
+    console.log(`  Checking ${wallSegments.length} walls...`)
+
     const myCorners = getCorners(currentUnit, newPos, currentUnit.rotation)
+    let bestSnap = null
+    let minDistance = snapDistance
 
-    for (const wallSegment of wallSegments) {
-      const wallStart = new Vector2(wallSegment.start.x, wallSegment.start.z)
-      const wallEnd = new Vector2(wallSegment.end.x, wallSegment.end.z)
-      const wallVector = new Vector2().subVectors(wallEnd, wallStart)
+    const wallThickness = 0.1 // 10cm wall thickness
+    const halfThickness = wallThickness / 2
+
+    for (let i = 0; i < wallSegments.length; i++) {
+      const wall = wallSegments[i]
+      const p1 = new Vector2(wall.start.x, wall.start.z)
+      const p2 = new Vector2(wall.end.x, wall.end.z)
+
+      // Calculate wall direction and normal
+      const wallVector = p2.clone().sub(p1)
       const wallLength = wallVector.length()
+      if (wallLength < 0.001) continue
+
       const wallDir = wallVector.clone().normalize()
-      const wallNormal = new Vector2(-wallVector.y, wallVector.x).normalize()
+      const wallNormal = new Vector2(-wallDir.y, wallDir.x) // Perpendicular to wall
 
-      // Calculate wall faces based on wall type
-      let snapFaces = []
+      // Determine which wall faces to check
+      let wallFaces = []
 
-      if (wallSegment.type === 'perimeter-wall') {
-        // PERIMETER WALLS: Only snap to inside face (room side)
-        const wallThickness = 0.1
-        const halfThickness = wallThickness / 2
-        const insideFace = {
-          start: wallStart
-            .clone()
-            .add(wallNormal.clone().multiplyScalar(halfThickness)),
-          end: wallEnd
-            .clone()
-            .add(wallNormal.clone().multiplyScalar(halfThickness)),
-          normal: wallNormal.clone()
-        }
-        snapFaces.push(insideFace)
-      } else if (wallSegment.type === 'internal-wall') {
-        // INTERNAL WALLS: Snap to both faces (can approach from either side)
-        const wallThickness = 0.1
-        const halfThickness = wallThickness / 2
+      if (wall.type === 'perimeter-wall') {
+        // For perimeter walls, only snap to the inside face
+        const insideFaceP1 = p1
+          .clone()
+          .add(wallNormal.clone().multiplyScalar(halfThickness))
+        const insideFaceP2 = p2
+          .clone()
+          .add(wallNormal.clone().multiplyScalar(halfThickness))
+        wallFaces.push({
+          p1: insideFaceP1,
+          p2: insideFaceP2,
+          normal: wallNormal,
+          name: 'inside'
+        })
+      } else {
+        // For internal walls, check both faces
+        const face1P1 = p1
+          .clone()
+          .add(wallNormal.clone().multiplyScalar(halfThickness))
+        const face1P2 = p2
+          .clone()
+          .add(wallNormal.clone().multiplyScalar(halfThickness))
+        const face2P1 = p1
+          .clone()
+          .sub(wallNormal.clone().multiplyScalar(halfThickness))
+        const face2P2 = p2
+          .clone()
+          .sub(wallNormal.clone().multiplyScalar(halfThickness))
 
-        const face1 = {
-          start: wallStart
-            .clone()
-            .add(wallNormal.clone().multiplyScalar(halfThickness)),
-          end: wallEnd
-            .clone()
-            .add(wallNormal.clone().multiplyScalar(halfThickness)),
-          normal: wallNormal.clone()
-        }
-        const face2 = {
-          start: wallStart
-            .clone()
-            .sub(wallNormal.clone().multiplyScalar(halfThickness)),
-          end: wallEnd
-            .clone()
-            .sub(wallNormal.clone().multiplyScalar(halfThickness)),
-          normal: wallNormal.clone().negate()
-        }
-        snapFaces.push(face1, face2)
+        wallFaces.push({
+          p1: face1P1,
+          p2: face1P2,
+          normal: wallNormal,
+          name: 'face1'
+        })
+        wallFaces.push({
+          p1: face2P1,
+          p2: face2P2,
+          normal: wallNormal.clone().negate(),
+          name: 'face2'
+        })
       }
 
-      // Check each wall face for snapping opportunities
-      for (const face of snapFaces) {
-        // Check each cabinet corner against this wall face
-        for (const corner of myCorners) {
-          const corner2D = new Vector2(corner.x, corner.z)
+      // Check each wall face
+      for (const face of wallFaces) {
+        // For each corner of the cabinet
+        for (let j = 0; j < myCorners.length; j++) {
+          const corner = new Vector2(myCorners[j].x, myCorners[j].z)
 
-          // Find closest point on the wall face
-          const toCorner = new Vector2().subVectors(corner2D, face.start)
-          const projection = toCorner.dot(wallDir)
-          const clampedProjection = Math.max(
-            0,
-            Math.min(wallLength, projection)
-          )
-          const closestPointOnWall = face.start
+          // Find closest point on the wall FACE (not centerline)
+          const toCorner = corner.clone().sub(face.p1)
+          let t = toCorner.dot(wallDir)
+          t = Math.max(0, Math.min(wallLength, t))
+
+          const closestPoint = face.p1
             .clone()
-            .add(wallDir.clone().multiplyScalar(clampedProjection))
+            .add(wallDir.clone().multiplyScalar(t))
+          const dist = corner.distanceTo(closestPoint)
 
-          const distanceToWall = corner2D.distanceTo(closestPointOnWall)
+          console.log(
+            `  Wall ${i} ${face.name}, Corner ${j}: ${dist.toFixed(3)}m`
+          )
 
-          // If corner is close to wall, try snapping
-          if (distanceToWall < snapDistance) {
-            // Calculate snap vector to align cabinet with wall
-            const snapVector = new Vector2().subVectors(
-              closestPointOnWall,
-              corner2D
-            )
-            const snappedPos2D = new Vector2(newPos.x, newPos.z).add(snapVector)
-            const snappedPos = new Vector3(
-              snappedPos2D.x,
+          if (dist < minDistance) {
+            const delta = closestPoint.clone().sub(corner)
+            bestSnap = new Vector3(
+              newPos.x + delta.x,
               newPos.y,
-              snappedPos2D.y
+              newPos.z + delta.y
             )
-
-            // Verify the snapped position doesn't cause collisions
-            if (
-              isSnappedPositionValid(snappedPos, currentUnit, wallSegments, [])
-            ) {
-              return snappedPos
-            }
-          }
-        }
-
-        // Also try snapping cabinet edges parallel to wall
-        for (let i = 0; i < myCorners.length; i++) {
-          const edgeStart = myCorners[i]
-          const edgeEnd = myCorners[(i + 1) % myCorners.length]
-          const cabinetEdge = new Vector3().subVectors(edgeEnd, edgeStart)
-          const cabinetEdgeDir = cabinetEdge.clone().normalize()
-
-          // Check if cabinet edge is roughly parallel to wall
-          const wallDir3D = new Vector3(wallDir.x, 0, wallDir.y)
-          const parallelness = Math.abs(cabinetEdgeDir.dot(wallDir3D))
-
-          if (parallelness > 0.9) {
-            // Nearly parallel (within ~25 degrees)
-            // Calculate distance from cabinet edge to wall
-            const edgeCenter = new Vector3()
-              .addVectors(edgeStart, edgeEnd)
-              .multiplyScalar(0.5)
-            const edgeCenter2D = new Vector2(edgeCenter.x, edgeCenter.z)
-
-            const toEdge = new Vector2().subVectors(edgeCenter2D, face.start)
-            const edgeProjection = toEdge.dot(wallDir)
-            const clampedEdgeProjection = Math.max(
-              0,
-              Math.min(wallLength, edgeProjection)
+            minDistance = dist
+            console.log(
+              `  ✅ New best snap to ${wall.type} ${
+                face.name
+              } face! Distance: ${dist.toFixed(3)}m`
             )
-            const closestWallPoint = face.start
-              .clone()
-              .add(wallDir.clone().multiplyScalar(clampedEdgeProjection))
-
-            const edgeDistanceToWall = edgeCenter2D.distanceTo(closestWallPoint)
-
-            if (edgeDistanceToWall < snapDistance) {
-              // Snap cabinet edge to be parallel and aligned with wall
-              const snapVector = new Vector2().subVectors(
-                closestWallPoint,
-                edgeCenter2D
-              )
-              const snappedPos2D = new Vector2(newPos.x, newPos.z).add(
-                snapVector
-              )
-              const snappedPos = new Vector3(
-                snappedPos2D.x,
-                newPos.y,
-                snappedPos2D.y
-              )
-
-              if (
-                isSnappedPositionValid(
-                  snappedPos,
-                  currentUnit,
-                  wallSegments,
-                  []
-                )
-              ) {
-                return snappedPos
-              }
-            }
           }
         }
       }
     }
 
-    return newPos // No wall snapping occurred
+    if (bestSnap) {
+      console.log(
+        `  🎯 SNAPPING! From (${newPos.x.toFixed(2)}, ${newPos.z.toFixed(
+          2
+        )}) to (${bestSnap.x.toFixed(2)}, ${bestSnap.z.toFixed(2)})`
+      )
+      return bestSnap
+    }
+
+    console.log('  ❌ No snap within range')
+    return newPos
   }
 
   /**
@@ -1000,27 +1002,43 @@ export default function KitchenUnit({
     newPos,
     currentUnit,
     otherUnits,
-    snapDistance = 0.01
+    snapDistance = 0.05
   ) {
+    console.log(
+      `📦 snapToNearbyCabinets called with ${otherUnits.length} other units`
+    )
+
     // Find nearby units that this cabinet could snap to
     for (const otherUnit of otherUnits) {
       // TYPE FILTERING: Only snap to compatible cabinet types
       if (!shouldCabinetsCollide(currentUnit.type, otherUnit.type)) {
-        continue // Skip incompatible cabinet types
+        console.log(
+          `  Skipping ${otherUnit.type} - incompatible with ${currentUnit.type}`
+        )
+        continue
       }
 
       const distance = new Vector3(newPos.x, 0, newPos.z).distanceTo(
         new Vector3(otherUnit.pos.x, 0, otherUnit.pos.z)
       )
 
+      console.log(
+        `  Checking unit ${otherUnit.id}: distance = ${distance.toFixed(3)}m`
+      )
+
       // Only consider nearby units for snapping
-      if (distance > 2.0) continue
+      if (distance > 2.0) {
+        console.log(`    Too far away (> 2.0m)`)
+        continue
+      }
 
       const otherCorners = getCorners(otherUnit)
       const myCorners = getCorners(currentUnit, newPos, currentUnit.rotation)
 
       // Check if any of our corners are very close to their corners/edges
-      for (const myCorner of myCorners) {
+      for (let myIdx = 0; myIdx < myCorners.length; myIdx++) {
+        const myCorner = myCorners[myIdx]
+
         for (let i = 0; i < otherCorners.length; i++) {
           const otherStart = otherCorners[i]
           const otherEnd = otherCorners[(i + 1) % otherCorners.length]
@@ -1029,7 +1047,7 @@ export default function KitchenUnit({
           const edge = new Vector3().subVectors(otherEnd, otherStart)
           const edgeLength = edge.length()
 
-          if (edgeLength < 0.001) continue // Skip very short edges
+          if (edgeLength < 0.001) continue
 
           const edgeDir = edge.clone().normalize()
           const toCorner = new Vector3().subVectors(myCorner, otherStart)
@@ -1044,6 +1062,10 @@ export default function KitchenUnit({
 
           const snapDist = myCorner.distanceTo(closestPoint)
 
+          console.log(
+            `    My corner ${myIdx} to their edge ${i}: ${snapDist.toFixed(3)}m`
+          )
+
           // If very close, snap to perfect alignment
           if (snapDist < snapDistance) {
             const snapVector = new Vector3().subVectors(closestPoint, myCorner)
@@ -1053,19 +1075,42 @@ export default function KitchenUnit({
               newPos.z + snapVector.z
             )
 
-            if (
-              isSnappedPositionValid(snappedPos, currentUnit, [], otherUnits)
-            ) {
+            console.log(
+              `    ✅ Edge snap found! Distance: ${snapDist.toFixed(3)}m`
+            )
+            console.log(
+              `       From: (${newPos.x.toFixed(2)}, ${newPos.z.toFixed(2)})`
+            )
+            console.log(
+              `       To: (${snappedPos.x.toFixed(2)}, ${snappedPos.z.toFixed(
+                2
+              )})`
+            )
+
+            // Simple validation - just check we're not moving too far
+            const moveDistance = newPos.distanceTo(snappedPos)
+            if (moveDistance < snapDistance * 2) {
               return snappedPos
+            } else {
+              console.log(
+                `    ❌ Snap rejected - move too large: ${moveDistance.toFixed(
+                  3
+                )}m`
+              )
             }
           }
         }
-      }
 
-      // Also check for corner-to-corner snapping
-      for (const myCorner of myCorners) {
-        for (const otherCorner of otherCorners) {
+        // Also check for corner-to-corner snapping
+        for (let otherIdx = 0; otherIdx < otherCorners.length; otherIdx++) {
+          const otherCorner = otherCorners[otherIdx]
           const cornerDistance = myCorner.distanceTo(otherCorner)
+
+          console.log(
+            `    My corner ${myIdx} to their corner ${otherIdx}: ${cornerDistance.toFixed(
+              3
+            )}m`
+          )
 
           if (cornerDistance < snapDistance) {
             const snapVector = new Vector3().subVectors(otherCorner, myCorner)
@@ -1075,16 +1120,37 @@ export default function KitchenUnit({
               newPos.z + snapVector.z
             )
 
-            if (
-              isSnappedPositionValid(snappedPos, currentUnit, [], otherUnits)
-            ) {
+            console.log(
+              `    ✅ Corner snap found! Distance: ${cornerDistance.toFixed(
+                3
+              )}m`
+            )
+            console.log(
+              `       From: (${newPos.x.toFixed(2)}, ${newPos.z.toFixed(2)})`
+            )
+            console.log(
+              `       To: (${snappedPos.x.toFixed(2)}, ${snappedPos.z.toFixed(
+                2
+              )})`
+            )
+
+            // Simple validation
+            const moveDistance = newPos.distanceTo(snappedPos)
+            if (moveDistance < snapDistance * 2) {
               return snappedPos
+            } else {
+              console.log(
+                `    ❌ Snap rejected - move too large: ${moveDistance.toFixed(
+                  3
+                )}m`
+              )
             }
           }
         }
       }
     }
 
+    console.log('  No cabinet snap found')
     return newPos // No cabinet snapping needed
   }
 
@@ -1259,7 +1325,10 @@ export default function KitchenUnit({
       : pos
 
     const wallSegments = getWallSegments(model.walls)
-    if (wallSegments.length === 0) return
+    if (wallSegments.length === 0) {
+      console.warn('⚠️ No wall segments found!')
+      return
+    }
 
     const currentUnit = {
       width: width,
@@ -1271,18 +1340,48 @@ export default function KitchenUnit({
       rotation: ry
     }
 
-    // ENHANCED: Try snapping to walls AND cabinets for perfect alignment
-    newPos = snapToNearbyUnits(newPos, currentUnit, otherUnits.current)
-
-    const myCorners = getCorners(currentUnit, newPos, ry)
-    const collisions = detectAllCollisions(
-      myCorners,
+    // ALWAYS TRY SNAPPING FIRST
+    const SNAP_DISTANCE = 0.05 // 5cm - much less aggressive
+    console.log(
+      '🎯 Pre-snap position:',
+      newPos.x.toFixed(3),
+      newPos.z.toFixed(3)
+    )
+    newPos = snapToNearbyUnits(
+      newPos,
       currentUnit,
-      wallSegments,
-      otherUnits.current
+      otherUnits.current,
+      SNAP_DISTANCE
+    )
+    console.log(
+      '🎯 Post-snap position:',
+      newPos.x.toFixed(3),
+      newPos.z.toFixed(3)
     )
 
-    if (!collisions.hasAnyCollision) {
+    const myCorners = getCorners(currentUnit, newPos, ry)
+
+    // MODIFIED: Only check unit collisions, NOT wall collisions
+    const unitCollisions = []
+    const myBox = getUnitBoundingBox(currentUnit, newPos, ry)
+
+    for (const otherUnit of otherUnits.current) {
+      if (!shouldCabinetsCollide(currentUnit.type, otherUnit.type)) {
+        continue
+      }
+
+      const otherBox = getUnitBoundingBox(otherUnit)
+      if (!myBox.intersectsBox(otherBox)) continue
+
+      const otherCorners = getCorners(otherUnit)
+      if (checkUnitCollision(myCorners, otherCorners)) {
+        unitCollisions.push(otherUnit)
+      }
+    }
+
+    const hasCollision = unitCollisions.length > 0
+
+    if (!hasCollision) {
       // No collision - move freely
       ghostColor.current = '#20ff20'
       slidingState.current = null
@@ -1294,71 +1393,32 @@ export default function KitchenUnit({
       matrix.copy(lm)
       mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
     } else {
-      // Collision detected
+      // Only handle UNIT collisions
       ghostColor.current = '#ff2020'
 
-      // If we're not already sliding, find the collision edge
       if (!slidingState.current) {
-        // Use enhanced binary search that handles multiple collision types
-        const exactCollisionPos = findClosestValidPositionMultiCollision(
-          prevPos,
-          newPos,
-          currentUnit,
-          wallSegments,
-          otherUnits.current
-        )
-
-        // Try wall edge first (walls take priority)
-        let edge = findWallCollisionEdge(
-          currentUnit,
-          newPos,
-          exactCollisionPos,
-          wallSegments
-        )
-        if (edge) {
-          edge.isWall = true
-        } else {
-          // Fall back to unit edge
-          edge = findCollisionEdge(currentUnit, newPos, exactCollisionPos)
-        }
+        // Find unit collision edge only
+        const edge = findCollisionEdge(currentUnit, newPos, prevPos)
 
         if (edge) {
-          const centerToEdge = new Vector3().subVectors(
-            exactCollisionPos,
-            edge.start
-          )
+          const centerToEdge = new Vector3().subVectors(prevPos, edge.start)
           edge.maintainDistance = Math.abs(centerToEdge.dot(edge.normal))
           slidingState.current = edge
-
-          // Position at the precise collision point
-          lastValidPosition.current = { pos: exactCollisionPos, rotation: ry }
-          dispatch({
-            id: 'moveUnit',
-            unit: id,
-            pos: exactCollisionPos,
-            rotation: ry
-          })
-
-          const { x, z } = exactCollisionPos
-          matrix.copy(lm)
-          mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
-          return
         }
       }
 
-      if (slidingState.current) {
-        // Sliding along edge with multi-collision validation
+      if (slidingState.current && !slidingState.current.isWall) {
+        // Sliding along unit edge
         const movement = new Vector3().subVectors(newPos, prevPos)
         const slideAmount = movement.dot(slidingState.current.direction)
 
-        // Apply sliding movement
         let slidePos = prevPos
           .clone()
           .add(
             slidingState.current.direction.clone().multiplyScalar(slideAmount)
           )
 
-        // Maintain the distance established at collision time
+        // Maintain distance
         const toEdge = new Vector3().subVectors(
           slidingState.current.start,
           slidePos
@@ -1374,71 +1434,41 @@ export default function KitchenUnit({
           slidePos.add(adjustment)
         }
 
-        // SNAPPING DURING SLIDING: Try to snap to nearby units while sliding
+        // Try snapping during slide
         const slideUnit = { ...currentUnit, pos: slidePos }
-        slidePos = snapToNearbyUnits(slidePos, slideUnit, otherUnits.current)
-
-        // Check for NEW collisions while sliding
-        const slideCorners = getCorners(slideUnit, slidePos, ry)
-
-        // Use optimized collision check that filters out current sliding target
-        const slideCollisions = optimizedSlidingCollisionCheck(
-          slideCorners,
+        slidePos = snapToNearbyUnits(
+          slidePos,
           slideUnit,
-          wallSegments,
           otherUnits.current,
-          slidingState.current
+          SNAP_DISTANCE
         )
 
-        const hasNewCollisions =
-          slideCollisions.walls.length > 0 || slideCollisions.units.length > 0
+        // Check for new unit collisions
+        const slideCorners = getCorners(slideUnit, slidePos, ry)
+        let hasNewCollision = false
 
-        if (!hasNewCollisions) {
+        for (const otherUnit of otherUnits.current) {
+          if (otherUnit.id === slidingState.current.unitId) continue
+          if (!shouldCabinetsCollide(slideUnit.type, otherUnit.type)) continue
+
+          const otherCorners = getCorners(otherUnit)
+          if (checkUnitCollision(slideCorners, otherCorners)) {
+            hasNewCollision = true
+            break
+          }
+        }
+
+        if (!hasNewCollision) {
           lastValidPosition.current = { pos: slidePos, rotation: ry }
           dispatch({ id: 'moveUnit', unit: id, pos: slidePos, rotation: ry })
 
           const { x, z } = slidePos
           matrix.copy(lm)
           mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
-        } else {
-          // When sliding hits new obstacles, do a precise binary search
-          const preciseStopPos = findClosestValidPositionMultiCollision(
-            prevPos,
-            slidePos,
-            currentUnit,
-            wallSegments,
-            otherUnits.current
-          )
-
-          // Reset sliding state since we hit new obstacles
-          slidingState.current = null
-
-          lastValidPosition.current = { pos: preciseStopPos, rotation: ry }
-          dispatch({
-            id: 'moveUnit',
-            unit: id,
-            pos: preciseStopPos,
-            rotation: ry
-          })
-
-          const { x, z } = preciseStopPos
-          matrix.copy(lm)
-          mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
         }
       } else {
-        // No sliding possible, positioning at boundary
-        const closestValid = findClosestValidPositionMultiCollision(
-          prevPos,
-          newPos,
-          currentUnit,
-          wallSegments,
-          otherUnits.current
-        )
-
-        lastValidPosition.current = { pos: closestValid, rotation: ry }
-        dispatch({ id: 'moveUnit', unit: id, pos: closestValid, rotation: ry })
-
-        const { x, z } = closestValid
+        // Can't slide, stay at previous position
+        const { x, z } = prevPos
         matrix.copy(lm)
         mrotate.setPosition(new Vector3(x - handle.x, 0, z - handle.z))
       }
@@ -1463,7 +1493,7 @@ export default function KitchenUnit({
     const snap = Math.round(theta / (Math.PI / 2)) * (Math.PI / 2)
     if (Math.abs(snap - theta) < 0.1) theta = snap
 
-    // Check if rotation would cause collision using comprehensive detection
+    // MODIFIED: Only check unit collisions, not wall collisions
     const testUnit = {
       width,
       depth,
@@ -1474,19 +1504,23 @@ export default function KitchenUnit({
       rotation: -theta
     }
     const myCorners = getCorners(testUnit, pos, -theta)
-    const wallSegments = getWallSegments(model.walls)
-    const collisions = detectAllCollisions(
-      myCorners,
-      testUnit,
-      wallSegments,
-      otherUnits.current
-    )
+
+    let hasCollision = false
+    for (const otherUnit of otherUnits.current) {
+      if (!shouldCabinetsCollide(testUnit.type, otherUnit.type)) continue
+
+      const otherCorners = getCorners(otherUnit)
+      if (checkUnitCollision(myCorners, otherCorners)) {
+        hasCollision = true
+        break
+      }
+    }
 
     // Update ghost color
-    ghostColor.current = collisions.hasAnyCollision ? '#ff2020' : '#20ff20'
+    ghostColor.current = hasCollision ? '#ff2020' : '#20ff20'
 
     // Only update rotation if no collision
-    if (!collisions.hasAnyCollision) {
+    if (!hasCollision) {
       lastValidPosition.current.rotation = -theta
       dispatch({ id: 'moveUnit', unit: id, pos, rotation: -theta })
       // Update the position of the handle.

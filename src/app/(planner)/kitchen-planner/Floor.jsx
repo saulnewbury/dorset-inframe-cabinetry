@@ -89,7 +89,7 @@ export default function Floor({ points, handlePan }) {
           onPointerOut={() => handlePan(false)}
         >
           <shapeGeometry args={[shape]} />
-          <meshStandardMaterial side={DoubleSide} color="white" />
+          <meshStandardMaterial side={DoubleSide} color='white' />
         </mesh>
       )}
     </>
