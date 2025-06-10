@@ -406,204 +406,6 @@ export default function KitchenUnit({
   }
 
   /**
-   * Enhanced binary search that handles multiple collision types
-   */
-  function findClosestValidPositionMultiCollision(
-    fromPos,
-    toPos,
-    unit,
-    wallSegments,
-    otherUnits,
-    iterations = 12
-  ) {
-    console.log('🔍 MULTI-COLLISION BINARY SEARCH')
-    console.log(`   From: (${fromPos.x.toFixed(3)}, ${fromPos.z.toFixed(3)})`)
-    console.log(`   To: (${toPos.x.toFixed(3)}, ${toPos.z.toFixed(3)})`)
-
-    let validPos = fromPos.clone()
-    let invalidPos = toPos.clone()
-
-    const targetPrecision = 0.001 // 1mm precision
-
-    for (let i = 0; i < iterations; i++) {
-      const midPos = new Vector3().lerpVectors(validPos, invalidPos, 0.5)
-      console.log(
-        `   Iteration ${i + 1}: Testing (${midPos.x.toFixed(
-          4
-        )}, ${midPos.z.toFixed(4)})`
-      )
-
-      // Check ALL collision types at this position
-      const testUnit = { ...unit, pos: midPos }
-      const corners = getCorners(testUnit, midPos, unit.rotation)
-      const collisions = detectAllCollisions(
-        corners,
-        testUnit,
-        wallSegments,
-        otherUnits
-      )
-
-      if (collisions.hasAnyCollision) {
-        console.log(
-          `     ❌ Collision: ${collisions.walls.length} walls + ${collisions.units.length} units`
-        )
-        invalidPos = midPos
-      } else {
-        console.log(`     ✅ Valid: no collisions`)
-        validPos = midPos
-      }
-
-      const distance = validPos.distanceTo(invalidPos)
-      console.log(`     → Boundary distance: ${distance.toFixed(5)}`)
-
-      if (distance < targetPrecision) {
-        console.log(`     → Converged at iteration ${i + 1}`)
-        break
-      }
-    }
-
-    const direction = new Vector3().subVectors(validPos, invalidPos).normalize()
-    const finalPos = validPos.add(direction.multiplyScalar(0.001))
-
-    console.log(
-      `🎯 MULTI-COLLISION RESULT: (${finalPos.x.toFixed(
-        4
-      )}, ${finalPos.z.toFixed(4)})`
-    )
-    return finalPos
-  }
-
-  /**
-   * Find wall collision edge for sliding (using inside face)
-   */
-  function findWallCollisionEdge(unit, targetPos, currentPos, wallSegments) {
-    console.log('🔍 findWallCollisionEdge called')
-    const corners = getCorners(unit, targetPos, unit.rotation)
-    const currentCorners = getCorners(unit, currentPos, unit.rotation)
-    let bestEdge = null
-    let minDistance = Infinity
-
-    const wallThickness = 0.1
-    const halfThickness = wallThickness / 2
-
-    for (const wallSegment of wallSegments) {
-      const wallCollision = checkWallCollision(corners, [wallSegment])
-      if (!wallCollision.collides) continue
-
-      console.log(
-        `🎯 Finding edge for ${wallSegment.type} wall ${wallSegment.wallId}`
-      )
-
-      // Calculate wall properties
-      const wallStart = new Vector2(wallSegment.start.x, wallSegment.start.z)
-      const wallEnd = new Vector2(wallSegment.end.x, wallSegment.end.z)
-      const wallVector = new Vector2().subVectors(wallEnd, wallStart)
-      const wallDir = wallVector.clone().normalize()
-      const wallNormal = new Vector2(-wallVector.y, wallVector.x).normalize()
-
-      let slidingFace, slidingFace3D, slidingDir3D, slidingNormal3D
-
-      if (wallSegment.type === 'perimeter-wall') {
-        // PERIMETER WALLS: Use inside face for sliding
-        const insideFaceStart = wallStart
-          .clone()
-          .add(wallNormal.clone().multiplyScalar(halfThickness))
-        const insideFaceEnd = wallEnd
-          .clone()
-          .add(wallNormal.clone().multiplyScalar(halfThickness))
-
-        slidingFace3D = {
-          start: new Vector3(insideFaceStart.x, 0, insideFaceStart.y),
-          end: new Vector3(insideFaceEnd.x, 0, insideFaceEnd.y)
-        }
-        slidingDir3D = new Vector3(wallDir.x, 0, wallDir.y)
-        slidingNormal3D = new Vector3(wallNormal.x, 0, wallNormal.y)
-      } else if (wallSegment.type === 'internal-wall') {
-        // INTERNAL WALLS: Find which face of the rectangle to slide against
-        // Check which side of the wall the cabinet is approaching from
-        const centerToWallStart = new Vector2().subVectors(
-          new Vector2(currentPos.x, currentPos.z),
-          wallStart
-        )
-        const sideOfWall = centerToWallStart.dot(wallNormal)
-
-        if (sideOfWall > 0) {
-          // Cabinet is on the "positive normal" side - slide against that face
-          const slideFaceStart = wallStart
-            .clone()
-            .add(wallNormal.clone().multiplyScalar(halfThickness))
-          const slideFaceEnd = wallEnd
-            .clone()
-            .add(wallNormal.clone().multiplyScalar(halfThickness))
-
-          slidingFace3D = {
-            start: new Vector3(slideFaceStart.x, 0, slideFaceStart.y),
-            end: new Vector3(slideFaceEnd.x, 0, slideFaceEnd.y)
-          }
-          slidingNormal3D = new Vector3(wallNormal.x, 0, wallNormal.y)
-        } else {
-          // Cabinet is on the "negative normal" side - slide against that face
-          const slideFaceStart = wallStart
-            .clone()
-            .sub(wallNormal.clone().multiplyScalar(halfThickness))
-          const slideFaceEnd = wallEnd
-            .clone()
-            .sub(wallNormal.clone().multiplyScalar(halfThickness))
-
-          slidingFace3D = {
-            start: new Vector3(slideFaceStart.x, 0, slideFaceStart.y),
-            end: new Vector3(slideFaceEnd.x, 0, slideFaceEnd.y)
-          }
-          slidingNormal3D = new Vector3(-wallNormal.x, 0, -wallNormal.y)
-        }
-
-        slidingDir3D = new Vector3(wallDir.x, 0, wallDir.y)
-      }
-
-      // Calculate distance from current position to sliding face
-      let totalDist = 0
-      for (const corner of currentCorners) {
-        const toStart = new Vector3().subVectors(corner, slidingFace3D.start)
-        const projection = toStart.dot(slidingDir3D)
-        const wallLength = wallVector.length()
-        const clamped = Math.max(0, Math.min(wallLength, projection))
-        const closestPoint = slidingFace3D.start
-          .clone()
-          .add(slidingDir3D.clone().multiplyScalar(clamped))
-        const dist = corner.distanceTo(closestPoint)
-        totalDist += dist
-      }
-      const avgDist = totalDist / currentCorners.length
-
-      if (avgDist < minDistance) {
-        minDistance = avgDist
-
-        const centerToWall = new Vector3().subVectors(
-          currentPos,
-          slidingFace3D.start
-        )
-        const currentDistance = Math.abs(centerToWall.dot(slidingNormal3D))
-
-        bestEdge = {
-          start: slidingFace3D.start,
-          end: slidingFace3D.end,
-          direction: slidingDir3D,
-          normal: slidingNormal3D,
-          wallId: wallSegment.wallId,
-          isWall: true,
-          wallType: wallSegment.type,
-          maintainDistance: currentDistance
-        }
-
-        console.log(`🎯 Selected ${wallSegment.type} sliding face`)
-      }
-    }
-
-    console.log('🎯 Best wall edge found:', bestEdge)
-    return bestEdge
-  }
-
-  /**
    * Callback for 'click' event on 2D opening. Shows information about the
    * item, with option to delete.
    */
@@ -879,11 +681,11 @@ export default function KitchenUnit({
     console.log(`  Checking ${wallSegments.length} walls...`)
 
     const myCorners = getCorners(currentUnit, newPos, currentUnit.rotation)
-    let bestSnap = null
-    let minDistance = snapDistance
-
     const wallThickness = 0.1 // 10cm wall thickness
     const halfThickness = wallThickness / 2
+
+    // Collect all potential snaps
+    const potentialSnaps = []
 
     for (let i = 0; i < wallSegments.length; i++) {
       const wall = wallSegments[i]
@@ -913,7 +715,9 @@ export default function KitchenUnit({
           p1: insideFaceP1,
           p2: insideFaceP2,
           normal: wallNormal,
-          name: 'inside'
+          name: 'inside',
+          wallIndex: i,
+          wallSegment: wall
         })
       } else {
         // For internal walls, check both faces
@@ -934,13 +738,17 @@ export default function KitchenUnit({
           p1: face1P1,
           p2: face1P2,
           normal: wallNormal,
-          name: 'face1'
+          name: 'face1',
+          wallIndex: i,
+          wallSegment: wall
         })
         wallFaces.push({
           p1: face2P1,
           p2: face2P2,
           normal: wallNormal.clone().negate(),
-          name: 'face2'
+          name: 'face2',
+          wallIndex: i,
+          wallSegment: wall
         })
       }
 
@@ -960,39 +768,129 @@ export default function KitchenUnit({
             .add(wallDir.clone().multiplyScalar(t))
           const dist = corner.distanceTo(closestPoint)
 
-          console.log(
-            `  Wall ${i} ${face.name}, Corner ${j}: ${dist.toFixed(3)}m`
-          )
-
-          if (dist < minDistance) {
+          if (dist < snapDistance) {
             const delta = closestPoint.clone().sub(corner)
-            bestSnap = new Vector3(
-              newPos.x + delta.x,
-              newPos.y,
-              newPos.z + delta.y
-            )
-            minDistance = dist
+            potentialSnaps.push({
+              wallIndex: face.wallIndex,
+              cornerIndex: j,
+              distance: dist,
+              delta: delta,
+              face: face,
+              closestPoint: closestPoint
+            })
             console.log(
-              `  ✅ New best snap to ${wall.type} ${
+              `  Found snap: Wall ${face.wallIndex} ${
                 face.name
-              } face! Distance: ${dist.toFixed(3)}m`
+              }, Corner ${j}: ${dist.toFixed(3)}m`
             )
           }
         }
       }
     }
 
-    if (bestSnap) {
-      console.log(
-        `  🎯 SNAPPING! From (${newPos.x.toFixed(2)}, ${newPos.z.toFixed(
-          2
-        )}) to (${bestSnap.x.toFixed(2)}, ${bestSnap.z.toFixed(2)})`
-      )
-      return bestSnap
+    if (potentialSnaps.length === 0) {
+      console.log('  ❌ No snap within range')
+      return newPos
     }
 
-    console.log('  ❌ No snap within range')
-    return newPos
+    // Check for corner snapping (two walls)
+    let bestCornerSnap = null
+    let bestCornerScore = Infinity
+
+    // Group snaps by corner
+    const snapsByCorner = {}
+    for (const snap of potentialSnaps) {
+      if (!snapsByCorner[snap.cornerIndex]) {
+        snapsByCorner[snap.cornerIndex] = []
+      }
+      snapsByCorner[snap.cornerIndex].push(snap)
+    }
+
+    // Look for corners that can snap to two different walls
+    for (const cornerIndex in snapsByCorner) {
+      const cornerSnaps = snapsByCorner[cornerIndex]
+
+      if (cornerSnaps.length >= 2) {
+        // Check if we have snaps to different walls
+        const uniqueWalls = new Set(cornerSnaps.map((s) => s.wallIndex))
+
+        if (uniqueWalls.size >= 2) {
+          // Find the two best snaps to different walls for this corner
+          cornerSnaps.sort((a, b) => a.distance - b.distance)
+
+          let firstSnap = cornerSnaps[0]
+          let secondSnap = null
+
+          for (let i = 1; i < cornerSnaps.length; i++) {
+            if (cornerSnaps[i].wallIndex !== firstSnap.wallIndex) {
+              secondSnap = cornerSnaps[i]
+              break
+            }
+          }
+
+          if (secondSnap) {
+            // Calculate combined snap position
+            const combinedDelta = new Vector2(
+              firstSnap.delta.x + secondSnap.delta.x,
+              firstSnap.delta.y + secondSnap.delta.y
+            )
+            const score = firstSnap.distance + secondSnap.distance
+
+            if (score < bestCornerScore) {
+              bestCornerScore = score
+              bestCornerSnap = {
+                delta: combinedDelta,
+                cornerIndex: parseInt(cornerIndex),
+                walls: [firstSnap.wallIndex, secondSnap.wallIndex],
+                score: score
+              }
+              console.log(
+                `  ✅ Corner snap candidate: Corner ${cornerIndex} to walls ${
+                  firstSnap.wallIndex
+                } & ${secondSnap.wallIndex}, score: ${score.toFixed(3)}`
+              )
+            }
+          }
+        }
+      }
+    }
+
+    // If we found a corner snap, use it
+    if (bestCornerSnap) {
+      const snappedPos = new Vector3(
+        newPos.x + bestCornerSnap.delta.x,
+        newPos.y,
+        newPos.z + bestCornerSnap.delta.y
+      )
+      console.log(
+        `  🎯 CORNER SNAPPING! From (${newPos.x.toFixed(2)}, ${newPos.z.toFixed(
+          2
+        )}) to (${snappedPos.x.toFixed(2)}, ${snappedPos.z.toFixed(2)})`
+      )
+      console.log(`     Snapped to walls: ${bestCornerSnap.walls.join(' & ')}`)
+      return snappedPos
+    }
+
+    // Otherwise, use the single best snap
+    const bestSnap = potentialSnaps.reduce((best, current) =>
+      current.distance < best.distance ? current : best
+    )
+
+    const snappedPos = new Vector3(
+      newPos.x + bestSnap.delta.x,
+      newPos.y,
+      newPos.z + bestSnap.delta.y
+    )
+
+    console.log(
+      `  🎯 SINGLE WALL SNAPPING! From (${newPos.x.toFixed(
+        2
+      )}, ${newPos.z.toFixed(2)}) to (${snappedPos.x.toFixed(
+        2
+      )}, ${snappedPos.z.toFixed(2)})`
+    )
+
+    return snappedPos
   }
 
   /**
@@ -1152,81 +1050,6 @@ export default function KitchenUnit({
 
     console.log('  No cabinet snap found')
     return newPos // No cabinet snapping needed
-  }
-
-  /**
-   * Helper function to validate snapped positions
-   */
-  function isSnappedPositionValid(
-    snappedPos,
-    currentUnit,
-    wallSegments,
-    otherUnits
-  ) {
-    const snappedUnit = { ...currentUnit, pos: snappedPos }
-    const snappedCorners = getCorners(
-      snappedUnit,
-      snappedPos,
-      currentUnit.rotation
-    )
-
-    // Check wall collisions if walls provided
-    if (wallSegments.length > 0) {
-      const wallCollision = checkWallCollision(snappedCorners, wallSegments)
-      if (wallCollision.collides) {
-        return false
-      }
-    }
-
-    // Check unit collisions if units provided
-    for (const checkUnit of otherUnits) {
-      if (!shouldCabinetsCollide(currentUnit.type, checkUnit.type)) continue
-
-      const checkCorners = getCorners(checkUnit)
-      if (checkUnitCollision(snappedCorners, checkCorners)) {
-        return false
-      }
-    }
-
-    return true // Position is valid
-  }
-
-  /**
-   * Enhanced optimizedSlidingCollisionCheck with cabinet type filtering
-   */
-  function optimizedSlidingCollisionCheck(
-    slideCorners,
-    slideUnit,
-    wallSegments,
-    otherUnits,
-    slidingState
-  ) {
-    // Filter out the collision we're already sliding against
-    const relevantWallSegments = wallSegments.filter((segment) => {
-      if (!slidingState.isWall) return true // Not sliding against a wall, check all walls
-      return segment.wallId !== slidingState.wallId // Skip the wall we're sliding against
-    })
-
-    const relevantUnits = otherUnits.filter((unit) => {
-      if (slidingState.isWall) {
-        // Sliding against wall, check all compatible unit types
-        return shouldCabinetsCollide(slideUnit.type, unit.type)
-      } else {
-        // Sliding against unit, check all compatible types except the sliding target
-        return (
-          unit.id !== slidingState.unitId &&
-          shouldCabinetsCollide(slideUnit.type, unit.type)
-        )
-      }
-    })
-
-    // Use the filtered lists for collision detection
-    return detectAllCollisions(
-      slideCorners,
-      slideUnit,
-      relevantWallSegments,
-      relevantUnits
-    )
   }
 
   /**
