@@ -90,10 +90,10 @@ export default function KitchenUnit({
   const size = new Vector3(width / 1000, height / 1000, depth / 1000)
   const centreOffset = style?.includes('corner')
     ? style?.includes('left')
-      ? -0.1475
-      : +0.1475
+      ? -0.1565
+      : +0.1565
     : 0
-  const widthOffset = style?.includes('corner') ? 2 * 0.295 : 0
+  const widthOffset = style?.includes('corner') ? 0.612 : 0
 
   const showHandle = !is3D && hover?.type === 'unit' && hover.id === id
 
@@ -224,8 +224,8 @@ export default function KitchenUnit({
     const pos = new Vector3(unit.pos.x, 0, unit.pos.z)
     let w = unit.width / 1000
     if (unit.type === 'base' && unit.style?.includes('corner')) {
-      const offset = unit.style?.includes('left') ? -0.1475 : +0.1475
-      w += 2 * 0.295
+      const offset = unit.style?.includes('left') ? -0.1565 : +0.1565
+      w += 0.612
       pos.add(new Vector3(offset, 0, 0).applyAxisAngle(vectorY, unit.rotation))
     }
     const d = unit.depth / 1000
