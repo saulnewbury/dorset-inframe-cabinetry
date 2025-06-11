@@ -1,6 +1,6 @@
 import { forwardRef, useContext, useMemo, useRef, useState } from 'react'
 import { DragControls } from '@react-three/drei'
-import { Matrix4, Vector3, Vector2, Shape } from 'three'
+import { Matrix4, Vector3, Vector2, Shape, Box2 } from 'three'
 import clsx from 'clsx'
 
 import { ModelContext } from '@/model/context'
@@ -85,9 +85,15 @@ export default function KitchenUnit({
   const [dragging, setDragging] = useState(false)
   const info = useRef()
   const allEdges = useRef([])
+  const allWalls = useRef([])
 
   const size = new Vector3(width / 1000, height / 1000, depth / 1000)
-  if (type === 'base' && style?.includes('corner')) size.x += 0.295
+  const centreOffset = style?.includes('corner')
+    ? style?.includes('left')
+      ? -0.1475
+      : +0.1475
+    : 0
+  const widthOffset = style?.includes('corner') ? 2 * 0.295 : 0
 
   const showHandle = !is3D && hover?.type === 'unit' && hover.id === id
 
@@ -139,11 +145,11 @@ export default function KitchenUnit({
       {(showHandle || dragging) && (
         <>
           <mesh
-            position={[pos.x, size.y + 0.08, pos.z]}
+            position={[pos.x + centreOffset, size.y + 0.08, pos.z]}
             rotation-x={Math.PI / -2}
             rotation-z={rotation}
           >
-            <planeGeometry args={[size.x, size.z]} />
+            <planeGeometry args={[size.x + widthOffset, size.z]} />
             <meshStandardMaterial color="#20ff20" />
           </mesh>
           <DragControls
@@ -154,7 +160,7 @@ export default function KitchenUnit({
             onDragEnd={endDrag}
           >
             <group
-              position={[handle.x, size.y + 0.1, handle.z]}
+              position={[handle.x + centreOffset, size.y + 0.1, handle.z]}
               rotation-y={rotation}
             >
               <mesh rotation-x={Math.PI / -2}>
@@ -179,7 +185,7 @@ export default function KitchenUnit({
             onDragEnd={endDrag}
           >
             <group
-              position={[handle.x, size.y + 0.1, handle.z]}
+              position={[handle.x + centreOffset, size.y + 0.1, handle.z]}
               rotation-y={ry}
             >
               <mesh rotation-x={Math.PI / -2} position-x={0.2}>
@@ -218,8 +224,8 @@ export default function KitchenUnit({
     const pos = new Vector3(unit.pos.x, 0, unit.pos.z)
     let w = unit.width / 1000
     if (unit.type === 'base' && unit.style?.includes('corner')) {
-      const offset = unit.style?.includes('left') ? -0.1475 : 0.1475
-      w += 0.295
+      const offset = unit.style?.includes('left') ? -0.1475 : +0.1475
+      w += 2 * 0.295
       pos.add(new Vector3(offset, 0, 0).applyAxisAngle(vectorY, unit.rotation))
     }
     const d = unit.depth / 1000
@@ -248,29 +254,80 @@ export default function KitchenUnit({
   }
 
   /**
-   * Calculate the shortest distance between two edges, a and b.
+   * Calculates the two faces of each part of a wall segment, based on its
+   * ends and thickness.The result is an array of 'edge' objects.
    */
-  function edgeDistance(a, b) {
-    const { start: a1, end: a2 } = a
-    const { start: b1, end: b2 } = b
-    function pointToSegment([px, pz], [sx, sz], [ex, ez]) {
-      const dx = ex - sx
-      const dz = ez - sz
-      if (dx === 0 && dz === 0) return Math.hypot(px - sx, pz - sz)
-      const t = Math.max(
-        0,
-        Math.min(1, ((px - sx) * dx + (pz - sz) * dz) / (dx * dx + dz * dz))
-      )
-      const projX = sx + t * dx
-      const projZ = sz + t * dz
-      return Math.hypot(px - projX, pz - projZ)
+  function getWallFaces(segment) {
+    return segment
+      .map((pt, n) => {
+        const end = segment[(n + 1) % segment.length]
+        const length = Math.hypot(end.x - pt.x, end.z - pt.z)
+        if (length < 0.0001) return null // zero length wall segment
+
+        const normal = new Vector3(end.x - pt.x, 0, end.z - pt.z)
+          .normalize()
+          .applyAxisAngle(vectorY, Math.PI / 2)
+          .multiplyScalar(wt / 2)
+        const rot = Math.atan2(end.x - pt.x, end.z - pt.z)
+
+        return [
+          {
+            start: [pt.x - normal.x, pt.z - normal.z],
+            end: [end.x - normal.x, end.z - normal.z],
+            rot
+          },
+          {
+            start: [pt.x + normal.x, pt.z + normal.z],
+            end: [end.x + normal.x, end.z + normal.z],
+            rot
+          }
+        ]
+      })
+      .filter((f) => f !== null)
+      .flat()
+  }
+
+  /**
+   * Returns an axis-aligned bounding box for the given edge, inflated by half wall
+   * thickness (snap range).
+   */
+  function getBoundingBox(edge) {
+    const { start, end } = edge
+    const minX = Math.min(start[0], end[0]) - wt / 2
+    const maxX = Math.max(start[0], end[0]) + wt / 2
+    const minZ = Math.min(start[1], end[1]) - wt / 2
+    const maxZ = Math.max(start[1], end[1]) + wt / 2
+    return new Box2(new Vector2(minX, minZ), new Vector2(maxX, maxZ))
+  }
+
+  /**
+   * Computes the shortest distance from a point to a line segment and returns
+   * that distance, as well as the x and z offsets from the point to the
+   * closest point on the segment.
+   */
+  function pointToSegment(pt, segment) {
+    const box = getBoundingBox(segment)
+    if (!box.containsPoint(new Vector2(pt.x, pt.z))) {
+      // Point is outside the bounding box of the segment, return a large distance
+      return [Infinity, 0, 0]
     }
-    return Math.min(
-      pointToSegment(a1, b1, b2),
-      pointToSegment(a2, b1, b2),
-      pointToSegment(b1, a1, a2),
-      pointToSegment(b2, a1, a2)
+    // Calculate the projection of the point onto the segment
+    const [sx, sz] = segment.start
+    const [ex, ez] = segment.end
+    const dx = ex - sx
+    const dz = ez - sz
+    if (dx === 0 && dz === 0) {
+      // Segment is a point
+      return [Math.hypot(pt.x - sx, pt.z - sz), 0, 0]
+    }
+    const t = Math.max(
+      0,
+      Math.min(1, ((pt.x - sx) * dx + (pt.z - sz) * dz) / (dx * dx + dz * dz))
     )
+    const projX = sx + t * dx
+    const projZ = sz + t * dz
+    // Return distance and offset to projected point.
+    return [Math.hypot(pt.x - projX, pt.z - projZ), projX - pt.x, projZ - pt.z]
   }
 
   /**
@@ -281,7 +338,10 @@ export default function KitchenUnit({
   function startDrag() {
     allEdges.current = model.units
       .filter((u) => canSnap(u))
-      .map((u) => getEdges(u.id, getCorners(u)).slice(0, 3))
+      .map((u) => getEdges(u.id, getCorners(u)))
+      .flat()
+    allWalls.current = model.walls
+      .map((segment) => getWallFaces(segment))
       .flat()
     setDragging(true)
     onDrag(true)
@@ -289,135 +349,59 @@ export default function KitchenUnit({
 
   /**
    * Callback for 'drag' event. Updates the position of the unit, snapping to
-   * the nearest wall (if close enough).
+   * the nearest wall or other unit if close enough.
    */
   function moveUnit(lm) {
-    const snap = wt * wt
+    const snap = wt / 2
     const wrap = (a, n, s) => (s ? a[n] : a[(n + a.length) % a.length])
     const normalise = (r) => (r < Math.PI ? r : r - Math.PI * 2)
     let newPos = new Vector3().setFromMatrixPosition(lm).add(handle)
     let rotation = ry
 
-    // Get the four corners of the unit.
-    let myCorners = [
-      new Vector3(-size.x / 2, 0, size.z / 2), // front left
-      new Vector3(-size.x / 2, 0, -size.z / 2), // back left
-      new Vector3(size.x / 2, 0, -size.z / 2), // back right
-      new Vector3(size.x / 2, 0, size.z / 2) // front right
-    ].map((p) => p.applyAxisAngle(vectorY, rotation).add(newPos))
+    // Get the four corners of the unit and then compute its edges.
+    let myCorners = getCorners({
+      pos: newPos,
+      width,
+      depth,
+      type,
+      style,
+      rotation
+    })
+    let myEdges = getEdges(id, myCorners)
 
-    // Find all walls where any corner of the current unit is within snap
-    // radius.
-    const snapable = model.walls.flat().reduce((list, pt, n) => {
-      const s = pt.segment
-      const end = wrap(model.walls[s], n + 1, s)
-      if (!end) return list
-      const len2 = (end.x - pt.x) ** 2 + (end.z - pt.z) ** 2
-      if (len2 === 0) return list // wall zero length
-      for (const corner of myCorners) {
-        const { x: cx, z: cz } = corner
-        // Get distance of corner to wall segment.
-        const dot =
-          ((cx - pt.x) * (end.x - pt.x) + (cz - pt.z) * (end.z - pt.z)) / len2
-        if (dot < 0 || dot > 1) return list // projection outside wall
-        const xx = pt.x + dot * (end.x - pt.x)
-        const zz = pt.z + dot * (end.z - pt.z)
-        const d2 = (cx - xx) ** 2 + (cz - zz) ** 2
-        if (d2 < snap) {
-          list.push({ n, s, d2, len2 })
-          break // only need one corner to snap
-        }
-      }
-      return list
-    }, [])
-
-    // If we found a wall to snap to then we need to find the perpendicular
-    // projection from the centre of the unit to the centre line of the wall.
-    // We then use this to calculate an offset that puts the unit right
-    // against the wall.
-    if (snapable.length > 0) {
-      const dMin = Math.min(...snapable.map((s) => s.d2))
-      const { n, s, len2 } = snapable.find((s) => s.d2 === dMin) ?? {}
-      const pt = model.walls[s][n]
-      const end = wrap(model.walls[s], n + 1, s)
-      const { x: cx, z: cz } = newPos
-      const dot =
-        ((cx - pt.x) * (end.x - pt.x) + (cz - pt.z) * (end.z - pt.z)) / len2
-      const xx = pt.x + dot * (end.x - pt.x)
-      const zz = pt.z + dot * (end.z - pt.z)
-      const theta = Math.atan2(end.x - pt.x, end.z - pt.z)
-      rotation = theta - Math.PI / 2
-      newPos = new Vector3(
-        xx - ((size.z + wt) / 2) * Math.cos(theta),
-        0,
-        zz + ((size.z + wt) / 2) * Math.sin(theta)
-      )
-      // Recalculate corners based on new position and rotation.
-      myCorners = [
-        new Vector3(-size.x / 2, 0, size.z / 2),
-        new Vector3(-size.x / 2, 0, -size.z / 2),
-        new Vector3(size.x / 2, 0, -size.z / 2),
-        new Vector3(size.x / 2, 0, size.z / 2)
-      ].map((p) => p.applyAxisAngle(vectorY, rotation).add(newPos))
+    function adjustPos(dx, dz) {
+      // Adjust the position of the unit by the given dx and dz.
+      newPos.x += dx
+      newPos.z += dz
+      const offset = new Vector3(dx, 0, dz)
+      for (const c of myCorners) c.add(offset)
+      myEdges = getEdges(id, myCorners)
     }
 
-    // Now work out whether any other unit is close enough to snap. We do this
-    // by finding the closest distance between any edge of the current unit and
-    // any edge of any other (compatible) unit.
-    let minDist = wt // minimum distance to snap
-    let snapTo = null
-
-    const edges = getEdges(id, myCorners)
-    for (const edgeA of edges) {
-      for (const edgeB of allEdges.current) {
-        // Only snap edges that are nearly parallel.
-        const dRot = Math.abs(normalise(edgeA.rot - edgeB.rot))
-        if (dRot < Math.PI - 0.1 && dRot > 0.1 - Math.PI) continue // not parallel
-        // And within snapping distance.
-        const dist = edgeDistance(edgeA, edgeB)
-        if (minDist > 0.0001 && dist < minDist) {
-          minDist = dist
-          snapTo = edgeB
+    // If some corner of the unit is close enough to snap to a wall then
+    // do so.
+    for (const c of myCorners) {
+      for (const wall of allWalls.current) {
+        const [dist, dx, dz] = pointToSegment(c, wall)
+        if (dist < snap) {
+          adjustPos(dx, dz)
         }
       }
     }
 
-    // If we found a snap, then calculate new position and rotation
-    // to match the snap.
-    if (snapTo) {
-      const target = model.units.find((u) => u.id === snapTo.id)
-      let dx = target.width / 2000 + size.x / 2
-      if (target.type === 'base' && target.style?.includes('corner'))
-        dx += 0.295
-      const dz = target.depth / 2000 + size.z / 2
-      let dd = target.depth / 2000 - size.z / 2
-      if (type === 'wall') {
-        dd = size.z / 2 - target.depth / 2000
-      } else if (target.type === 'wall') {
-        dd = size.z / 2 - target.depth / 2000
-      }
-      // console.log('Snap to', ['left', 'back', 'right'][snapTo.side], minDist)
-      switch (snapTo.side) {
-        case 0: // left edge
-          rotation = target.rotation
-          newPos = new Vector3(-dx, 0, dd)
-            .applyAxisAngle(vectorY, rotation)
-            .add(target.pos)
-          break
-        case 1: // back edge
-          rotation = normalise(target.rotation + Math.PI)
-          newPos = new Vector3(0, 0, dz)
-            .applyAxisAngle(vectorY, rotation)
-            .add(target.pos)
-          break
-        case 2: // right edge
-          rotation = target.rotation
-          newPos = new Vector3(dx, 0, dd)
-            .applyAxisAngle(vectorY, rotation)
-            .add(target.pos)
-          break
+    // Likewise for other (compatible) units.
+    for (const c of myCorners) {
+      for (const edge of allEdges.current) {
+        const [dist, dx, dz] = pointToSegment(c, edge)
+        if (dist < snap) {
+          adjustPos(dx, dz)
+        }
       }
     }
+
+    // If any edges of the unit now overlap with a wall or another unit then
+    // block the move.
+    // if (unitOverlapsObject(myEdges)) return
 
     // Update unit position and rotation
     dispatch({ id: 'moveUnit', unit: id, pos: newPos, rotation })
