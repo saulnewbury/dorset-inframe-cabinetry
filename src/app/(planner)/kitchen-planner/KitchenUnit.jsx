@@ -61,6 +61,8 @@ const crossMove = new Shape(
 
 const vectorY = new Vector3(0, 1, 0)
 
+const doorThickness = 0.018 // metres
+
 /**
  * Component to render a kitchen unit (at present, only base units and wall units).
  * Adds a drag handle in 2D mode, by which the unit can be repositioned.
@@ -87,12 +89,17 @@ export default function KitchenUnit({
   const allEdges = useRef([])
   const allWalls = useRef([])
 
-  const size = new Vector3(width / 1000, height / 1000, depth / 1000)
-  const centreOffset = style?.includes('corner')
+  const size = new Vector3(
+    width / 1000,
+    height / 1000,
+    depth / 1000 + doorThickness
+  )
+  const centreOffsetX = style?.includes('corner')
     ? style?.includes('left')
       ? -0.1565
       : +0.1565
     : 0
+  const centreOffsetZ = doorThickness / 2
   const widthOffset = style?.includes('corner') ? 0.612 : 0
 
   const showHandle = !is3D && hover?.type === 'unit' && hover.id === id
@@ -145,7 +152,11 @@ export default function KitchenUnit({
       {(showHandle || dragging) && (
         <>
           <mesh
-            position={[pos.x + centreOffset, size.y + 0.08, pos.z]}
+            position={[
+              pos.x + centreOffsetX,
+              size.y + 0.08,
+              pos.z + centreOffsetZ
+            ]}
             rotation-x={Math.PI / -2}
             rotation-z={rotation}
           >
@@ -160,7 +171,11 @@ export default function KitchenUnit({
             onDragEnd={endDrag}
           >
             <group
-              position={[handle.x + centreOffset, size.y + 0.1, handle.z]}
+              position={[
+                handle.x + centreOffsetZ,
+                size.y + 0.1,
+                handle.z + centreOffsetZ
+              ]}
               rotation-y={rotation}
             >
               <mesh rotation-x={Math.PI / -2}>
@@ -185,7 +200,11 @@ export default function KitchenUnit({
             onDragEnd={endDrag}
           >
             <group
-              position={[handle.x + centreOffset, size.y + 0.1, handle.z]}
+              position={[
+                handle.x + centreOffsetX,
+                size.y + 0.1,
+                handle.z + centreOffsetZ
+              ]}
               rotation-y={ry}
             >
               <mesh rotation-x={Math.PI / -2} position-x={0.2}>
@@ -230,10 +249,10 @@ export default function KitchenUnit({
     }
     const d = unit.depth / 1000
     return [
-      new Vector3(-w / 2, 0, d / 2), // front left
+      new Vector3(-w / 2, 0, d / 2 + doorThickness), // front left
       new Vector3(-w / 2, 0, -d / 2), // back left
       new Vector3(w / 2, 0, -d / 2), // back right
-      new Vector3(w / 2, 0, d / 2) // front right
+      new Vector3(w / 2, 0, d / 2 + doorThickness) // front right
     ].map((p) => p.applyAxisAngle(vectorY, unit.rotation).add(pos))
   }
 
