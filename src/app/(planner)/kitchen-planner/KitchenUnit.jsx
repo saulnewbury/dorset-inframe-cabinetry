@@ -244,7 +244,7 @@ export default function KitchenUnit({
     let w = unit.width / 1000
     if (unit.type === 'base' && unit.style?.includes('corner')) {
       const offset = unit.style?.includes('left') ? -0.1565 : +0.1565
-      w += 0.612
+      w += 0.61
       pos.add(new Vector3(offset, 0, 0).applyAxisAngle(vectorY, unit.rotation))
     }
     const d = unit.depth / 1000
