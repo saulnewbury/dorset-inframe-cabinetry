@@ -16,6 +16,7 @@ import { menu } from '@/lib/data/menu'
 import SubmenuDesk from './SubmenuDesk'
 import Breadcrumbs from './Breadcrumbs'
 import LoginDialog from '@/components/LoginDialog'
+import Estimate from '@/components/Estimate'
 
 export default function NavDesktop() {
   const [isOpen, setIsOpen] = useState(false)
@@ -124,6 +125,8 @@ export default function NavDesktop() {
         }}
         onLogin={doLogin}
       />
+
+      <Estimate />
     </>
   )
 
