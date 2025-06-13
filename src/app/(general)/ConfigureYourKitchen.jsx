@@ -8,66 +8,87 @@ import { useRouter } from 'next/navigation'
 
 import Button from '@/components/Button'
 import Image from 'next/image'
+import LoginDialog from '@/components/LoginDialog'
 import kitchenSketch from '@/lib/images/kitchen-sketch.jpg'
 
 export default function ConfigureYourKitchen({ classes = '' }) {
   const [showChooser, setShowChooser] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
   const [model, dispatch] = useContext(ModelContext)
-  const [session] = useContext(SessionContext)
+  const [session, setSession] = useContext(SessionContext)
   const router = useRouter()
   const hasModel = model && !model.dateSaved
 
   return (
-    <section
-      className={twMerge(
-        'gutter w-[100vw] h-[100vh] max-h-[800px] md:mt-[60px]',
-        classes
-      )}
-    >
-      <div className="md:px-[5rem] h-full max-h-[800px] max-w-[800px] relative top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
-        <div className="absolute h-full w-full top-0 left-0">
-          <Image
-            src={kitchenSketch}
-            fill
-            className="object-cover opacity-50"
-            alt=""
-          />
-        </div>
-        <div className="absolute top-0 left-0 h-full w-full flex flex-col items-center justify-center ">
-          <h1 className="header mb-[2rem]">Design your kitchen today</h1>
-          <div className="flex gap-4">
-            {hasModel ? (
+    <>
+      <section
+        className={twMerge(
+          'relative gutter w-[100vw] h-[100vh] max-h-[800px] md:mt-[60px]',
+          classes
+        )}
+      >
+        <div className="md:px-[5rem] h-full max-h-[800px] max-w-[800px] relative top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
+          <div className="absolute h-full w-full top-0 left-0">
+            <Image
+              src={kitchenSketch}
+              fill
+              className="object-cover opacity-50"
+              alt=""
+            />
+          </div>
+          <div className="absolute top-0 left-0 h-full w-full flex flex-col items-center justify-center ">
+            <h1 className="header mb-[2rem]">Design your kitchen today</h1>
+            <div className="flex gap-4">
+              {hasModel ? (
+                <Button
+                  href={'/kitchen-planner/make-it-yours'}
+                  replace={true}
+                  primary={true}
+                >
+                  Continue your design
+                </Button>
+              ) : session ? (
+                <Button onClick={() => setShowChooser(true)} primary={true}>
+                  Your saved designs
+                </Button>
+              ) : (
+                <Button onClick={() => setShowLogin(true)} primary={true}>
+                  Log on to see your designs
+                </Button>
+              )}
               <Button
-                href={'/kitchen-planner/make-it-yours'}
+                href={'/kitchen-planner/define-your-space'}
                 replace={true}
-                primary={true}
               >
-                Continue your design
+                Start from scratch
               </Button>
-            ) : session ? (
-              <Button onClick={() => setShowChooser(true)} primary={true}>
-                Your saved designs
-              </Button>
-            ) : (
-              <Button onClick={() => {}} primary={true}>
-                Log on to see your designs
-              </Button>
-            )}
-            <Button href={'/kitchen-planner/define-your-space'} replace={true}>
-              Start from scratch
-            </Button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {showChooser && (
-        <ChooseModel
-          onClose={() => setShowChooser(false)}
-          onChosen={loadSavedModel}
-        />
-      )}
-    </section>
+        {showChooser && (
+          <ChooseModel
+            onClose={() => setShowChooser(false)}
+            onChosen={loadSavedModel}
+          />
+        )}
+      </section>
+      <LoginDialog
+        show={showLogin}
+        isSave={false}
+        onClose={() => {
+          setShowLogin(false)
+        }}
+        onLogin={doLogin}
+      />
+    </>
   )
+
+  function doLogin(session) {
+    setShowLogin(false)
+    setSession(session)
+    sessionStorage.setItem('dc-session', JSON.stringify(session))
+  }
 
   async function loadSavedModel(id) {
     setShowChooser(false)
