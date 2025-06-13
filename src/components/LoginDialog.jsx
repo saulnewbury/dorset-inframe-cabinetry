@@ -6,9 +6,9 @@ import TextInput from '@/components/TextInput'
 
 export default function LoginDialog({
   show,
-  isSave,
-  items,
-  price,
+  isSave = false,
+  items = 0,
+  price = 0,
   onClose = () => {},
   onLogin = () => {}
 }) {
@@ -27,17 +27,17 @@ export default function LoginDialog({
 
   return (
     show && (
-      <div className='bg-[#0000003f] h-[100vh] w-[100vw] absolute z-[500] flex justify-center items-center'>
-        <div className='w-[600px] bg-[white] text-xl p-12 relative '>
+      <div className="bg-[#0000003f] h-[100vh] w-[100vw] absolute z-[500] flex justify-center items-center">
+        <div className="w-[600px] bg-[white] text-xl p-12 relative ">
           {isProblem ? (
             <div>
               <p>
                 There was a problem with the account. Please check your email
                 address and password and try again. Or create a new account.
               </p>
-              <p className='flex justify-end gap-8 col-span-2 mt-4'>
+              <p className="flex justify-end gap-8 col-span-2 mt-4">
                 <Button
-                  type='button'
+                  type="button"
                   primary={true}
                   onClick={setIsProblem(false)}
                 >
@@ -51,9 +51,9 @@ export default function LoginDialog({
                 A password reset link has been sent to your email address.
                 Please check your inbox.
               </p>
-              <p className='flex justify-end gap-8 col-span-2 mt-4'>
+              <p className="flex justify-end gap-8 col-span-2 mt-4">
                 <Button
-                  type='button'
+                  type="button"
                   primary={true}
                   onClick={() => setIsReset(false)}
                 >
@@ -63,7 +63,7 @@ export default function LoginDialog({
             </div>
           ) : (
             <div>
-              <h2 className='text-lg font-bold'>
+              <h2 className="text-lg font-bold">
                 {isExisting ? 'Log In' : 'Create Account'}
               </h2>
               <form
@@ -75,14 +75,14 @@ export default function LoginDialog({
                   message && ' grayscale-[0.65] opacity-60'
                 )}
               >
-                <p className='text-darkGrey text-sm col-span-2 mb-6'>
+                <p className="text-darkGrey text-sm col-span-2 mb-6">
                   {isExisting ? (
                     <span>
                       New user?{' '}
                       <a
-                        href='#new-user'
+                        href="#new-user"
                         onClick={(ev) => setUserType(ev, false)}
-                        className='hover:text-[#0061ff] hover:underline'
+                        className="hover:text-[#0061ff] hover:underline"
                       >
                         Create account
                       </a>
@@ -91,21 +91,21 @@ export default function LoginDialog({
                     <span>
                       Existing user?{' '}
                       <a
-                        href='#log-in'
+                        href="#log-in"
                         onClick={(ev) => setUserType(ev, true)}
-                        className='hover:text-[#0061ff] hover:underline'
+                        className="hover:text-[#0061ff] hover:underline"
                       >
                         Log in
                       </a>
                     </span>
                   )}
                 </p>
-                <div className='flex flex-col'>
+                <div className="flex flex-col">
                   {!isExisting && (
                     <TextInput
-                      name='name'
-                      label='Name'
-                      type='text'
+                      name="name"
+                      label="Name"
+                      type="text"
                       value={name}
                       disabled={disabled}
                       onChange={(value) => {
@@ -119,9 +119,9 @@ export default function LoginDialog({
                     />
                   )}
                   <TextInput
-                    name='email'
-                    label='Email address'
-                    type='email'
+                    name="email"
+                    label="Email address"
+                    type="email"
                     value={email}
                     disabled={disabled}
                     onChange={(value) => {
@@ -134,12 +134,12 @@ export default function LoginDialog({
                     }}
                   />
                   <TextInput
-                    name='password'
-                    label='Password'
-                    type='password'
+                    name="password"
+                    label="Password"
+                    type="password"
                     value={password}
                     disabled={disabled}
-                    autoComplete='new-password'
+                    autoComplete="new-password"
                     onChange={(value) => {
                       setPassword(value)
                       if (!isExisting) {
@@ -154,8 +154,8 @@ export default function LoginDialog({
                   {isExisting ? (
                     <p>
                       <a
-                        className='text-[#b0b0b0] text-sm hover:text-blue hover:underline italic'
-                        href='#forgot'
+                        className="text-[#b0b0b0] text-sm hover:text-blue hover:underline italic"
+                        href="#forgot"
                         onClick={forgotPassword}
                       >
                         Forgot password
@@ -163,12 +163,12 @@ export default function LoginDialog({
                     </p>
                   ) : (
                     <TextInput
-                      name='confirm-password'
-                      label='Confirm password'
-                      type='password'
+                      name="confirm-password"
+                      label="Confirm password"
+                      type="password"
                       value={confirmPassword}
                       disabled={disabled}
-                      autoComplete='new-password'
+                      autoComplete="new-password"
                       onChange={(value) => {
                         setConfirmPassword(value)
                         form.current['confirm-password'].setCustomValidity(
@@ -179,17 +179,17 @@ export default function LoginDialog({
                   )}
                 </div>
                 {isSave && (
-                  <div className='text-lg'>
+                  <div className="text-lg">
                     <p>Total items: {items}</p>
                     <p>Est. price: £{price}</p>
                   </div>
                 )}
-                <p className='flex justify-end gap-8 col-span-2 mt-4'>
-                  <Button type='button' onClick={onClose}>
+                <p className="flex justify-end gap-8 col-span-2 mt-4">
+                  <Button type="button" onClick={onClose}>
                     Cancel
                   </Button>
                   <Button
-                    type='submit'
+                    type="submit"
                     primary={true}
                     disabled={!canSubmit || disabled}
                   >
@@ -197,7 +197,7 @@ export default function LoginDialog({
                   </Button>
                 </p>
               </form>
-              <p className='mt-6'>{message}</p>
+              <p className="mt-6">{message}</p>
             </div>
           )}
         </div>

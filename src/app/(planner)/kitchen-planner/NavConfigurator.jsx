@@ -119,7 +119,7 @@ export default function NavConfigurator({
           <div className="absolute left-0 top-0 h-[100vh] w-[100vw] flex items-center justify-center z-[999] bg-overlay">
             <div className="flex-col bg-white p-[4rem]">
               <p className="mb-[2rem]">
-                Are you sure you to leave the planner?
+                Are you sure you want to leave the planner?
               </p>
               <div className="flex justify-center">
                 <div

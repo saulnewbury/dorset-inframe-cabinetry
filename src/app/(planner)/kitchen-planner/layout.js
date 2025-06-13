@@ -1,6 +1,7 @@
 'use client'
 import { useRef, useState, useEffect, useContext, useMemo } from 'react'
 import { ModelContext } from '@/model/context'
+import { CanvasContext, SessionContext } from '@/context'
 import { useSearchParams } from 'next/navigation'
 
 // Components
@@ -8,12 +9,11 @@ import KitchenPlanner from './KitchenPlanner'
 import NavConfigurator from './NavConfigurator'
 import IntroMessage from './IntroMessage'
 import List from './List'
-import LoginDialog from './dialog/LoginDialog'
+import LoginDialog from '@/components/LoginDialog'
 import ModelSavedDialog from './dialog/ModelSaved'
 import SubmitModelDialog from './dialog/SubmitModel'
 import VerifyEmailDialog from './dialog/VerifyEmail'
 
-import { CanvasContext } from '../../../context'
 import PerspectiveContextProvider from './perspectiveContextProvider'
 import {
   baseUnitStyles,
@@ -33,20 +33,7 @@ export default function Layout({ children }) {
   const [model, dispatch] = useContext(ModelContext)
   const search = useSearchParams()
   const [verifyId] = useState(search.get('verifyId')) // retain from initial URL
-  const [session, setSession] = useState(null)
-
-  // Fetch session data from browser storage (if available).
-  useEffect(() => {
-    const sessionData = sessionStorage.getItem('sessionData')
-    if (sessionData) {
-      try {
-        const session = JSON.parse(sessionData)
-        if (new Date(session.expires).getTime() > Date.now()) {
-          setSession(session)
-        }
-      } catch {}
-    }
-  }, [])
+  const [session, setSession] = useContext(SessionContext)
 
   // Remove query string from URL after user has verified their email address.
   useEffect(() => {
@@ -98,7 +85,7 @@ export default function Layout({ children }) {
           count={count}
           openList={() => setShowList(true)}
           saveModel={async () => {
-            if (session && new Date(session.expires).getTime() > Date.now()) {
+            if (session) {
               setSaveResult(await doSaveModel())
               setShowModelSaved(true)
               return
@@ -166,7 +153,7 @@ export default function Layout({ children }) {
   async function doLogin(session) {
     setShowLogin(false)
     setSession(session)
-    sessionStorage.setItem('sessionData', JSON.stringify(session))
+    sessionStorage.setItem('dc-session', JSON.stringify(session))
     if (isSave) {
       setIsSave(false)
       setSaveResult(await doSaveModel())
@@ -217,7 +204,7 @@ export default function Layout({ children }) {
     } catch (err) {
       console.error(err)
     } finally {
-      sessionStorage.removeItem('sessionData')
+      sessionStorage.removeItem('dc-session')
       setSession(null)
     }
   }

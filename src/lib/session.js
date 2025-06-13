@@ -25,3 +25,28 @@ export async function createSession(email, tx) {
     expires
   }
 }
+
+/**
+ * Gets the session for the given session ID.
+ * @param {string} sessionId
+ * @param {PrismaClient} tx
+ */
+
+export async function getSession(sessionId, tx) {
+  const session = await tx.session.findUnique({
+    where: { id: sessionId },
+    include: { user: true }
+  })
+
+  if (!session) {
+    return null
+  }
+
+  // Check if the session has expired.
+  if (session.expires < new Date()) {
+    await tx.session.delete({ where: { id: sessionId } })
+    return null
+  }
+
+  return session
+}

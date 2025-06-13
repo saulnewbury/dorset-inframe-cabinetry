@@ -81,6 +81,7 @@ const actions = {
   setId,
   loadState,
   loadModel,
+  setModel, // replaces the current model with a saved one
   setScheme, // color of cabinets worktop and wall
   addSegment,
   moveCorner,
@@ -154,6 +155,16 @@ function loadModel(state, { shape }) {
     walls,
     worktop,
     color
+  }
+}
+
+/**
+ * Loads a saved model from the server, replacing the current state.
+ */
+function setModel(state, { model }) {
+  return {
+    ...initialState,
+    ...model
   }
 }
 
