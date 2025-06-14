@@ -10,7 +10,7 @@ export default function FloorCheckers({
   colorA = '#ffffff',
   colorB = '#333333'
 }) {
-  console.log('FloorCheckers rendering with colors:', colorA, colorB)
+  // console.log('FloorCheckers rendering with colors:', colorA, colorB)
 
   // Material ref
   const materialRef = useRef()
@@ -133,7 +133,7 @@ export default function FloorCheckers({
             )
           }}
         />
-        <Edges threshold={15} color='gray' />
+        <Edges threshold={15} color="gray" />
       </mesh>
     </group>
   )

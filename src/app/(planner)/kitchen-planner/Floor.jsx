@@ -1,6 +1,7 @@
 'use client'
 import { useMemo, useContext } from 'react'
 import { DoubleSide, Shape, Vector2 } from 'three'
+import { floorPatterns } from '@/model/floorPatterns'
 
 // Components
 import FloorLines from './FloorLines'
@@ -21,15 +22,12 @@ export default function Floor({ points, handlePan }) {
     [points]
   )
 
-  const floor = model.floor || initialState.floor
+  const { id: patternId, colorA, colorB } = model.floor || initialState.floor
 
-  const { patterns, id } = floor
+  // Directly access the pattern by id
+  const pattern =
+    floorPatterns.find((p) => p.id === patternId) ?? floorPatterns[0]
 
-  // Directly access the pattern by index
-  const pattern = patterns[id] || patterns[0]
-
-  const colorA = pattern.color[0] || '#EEEEEE'
-  const colorB = pattern.color[1] || '#000000'
   const type = pattern.svgProps.shape
 
   // console.log('Floor rendering pattern:', type, 'Colors:', colorA, colorB)

@@ -11,14 +11,12 @@ import Button from '@/components/Button'
 import ColorPicker from './ColorPicker'
 
 import { initialState } from '@/model/appModel'
+import { floorPatterns } from '@/model/floorPatterns'
 
 export default function ChooseStyles() {
-  const list = initialState.floor.patterns
-
   const [model, dispatch] = useContext(ModelContext)
   const containerRef = useRef()
   const patternElementsRef = useRef([])
-  const floorConfig = useRef({})
   // Create a ref for the currently active color picker container
   const activePickerRef = useRef(null)
 
@@ -26,8 +24,9 @@ export default function ChooseStyles() {
   const [wallColor, setWallColor] = useState(model.wall || '#BFBFBF')
   const [cabinetsColor, setCabinetsColor] = useState(model.color || '#F0F0F0')
   const [worktopColor, setWorktopColor] = useState(model.worktop || '#666666')
-  const [patterns, setPatterns] = useState(model.floor?.patterns || list)
-  const [patternId, setPatternId] = useState(model.floor?.id || 0)
+  const [floor, setFloor] = useState(model.floor)
+
+  const patternId = floorPatterns.findIndex((p) => p.id === floor.id) ?? 0
 
   const [open, setOpen] = useState(false)
   const [isReady, setIsReady] = useState(false)
@@ -47,7 +46,7 @@ export default function ChooseStyles() {
     }
   }, [])
 
-  // Make sure correct pattern sits ontop of the stack
+  // Make sure correct floor sits ontop of the stack
   useEffect(() => {
     const patternTiles = patternElementsRef.current
     patternTiles.forEach((p, idx) => {
@@ -57,10 +56,10 @@ export default function ChooseStyles() {
 
   // Set initial positions and mark component as ready once all refs are loaded
   useEffect(() => {
-    // console.log(`Refs loaded: ${refsLoaded}/${patterns.length}`)
+    // console.log(`Refs loaded: ${refsLoaded}/${floorPatterns.length}`)
 
-    if (refsLoaded === patterns.length && !isReady) {
-      // console.log('All pattern refs loaded, initializing positions')
+    if (refsLoaded === floorPatterns.length && !isReady) {
+      // console.log('All floor refs loaded, initializing positions')
 
       // Ensure we have valid elements before proceeding
       if (patternElementsRef.current.every((el) => el instanceof Element)) {
@@ -111,7 +110,7 @@ export default function ChooseStyles() {
     }
   }, [picker]) // Re-run when picker state changes
 
-  // Add click outside handler for the pattern slider
+  // Add click outside handler for the floor slider
   useEffect(() => {
     // Only add listener if the slider is open
     if (open) {
@@ -153,7 +152,7 @@ export default function ChooseStyles() {
     }
   }
 
-  // Spread patterns animation
+  // Spread floorPatterns animation
   function animation(direction) {
     // Don't proceed if component isn't ready
     if (!isReady) {
@@ -243,31 +242,23 @@ export default function ChooseStyles() {
     }
   }
 
-  // Change Color of all patterns
-  function handleFloorColors(hex, evenOdd) {
-    const newArray = patterns.map((p) => {
-      console.log(p.svgProps.shape + ' ' + p.color)
-      if (!p.parity) {
-        return {
-          ...p,
-          color: [hex]
-        }
-      } else if (evenOdd === 'odd') {
-        return {
-          ...p,
-          color: [hex, p.color[1]]
-        }
-      } else {
-        return {
-          ...p,
-          color: [p.color[0], hex]
-        }
-      }
-    })
+  function handleFloorPattern(idx) {
+    const newPattern = { ...floor, id: floorPatterns[idx].id }
+    setFloor(newPattern)
+    selectFloor(newPattern)
+  }
 
-    // console.log(newArray)
-    selectFloorColors(newArray, patternId)
-    setPatterns(newArray)
+  // Change Color of all floorPatterns
+  function handleFloorColors(hex, evenOdd) {
+    const newPattern = { ...floor }
+    if (evenOdd === 'odd') {
+      newPattern.colorA = hex
+    } else {
+      newPattern.colorB = hex
+    }
+
+    setFloor(newPattern)
+    selectFloor(newPattern)
   }
 
   function handleCabinetsColor(hex) {
@@ -290,14 +281,17 @@ export default function ChooseStyles() {
     const resetCabinetsColor = '#F0F0F0'
     const resetWorktopColor = '#666666'
     const resetWallColor = '#BFBFBF'
-    const resetPatternId = 0
+    const resetPattern = {
+      id: 'checkers',
+      colorA: '#EEEEEE',
+      colorB: '#000000'
+    }
 
     // Update local state
     setCabinetsColor(resetCabinetsColor)
     setWorktopColor(resetWorktopColor)
     setWallColor(resetWallColor)
-    setPatterns(list)
-    setPatternId(resetPatternId)
+    setFloor(resetPattern)
 
     // Make a single dispatch with all reset values
     dispatch({
@@ -305,17 +299,17 @@ export default function ChooseStyles() {
       worktop: resetWorktopColor,
       wall: resetWallColor,
       color: resetCabinetsColor,
-      floor: { patterns: list, id: resetPatternId }
+      floor: resetPattern
     })
   }
 
   return (
     <DialogInnerContainer>
       {/* Cabinets color */}
-      <div className='mb-6 relative'>
-        <p className='text-gray-400 text-[.8rem] mb-3'>Cabinets</p>
+      <div className="mb-6 relative">
+        <p className="text-gray-400 text-[.8rem] mb-3">Cabinets</p>
         <div
-          className='relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100'
+          className="relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100"
           style={{ backgroundColor: cabinetsColor }}
           onClick={() => {
             if (open) return
@@ -324,7 +318,7 @@ export default function ChooseStyles() {
         >
           <div
             style={{ color: cabinetsColor }}
-            className='absolute bottom-1 mix-blend-exclusion pl-2 text-sm'
+            className="absolute bottom-1 mix-blend-exclusion pl-2 text-sm"
           >
             {cabinetsColor}
           </div>
@@ -332,9 +326,9 @@ export default function ChooseStyles() {
         {picker === 'cabinets' && (
           <div
             ref={activePickerRef}
-            className='bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
+            className="bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg"
           >
-            <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
+            <p className="text-gray-600 text-[.8rem] mb-5">Choose a colour</p>
             <ColorPicker
               selectedColor={cabinetsColor}
               onClick={(hex) => {
@@ -345,10 +339,10 @@ export default function ChooseStyles() {
         )}
       </div>
       {/* Worktop color */}
-      <div className='mb-6 relative'>
-        <p className='text-gray-400 text-[.8rem] mb-3'>Worktop</p>
+      <div className="mb-6 relative">
+        <p className="text-gray-400 text-[.8rem] mb-3">Worktop</p>
         <div
-          className='relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100'
+          className="relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100"
           style={{ backgroundColor: worktopColor }}
           onClick={() => {
             if (open) return
@@ -357,7 +351,7 @@ export default function ChooseStyles() {
         >
           <div
             style={{ color: worktopColor }}
-            className='absolute bottom-1 mix-blend-exclusion pl-2 text-sm'
+            className="absolute bottom-1 mix-blend-exclusion pl-2 text-sm"
           >
             {worktopColor}
           </div>
@@ -365,9 +359,9 @@ export default function ChooseStyles() {
         {picker === 'worktop' && (
           <div
             ref={activePickerRef}
-            className='bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
+            className="bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg"
           >
-            <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
+            <p className="text-gray-600 text-[.8rem] mb-5">Choose a colour</p>
             <ColorPicker
               selectedColor={worktopColor}
               onClick={(hex) => {
@@ -378,10 +372,10 @@ export default function ChooseStyles() {
         )}
       </div>
       {/* Walls color */}
-      <div className='mb-6 relative'>
-        <p className='text-gray-400 text-[.8rem] mb-3'>Walls</p>
+      <div className="mb-6 relative">
+        <p className="text-gray-400 text-[.8rem] mb-3">Walls</p>
         <div
-          className='relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100'
+          className="relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100"
           style={{ backgroundColor: wallColor }}
           onClick={() => {
             if (open) return
@@ -390,7 +384,7 @@ export default function ChooseStyles() {
         >
           <div
             style={{ color: wallColor }}
-            className='absolute bottom-1 mix-blend-exclusion pl-2 text-sm'
+            className="absolute bottom-1 mix-blend-exclusion pl-2 text-sm"
           >
             {wallColor}
           </div>
@@ -398,9 +392,9 @@ export default function ChooseStyles() {
         {picker === 'wall' && (
           <div
             ref={activePickerRef}
-            className='bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
+            className="bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg"
           >
-            <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
+            <p className="text-gray-600 text-[.8rem] mb-5">Choose a colour</p>
             <ColorPicker
               selectedColor={wallColor}
               onClick={(hex) => {
@@ -412,42 +406,42 @@ export default function ChooseStyles() {
       </div>
 
       {/* Floor */}
-      <div className='mb-6 relative min-h-[120px]'>
-        <div className='mb-3 flex items-center gap-[4.5rem] cursor-pointer'>
-          <p className='text-gray-400 text-[.8rem]'>Floor</p>
+      <div className="mb-6 relative min-h-[120px]">
+        <div className="mb-3 flex items-center gap-[4.5rem] cursor-pointer">
+          <p className="text-gray-400 text-[.8rem]">Floor</p>
           <span
             className={`w-5 h-5 flex justify-center items-center rounded-full scale-[1.3] transition chevron-icon ${
               open ? 'rotate-[90deg]' : 'rotate-[0deg]'
             }`}
             onClick={handleChevronClick}
           >
-            <SvgIcon shape='chevron-right' />
+            <SvgIcon shape="chevron-right" />
           </span>
         </div>
         {/* Floor Colors (if there is no mainColor present only show one picker) */}
-        {list && picker === 'floor' && (
+        {picker === 'floor' && (
           <div
             ref={activePickerRef}
             className={`${
-              patterns[patternId]?.parity ? '-top-[270px]' : '-top-[16px]'
+              floorPatterns[patternId]?.parity ? '-top-[270px]' : '-top-[16px]'
             }
             bg-[#dddddd] z-[500] absolute left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg`}
           >
-            <p className='text-gray-600 text-[.8rem] mb-5'>
-              {patterns[patternId]?.parity ? 'Odd tiles' : 'Choose colour'}
+            <p className="text-gray-600 text-[.8rem] mb-5">
+              {floorPatterns[patternId]?.parity ? 'Odd tiles' : 'Choose colour'}
             </p>
             <ColorPicker
-              selectedColor={patterns[patternId]?.color[0]}
+              selectedColor={floor.colorA}
               onClick={(hex) => {
                 handleFloorColors(hex, 'odd')
               }}
             />
-            {patterns[patternId]?.parity && (
+            {floorPatterns[patternId]?.parity && (
               <>
                 <br />
-                <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
+                <p className="text-gray-600 text-[.8rem] mb-5">Even tiles</p>
                 <ColorPicker
-                  selectedColor={patterns[patternId]?.color[1]}
+                  selectedColor={floor.colorB}
                   onClick={(hex) => {
                     handleFloorColors(hex, 'even')
                   }}
@@ -458,77 +452,73 @@ export default function ChooseStyles() {
         )}
 
         {/* Slider */}
-        {list && (
-          <div
-            className='absolute top-[2rem] left-0'
-            ref={containerRef}
-            onClick={(e) => {
-              // Prevent this click from triggering the outside click handler
-              e.stopPropagation()
-              if (open) return
-              setPicker('floor')
-            }}
-          >
-            {patterns.map((pattern, idx) => {
-              // console.log(pattern)
-              return (
+        <div
+          className="absolute top-[2rem] left-0"
+          ref={containerRef}
+          onClick={(e) => {
+            // Prevent this click from triggering the outside click handler
+            e.stopPropagation()
+            if (open) return
+            setPicker('floor')
+          }}
+        >
+          {floorPatterns.map((pattern, idx) => {
+            // console.log(pattern)
+            return (
+              <div
+                key={idx}
+                style={{ zIndex: floorPatterns.length * 2 - idx + 1 }}
+                className={`floor absolute top-0 left-0 rounded-lg w-[120px] h-[66.67px] border-[0.5px] border-black cursor-pointer overflow-hidden mr-5`}
+                ref={addToPatternElementsRef}
+                onClick={() => {
+                  if (!open) return
+                  setOpen(false)
+                  handleFloorPattern(idx)
+                }}
+              >
                 <div
-                  key={idx}
-                  style={{ zIndex: patterns.length * 2 - idx + 1 }}
-                  className={`pattern absolute top-0 left-0 rounded-lg w-[120px] h-[66.67px] border-[0.5px] border-black cursor-pointer overflow-hidden mr-5`}
-                  ref={addToPatternElementsRef}
-                  onClick={() => {
-                    if (!open) return
-                    setOpen(false)
-                    setPatternId(idx)
-                    selectFloor(idx)
-                    floorConfig.pattern = pattern.svgProps.shape
-                  }}
+                  style={{ backgroundColor: floor.colorA }}
+                  className={`rounded-lg text-red-500 ${floor.containerClasses}`}
                 >
-                  <div
-                    style={{ backgroundColor: pattern.color[0] }}
-                    className={`rounded-lg text-red-500 ${pattern.containerClasses}`}
-                  >
-                    <SvgFloorPattern
-                      {...pattern.svgProps}
-                      color={pattern.color[1] ? pattern.color[1] : ''}
-                    />
-                  </div>
-                  {/* <div
-                    style={{ color: pattern.color[0] }}
+                  <SvgFloorPattern
+                    {...pattern.svgProps}
+                    color={floor.colorB ? floor.colorB : ''}
+                  />
+                </div>
+                {/* <div
+                    style={{ color: floor.color[0] }}
                     className='absolute bottom-1 mix-blend-exclusion pl-2 text-sm'
                   >
-                    {pattern.length === 2
-                      ? pattern.color[0] + ' ' + pattern.color[0]
-                      : pattern.color[0]}
+                    {floor.length === 2
+                      ? floor.color[0] + ' ' + floor.color[0]
+                      : floor.color[0]}
                   </div> */}
-                </div>
-              )
-            })}
-          </div>
-        )}
+              </div>
+            )
+          })}
+        </div>
       </div>
 
       {/* Reset colors modal */}
       <button
-        className='text-sm text-[#555555] hover:underline'
+        className="text-sm text-[#555555] hover:underline"
         onClick={() => {
           setResetModal(true)
         }}
       >
         Reset colors &nbsp;
         <span>
-          <SvgIcon shape='chevron-right' classes='scale-[1.3]' />
+          <SvgIcon shape="chevron-right" classes="scale-[1.3]" />
         </span>
       </button>
       {/* Modal*/}
       {resetModal && (
         <>
-          <div className='w-full h-full bg-black absolute top-0 left-0 z-[60] opacity-10'></div>
-          <div className='h-[200px] w-[35vw] shadow-xl absolute z-[900] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] flex justify-center items-center bg-white'>
+          <div className="w-full h-full bg-black absolute top-0 left-0 z-[60] opacity-10"></div>
+          <div className="h-[200px] w-[35vw] shadow-xl absolute z-[900] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] flex justify-center items-center bg-white">
             <div>
-              <p className='text-center mb-6'>Are you sure?</p>
-              <div className='flex justify-center items-center gap-3'>
+              <p className="text-center mb-6">Are you sure?</p>
+              <div className="flex justify-center items-center gap-3">
                 <Button
                   primary
                   onClick={() => {
@@ -559,7 +549,7 @@ export default function ChooseStyles() {
       worktop: hex,
       wall: wallColor,
       color: cabinetsColor,
-      floor: { patterns, id: patternId }
+      floor: floor
     })
   }
 
@@ -569,7 +559,7 @@ export default function ChooseStyles() {
       worktop: worktopColor,
       wall: wallColor,
       color: hex,
-      floor: { patterns, id: patternId }
+      floor: floor
     })
   }
 
@@ -579,27 +569,17 @@ export default function ChooseStyles() {
       worktop: worktopColor,
       wall: hex,
       color: cabinetsColor,
-      floor: { patterns, id: patternId }
+      floor: floor
     })
   }
 
-  function selectFloor(idx) {
+  function selectFloor(newPattern) {
     dispatch({
       id: 'setScheme',
       worktop: worktopColor,
       wall: wallColor,
       color: cabinetsColor,
-      floor: { patterns, id: idx }
-    })
-  }
-
-  function selectFloorColors(newArray, id) {
-    dispatch({
-      id: 'setScheme',
-      worktop: worktopColor,
-      wall: wallColor,
-      color: cabinetsColor,
-      floor: { patterns: newArray, id }
+      floor: newPattern
     })
   }
 }

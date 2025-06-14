@@ -3,65 +3,6 @@ import { floorPlans } from './floorPlans'
 import { wt } from '@/const'
 import { Vector3 } from 'three'
 
-const initialPatterns = [
-  {
-    svgProps: {
-      shape: 'checkers',
-      factor: 1.1,
-      height: 66.67,
-      width: 120
-    },
-    containerClasses: 'hover:scale-[1.1]',
-    color: ['#ffffff', '#000000'],
-    parity: true
-  },
-  {
-    svgProps: {
-      shape: 'diagonal',
-      factor: 1.1,
-      height: 66.67,
-      width: 117
-    },
-    containerClasses: 'mt-[0.8px] -ml-[5px] scale-[1.05] hover:scale-[1.1]',
-    color: ['#ffffff', '#000000'],
-    parity: true
-  },
-  {
-    svgProps: {
-      shape: 'grid',
-      factor: 1,
-      height: 66.67,
-      width: 108
-    },
-    containerClasses:
-      'mt-[0.27rem] ml-[0.4rem] scale-[1.2] hover:scale-[1.5] hover:mt-[0.66rem] hover:ml-[0.52rem]',
-    color: ['#ffffff']
-  },
-  {
-    svgProps: {
-      shape: 'horizontal-lines',
-      factor: 1,
-      height: 62,
-      width: 107
-    },
-
-    containerClasses:
-      'mt-[2.115px] ml-[0.4rem] scale-[1.2] hover:scale-[1.5] hover:mt-[0.66rem]',
-    color: ['#ffffff']
-  },
-  {
-    svgProps: {
-      shape: 'vertical-lines',
-      factor: 1,
-      height: 66.67,
-      width: 108
-    },
-    containerClasses:
-      'mt-[0.25rem] ml-[4px] scale-[1.15] hover:scale-[1.5] hover:ml-[6px] ',
-    color: ['#ffffff']
-  }
-]
-
 export const initialState = {
   walls: [],
   openings: [],
@@ -70,7 +11,8 @@ export const initialState = {
   worktop: '#666666',
   color: '#F0F0F0',
   wall: '#BFBFBF',
-  floor: { patterns: initialPatterns, id: 0 }
+  floor: 'checkers',
+  cart: []
 }
 
 let keepCopy = true
@@ -93,11 +35,13 @@ const actions = {
   deleteOpening,
   addUnit,
   moveUnit,
-  deleteUnit
+  deleteUnit,
+  addToCart
 }
 
 export function updateModel(state, action) {
   const reducer = actions[action.id]
+  if (!reducer) console.error('Unknown action', action)
   return reducer ? saveState(reducer(state, action)) : state
 }
 
@@ -125,16 +69,7 @@ export function loadState(initial, action) {
     const saved = window.localStorage.getItem('dorset-model')
     let state
     if (saved) {
-      state = JSON.parse(saved)
-      for (const unit of state.units) {
-        unit.depth =
-          unit.type === 'wall'
-            ? 300
-            : unit.style.includes('shallow')
-            ? 282
-            : 573
-        unit.height = unit.type === 'base' ? 840 : 2130
-      }
+      state = Object.assign({ ...initialState }, JSON.parse(saved))
     }
     return state ?? loadModel(initial, action)
   } catch (err) {
@@ -494,6 +429,22 @@ function deleteUnit(state, { unit }) {
   return {
     ...state,
     units: state.units.filter((u) => u.id !== unit),
+    dateSaved: null
+  }
+}
+
+/**
+ * Adds an item to the shopping cart.
+ */
+function addToCart(state, { unit, finish }) {
+  const cart = state.cart.concat({
+    ...unit,
+    finish,
+    id: state.cart.reduce((id, u) => Math.max(id, u.id), -1) + 1
+  })
+  return {
+    ...state,
+    cart,
     dateSaved: null
   }
 }
