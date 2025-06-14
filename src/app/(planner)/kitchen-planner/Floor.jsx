@@ -6,6 +6,7 @@ import { floorPatterns } from '@/model/floorPatterns'
 // Components
 import FloorLines from './FloorLines'
 import FloorCheckers from './FloorCheckers'
+import FloorDiagonal from './FloorDiagonal'
 
 // App state
 import { useAppState } from '@/appState'
@@ -66,6 +67,15 @@ export default function Floor({ points, handlePan }) {
           showHorizontalLines={true}
           showVerticalLines={true}
           color={colorA}
+        />
+      )}
+      {is3D && type === 'diagonal' && (
+        <FloorDiagonal
+          points={points}
+          handlePan={handlePan}
+          colorA={colorA}
+          colorB={colorB}
+          key={`${colorA}-${colorB}`} // Force re-render on color change
         />
       )}
       {is3D && type === 'checkers' && (
