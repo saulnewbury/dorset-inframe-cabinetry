@@ -15,6 +15,7 @@ import taps from '@/lib/images/square/taps-smeg.webp'
 
 const cabinetOptions = [
   {
+    type: 'finish',
     instruction: 'Choose frame finish',
     options: [
       { name: 'Beige', hex: '#F5F3F0' },
@@ -53,6 +54,10 @@ const products = [
             categories: ['All', 'Base cabinets', key],
             group: opt.id.replace(':', '-'),
             id: opt.id.replace(':', '-') + '-' + w,
+            type: 'base',
+            variant: key,
+            style: opt.id,
+            width: w,
             name: opt.title,
             desc: `Width: ${(w / 10).toFixed(1)}cm`,
             price: `£${opt.prices[n]}`,
@@ -66,7 +71,11 @@ const products = [
             categories: ['All', 'Tall cabinets', key],
             group: opt.id.replace(':', '-'),
             id: opt.id.replace(':', '-') + '-' + w,
-            name: key,
+            type: 'tall',
+            variant: key,
+            style: opt.id,
+            width: w,
+            name: opt.title,
             desc: `Width: ${(w / 10).toFixed(1)}cm`,
             price: `£${opt.prices[n]}`,
             options: cabinetOptions
@@ -78,6 +87,9 @@ const products = [
           categories: ['All', 'Wall cabinets', opt.filterText],
           group: opt.id.replace(':', '-'),
           id: opt.id.replace(':', '-') + '-' + w,
+          type: 'wall',
+          style: opt.id,
+          width: w,
           name: opt.title,
           desc: `Width: ${(w / 10).toFixed(1)}cm`,
           price: `£${opt.prices[n]}`,

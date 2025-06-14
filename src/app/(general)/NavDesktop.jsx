@@ -77,7 +77,7 @@ export default function NavDesktop() {
             <SvgIcon shape="list" />
             <div className="w-[0.9rem] h-[0.9rem] bg-[black] rounded-full absolute bottom-[4px] -right-[7px] flex justify-center items-center">
               <span className="text-[#ffffff] text-[0.5rem] font-bold">
-                {model.units.length}
+                {model.units.length + model.cart.length}
               </span>
             </div>
           </span>

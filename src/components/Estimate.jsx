@@ -16,7 +16,9 @@ const nullStyle = {
 
 export default function Estimate() {
   const [model] = useContext(ModelContext)
-  const total = model?.units.reduce((acc, unit) => acc + getPrice(unit), 0) ?? 0
+  const total =
+    (model?.units.reduce((acc, unit) => acc + getPrice(unit), 0) ?? 0) +
+    (model?.cart.reduce((acc, unit) => acc + getPrice(unit), 0) ?? 0)
   return (
     <div className="fixed top-[90px] right-[20px] z-40 flex flex-col items-end bg-white">
       <span className="text-xs">Estimate:</span>
@@ -37,7 +39,7 @@ export default function Estimate() {
           wallUnitStyles.find((s) => s.sizes.includes(+unit.width)) ?? nullStyle
         break
       case 'tall':
-        const inf =
+        inf =
           tallUnitStyles[unit.variant]?.find((s) => s.id === unit.style) ??
           nullStyle
         break
@@ -45,6 +47,7 @@ export default function Estimate() {
         return 0
     }
     const size = inf?.sizes.indexOf(+unit.width) ?? -1
+    // console.log('getPrice', unit, inf, size)
     return size < 0 ? 0 : inf.prices[size] ?? 0
   }
 }
