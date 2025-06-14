@@ -1,10 +1,11 @@
 'use client'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import Link from 'next/link'
 import Image from 'next/image'
 
 import createMarkup from '@/lib/helpers/createMarkup.js'
+import { ModelContext } from '@/model/context'
 
 export default function WeCanSupply({
   isModal = false,
@@ -15,12 +16,16 @@ export default function WeCanSupply({
   color = '#EDEAE3'
 }) {
   const [code, setCodes] = useState('')
-  const [productCodes, setProductCodes] = useState([])
   const [hover, setHover] = useState(false)
+  const [, dispatch] = useContext(ModelContext)
 
   const handleAddCode = () => {
     if (code.trim()) {
-      setProductCodes([...productCodes, code.trim()])
+      dispatch({
+        id: 'addToCart',
+        type: 'appliance',
+        code: code.trim()
+      })
       setCodes('')
     }
   }
@@ -38,26 +43,26 @@ export default function WeCanSupply({
       }`}
       style={{ backgroundColor: color }}
     >
-      <div className='indent w-full'>
-        <div className='mb-[5rem] max-w-[50rem]'>
+      <div className="indent w-full">
+        <div className="mb-[5rem] max-w-[50rem]">
           <div
-            className='mb-[2rem]'
+            className="mb-[2rem]"
             dangerouslySetInnerHTML={createMarkup(markup)}
           ></div>
 
           {codes && (
             <>
               <input
-                className='border-b border-black bg-transparent w-[300px] block'
-                type='text'
-                placeholder='Enter product code'
+                className="border-b border-black bg-transparent w-[300px] block"
+                type="text"
+                placeholder="Enter product code"
                 value={code}
                 onChange={(e) => setCodes(e.target.value)}
                 onKeyDown={handleKeyDown}
               />
               <button
-                type='button'
-                className='font-normal cursor-pointer hover:underline mt-[.5rem]'
+                type="button"
+                className="font-normal cursor-pointer hover:underline mt-[.5rem]"
                 onClick={handleAddCode}
               >
                 Add to list +
@@ -66,21 +71,21 @@ export default function WeCanSupply({
               <br /> <br />
             </>
           )}
-          <div className='text-[1.2rem] mb-[2rem]'>
+          <div className="text-[1.2rem] mb-[2rem]">
             Some of our favourite brands:
           </div>
         </div>
 
-        <div className='flex justify-between w-full items-center pb-[5rem]'>
-          <div className='text-[3rem] mt-[2rem]'>
+        <div className="flex justify-between w-full items-center pb-[5rem]">
+          <div className="text-[3rem] mt-[2rem]">
             {brands.map((b, idx) => (
               <Link
                 key={idx}
                 onMouseEnter={() => setHover(b.name)}
                 onMouseLeave={() => setHover(false)}
-                className='block py-2'
+                className="block py-2"
                 href={b.url}
-                target='_blank'
+                target="_blank"
               >
                 {b.name}
                 &nbsp;
@@ -90,11 +95,11 @@ export default function WeCanSupply({
               </Link>
             ))}
           </div>
-          <div className='hidden md:block'>
+          <div className="hidden md:block">
             <Image
               className={isModal ? 'w-[35vw]' : 'w-[45vw]'}
               src={src}
-              alt='appliances'
+              alt="appliances"
             />
           </div>
         </div>
