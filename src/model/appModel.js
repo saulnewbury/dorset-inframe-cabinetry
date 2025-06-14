@@ -11,7 +11,7 @@ export const initialState = {
   worktop: '#666666',
   color: '#F0F0F0',
   wall: '#BFBFBF',
-  floor: 'checkers',
+  floor: { id: 'checkers', colorA: '#EEEEEE', colorB: '#000000' },
   cart: []
 }
 
@@ -70,6 +70,10 @@ export function loadState(initial, action) {
     let state
     if (saved) {
       state = Object.assign({ ...initialState }, JSON.parse(saved))
+      if (!state.floor?.id) {
+        // If the saved model does not have a floor pattern, set it to default.
+        state.floor = initialState.floor
+      }
     }
     return state ?? loadModel(initial, action)
   } catch (err) {
@@ -97,10 +101,15 @@ function loadModel(state, { shape }) {
  * Loads a saved model from the server, replacing the current state.
  */
 function setModel(state, { model }) {
-  return {
+  const newState = {
     ...initialState,
     ...model
   }
+  if (!newState.floor?.id) {
+    // If the saved model does not have a valid floor pattern, set it to default.
+    newState.floor = initialState.floor
+  }
+  return newState
 }
 
 /**
