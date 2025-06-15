@@ -55,7 +55,7 @@ export async function PATCH(request, { params }) {
       if (model.email !== email) throw new Error('You are not authorised')
 
       // Check that the model has not already been submitted.
-      if (model.submitted) throw new Error('Model already submitted')
+      // if (model.submitted) throw new Error('Model already submitted')
 
       // Create a new submission event in the database.
       const submission = await tx.submission.create({
