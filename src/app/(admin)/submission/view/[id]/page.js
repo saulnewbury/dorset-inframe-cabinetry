@@ -70,10 +70,11 @@ export default async function Submission({ params }) {
       default:
         inf = null
     }
-    if (!inf) console.log(unit)
     const p = inf?.sizes.findIndex((w) => w === +unit.width) ?? -1
     return {
-      name: inf?.title ?? titleCase(`${unit.style} unit ${unit.variant}`),
+      name:
+        (inf?.title ?? titleCase(`${unit.style} unit ${unit.variant}`)) +
+        (unit.finish ? ` (${unit.finish.map((f) => f[1]).join(', ')})` : ''),
       price: inf?.prices[p] ?? 0
     }
   }
