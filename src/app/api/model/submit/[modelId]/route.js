@@ -58,9 +58,19 @@ export async function PATCH(request, { params }) {
       // Check that the model has not already been submitted.
       if (model.submitted) throw new Error('Model already submitted')
 
+      // Create a new submission event in the database.
+      const submission = await tx.submission.create({
+        data: {
+          modelId: id,
+          modelData: model.modelData,
+          userEmail: email
+        },
+        select: { id: true, created: true }
+      })
+
       // Send email to the business, with a link to the saved model.
       const transport = nodemailer.createTransport(smtpConfig)
-      const link = `${siteURL}/model/view/${id}`
+      const link = `${siteURL}/submission/view/${submission.id}`
       await transport.sendMail({
         from: process.env.SMTP_ORIGIN,
         to: process.env.SMTP_MAILBOX,
@@ -75,7 +85,7 @@ export async function PATCH(request, { params }) {
       // Update the model entry in the database, to show it as 'sent'.
       const submitted = await prisma.saved.update({
         where: { id },
-        data: { submitted: new Date(), timeframe, postcode },
+        data: { submitted: submission.created, timeframe, postcode },
         select: { submitted: true }
       })
 

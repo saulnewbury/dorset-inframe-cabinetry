@@ -20,6 +20,8 @@ model saved {
   postcode  String?
 
   user user @relation(fields: [email], references: [email])
+
+  submissions submission[]
 }
 
 model user {
@@ -44,4 +46,13 @@ model session {
   expires   DateTime
 
   user user @relation(fields: [userEmail], references: [email])
+}
+
+model submission {
+  id        String   @id @default(uuid())
+  modelId   String
+  submitted DateTime @default(now())
+  modelData String
+
+  model saved @relation(fields: [modelId], references: [id])
 }
