@@ -23,7 +23,15 @@ export default async function Submission({ params }) {
     }
   })
 
-  if (!submission) return { notFound: true }
+  if (!submission)
+    return (
+      <div className="pt-32 gutter">
+        <h1 className="text-2xl font-bold">Submission not found</h1>
+        <p>The submission with ID {id} could not be found.</p>
+        <p>Please check the ID and try again.</p>
+        <p>If you believe this is an error, please contact support.</p>
+      </div>
+    )
 
   const dateOptions = {
     year: 'numeric',
@@ -120,9 +128,17 @@ export default async function Submission({ params }) {
           <tfoot>
             <tr>
               <td colSpan="4" className="text-right">
-                Total:
+                &nbsp;
               </td>
-              <td className="text-right font-bold border-t-[3px] border-darkGrey border-double">
+              <td className="border-t-[3px] border-darkGrey border-double">
+                &nbsp;
+              </td>
+            </tr>
+            <tr>
+              <td colSpan="4" className="text-right">
+                Estimated total:
+              </td>
+              <td className="text-right font-bold">
                 £
                 {sortedUnits
                   .reduce((acc, unit) => acc + unit.count * unit.price, 0)
@@ -133,7 +149,7 @@ export default async function Submission({ params }) {
         </table>
         {appliances.length > 0 && (
           <>
-            <h2>Appliances</h2>
+            <h2 className="text-xl font-bold my-4">Appliances</h2>
             <ul>
               {appliances.map((appliance, n) => (
                 <li key={n}>{appliance.code}</li>
