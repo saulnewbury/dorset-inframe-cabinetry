@@ -23,8 +23,10 @@ export default function WeCanSupply({
     if (code.trim()) {
       dispatch({
         id: 'addToCart',
-        type: 'appliance',
-        code: code.trim()
+        unit: {
+          type: 'appliance',
+          code: code.trim()
+        }
       })
       setCodes('')
     }
