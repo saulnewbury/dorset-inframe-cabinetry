@@ -5,17 +5,20 @@ import SvgIcon from '@/components/SvgIcon'
 export default function ViewControls({
   changePerspective,
   is3D,
-  shrink = false
+  shrink = false,
+  top = false
 }) {
   return (
     <div
-      className={`absolute left-[50%] -translate-x-[50%] bottom-[40px] flex justify-center bg-red-500 ${
+      className={`absolute left-[50%] -translate-x-[50%] ${
+        top ? 'top-[40px]' : 'bottom-[40px]'
+      } flex justify-center bg-red-500 ${
         shrink ? 'left-[calc(30%+74px+37px)]' : ''
       }`}
     >
-      <div className='flex items-center justify-center rounded-full bg-lightBlue h-[50px] px-1'>
+      <div className="flex items-center justify-center rounded-full bg-lightBlue h-[50px] px-1">
         <button
-          type='button'
+          type="button"
           className={`${
             !is3D ? 'bg-[#ffffff] shadow-md' : ''
           }  h-[40px] w-[40px] rounded-full mr-[8px] flex items-center justify-center `}
@@ -23,10 +26,10 @@ export default function ViewControls({
             changePerspective(false)
           }}
         >
-          <SvgIcon classes='w-[16px] h-[16px]' shape='2d' />
+          <SvgIcon classes="w-[16px] h-[16px]" shape="2d" />
         </button>
         <button
-          type='button'
+          type="button"
           className={`${
             is3D ? 'bg-[#ffffff] shadow-md' : ''
           }  h-[40px] w-[40px] rounded-full flex items-center justify-center`}
@@ -34,7 +37,7 @@ export default function ViewControls({
             changePerspective(true)
           }}
         >
-          <SvgIcon classes='w-[24px] h-[24px]' shape='3d' />
+          <SvgIcon classes="w-[24px] h-[24px]" shape="3d" />
         </button>
       </div>
     </div>

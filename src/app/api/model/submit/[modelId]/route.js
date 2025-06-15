@@ -37,7 +37,7 @@ export async function PATCH(request, { params }) {
         where: { id: sessionId },
         include: { user: true }
       })
-      if (!session || session.expires.getTime() > Date.now())
+      if (!session || session.expires.getTime() < Date.now())
         throw new Error('Session not found')
 
       const { email, verifyId } = session.user
@@ -49,8 +49,7 @@ export async function PATCH(request, { params }) {
 
       // Check that the model exists and belongs to this user.
       const model = await tx.saved.findUnique({
-        where: { id },
-        select: { email: true }
+        where: { id }
       })
       if (!model) throw new Error('Model not found')
       if (model.email !== email) throw new Error('You are not authorised')
@@ -63,9 +62,10 @@ export async function PATCH(request, { params }) {
         data: {
           modelId: id,
           modelData: model.modelData,
-          userEmail: email
+          timeframe,
+          postcode
         },
-        select: { id: true, created: true }
+        select: { id: true, submitted: true }
       })
 
       // Send email to the business, with a link to the saved model.
@@ -85,7 +85,7 @@ export async function PATCH(request, { params }) {
       // Update the model entry in the database, to show it as 'sent'.
       const submitted = await prisma.saved.update({
         where: { id },
-        data: { submitted: submission.created, timeframe, postcode },
+        data: { submitted: submission.submitted },
         select: { submitted: true }
       })
 

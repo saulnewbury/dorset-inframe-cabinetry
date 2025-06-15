@@ -1,5 +1,7 @@
 import { useContext, useState } from 'react'
 import { ModelContext } from '@/model/context'
+import { SessionContext } from '@/context'
+
 import Button from '@/components/Button'
 import TextInput from '@/components/TextInput'
 import Image from 'next/image'
@@ -15,6 +17,8 @@ export default function SubmitModelDialog({
   const [postcode, setPostcode] = useState('')
   const [message, setMessage] = useState('')
   const [result, setResult] = useState(null)
+  const [model] = useContext(ModelContext)
+  const [session] = useContext(SessionContext)
 
   const canSubmit = !!postcode
   const disabled = !!message
@@ -54,7 +58,11 @@ export default function SubmitModelDialog({
           ) : (
             <div>
               <div className="flex justify-center mb-10">
-                <Image src={submissionProcess} className="w-[75%] h-auto" />
+                <Image
+                  src={submissionProcess}
+                  alt=""
+                  className="w-[75%] h-auto"
+                />
               </div>
               <form onSubmit={submitModel}>
                 <div className="flex flex-col gap-y-6">
@@ -96,9 +104,10 @@ export default function SubmitModelDialog({
     try {
       ev.preventDefault()
       setMessage('Please wait...')
-      const res = await fetch('/api/model/submit/' + modelId, {
+      const res = await fetch('/api/model/submit/' + model.id, {
         method: 'PATCH',
         body: JSON.stringify({
+          sessionId: session.sessionId,
           timeframe,
           postcode
         }),

@@ -18,7 +18,7 @@ import Breadcrumbs from './Breadcrumbs'
 import LoginDialog from '@/components/LoginDialog'
 import Estimate from '@/components/Estimate'
 
-export default function NavDesktop() {
+export default function NavDesktop({ estimate = true }) {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
   const [model] = useContext(ModelContext)
@@ -73,14 +73,16 @@ export default function NavDesktop() {
             )
           })}
 
-          <span className="inline-block relative cursor-pointer mr-[18px]">
-            <SvgIcon shape="list" />
-            <div className="w-[0.9rem] h-[0.9rem] bg-[black] rounded-full absolute bottom-[4px] -right-[7px] flex justify-center items-center">
-              <span className="text-[#ffffff] text-[0.5rem] font-bold">
-                {model.units.length + model.cart.length}
-              </span>
-            </div>
-          </span>
+          {estimate && (
+            <span className="inline-block relative cursor-pointer mr-[18px]">
+              <SvgIcon shape="list" />
+              <div className="w-[0.9rem] h-[0.9rem] bg-[black] rounded-full absolute bottom-[4px] -right-[7px] flex justify-center items-center">
+                <span className="text-[#ffffff] text-[0.5rem] font-bold">
+                  {model.units.length + model.cart.length}
+                </span>
+              </div>
+            </span>
+          )}
 
           {session ? (
             <div className="relative">
@@ -115,7 +117,8 @@ export default function NavDesktop() {
           )}
         </div>
       </nav>
-      <Breadcrumbs />
+
+      {estimate && <Breadcrumbs />}
 
       <LoginDialog
         show={showLogin}
@@ -126,7 +129,7 @@ export default function NavDesktop() {
         onLogin={doLogin}
       />
 
-      <Estimate />
+      {estimate && <Estimate />}
     </>
   )
 

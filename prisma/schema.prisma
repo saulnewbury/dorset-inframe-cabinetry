@@ -16,8 +16,6 @@ model saved {
   modelData String
   created   DateTime  @updatedAt
   submitted DateTime?
-  timeframe String?
-  postcode  String?
 
   user user @relation(fields: [email], references: [email])
 
@@ -53,6 +51,8 @@ model submission {
   modelId   String
   submitted DateTime @default(now())
   modelData String
+  timeframe String
+  postcode  String
 
   model saved @relation(fields: [modelId], references: [id])
 }
