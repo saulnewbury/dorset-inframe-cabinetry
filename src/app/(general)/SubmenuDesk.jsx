@@ -6,11 +6,11 @@ import '../nav.css'
 
 import { usePathname } from 'next/navigation'
 
-export default function SubmenuDesk({ items = '#', isOpen }) {
+export default function SubmenuDesk({ items = '#', isOpen, closeMenu }) {
   const pathname = usePathname()
 
   return (
-    <div className='submenu-container leading-8 absolute w-[max-content] translate-y-[100%] bottom-0 z-50 pt-1'>
+    <div className="submenu-container leading-8 absolute w-[max-content] translate-y-[100%] bottom-0 z-50 pt-1">
       <div
         className={`${
           isOpen ? 'block' : 'hidden'
@@ -51,7 +51,9 @@ export default function SubmenuDesk({ items = '#', isOpen }) {
                   pathname.endsWith(item.url) ? 'active' : ''
                 } submenu-item flex relative`}
               >
-                <Link href={item.url}>{item.name}</Link>
+                <Link href={item.url} onClick={closeMenu}>
+                  {item.name}
+                </Link>
               </div>
             )
           )

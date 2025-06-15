@@ -24,9 +24,9 @@ export const menu = [
     id: 19,
     submenu: [
       { name: 'All cabinets', url: '/our-cabinets', id: 20 },
-      { name: 'Base cabinets', url: '/our-cabinets/base-cabinets', id: 16 },
-      { name: 'Tall cabinets', url: '/our-cabinets/tall-cabinets', id: 17 },
-      { name: 'Wall cabinets', url: '/our-cabinets/wall-cabinets', id: 18 }
+      { name: 'Base cabinets', url: '/our-cabinets?category=base', id: 16 },
+      { name: 'Tall cabinets', url: '/our-cabinets?category=tall', id: 17 },
+      { name: 'Wall cabinets', url: '/our-cabinets?category=wall', id: 18 }
     ]
   },
   {

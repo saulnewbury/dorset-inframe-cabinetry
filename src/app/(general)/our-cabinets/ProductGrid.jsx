@@ -1,17 +1,44 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Categories from './Categories'
 
-export default function ProductGrid({ products }) {
+export default function ProductGrid({ products, category }) {
   const { items, categories } = products
 
   const [hover, setHover] = useState(false)
-  const [selected, setSelected] = useState({ top: 'All', sub: null })
+  const [selected, setSelected] = useState({ top: category, sub: null })
   const [filtered, setFiltered] = useState(items)
+
+  useEffect(() => {
+    setSelected({ top: category, sub: null })
+  }, [category])
+
+  useEffect(() => {
+    let arr
+
+    // if subcategory is selected check each item to see if
+    // it exists along side the main category and return item if true
+    if (selected.sub) {
+      arr = items.filter((item) => {
+        const subExists = item.categories.includes(selected.sub)
+        const topExists = item.categories.includes(selected.top)
+        if (subExists && topExists) return item
+      })
+      // if main category is selected check each item's list of categories
+      // to see if it exists and return true if it does.
+    } else {
+      arr = items.filter((item) => {
+        const topExists = item.categories.includes(selected.top)
+        if (topExists) return item
+      })
+    }
+
+    setFiltered(arr)
+  }, [selected, products])
 
   const pathname = usePathname()
 
@@ -19,26 +46,6 @@ export default function ProductGrid({ products }) {
     const option = JSON.parse(e.currentTarget.dataset.option)
 
     // check each item and return only those that that include the sub category, or otherwise the main category
-    let arr
-
-    // if subcategory is selected check each item to see if
-    // it exists along side the main category and return item if true
-    if (option[1]) {
-      arr = items.filter((item) => {
-        const subExists = item.categories.includes(option[1])
-        const topExists = item.categories.includes(option[0])
-        if (subExists && topExists) return item
-      })
-      // if main category is selected check each item's list of categories
-      // to see if it exists and return true if it does.
-    } else {
-      arr = items.filter((item) => {
-        const topExists = item.categories.includes(option[0])
-        if (topExists) return item
-      })
-    }
-
-    setFiltered(arr)
     setSelected({ top: option[0], sub: option[1] })
   }
 
