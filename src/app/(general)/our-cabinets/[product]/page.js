@@ -28,6 +28,6 @@ function normalCase(text) {
 function getProduct(params, products) {
   const category = 'Our cabinets'
   const range = products.find((p) => p.name === category)
-  console.log('category', category, 'range', range)
+  // console.log('category', category, 'range', range)
   return range?.items.find((item) => item.id === params.product)
 }

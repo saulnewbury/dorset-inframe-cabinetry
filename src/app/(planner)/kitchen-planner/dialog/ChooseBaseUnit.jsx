@@ -29,7 +29,7 @@ export default function ChooseBaseUnit({
   const heights = [
     ...new Set(filtered.map((opt) => opt.carcassHeight ?? baseHeight).flat())
   ].sort((a, b) => a - b)
-  console.log(heights)
+  // console.log(heights)
 
   return (
     <DialogInnerContainer>

@@ -267,7 +267,7 @@ export default function LoginDialog({
       const data = await res.json()
       // Check result.
       if (data.error) throw new Error(data.error)
-      console.log(data)
+      // console.log(data)
       setMessage('')
       setIsReset(true)
     } catch (err) {

@@ -9,7 +9,7 @@ import SvgIcon from '@/components/SvgIcon.jsx'
 
 const Dialog = forwardRef(
   ({ closeContentBox, content, variant, Body, width }, ref) => {
-    console.log(width)
+    // console.log(width)
     const container = useRef()
     useGSAP(() => {
       gsap.fromTo(
@@ -21,21 +21,21 @@ const Dialog = forwardRef(
     return (
       <div
         ref={container}
-        className='fixed z-[100] flex h-[100vh] w-[100vw] top-0 left-0 bg-overlay px-[98px] py-[40px] opacity-0'
+        className="fixed z-[100] flex h-[100vh] w-[100vw] top-0 left-0 bg-overlay px-[98px] py-[40px] opacity-0"
       >
         {/* <div className='bg-white w-full h-full relative'> */}
-        <div style={{ width: width }} className='bg-white h-full relative'>
+        <div style={{ width: width }} className="bg-white h-full relative">
           <button
             onClick={closeContentBox}
-            className='cursor-pointer w-[max-content] h-[max-content] absolute right-[2.5rem] top-[2rem] z-[900]'
-            type='button'
+            className="cursor-pointer w-[max-content] h-[max-content] absolute right-[2.5rem] top-[2rem] z-[900]"
+            type="button"
           >
-            <SvgIcon shape='close' />
+            <SvgIcon shape="close" />
           </button>
           <div
             className={`gutter-left h-full relative overflow-scroll gutter-right`}
           >
-            <h2 className='py-[2rem] text-[18px]'>
+            <h2 className="py-[2rem] text-[18px]">
               {content.heading}
               {variant && <span> / {variant}</span>}
             </h2>
