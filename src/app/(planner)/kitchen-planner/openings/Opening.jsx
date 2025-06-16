@@ -1,5 +1,12 @@
 import { DragControls, Html } from '@react-three/drei'
-import { forwardRef, useContext, useMemo, useRef, useState } from 'react'
+import {
+  forwardRef,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+  useEffect
+} from 'react'
 import { MathUtils, Matrix4, Vector3 } from 'three'
 import clsx from 'clsx'
 
@@ -34,6 +41,7 @@ export default function Opening(props) {
   const [, dispatch] = useContext(ModelContext)
   const [dragging, setDragging] = useState(false)
   const [position, setPosition] = useState(offset)
+  const [prevOffset, setPrevOffset] = useState(offset)
   const drag = useRef()
   const info = useRef()
 
@@ -42,6 +50,15 @@ export default function Opening(props) {
   const spaceAfter = Math.max(len - offset - width / 2 - mitre.te / 2, 0)
 
   const matrix = useMemo(() => new Matrix4(), [showHandle])
+
+  useEffect(() => {
+    if (offset !== prevOffset) {
+      // Offset has been updated by the model, now we can reset the matrix
+      matrix.copy(new Matrix4())
+      setPrevOffset(offset)
+      setPosition(offset)
+    }
+  }, [offset, prevOffset, matrix])
 
   return is3D ? (
     <Content {...props} />
@@ -134,7 +151,8 @@ export default function Opening(props) {
     if (!dragging) return
     const v = new Vector3().setFromMatrixPosition(matrix)
     dispatch({ id: 'moveOpening', item: id, offset: offset + v.x })
-    matrix.copy(new Matrix4())
+    // Don't reset the matrix here - let it stay transformed
+    // matrix.copy(new Matrix4())
     onDrag(false)
     setDragging(false)
   }
