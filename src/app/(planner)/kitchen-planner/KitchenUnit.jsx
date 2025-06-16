@@ -6,7 +6,11 @@ import clsx from 'clsx'
 import { ModelContext } from '@/model/context'
 import { useAppState } from '@/appState'
 
-import { baseUnitStyles, tallUnitStyles } from '@/model/itemStyles'
+import {
+  baseUnitStyles,
+  tallUnitStyles,
+  wallUnitStyles
+} from '@/model/itemStyles'
 import { wt } from '@/const'
 
 import ItemInfo from './ItemInfo'
@@ -124,7 +128,9 @@ export default function KitchenUnit({
               material={hoverMaterial}
               onPointerOver={(ev) => onHover(ev, true)}
               onPointerOut={(ev) => onHover(ev, false)}
-              onPointerUp={showInfo}
+              onPointerUp={() => {
+                if (showHandle) showInfo()
+              }}
               userData={{ id, type: 'unit' }}
             >
               <planeGeometry
@@ -483,7 +489,7 @@ const InfoPanel = forwardRef((props, ref) => {
       : props.type === 'tall'
       ? tallUnitStyles[props.variant]?.find((s) => s.id === props.style) ??
         nullStyle
-      : { id: 'wall' }
+      : wallUnitStyles.find((s) => s.sizes.includes(+props.width)) ?? nullStyle
   const type = props.type[0].toUpperCase() + props.type.slice(1)
   const base = style.id.replace(':', '-')
   const image = `/units/${base}/${base}-${props.width}-front.webp`
