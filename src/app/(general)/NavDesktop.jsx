@@ -1,34 +1,19 @@
 'use client'
+import { useState } from 'react'
 
-import { twMerge } from 'tailwind-merge'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useState, useEffect, useContext } from 'react'
-import { SessionContext } from '@/context'
-import { ModelContext } from '@/model/context'
-
-import '../nav.css'
-
-import SvgIcon from '@/components/SvgIcon'
+import Breadcrumbs from './Breadcrumbs'
+import MenuDesktop from '@/components/MenuDesktop'
+import Cart from '@/components/Cart'
+import UserStatus from '@/components/UserStatus'
 
 import { menu } from '@/lib/data/menu'
 
-import SubmenuDesk from './SubmenuDesk'
-import Breadcrumbs from './Breadcrumbs'
-import LoginDialog from '@/components/LoginDialog'
-import Estimate from '@/components/Estimate'
+import '../nav.css'
+import SaveButton from '@/components/SaveButton'
 
-export default function NavDesktop({ estimate = true }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const pathname = usePathname()
-  const [model] = useContext(ModelContext)
+export default function NavDesktop({ showCart = true }) {
   const [showLogin, setShowLogin] = useState(false)
-  const [showUserPopup, setShowUserPopup] = useState(false)
-  const [session, setSession] = useContext(SessionContext)
-
-  useEffect(() => {
-    setIsOpen(false)
-  }, [pathname])
 
   return (
     <>
@@ -44,118 +29,16 @@ export default function NavDesktop({ estimate = true }) {
           </Link>
         </div>
 
-        <div className="links h-full flex items-center">
-          {menu.map((item, i) => {
-            return (
-              <div
-                key={i}
-                className="link-container h-full"
-                onMouseEnter={() => setIsOpen(item.name)}
-                onMouseLeave={() => setIsOpen(false)}
-              >
-                <Link
-                  className={`link ${
-                    pathname.startsWith(item.url) ? 'active' : ''
-                  } cursor-pointer mr-[36px] h-full flex items-center relative`}
-                  href={item.url}
-                >
-                  <span>{item.name}</span>
-                </Link>
-                {item.submenu && (
-                  <SubmenuDesk
-                    className="dropdown"
-                    items={item.submenu}
-                    isOpen={item.name === isOpen} // compares instance url with state url
-                    closeMenu={() => setIsOpen(false)}
-                  />
-                )}
-              </div>
-            )
-          })}
+        <MenuDesktop menu={menu} />
 
-          {estimate && (
-            <span className="inline-block relative cursor-pointer mr-[18px]">
-              <SvgIcon shape="list" />
-              <div className="w-[0.9rem] h-[0.9rem] bg-[black] rounded-full absolute bottom-[4px] -right-[7px] flex justify-center items-center">
-                <span className="text-[#ffffff] text-[0.5rem] font-bold">
-                  {model.units.length + model.cart.length}
-                </span>
-              </div>
-            </span>
-          )}
-
-          {session ? (
-            <div className="relative">
-              <button onClick={() => setShowUserPopup(!showUserPopup)}>
-                <SvgIcon shape="user" />
-              </button>
-              <div
-                className={twMerge(
-                  'absolute top-full bg-white text-nowrap border border-darkGrey px-2 shadow-md flex-col gap-y-2',
-                  showUserPopup ? 'flex' : 'hidden'
-                )}
-              >
-                <button
-                  onClick={() => {
-                    setShowUserPopup(false)
-                    doLogout()
-                  }}
-                >
-                  Log out
-                </button>
-              </div>
-            </div>
-          ) : (
-            <button
-              type="button"
-              className="inline-block cursor-pointer"
-              onClick={() => setShowLogin(!showLogin)}
-            >
-              <span>Login</span>
-              <SvgIcon shape="login" />
-            </button>
-          )}
+        <div className="flex items-center justify-self-end h-full gap-x-[30px]">
+          <SaveButton setShowLogin={setShowLogin} />
+          {showCart && <Cart />}
+          <UserStatus showLogin={showLogin} />
         </div>
       </nav>
 
-      {estimate && <Breadcrumbs />}
-
-      <LoginDialog
-        show={showLogin}
-        isSave={false}
-        onClose={() => {
-          setShowLogin(false)
-        }}
-        onLogin={doLogin}
-      />
-
-      {estimate && <Estimate />}
+      {showCart && <Breadcrumbs />}
     </>
   )
-
-  function doLogin(session) {
-    setShowLogin(false)
-    setSession(session)
-    sessionStorage.setItem('dc-session', JSON.stringify(session))
-  }
-
-  async function doLogout() {
-    try {
-      const res = await fetch('/api/user/logout', {
-        method: 'POST',
-        body: JSON.stringify({ sessionId: session.sessionId }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      if (!res.ok) throw new Error('Network error')
-      const data = await res.json()
-      if (data.error) throw new Error(data.error)
-    } catch (err) {
-      console.error(err)
-    } finally {
-      sessionStorage.removeItem('dc-session')
-      setSession(null)
-    }
-  }
 }

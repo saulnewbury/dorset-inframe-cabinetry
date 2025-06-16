@@ -12,7 +12,7 @@ export default function Layout({ children }) {
   return (
     <>
       <NavMobile />
-      <NavDesktop estimate={false} />
+      <NavDesktop showCart={false} />
       {children}
     </>
   )

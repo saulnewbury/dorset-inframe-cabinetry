@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 
 import TextInput from '@/components/TextInput'
 import Button from '@/components/Button'
+import { createPortal } from 'react-dom'
 
 export default function VerifyEmailDialog({ verifyId, onVerify = () => {} }) {
   const [show, setShow] = useState(!!verifyId)
@@ -15,7 +16,8 @@ export default function VerifyEmailDialog({ verifyId, onVerify = () => {} }) {
   const disabled = !!message
 
   return (
-    show && (
+    show &&
+    createPortal(
       <div className="bg-[#0000003f] h-[100vh] w-[100vw] absolute z-[500] flex justify-center items-center">
         <div className="w-[600px] bg-[white] text-xl p-12 relative ">
           {result ? (
@@ -83,7 +85,8 @@ export default function VerifyEmailDialog({ verifyId, onVerify = () => {} }) {
             </form>
           )}
         </div>
-      </div>
+      </div>,
+      document.body
     )
   )
 

@@ -73,14 +73,14 @@ export default function ConfigureYourKitchen({ classes = '' }) {
           />
         )}
       </section>
-      <LoginDialog
-        show={showLogin}
-        isSave={false}
-        onClose={() => {
-          setShowLogin(false)
-        }}
-        onLogin={doLogin}
-      />
+      {showLogin && (
+        <LoginDialog
+          onClose={() => {
+            setShowLogin(false)
+          }}
+          onLogin={doLogin}
+        />
+      )}
     </>
   )
 
@@ -103,7 +103,7 @@ export default function ConfigureYourKitchen({ classes = '' }) {
       return
     }
     dispatch({
-      type: 'setModel',
+      id: 'setModel',
       model: JSON.parse(data.model.modelData)
     })
     router.replace('/kitchen-planner/make-it-yours')

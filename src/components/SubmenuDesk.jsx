@@ -2,7 +2,6 @@
 
 import { Fragment } from 'react'
 import Link from 'next/link'
-import '../nav.css'
 
 import { usePathname } from 'next/navigation'
 

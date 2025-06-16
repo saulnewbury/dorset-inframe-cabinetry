@@ -6,14 +6,6 @@ import {
   tallUnitStyles
 } from '@/model/itemStyles'
 
-const nullStyle = {
-  id: 'null',
-  title: 'Unknown',
-  prices: [],
-  sizes: [],
-  filterText: 'Unknown'
-}
-
 export default function Estimate() {
   const [model] = useContext(ModelContext)
   const total =
@@ -30,18 +22,13 @@ export default function Estimate() {
     let inf
     switch (unit.type) {
       case 'base':
-        inf =
-          baseUnitStyles[unit.variant]?.find((s) => s.id === unit.style) ??
-          nullStyle
+        inf = baseUnitStyles[unit.variant]?.find((s) => s.id === unit.style)
         break
       case 'wall':
-        inf =
-          wallUnitStyles.find((s) => s.sizes.includes(+unit.width)) ?? nullStyle
+        inf = wallUnitStyles.find((s) => s.sizes.includes(+unit.width))
         break
       case 'tall':
-        inf =
-          tallUnitStyles[unit.variant]?.find((s) => s.id === unit.style) ??
-          nullStyle
+        inf = tallUnitStyles[unit.variant]?.find((s) => s.id === unit.style)
         break
       default:
         return 0

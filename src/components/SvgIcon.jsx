@@ -14,7 +14,7 @@ import yourItems from '@/lib/icons/your-items.svg'
 import colors from '@/lib/icons/colors.svg'
 
 import close from '@/lib/icons/close.svg'
-import save from '@/lib/icons/save.svg'
+import save from '@/lib/icons/save-svgrepo-com.svg'
 
 import square from '@/lib/icons/square-fplan.svg'
 import notch from '@/lib/icons/notch-fplan.svg'
@@ -34,7 +34,7 @@ import cornerHandle from '@/lib/icons/corner-handle.svg'
 import cornerHandleCircle from '@/lib/icons/corner-handle-circle.svg'
 
 import pen from '@/lib/icons/pen.svg'
-import person from '@/lib/icons/person.svg'
+import person from '@/lib/icons/account-avatar-man-svgrepo-com.svg'
 
 import icon2d from '@/lib/icons/2d-icon.svg'
 import icon3d from '@/lib/icons/3d-icon.svg'
@@ -100,7 +100,7 @@ export default function SvgIcon({
           width={`${item.icon.width}`}
           height={`${item.icon.height}`}
           viewBox={`0 0 ${item.icon.width} ${item.icon.height}`}
-          role='img'
+          role="img"
           aria-label={alt}
         >
           <use href={item.icon.src + '#root'} />

@@ -25,9 +25,7 @@ export async function GET(request, { params }) {
       select: {
         modelData: true,
         created: true,
-        submitted: true,
-        timeframe: true,
-        postcode: true
+        submitted: true
       }
     })
 
