@@ -167,10 +167,7 @@ function baseInfo(unit) {
   const base = unit.style.replace(':', '-')
   const size = inf.sizes.indexOf(+unit.width)
   return {
-    image:
-      unit.style === 'base:counter-only'
-        ? null
-        : `/units/${base}/${base}-${unit.width}-front.webp`,
+    image: `/units/${base}/${base}-${unit.width}-front.webp`,
     info: {
       category: 'Base unit / ' + unit.variant,
       desc: inf.title,
