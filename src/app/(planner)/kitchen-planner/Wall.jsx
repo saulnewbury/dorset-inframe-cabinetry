@@ -149,15 +149,21 @@ export default function Wall({
           />
         ))}
         {/* Dimension line (2D only) */}
-        {!is3D && (
-          <DimensionLine
-            from={-len / 2 + (wt * Math.tan(mitreStart)) / 2}
-            to={len / 2 - (wt * Math.tan(mitreEnd)) / 2}
-            value={innerLength}
-            isFlip={Math.abs(angle) > Math.PI / 2}
-            onChange={resizeWall}
-          />
-        )}
+        {!is3D &&
+          // Show dimension line if:
+          // - It's an outer wall (segment 0), OR
+          // - It's an internal wall AND either end corner is being hovered
+          (from.segment === 0 ||
+            (hover?.type === 'corner' &&
+              (hover.id === from.id || hover.id === to.id))) && (
+            <DimensionLine
+              from={-len / 2 + (wt * Math.tan(mitreStart)) / 2}
+              to={len / 2 - (wt * Math.tan(mitreEnd)) / 2}
+              value={innerLength}
+              isFlip={Math.abs(angle) > Math.PI / 2}
+              onChange={resizeWall}
+            />
+          )}
       </group>
       {/* Drag handle */}
       {(showHandle || dragging) && (
@@ -174,36 +180,36 @@ export default function Wall({
           >
             <mesh>
               <boxGeometry args={[wt * 2, 0, wt * 2]} />
-              <meshStandardMaterial color="green" transparent opacity={0} />
+              <meshStandardMaterial color='green' transparent opacity={0} />
             </mesh>
-            <group position-z="-0.08">
-              <Html center as="div" className="pointer-events-none">
+            <group position-z='-0.08'>
+              <Html center as='div' className='pointer-events-none'>
                 <div
-                  className="flex items-center justify-center"
+                  className='flex items-center justify-center'
                   style={{
                     transform: `rotateZ(${angle + 1.5708}rad) translateX(-80%)`
                   }}
                 >
                   <img
                     src={wallHandleLeft.src}
-                    alt=""
-                    className="scale-125 max-w-none"
+                    alt=''
+                    className='scale-125 max-w-none'
                   />
                 </div>
               </Html>
             </group>
-            <group position-z="0.08">
-              <Html center as="div" className="pointer-events-none">
+            <group position-z='0.08'>
+              <Html center as='div' className='pointer-events-none'>
                 <div
-                  className="flex items-center justify-center"
+                  className='flex items-center justify-center'
                   style={{
                     transform: `rotateZ(${angle + 1.5708}rad) translateX(80%)`
                   }}
                 >
                   <img
                     src={wallHandleRight.src}
-                    alt=""
-                    className="scale-125 max-w-none"
+                    alt=''
+                    className='scale-125 max-w-none'
                   />
                 </div>
               </Html>
