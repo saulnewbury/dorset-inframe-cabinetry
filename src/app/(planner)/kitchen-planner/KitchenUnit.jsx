@@ -147,24 +147,22 @@ export default function KitchenUnit({
             /> */}
           </>
         )}
-        {type === 'base' && <BaseUnit {...{ width, variant, style }} />}
-        {type === 'tall' && <TallUnit {...{ width, variant, style }} />}
-        {type === 'wall' && (
-          <CabinetWall
-            carcassInnerWidth={width / 1000 - 0.036}
-            carcassDepth={0.282}
-            style={style}
-          />
-        )}
+        <group position={[-centreOffsetX, 0, -centreOffsetZ]}>
+          {type === 'base' && <BaseUnit {...{ width, variant, style }} />}
+          {type === 'tall' && <TallUnit {...{ width, variant, style }} />}
+          {type === 'wall' && (
+            <CabinetWall
+              carcassInnerWidth={width / 1000 - 0.036}
+              carcassDepth={0.282}
+              style={style}
+            />
+          )}
+        </group>
       </group>
       {(showHandle || dragging) && (
         <>
           <mesh
-            position={[
-              pos.x + centreOffsetX,
-              size.y + 0.08,
-              pos.z + centreOffsetZ
-            ]}
+            position={[pos.x, size.y + 0.08, pos.z]}
             rotation-x={Math.PI / -2}
             rotation-z={rotation}
           >
@@ -179,11 +177,7 @@ export default function KitchenUnit({
             onDragEnd={endDrag}
           >
             <group
-              position={[
-                handle.x + centreOffsetX,
-                size.y + 0.1,
-                handle.z + centreOffsetZ
-              ]}
+              position={[handle.x, size.y + 0.1, handle.z]}
               rotation-y={rotation}
             >
               <mesh rotation-x={Math.PI / -2}>
