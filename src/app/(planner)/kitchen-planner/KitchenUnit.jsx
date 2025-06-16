@@ -124,10 +124,12 @@ export default function KitchenUnit({
               material={hoverMaterial}
               onPointerOver={(ev) => onHover(ev, true)}
               onPointerOut={(ev) => onHover(ev, false)}
-              onClick={showInfo}
+              onPointerUp={showInfo}
               userData={{ id, type: 'unit' }}
             >
-              <planeGeometry args={[size.x, size.z]} />
+              <planeGeometry
+                args={[Math.max(size.x + widthOffset, 0.5), size.z]}
+              />
             </mesh>
             <InfoPanel ref={info} {...{ id, type, width, variant, style }} />
             {/* <DimensionLine
@@ -172,7 +174,7 @@ export default function KitchenUnit({
           >
             <group
               position={[
-                handle.x + centreOffsetZ,
+                handle.x + centreOffsetX,
                 size.y + 0.1,
                 handle.z + centreOffsetZ
               ]}
