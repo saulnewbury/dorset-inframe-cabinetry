@@ -29,12 +29,15 @@ export default function Estimate({
       <p>Your estimate:</p>
       <p className="font-bold text-lg">£{total.toFixed(2)}</p>
       <p>
-        <button className="underline text-sm" onClick={onShowSummary}>
+        <button
+          className="underline text-sm"
+          onClick={() => onShowSummary(false)}
+        >
           Summary
         </button>
       </p>
       <p className="py-3">
-        <button>
+        <button onClick={() => onShowSummary(true)}>
           <SvgIcon shape="printer" />
         </button>
       </p>

@@ -56,7 +56,7 @@ export default function Page() {
     </div>
   )
 
-  async function createAndShowPDF() {
+  async function createAndShowPDF(isPrint) {
     const frame = window.open('', '_blank')
     frame.document.title = 'Order Summary (PDF)'
     frame.document.body.innerHTML = `<h1>Order Summary</h1><p>Your PDF is being generated...</p>`
@@ -91,6 +91,9 @@ export default function Page() {
       setTimeout(() => {
         frame.document.title = 'Order Summary (PDF)'
         URL.revokeObjectURL(url)
+        if (isPrint) {
+          frame.print()
+        }
       }, 50)
     } catch (error) {
       console.error('Error creating PDF:', error)
