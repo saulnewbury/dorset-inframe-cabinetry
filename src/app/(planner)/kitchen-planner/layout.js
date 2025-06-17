@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation'
 // Components
 import KitchenPlanner from './KitchenPlanner'
 import NavConfigurator from './NavConfigurator'
-import IntroMessage from './IntroMessage'
+// import IntroMessage from './IntroMessage'
 import VerifyEmailDialog from './dialog/VerifyEmail'
 
 import PerspectiveContextProvider from './perspectiveContextProvider'
@@ -37,28 +37,20 @@ export default function Layout({ children }) {
     <>
       <PerspectiveContextProvider>
         <NavConfigurator />
-
         <CanvasContext.Provider value={ref}>
-          <VerifyEmailDialog
-            verifyId={verifyId}
-            onVerify={(session) => {
-              doLogin(session)
-              setShowSubmitModel(!!model.id)
-            }}
-          />
           {/* <IntroMessage show={!verifyId} /> */}
           <KitchenPlanner ref={kitchenPlanner} />
           {children}
         </CanvasContext.Provider>
       </PerspectiveContextProvider>
+
+      <VerifyEmailDialog
+        verifyId={verifyId}
+        onVerify={(session) => {
+          doLogin(session)
+          setShowSubmitModel(!!model.id)
+        }}
+      />
     </>
   )
-}
-
-const nullStyle = {
-  id: 'null',
-  title: 'Unknown',
-  prices: [],
-  sizes: [],
-  filterText: 'Unknown'
 }
