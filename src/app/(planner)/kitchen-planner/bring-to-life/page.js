@@ -36,13 +36,6 @@ export default function Page() {
               src={snapshot}
               alt={`Snapshot ${id + 1}`}
               className="w-full h-auto mb-2 object-contain"
-              onLoad={(e) => {
-                console.log(
-                  'Image size:',
-                  e.target.naturalWidth,
-                  e.target.naturalHeight
-                )
-              }}
             />
           </a>
           <button
