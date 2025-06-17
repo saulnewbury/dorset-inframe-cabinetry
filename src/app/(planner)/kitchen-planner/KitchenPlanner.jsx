@@ -55,7 +55,7 @@ export default forwardRef(function KitchenPlanner(props, ref) {
     }
   }, [is3D, shrink])
 
-  // show only on relavent pages
+  // show only on relevant pages
   useImperativeHandle(
     ref,
     () => {
@@ -100,14 +100,14 @@ export default forwardRef(function KitchenPlanner(props, ref) {
           show ? '' : 'opacity-0'
         }  w-full h-full fixed`}
       >
-        <Canvas frameloop='demand' shadows style={shrink ? style : ''}>
+        <Canvas frameloop="demand" shadows style={shrink ? style : ''}>
           <Camera is3D={is3D} />
           <Experience is3D={is3D} />
           <SceneCapture />
         </Canvas>
         <div
           ref={overlay}
-          className='absolute bg-[white] w-[100vw] h-[70vw] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]'
+          className="absolute bg-[white] w-[100vw] h-[70vw] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]"
         ></div>
       </div>
       <ViewControls
@@ -117,10 +117,10 @@ export default forwardRef(function KitchenPlanner(props, ref) {
       />
       {shrink && (
         <div
-          className='absolute top-[110px] left-[50px]'
+          className="absolute top-[110px] left-[50px]"
           onClick={takeScreenshot}
         >
-          <SvgIcon classes='w-[35px] h-[35px]' shape='capture' />
+          <SvgIcon classes="w-[35px] h-[35px]" shape="capture" />
         </div>
       )}
     </AppContext.Provider>

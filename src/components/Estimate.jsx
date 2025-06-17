@@ -25,7 +25,7 @@ export default function Estimate({
       <p className="font-bold">£{total.toFixed(2)}</p>
     </div>
   ) : (
-    <div className="absolute top-[95px] right-[20px] z-40 [&>p]:my-3 bg-lightGrey border border-1 border-darkBlue p-4">
+    <div className="w-fit [&>p]:my-3 bg-lightGrey border border-1 border-darkBlue p-4">
       <p>Your estimate:</p>
       <p className="font-bold text-lg">£{total.toFixed(2)}</p>
       <p>

@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import { useThree } from '@react-three/fiber'
 import * as THREE from 'three'
+import { useAppState } from '@/appState'
 
 // Scene capture component
 const CaptureSceneAndCamera = ({ setScene, setCamera }) => {
@@ -18,6 +19,7 @@ const CaptureSceneAndCamera = ({ setScene, setCamera }) => {
 export const useScreenshot = (width = 3840, height = 2160) => {
   const [scene, setScene] = React.useState(null)
   const [camera, setCamera] = React.useState(null)
+  const { addSnapshot } = useAppState()
 
   const takeScreenshot = useCallback(() => {
     if (!scene || !camera) {
@@ -52,11 +54,8 @@ export const useScreenshot = (width = 3840, height = 2160) => {
       // Convert to PNG data URL
       const dataURL = renderer.domElement.toDataURL('image/png')
 
-      // Create and trigger the download
-      const link = document.createElement('a')
-      link.href = dataURL
-      link.download = `screenshot-${width}x${height}.png`
-      link.click()
+      // Add to app state
+      addSnapshot(dataURL)
     } catch (error) {
       console.error('Error taking screenshot:', error)
     } finally {

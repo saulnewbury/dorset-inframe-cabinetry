@@ -15,6 +15,7 @@ import colors from '@/lib/icons/colors.svg'
 
 import close from '@/lib/icons/close.svg'
 import save from '@/lib/icons/save-svgrepo-com.svg'
+import trash from '@/lib/icons/trash.svg'
 
 import square from '@/lib/icons/square-fplan.svg'
 import notch from '@/lib/icons/notch-fplan.svg'
@@ -66,6 +67,7 @@ const icons = [
   // Bring it to life
   { icon: capture, shape: 'capture' },
   { icon: printer, shape: 'printer' },
+  { icon: trash, shape: 'trash' },
   //
   { icon: wallHandle, shape: 'wall-handle' },
   { icon: wallHandleRight, shape: 'wall-handle-right' },
