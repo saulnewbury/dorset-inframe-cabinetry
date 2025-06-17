@@ -11,9 +11,11 @@ export const useAppState = create((set) => ({
     set((state) => ({
       snapshots: [...state.snapshots, snapshot]
     })),
-  removeSnapshot: (snapshot) =>
+  removeSnapshot: (snapshot) => {
+    URL.revokeObjectURL(snapshot) // Clean up the object URL
     set((state) => ({
       snapshots: state.snapshots.filter((s) => s !== snapshot)
-    })),
+    }))
+  },
   clearSnapshots: () => set({ snapshots: [] })
 }))

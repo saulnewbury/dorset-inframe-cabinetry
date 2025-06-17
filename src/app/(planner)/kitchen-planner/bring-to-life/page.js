@@ -31,11 +31,20 @@ export default function Page() {
           key={id}
           className="w-[240px] max-w-[25vw] mb-4 bg-white p-4 border border-lightGrey relative"
         >
-          <img
-            src={snapshot}
-            alt={`Snapshot ${id + 1}`}
-            className="w-full h-auto mb-2 object-cover"
-          />
+          <a href={snapshot} target="_blank" rel="noopener noreferrer">
+            <img
+              src={snapshot}
+              alt={`Snapshot ${id + 1}`}
+              className="w-full h-auto mb-2 object-contain"
+              onLoad={(e) => {
+                console.log(
+                  'Image size:',
+                  e.target.naturalWidth,
+                  e.target.naturalHeight
+                )
+              }}
+            />
+          </a>
           <button
             className="absolute top-2 right-2 focus:outline-none"
             onClick={() => removeSnapshot(snapshot)}
