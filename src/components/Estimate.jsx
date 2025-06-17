@@ -5,16 +5,44 @@ import {
   wallUnitStyles,
   tallUnitStyles
 } from '@/model/itemStyles'
+import SvgIcon from './SvgIcon'
+import Button from './Button'
 
-export default function Estimate() {
+export default function Estimate({
+  isFloating = true,
+  onShowSummary = () => {},
+  onProceed = () => {}
+}) {
   const [model] = useContext(ModelContext)
+
   const total =
     (model?.units.reduce((acc, unit) => acc + getPrice(unit), 0) ?? 0) +
     (model?.cart.reduce((acc, unit) => acc + getPrice(unit), 0) ?? 0)
-  return (
-    <div className="fixed top-[90px] right-[20px] z-40 flex flex-col items-end bg-white">
-      <span className="text-xs">Estimate:</span>
-      <span className="font-bold">£{total.toFixed(2)}</span>
+
+  return isFloating ? (
+    <div className="fixed top-[95px] right-[20px] z-40 bg-white">
+      <p className="text-xs">Estimate:</p>
+      <p className="font-bold">£{total.toFixed(2)}</p>
+    </div>
+  ) : (
+    <div className="absolute top-[95px] right-[20px] z-40 [&>p]:my-3 bg-lightGrey border border-1 border-darkBlue p-4">
+      <p>Your estimate:</p>
+      <p className="font-bold text-lg">£{total.toFixed(2)}</p>
+      <p>
+        <button className="underline text-sm" onClick={onShowSummary}>
+          Summary
+        </button>
+      </p>
+      <p className="py-3">
+        <button>
+          <SvgIcon shape="printer" />
+        </button>
+      </p>
+      <p>
+        <Button primary onClick={onProceed}>
+          Proceed
+        </Button>
+      </p>
     </div>
   )
 

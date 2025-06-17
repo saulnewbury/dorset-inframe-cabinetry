@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
+import { usePathname } from 'next/navigation'
 
 import '@/app/nav.css'
 
@@ -18,6 +19,7 @@ import SaveButton from '@/components/SaveButton'
 export default function NavConfigurator() {
   const [openConfirmation, setOpenConfirmation] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
+  const pathname = usePathname()
 
   return (
     <>
@@ -49,7 +51,7 @@ export default function NavConfigurator() {
         </div>
       </nav>
 
-      <Estimate />
+      {pathname.endsWith('bring-to-life') || <Estimate />}
 
       {openConfirmation && (
         <ConfirmationDialog

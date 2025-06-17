@@ -35,6 +35,7 @@ import cornerHandleCircle from '@/lib/icons/corner-handle-circle.svg'
 
 import pen from '@/lib/icons/pen.svg'
 import person from '@/lib/icons/account-avatar-man-svgrepo-com.svg'
+import printer from '@/lib/icons/printer.svg'
 
 import icon2d from '@/lib/icons/2d-icon.svg'
 import icon3d from '@/lib/icons/3d-icon.svg'
@@ -62,8 +63,9 @@ const icons = [
   { icon: notchDivide, shape: 'notch-divide' },
   { icon: cornerDivide, shape: 'corner-divide' },
   { icon: tick, shape: 'tick' },
-  //
+  // Bring it to life
   { icon: capture, shape: 'capture' },
+  { icon: printer, shape: 'printer' },
   //
   { icon: wallHandle, shape: 'wall-handle' },
   { icon: wallHandleRight, shape: 'wall-handle-right' },
