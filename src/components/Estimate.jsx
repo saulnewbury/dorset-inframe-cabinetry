@@ -25,7 +25,7 @@ export default function Estimate({
       <p className="font-bold">£{total.toFixed(2)}</p>
     </div>
   ) : (
-    <div className="w-fit [&>p]:my-3 bg-lightGrey border border-1 border-darkBlue p-4">
+    <div className="w-[240px] max-w-[25vw] [&>p]:my-3 bg-lightGrey border border-1 border-darkBlue p-4">
       <p>Your estimate:</p>
       <p className="font-bold text-lg">£{total.toFixed(2)}</p>
       <p>
@@ -39,7 +39,7 @@ export default function Estimate({
         </button>
       </p>
       <p>
-        <Button primary onClick={onProceed}>
+        <Button primary classes={'w-full'} onClick={onProceed}>
           Proceed
         </Button>
       </p>

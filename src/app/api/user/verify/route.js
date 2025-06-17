@@ -29,7 +29,7 @@ export async function POST(request) {
 
     return Response.json(result)
   } catch (error) {
-    console.error('Error verifying session:', error)
+    // console.error('Error verifying session:', error)
     return customError(error)
   }
 }

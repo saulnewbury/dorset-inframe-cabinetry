@@ -448,6 +448,9 @@ function deleteUnit(state, { unit }) {
 function addToCart(state, { unit, finish }) {
   const cart = state.cart.concat({
     ...unit,
+    depth:
+      unit.type === 'wall' ? 300 : unit.style.includes('shallow') ? 282 : 573,
+    height: unit.type === 'base' ? 840 : 2130,
     finish,
     id: state.cart.reduce((id, u) => Math.max(id, u.id), -1) + 1
   })

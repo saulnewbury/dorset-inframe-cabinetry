@@ -19,6 +19,7 @@
     "gsap": "^3.12.5",
     "next": "^14.2.26",
     "nodemailer": "^6.10.0",
+    "pdfkit": "^0.17.1",
     "react": "^18",
     "react-colorful": "^5.6.1",
     "react-dom": "^18",
