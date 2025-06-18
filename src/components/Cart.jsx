@@ -7,9 +7,6 @@ export default function Cart() {
   const [showList, setShowList] = useState(false)
   const [model] = useContext(ModelContext)
   const items = model ? model.units.length + model.cart.length : 0
-  useEffect(() => {
-    console.log(showList)
-  }, [showList])
 
   return (
     <div>

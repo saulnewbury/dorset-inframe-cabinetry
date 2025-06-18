@@ -26,15 +26,15 @@ export default function ChooseFloorPlan({ onClose = () => {} }) {
   }, [selected])
 
   return (
-    <div className='flex justify-center items-center h-full w-full absolute left-0 top-0'>
-      <div className='flex-col mb-[2rem]'>
-        <div className='mb-[1rem]'>Enclosed</div>
-        <div className='flex justify-between gap-10'>
+    <div className="flex justify-center items-center h-full w-full absolute left-0 top-0">
+      <div className="flex-col mb-[2rem]">
+        <div className="mb-[1rem]">Enclosed</div>
+        <div className="flex justify-between gap-10">
           {enclosedShapes.map((shape, i) => {
             return (
               <div
                 key={i}
-                className='w-[max-content] h-[max-content] relative'
+                className="w-[max-content] h-[max-content] relative"
                 onClick={() => setSelected(shape.id)}
               >
                 <SvgIcon
@@ -57,7 +57,7 @@ export default function ChooseFloorPlan({ onClose = () => {} }) {
 
       <div onClick={() => select(selected)}>
         <Button
-          classes='absolute bottom-[5rem] left-[50%] -translate-x-[50%]'
+          classes="absolute bottom-[5rem] left-[50%] -translate-x-[50%]"
           primary={true}
           disabled={!selected}
         >
@@ -68,7 +68,7 @@ export default function ChooseFloorPlan({ onClose = () => {} }) {
   )
 
   function select(shape) {
-    console.log(shape)
+    // console.log(shape)
     dispatch({ id: 'loadModel', shape })
     onClose()
   }

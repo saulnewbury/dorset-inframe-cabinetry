@@ -112,7 +112,7 @@ export default function PasswordResetPage() {
       const data = await res.json()
       setMessage('')
       if (data.error) {
-        console.log(data.error)
+        console.warn(data.error)
         setIsError(true)
       } else router.replace('/')
     } catch (err) {

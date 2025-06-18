@@ -20,7 +20,7 @@ export default function SessionContextProvider({ children }) {
           if (ret.sessionId) {
             setSession(ret)
           } else {
-            console.error('Session verification failed')
+            console.warn('Session verification failed')
             setSession(null)
           }
         })

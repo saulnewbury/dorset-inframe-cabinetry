@@ -53,7 +53,7 @@ function saveState(state) {
     if (keepCopy)
       window.localStorage.setItem('dorset-model', JSON.stringify(state))
   } catch (err) {
-    console.log('Local storage disabled', err)
+    console.warn('Local storage disabled', err)
     keepCopy = false
   }
   return state
@@ -116,7 +116,6 @@ function setModel(state, { model }) {
  * Sets the saved model id and timestamp.
  */
 function setId(state, { modelId, dateSaved }) {
-  console.log('Model saved', modelId, dateSaved)
   return {
     ...state,
     id: modelId,

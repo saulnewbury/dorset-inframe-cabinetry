@@ -68,7 +68,7 @@ export async function POST(request) {
       hash.update('contactCracker')
       const result = hash.digest('hex')
       if (result !== checksum) {
-        console.log('Spam detected: Invalid token', token, result)
+        console.warn('Spam detected: Invalid token', token, result)
         throw new Error('Spam detected: Invalid token')
       }
     }

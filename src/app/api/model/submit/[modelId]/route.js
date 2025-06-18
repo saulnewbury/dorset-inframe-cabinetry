@@ -25,7 +25,7 @@ export async function PATCH(request, { params }) {
     const dto = await request.json()
     const keys = Object.keys(dto)
     if (required.some((key) => !keys.includes(key))) {
-      console.log(keys)
+      console.error('Missing key(s)', keys, required)
       throw new Error('Bad request')
     }
 

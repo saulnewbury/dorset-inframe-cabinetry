@@ -18,7 +18,7 @@ export async function POST(request) {
     // Return a success message.
     return Response.json({ message: 'Logged out' })
   } catch (err) {
-    console.log(err)
+    console.error(err)
     return customError(err)
   }
 }

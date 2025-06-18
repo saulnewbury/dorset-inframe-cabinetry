@@ -26,7 +26,6 @@ export async function POST(request) {
   document.info.Title = 'Order Summary ' + docDate
 
   document.on('pageAdded', () => {
-    console.log(document.page)
     // New page added to PDF document
     document.fontSize(9).text(`Page ${pageNumber++}`, {
       align: 'right'

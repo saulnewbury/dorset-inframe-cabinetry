@@ -64,7 +64,7 @@ export async function POST(request) {
     // Send response.
     return Response.json(result)
   } catch (err) {
-    console.log(err)
+    console.error(err)
     return customError(err)
   }
 }
