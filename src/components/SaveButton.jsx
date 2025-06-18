@@ -6,8 +6,10 @@ import ModelSavedDialog from './ModelSaved'
 import SubmitModelDialog from './SubmitModel'
 
 import SvgIcon from './SvgIcon'
+import Button from './Button'
+import { twMerge } from 'tailwind-merge'
 
-export default function SaveButton({ setShowLogin = () => {} }) {
+export default function SaveButton({ title, setShowLogin = () => {} }) {
   const [isSave, setIsSave] = useState(false)
   const [showModelSaved, setShowModelSaved] = useState(false)
   const [showSubmitModal, setShowSubmitModal] = useState(false)
@@ -24,14 +26,20 @@ export default function SaveButton({ setShowLogin = () => {} }) {
   }, [session, isSave])
 
   return (
-    <div>
-      <button
-        className="inline-block relative"
-        onClick={saveModel}
-        title="Save and submit"
-      >
-        <SvgIcon shape="save" />
-      </button>
+    <span className={twMerge('inline-block relative', title && 'w-full')}>
+      {title ? (
+        <Button primary classes="w-full" onClick={saveModel}>
+          {title}
+        </Button>
+      ) : (
+        <button
+          className="inline-block relative"
+          onClick={saveModel}
+          title="Save and submit"
+        >
+          <SvgIcon shape="save" />
+        </button>
+      )}
 
       {showModelSaved && (
         <ModelSavedDialog
@@ -49,7 +57,7 @@ export default function SaveButton({ setShowLogin = () => {} }) {
       {showSubmitModal && (
         <SubmitModelDialog onClose={() => setShowSubmitModal(false)} />
       )}
-    </div>
+    </span>
   )
 
   async function saveModel() {

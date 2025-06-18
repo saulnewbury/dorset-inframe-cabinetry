@@ -78,17 +78,10 @@ export default function ConfigureYourKitchen({ classes = '' }) {
           onClose={() => {
             setShowLogin(false)
           }}
-          onLogin={doLogin}
         />
       )}
     </>
   )
-
-  function doLogin(session) {
-    setShowLogin(false)
-    setSession(session)
-    sessionStorage.setItem('dc-session', JSON.stringify(session))
-  }
 
   async function loadSavedModel(id) {
     setShowChooser(false)

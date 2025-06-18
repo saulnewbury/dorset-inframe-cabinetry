@@ -15,7 +15,7 @@ export default function UserStatus({ showLogin = false }) {
   }, [showLogin])
 
   return (
-    <div className="relative">
+    <div>
       {session ? (
         <div className="relative">
           <button
@@ -56,17 +56,10 @@ export default function UserStatus({ showLogin = false }) {
           onClose={() => {
             setShowLogin(false)
           }}
-          onLogin={doLogin}
         />
       )}
     </div>
   )
-
-  function doLogin(session) {
-    setShowLogin(false)
-    setSession(session)
-    sessionStorage.setItem('dc-session', JSON.stringify(session))
-  }
 
   async function doLogout() {
     try {

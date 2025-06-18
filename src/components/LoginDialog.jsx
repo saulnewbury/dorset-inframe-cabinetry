@@ -1,16 +1,14 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { twMerge } from 'tailwind-merge'
+import { SessionContext } from '@/context'
 
 import Button from '@/components/Button'
 import TextInput from '@/components/TextInput'
 
-export default function LoginDialog({
-  onClose = () => {},
-  onLogin = () => {}
-}) {
+export default function LoginDialog({ onClose = () => {}, onLogin = onClose }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -19,6 +17,7 @@ export default function LoginDialog({
   const [message, setMessage] = useState('')
   const [isProblem, setIsProblem] = useState(false)
   const [isReset, setIsReset] = useState(false)
+  const [, setSession] = useContext(SessionContext)
   const form = useRef(null)
 
   const canSubmit = email && password && (isExisting || name)
@@ -184,7 +183,7 @@ export default function LoginDialog({
                   primary={true}
                   disabled={!canSubmit || disabled}
                 >
-                  Save
+                  Continue
                 </Button>
               </p>
             </form>
@@ -223,6 +222,8 @@ export default function LoginDialog({
       // Check result.
       if (data.error) throw new Error(data.error)
       setMessage('')
+      setSession(data)
+      sessionStorage.setItem('dc-session', JSON.stringify(data))
       onLogin(data)
     } catch (err) {
       console.error(err)

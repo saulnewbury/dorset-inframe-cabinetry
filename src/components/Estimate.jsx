@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { ModelContext } from '@/model/context'
 import {
   baseUnitStyles,
@@ -7,12 +7,15 @@ import {
 } from '@/model/itemStyles'
 import SvgIcon from './SvgIcon'
 import Button from './Button'
+import SaveButton from './SaveButton'
+import LoginDialog from './LoginDialog'
 
 export default function Estimate({
   isFloating = true,
   onShowSummary = () => {},
-  onProceed = () => {}
+  onSubmitted = () => {}
 }) {
+  const [showLogin, setShowLogin] = useState(false)
   const [model] = useContext(ModelContext)
 
   const total =
@@ -42,10 +45,10 @@ export default function Estimate({
         </button>
       </p>
       <p>
-        <Button primary classes={'w-full'} onClick={onProceed}>
-          Proceed
-        </Button>
+        <SaveButton title="Proceed" setShowLogin={setShowLogin} />
       </p>
+
+      {showLogin && <LoginDialog onClose={() => setShowLogin(false)} />}
     </div>
   )
 
