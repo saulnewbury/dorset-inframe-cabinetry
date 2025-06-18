@@ -47,6 +47,7 @@ export default forwardRef(function KitchenPlanner(props, ref) {
         { opacity: 1, duration: 0.8, delay: 0.04 }
       )
     } else {
+      console.log('Jack in the Box')
       gsap.fromTo(
         container.current,
         { opacity: 0 },
@@ -61,16 +62,19 @@ export default forwardRef(function KitchenPlanner(props, ref) {
     () => {
       return {
         showCanvas: () => {
+          setRefreshed(false)
           setShow(true)
         },
         hideCanvas: () => {
           setShow(false)
         },
         shrinkCanvas: () => {
+          setRefreshed(false)
           setCanvasShrink(true)
           setShow(true)
         },
         restoreCanvas: () => {
+          setRefreshed(false)
           setCanvasShrink(false)
           setShow(true)
         }
