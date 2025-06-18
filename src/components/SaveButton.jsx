@@ -17,6 +17,8 @@ export default function SaveButton({ title, setShowLogin = () => {} }) {
   const [model, dispatch] = useContext(ModelContext)
   const [session] = useContext(SessionContext)
 
+  const canSave = model.units.length + model.cart.length > 0
+
   useEffect(() => {
     if (session && isSave) {
       setIsSave(false)
@@ -28,14 +30,20 @@ export default function SaveButton({ title, setShowLogin = () => {} }) {
   return (
     <span className={twMerge('inline-block relative', title && 'w-full')}>
       {title ? (
-        <Button primary classes="w-full" onClick={saveModel}>
+        <Button
+          primary
+          classes="w-full"
+          onClick={saveModel}
+          disabled={!canSave}
+        >
           {title}
         </Button>
       ) : (
         <button
-          className="inline-block relative"
+          className="inline-block relative disabled:cursor-not-allowed"
           onClick={saveModel}
           title="Save and submit"
+          disabled={!canSave}
         >
           <SvgIcon shape="save" />
         </button>
@@ -67,26 +75,31 @@ export default function SaveButton({ title, setShowLogin = () => {} }) {
       return
     }
     try {
-      const res = await fetch('/api/model/save', {
-        method: 'POST',
-        body: JSON.stringify({
-          sessionId: session.sessionId,
-          modelData: model
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      if (!res.ok) throw new Error('Network error')
-      const data = await res.json()
-      // Check result.
-      if (data.error) throw new Error(data.error)
-      dispatch({
-        id: 'setId',
-        modelId: data.id,
-        dateSaved: data.created
-      })
-      setResult(data)
+      if (model.dateSaved) {
+        // If already saved and not changed since, just continue.
+        setResult({})
+      } else {
+        const res = await fetch('/api/model/save', {
+          method: 'POST',
+          body: JSON.stringify({
+            sessionId: session.sessionId,
+            modelData: model
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        if (!res.ok) throw new Error('Network error')
+        const data = await res.json()
+        // Check result.
+        if (data.error) throw new Error(data.error)
+        dispatch({
+          id: 'setId',
+          modelId: data.id,
+          dateSaved: data.created
+        })
+        setResult(data)
+      }
     } catch (err) {
       console.error(err)
       setResult({ error: err.message })
