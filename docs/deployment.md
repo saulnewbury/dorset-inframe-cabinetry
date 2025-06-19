@@ -77,6 +77,12 @@ Note that all the required tables and indexes will be created by Prisma on runni
 
 This command should be run in a context that has access to the database, each time a new 'build' is produced. It updates the database to match the schema that will be built into the NextJS production code.
 
+## Email Forwarding Service
+
+As can be seen from the Environment Variables section, above, the application requires an SMTP mail relay service in order to send emails to the business and to clients. The hosting provider may well offer such a service, otherwise use one like [SendGrid](https://sendgrid.com/en-us/blog/smtp-relay-service-basics) or [Mailgun](https://www.mailgun.com/features/smtp-server/).
+
+Note that you will need to set up SPF, DKIM and DMARC entries for the domain name that you use for email. These will be used by mail relays and by receiving email client software to verify that the emails sent by the application are genuine and not spam. Each entry must include the address of the authorised initial relay server.
+
 ## Nginx Proxy
 
 Setting up Nginx to act as a reverse proxy (application firewall) is a complex topic and not one for a document like this. Please ensure that whoever does it has the necessary expertise. In particular, the configuration needs to provide the SSL certificate and private key that will be used to secure browser connections.
