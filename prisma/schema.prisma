@@ -28,7 +28,7 @@ model user {
   salt       String
   name       String
   created    DateTime @default(now())
-  verifyId   String?
+  verifyId   String?  @unique
   resetToken String?  @unique
 
   saved   saved[]
