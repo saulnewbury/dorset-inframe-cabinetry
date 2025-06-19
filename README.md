@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Dorset Inframe Cabinetry
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This project provides a website for Dorset Inframe Cabinetry (a trading name of Town & Country Joinery) with the aim of promoting a new product range consisting of standard design kitchen units in a range of different finishes.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The site includes an interactive kitchen 'planner' allowing units to be selected and placed within a kitchen room. The outer wall can include doors, windows and even archways. Further walls can also be placed within the kitchen space.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Once the design is complete, a formal estimate can be requested online, upon which a representative of the company will contact the prospective client, to arrange a detailed survey, to validate (or correct) the design and then to provide a formal quotation.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Users may also choose to request a quote for a set of units without arranging them in a kitchen design - for example to add to an existing, installed design.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Architecture
 
-## Learn More
+The website is desigend as a Next.JS client-server application that uses a mix of server-side and client-side rendering to optimise page load times. The server part also supports a number of API routes to store and manage design models.
 
-To learn more about Next.js, take a look at the following resources:
+Data about the various cabinet styles and sizes is **not** held in the database but is hard-coded in JavaScript tables (arrays of objects). Whilst this means that changing the data requires deployment of a new software build, this is expected to be a rare event and the chosen approach results again in faster page load times.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+When the website server components need to send automated emails, they use the Nodemailer package to do so. The way this is configured requires an SMTP 'mail relay' service. This is possibly the most flexible way of sending to any customer mailbox type, but it does require special support to avoid the emails being marked as spam.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+The source code for the project is currently managed within a private Github repository, so developers need to be 'invited' to collaborate.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The project is not yet deployed to a production environment; this section will be updated when that has been done. (There is only a preview instance on Vercel.)
