@@ -9,6 +9,26 @@ import {
   Vector3
 } from 'three'
 
+// Utility function to check if a point is inside the polygon
+function isPointInPolygon(point, polygon) {
+  const x = point.x
+  const y = point.z // Using z as y for 2D polygon test
+
+  let inside = false
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i].x
+    const yi = polygon[i].z
+    const xj = polygon[j].x
+    const yj = polygon[j].z
+
+    const intersect =
+      yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi
+    if (intersect) inside = !inside
+  }
+
+  return inside
+}
+
 export default function FloorLines({
   points,
   handlePan,
@@ -20,26 +40,6 @@ export default function FloorLines({
     () => new Shape(points.map((p) => new Vector2(p.x, p.z))).closePath(),
     [points]
   )
-
-  // Utility function to check if a point is inside the polygon
-  const isPointInPolygon = (point, polygon) => {
-    const x = point.x
-    const y = point.z // Using z as y for 2D polygon test
-
-    let inside = false
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-      const xi = polygon[i].x
-      const yi = polygon[i].z
-      const xj = polygon[j].x
-      const yj = polygon[j].z
-
-      const intersect =
-        yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi
-      if (intersect) inside = !inside
-    }
-
-    return inside
-  }
 
   // Create custom grid lines that match the floor shape
   const GridLines = useMemo(() => {
@@ -200,7 +200,7 @@ export default function FloorLines({
     }
 
     return lines
-  }, [points, isPointInPolygon, showHorizontalLines, showVerticalLines])
+  }, [points, showHorizontalLines, showVerticalLines])
 
   return (
     <group

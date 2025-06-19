@@ -26,7 +26,7 @@ export default function Product(item) {
       const ow = optionsContainer.current.getBoundingClientRect().width
       if (ow > sw) setCanScroll(true)
     }
-  }, [])
+  }, [options])
 
   function addToCart() {
     const { type, variant, style, width } = item

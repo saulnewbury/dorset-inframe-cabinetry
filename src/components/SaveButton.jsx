@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { ModelContext } from '@/model/context'
 import { SessionContext } from '@/context'
 
@@ -19,13 +19,20 @@ export default function SaveButton({ title, setShowLogin = () => {} }) {
 
   const canSave = model.units.length + model.cart.length > 0
 
+  const saveModelCB = useCallback(saveModel, [
+    session,
+    model,
+    dispatch,
+    setShowLogin
+  ])
+
   useEffect(() => {
     if (session && isSave) {
       setIsSave(false)
       setShowLogin(false)
-      saveModel()
+      saveModelCB()
     }
-  }, [session, isSave])
+  }, [session, isSave, saveModelCB, setShowLogin])
 
   return (
     <span className={twMerge('inline-block relative', title && 'w-full')}>

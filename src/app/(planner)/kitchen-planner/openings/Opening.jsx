@@ -28,6 +28,7 @@ import dragHandle from '@/assets/icons/general-handle.svg'
 import { hoverMaterial } from '@/materials'
 
 import ic_delete from '@/assets/icons/trash.svg'
+import Image from 'next/image'
 
 const itemStyles = {
   door: doorStyles,
@@ -49,6 +50,7 @@ export default function Opening(props) {
   const spaceBefore = Math.max(offset - width / 2 - mitre.ts / 2, 0)
   const spaceAfter = Math.max(len - offset - width / 2 - mitre.te / 2, 0)
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const matrix = useMemo(() => new Matrix4(), [showHandle])
 
   useEffect(() => {
@@ -68,7 +70,7 @@ export default function Opening(props) {
         ref={drag}
         autoTransform={false}
         matrix={matrix}
-        axisLock='y'
+        axisLock="y"
         onDragStart={dragStart}
         onDrag={moveOpening}
         onDragEnd={dragEnd}
@@ -90,11 +92,12 @@ export default function Opening(props) {
               </Html>
             )}
             {showHandle && (
-              <Html center className='pointer-events-none'>
+              <Html center className="pointer-events-none">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={dragHandle.src}
-                  alt=''
-                  className='size-6 max-w-none'
+                  alt=""
+                  className="size-6 max-w-none"
                   style={{ translate: '-1px 1px' }}
                 />
               </Html>
@@ -186,9 +189,9 @@ const InfoPanel = forwardRef((props, ref) => {
     <ItemInfo ref={ref}>
       <div className={clsx(style && 'flex gap-5 items-start')}>
         {style && (
-          <img src={style.image.src} alt='' className='w-[150px] border' />
+          <Image src={style.image} alt="" className="w-[150px] border" />
         )}
-        <div className='item-end'>
+        <div className="item-end">
           <p>Item: {type}</p>
           {style && <p>Style: {style.title}</p>}
           {opens ? (
@@ -202,9 +205,9 @@ const InfoPanel = forwardRef((props, ref) => {
         </div>
       </div>
 
-      <p className='text-right'>
+      <p className="text-right">
         <button onClick={deleteItem}>
-          <img src={ic_delete.src} alt='Delete' className='size-6' />
+          <Image src={ic_delete} alt="Delete" className="size-6" />
         </button>
       </p>
     </ItemInfo>

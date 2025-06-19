@@ -71,7 +71,7 @@ export default function MouldingThreeSides({
       uShape.closePath()
 
       return uShape
-    }, [holeWidth, holeHeight, frameInset, mouldingSize])
+    }, [])
 
     return (
       <mesh

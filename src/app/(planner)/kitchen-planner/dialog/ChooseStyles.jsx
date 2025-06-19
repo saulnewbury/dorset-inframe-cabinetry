@@ -1,6 +1,6 @@
 'use client'
 
-import { useContext, useRef, useEffect, useState } from 'react'
+import { useCallback, useContext, useRef, useEffect, useState } from 'react'
 import { ModelContext } from '@/model/context'
 import gsap from 'gsap'
 
@@ -80,10 +80,12 @@ export default function ChooseStyles() {
     }
   }, [refsLoaded, isReady])
 
+  const animationCB = useCallback(animation, [isReady, patternId])
+
   useEffect(() => {
     if (open) return
-    animation('reverse')
-  }, [open])
+    animationCB('reverse')
+  }, [open, animationCB])
 
   // Add click outside handler for color pickers
   useEffect(() => {
@@ -128,7 +130,7 @@ export default function ChooseStyles() {
         ) {
           // Close the slider
           setOpen(false)
-          animation('reverse')
+          animationCB('reverse')
         }
       }
 
@@ -140,7 +142,7 @@ export default function ChooseStyles() {
         document.removeEventListener('mousedown', handleClickOutside)
       }
     }
-  }, [open]) // Re-run when open state changes
+  }, [open, animationCB]) // Re-run when open state changes
 
   // Add elements to ref
   const addToPatternElementsRef = (el) => {

@@ -38,7 +38,7 @@ export default function ProductGrid({ products, category }) {
     }
 
     setFiltered(arr)
-  }, [selected, products])
+  }, [selected, items])
 
   const pathname = usePathname()
 

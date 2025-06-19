@@ -49,13 +49,13 @@ export default function FrameThreeSides({
   }, [
     width,
     height,
-    carcassInnerWidth,
-    holeHeight,
-    holeYOffset,
-    numHoles,
-    dividerThickness,
-    panelThickness,
-    ratios
+    // carcassInnerWidth,
+    // holeHeight,
+    // holeYOffset,
+    // numHoles,
+    // dividerThickness,
+    panelThickness
+    // ratios
   ])
 
   // Use the EXACT same position calculation as the original component

@@ -19,10 +19,11 @@ export default function Page() {
   const ref = useContext(CanvasContext)
 
   useEffect(() => {
-    ref.current?.showCanvas()
+    const t = ref.current
+    t?.showCanvas()
 
     return () => {
-      ref.current?.hideCanvas()
+      t?.hideCanvas()
     }
   }, [ref])
 

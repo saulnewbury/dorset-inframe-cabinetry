@@ -13,12 +13,13 @@ export default function Page() {
   const [model] = useContext(ModelContext)
 
   useEffect(() => {
-    ref.current?.showCanvas()
-    ref.current?.shrinkCanvas()
+    const t = ref.current
+    t?.showCanvas()
+    t?.shrinkCanvas()
 
     return () => {
-      ref.current?.hideCanvas()
-      ref.current?.restoreCanvas()
+      t?.hideCanvas()
+      t?.restoreCanvas()
     }
   }, [ref])
 
@@ -35,6 +36,7 @@ export default function Page() {
             className=" bg-white p-4 border border-lightGrey relative"
           >
             <a href={snapshot} target="_blank" rel="noopener noreferrer">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={snapshot}
                 alt={`Snapshot ${id + 1}`}

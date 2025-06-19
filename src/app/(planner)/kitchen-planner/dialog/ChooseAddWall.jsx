@@ -7,6 +7,7 @@ import DialogInnerContainer from './DialogInnerContainer'
 
 import internalWallImage from '@/lib/images/internal-wall.webp'
 import { Chela_One } from 'next/font/google'
+import Image from 'next/image'
 
 export default function ChooseAddWall({ onClose }) {
   // console.log(internalWallImage)
@@ -30,7 +31,7 @@ export default function ChooseAddWall({ onClose }) {
         </div>
       </form>
       <DialogInnerContainer classes="pt-12 h-[45rem]">
-        <img src={internalWallImage.src} className="h-full" alt="" />
+        <Image src={internalWallImage} className="h-full" alt="" />
       </DialogInnerContainer>
     </div>
   )

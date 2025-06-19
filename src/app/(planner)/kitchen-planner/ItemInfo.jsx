@@ -10,6 +10,7 @@ import {
 import { createRoot } from 'react-dom/client'
 
 import ic_close from '@/assets/icons/close.svg'
+import Image from 'next/image'
 
 let activePopup = null
 
@@ -29,7 +30,7 @@ const ItemInfo = forwardRef(({ children }, ref) => {
       root.current = createRoot(el.current)
       activePopup = ref
     }
-  })
+  }, [ref])
 
   const hide = useCallback(() => {
     if (el.current) {
@@ -38,7 +39,7 @@ const ItemInfo = forwardRef(({ children }, ref) => {
       el.current = null
       activePopup = null
     }
-  })
+  }, [])
 
   useImperativeHandle(ref, () => ({
     show,
@@ -47,14 +48,14 @@ const ItemInfo = forwardRef(({ children }, ref) => {
 
   useEffect(() => {
     return hide
-  }, [])
+  }, [hide])
 
   useLayoutEffect(() => {
     root.current?.render(
-      <div className='absolute top-24 left-[120px] min-w-[380px] p-4 border border-gray-200 rounded-md shadow-sm bg-white z-50'>
-        <div className='text-right'>
+      <div className="absolute top-24 left-[120px] min-w-[380px] p-4 border border-gray-200 rounded-md shadow-sm bg-white z-50">
+        <div className="text-right">
           <button onClick={hide}>
-            <img src={ic_close.src} alt='Close' className='size-4' />
+            <Image src={ic_close} alt="Close" className="size-4" />
           </button>
         </div>
         {children}

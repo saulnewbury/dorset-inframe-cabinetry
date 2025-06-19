@@ -40,7 +40,7 @@ export default function Wall({
       model.openings
         .filter((op) => op.wall === from.id)
         .sort((a, b) => a.offset - b.offset),
-    [model]
+    [model, from]
   )
   const segName = from.segment ? 'segment-' + from.segment : 'wall-'
 
@@ -57,6 +57,7 @@ export default function Wall({
       new Matrix4(),
       { ...from, y: 0 }
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [dragging]
   )
 
@@ -180,36 +181,38 @@ export default function Wall({
           >
             <mesh>
               <boxGeometry args={[wt * 2, 0, wt * 2]} />
-              <meshStandardMaterial color='green' transparent opacity={0} />
+              <meshStandardMaterial color="green" transparent opacity={0} />
             </mesh>
-            <group position-z='-0.08'>
-              <Html center as='div' className='pointer-events-none'>
+            <group position-z="-0.08">
+              <Html center as="div" className="pointer-events-none">
                 <div
-                  className='flex items-center justify-center'
+                  className="flex items-center justify-center"
                   style={{
                     transform: `rotateZ(${angle + 1.5708}rad) translateX(-80%)`
                   }}
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={wallHandleLeft.src}
-                    alt=''
-                    className='scale-125 max-w-none'
+                    alt=""
+                    className="scale-125 max-w-none"
                   />
                 </div>
               </Html>
             </group>
-            <group position-z='0.08'>
-              <Html center as='div' className='pointer-events-none'>
+            <group position-z="0.08">
+              <Html center as="div" className="pointer-events-none">
                 <div
-                  className='flex items-center justify-center'
+                  className="flex items-center justify-center"
                   style={{
                     transform: `rotateZ(${angle + 1.5708}rad) translateX(80%)`
                   }}
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={wallHandleRight.src}
-                    alt=''
-                    className='scale-125 max-w-none'
+                    alt=""
+                    className="scale-125 max-w-none"
                   />
                 </div>
               </Html>

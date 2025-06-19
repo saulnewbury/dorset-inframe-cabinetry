@@ -95,7 +95,7 @@ function Door2D({ len, offset, width, option, style, onClick = () => {} }) {
     const geometry = new BufferGeometry()
     geometry.setFromPoints(vertices)
     return geometry
-  }, [width, opens])
+  }, [width, angle, style, w])
 
   // Doors
   const doorsGeometry = useMemo(() => {
@@ -121,14 +121,14 @@ function Door2D({ len, offset, width, option, style, onClick = () => {} }) {
     const geometry = new BufferGeometry()
     geometry.setFromPoints(vertices)
     return geometry
-  }, [width, opens])
+  }, [width, angle, style, w])
 
   return (
     <group position={[offset - len / 2, wh + 0.1, 0]} rotation-x={-Math.PI / 2}>
       <mesh onClick={onClick}>
         <planeGeometry args={[width - 0.001, wt]} />
-        <meshStandardMaterial color='#999999' />
-        <Edges threshold={15} color='gray' lineWidth={0.5} />
+        <meshStandardMaterial color="#999999" />
+        <Edges threshold={15} color="gray" lineWidth={0.5} />
       </mesh>
       {/* Door(s) */}
       <lineSegments
@@ -202,7 +202,7 @@ function Door3D({ style, len, offset, width, option }) {
               <extrudeGeometry
                 args={[sideLeft, { depth: d, bevelEnabled: false }]}
               />
-              <meshStandardMaterial color='white' />
+              <meshStandardMaterial color="white" />
               <Edges linewidth={1} threshold={15} color={lineColor} />
             </mesh>
           ) : i < 2 ? (

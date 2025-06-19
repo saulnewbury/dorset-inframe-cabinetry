@@ -10,24 +10,25 @@ export default function UnitCard({ id, title, width, onClick }) {
   ]
   return (
     <button
-      type='button'
+      type="button"
       onClick={() => onClick()}
-      className='flex flex-col items-center'
+      className="flex flex-col items-center"
     >
       <div
-        className='w-full aspect-square overflow-hidden'
+        className="w-full aspect-square overflow-hidden"
         onMouseOver={() => setHover(true)}
         onMouseOut={() => setHover(false)}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={isHover ? images[1] : images[0]}
-          alt=''
-          className='w-full h-full  object-center object-cover scale-[1.01]'
+          alt=""
+          className="w-full h-full  object-center object-cover scale-[1.01]"
         />
       </div>
-      <div className='text-center'>
+      <div className="text-center">
         <p>{title}</p>
-        <p className='text-sm'>w: {width}mm</p>
+        <p className="text-sm">w: {width}mm</p>
       </div>
     </button>
   )

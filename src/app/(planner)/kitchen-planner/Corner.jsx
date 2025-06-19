@@ -27,10 +27,12 @@ export default function Corner({
   const [dragging, setDragging] = useState(false)
   const showHandle = hover?.type === 'corner' && hover.id === at.id
   const point = useRef(null)
+  const hasHandle = showHandle || dragging
 
   const [matrix, origin] = useMemo(
     () => [new Matrix4(), { ...at, y: 0 }],
-    [showHandle || dragging]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [hasHandle]
   )
 
   return (
@@ -45,7 +47,7 @@ export default function Corner({
       >
         <circleGeometry args={[wt * 0.8]} />
       </mesh>
-      {(showHandle || dragging) && (
+      {hasHandle && (
         <DragControls
           matrix={matrix}
           autoTransform={false}
@@ -56,13 +58,14 @@ export default function Corner({
           <group position={[at.x, wh + 0.05, at.z]}>
             <mesh rotation-x={Math.PI / -2}>
               <circleGeometry args={[wt]} />
-              <meshStandardMaterial color='#4080bf' transparent opacity={0} />
+              <meshStandardMaterial color="#4080bf" transparent opacity={0} />
             </mesh>
-            <Html center className='pointer-events-none select-none'>
+            <Html center className="pointer-events-none select-none">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={cornerHandle.src}
-                alt=''
-                className='size-[26px] max-w-none'
+                alt=""
+                className="size-[26px] max-w-none"
                 style={{ translate: '-1px 1px' }}
               />
             </Html>

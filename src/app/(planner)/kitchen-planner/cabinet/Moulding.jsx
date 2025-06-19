@@ -168,7 +168,7 @@ export default function Moulding({
       outerShape.holes.push(innerShape)
 
       return outerShape
-    }, [hole, frameInset])
+    }, [hole])
 
     return (
       <mesh

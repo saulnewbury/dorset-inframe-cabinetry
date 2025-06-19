@@ -5,6 +5,7 @@ import { HexColorPicker } from 'react-colorful'
 import { ModelContext } from '@/model/context'
 
 import wtTexture from '@/assets/textures/iStock-1126970577.jpg'
+import Image from 'next/image'
 
 const worktops = [{ id: 'blue-marble', title: 'Blue marble', image: wtTexture }]
 
@@ -54,8 +55,8 @@ function WorktopButton({ id, title, image, selected, onClick }) {
       onClick={() => onClick(id)}
       className="flex flex-col gap-4 items-center"
     >
-      <img
-        src={image.src}
+      <Image
+        src={image}
         alt=""
         className={clsx(
           'h-[200px] p-2 pb-0 border-2 hover:border-cyan-500 rounded-sm bg-stone-100',

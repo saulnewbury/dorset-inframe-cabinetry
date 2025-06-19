@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useAppState } from '@/appState'
@@ -7,7 +7,7 @@ import { useAppState } from '@/appState'
 const CaptureSceneAndCamera = ({ setScene, setCamera }) => {
   const { scene, camera } = useThree()
 
-  React.useEffect(() => {
+  useEffect(() => {
     setScene(scene)
     setCamera(camera)
   }, [scene, camera, setScene, setCamera])
@@ -17,8 +17,8 @@ const CaptureSceneAndCamera = ({ setScene, setCamera }) => {
 
 // Screenshot hook
 export const useScreenshot = (width = 3840, height = 2160) => {
-  const [scene, setScene] = React.useState(null)
-  const [camera, setCamera] = React.useState(null)
+  const [scene, setScene] = useState(null)
+  const [camera, setCamera] = useState(null)
   const { addSnapshot } = useAppState()
 
   const takeScreenshot = useCallback(() => {
@@ -93,7 +93,7 @@ export const useScreenshot = (width = 3840, height = 2160) => {
       // Clean up
       renderer.dispose()
     }
-  }, [scene, camera, width, height])
+  }, [scene, camera, width, height, addSnapshot])
 
   // Create a component that the user can include in their scene
   const SceneCapture = () => (

@@ -47,7 +47,7 @@ const ColorPicker = ({ onClick, selectedColor, initialColor = '#F44E3B' }) => {
     if (selectedColor && selectedColor !== currentColor) {
       setCurrentColor(selectedColor)
     }
-  }, [selectedColor])
+  }, [selectedColor, currentColor])
 
   return (
     <Circle

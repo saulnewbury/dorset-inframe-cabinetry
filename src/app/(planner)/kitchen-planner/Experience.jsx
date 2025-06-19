@@ -1,7 +1,14 @@
 'use client'
 
 // Modules
-import { useState, useRef, useEffect, useContext, useLayoutEffect } from 'react'
+import {
+  useState,
+  useRef,
+  useEffect,
+  useContext,
+  useLayoutEffect,
+  useCallback
+} from 'react'
 import {
   OrbitControls,
   useHelper,
@@ -61,6 +68,28 @@ export default function Experience({ is3D }) {
   // (the outer wall) actually wraps around from end to start.
   const wrap = (a, n, s) => (s ? a[n] : a[(n + a.length) % a.length])
 
+  // Hide walls that are not visible in the current camera view.
+  // This is done by checking the angle of each wall segment relative to the
+  // camera's azimuthal angle.
+  const hideWalls = useCallback(() => {
+    if (is3D) {
+      walls.current.traverse((obj) => {
+        const sceneRotation = radToDeg(
+          orbitControls.current.getAzimuthalAngle()
+        )
+        if (obj.name.startsWith('wall-')) {
+          const wallRotation = radToDeg(-obj.rotation.y)
+          const relativeAngle = (wallRotation + sceneRotation + 360) % 360
+          obj.visible = !(relativeAngle >= 120 && relativeAngle <= 240)
+        }
+      })
+    } else {
+      walls.current.traverse((obj) => {
+        obj.visible = true
+      })
+    }
+  }, [is3D])
+
   // Hide default cursor when hovering or dragging.
   useLayoutEffect(() => {
     document.body.style.cursor =
@@ -70,7 +99,7 @@ export default function Experience({ is3D }) {
   useEffect(() => {
     hideWalls()
     orbitControls.current.reset()
-  }, [is3D])
+  }, [hideWalls])
 
   useEffect(() => {
     if (orbitControls.current) {
@@ -214,24 +243,5 @@ export default function Experience({ is3D }) {
    */
   function dragItem(isActive) {
     setDragging(isActive ? hover : null)
-  }
-
-  function hideWalls() {
-    if (is3D) {
-      walls.current.traverse((obj) => {
-        const sceneRotation = radToDeg(
-          orbitControls.current.getAzimuthalAngle()
-        )
-        if (obj.name.startsWith('wall-')) {
-          const wallRotation = radToDeg(-obj.rotation.y)
-          const relativeAngle = (wallRotation + sceneRotation + 360) % 360
-          obj.visible = !(relativeAngle >= 120 && relativeAngle <= 240)
-        }
-      })
-    } else {
-      walls.current.traverse((obj) => {
-        obj.visible = true
-      })
-    }
   }
 }

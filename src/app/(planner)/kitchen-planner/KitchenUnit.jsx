@@ -23,6 +23,7 @@ import DimensionLine from './DimensionLine'
 
 import ic_delete from '@/assets/icons/trash.svg'
 import { hoverMaterial } from '@/materials'
+import Image from 'next/image'
 
 // Used when a unit is not found in the respective styles list.
 const nullStyle = {
@@ -115,6 +116,7 @@ export default function KitchenUnit({
       new Matrix4(),
       rotation
     ]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dragging])
 
   return (
@@ -491,7 +493,10 @@ const InfoPanel = forwardRef((props, ref) => {
   return (
     <ItemInfo ref={ref}>
       <div className={clsx(style && 'flex gap-5 items-start')}>
-        {style && <img src={image} alt="" className="w-28" />}
+        {
+          // eslint-disable-next-line @next/next/no-img-element
+          style && <img src={image} alt="" className="w-28" />
+        }
         <div>
           <p>
             Item: {type} {props.variant?.toLowerCase()}
@@ -502,7 +507,7 @@ const InfoPanel = forwardRef((props, ref) => {
       </div>
       <p className="text-right">
         <button onClick={deleteItem}>
-          <img src={ic_delete.src} alt="Delete" className="size-4" />
+          <Image src={ic_delete} alt="Delete" className="size-4" />
         </button>
       </p>
     </ItemInfo>
