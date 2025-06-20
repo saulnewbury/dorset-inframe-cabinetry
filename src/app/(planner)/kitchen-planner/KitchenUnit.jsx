@@ -64,6 +64,17 @@ const crossMove = new Shape(
   ].map((p) => new Vector2(p[0], p[1]))
 )
 
+const rotateHandle = new Shape()
+rotateHandle
+  .moveTo(-0.0212, -0.0212)
+  .arc(0.0212, 0.0212, 0.0212, (-Math.PI * 3) / 4, Math.PI / 2, false)
+  .lineTo(0, 0.01)
+  .lineTo(-0.014, 0.0252)
+  .lineTo(0, 0.04)
+  .lineTo(0, 0.0292)
+  .arc(0, -0.0292, 0.0292, Math.PI / 2, (-Math.PI * 3) / 4, true)
+  .closePath()
+
 const vectorY = new Vector3(0, 1, 0)
 
 const doorThickness = 0.018 // metres
@@ -163,14 +174,14 @@ export default function KitchenUnit({
       </group>
       {(showHandle || dragging) && (
         <>
-          <mesh
+          {/* <mesh
             position={[pos.x, size.y + 0.08, pos.z]}
             rotation-x={Math.PI / -2}
             rotation-z={rotation}
           >
             <planeGeometry args={[size.x + widthOffset, size.z]} />
             <meshStandardMaterial color="#20ff20" />
-          </mesh>
+          </mesh> */}
           <DragControls
             matrix={matrix}
             autoTransform={false}
@@ -204,16 +215,21 @@ export default function KitchenUnit({
             onDragEnd={endDrag}
           >
             <group
-              position={[
-                handle.x + centreOffsetX,
-                size.y + 0.1,
-                handle.z + centreOffsetZ
-              ]}
+              position={[handle.x, size.y + 0.1, handle.z]}
               rotation-y={ry}
             >
               <mesh rotation-x={Math.PI / -2} position-x={0.2}>
-                <circleGeometry args={[0.03]} />
+                <circleGeometry args={[0.05]} />
                 <meshStandardMaterial color="#004088" />
+              </mesh>
+              <mesh
+                rotation-x={Math.PI / -2}
+                rotation-z={rotation}
+                position-x={0.2}
+                position-y={0.001}
+              >
+                <shapeGeometry args={[rotateHandle]} />
+                <meshStandardMaterial color="#ffffff" />
               </mesh>
             </group>
           </DragControls>
