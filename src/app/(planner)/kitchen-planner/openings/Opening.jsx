@@ -115,7 +115,7 @@ export default function Opening(props) {
    * item, with option to delete.
    */
   function showInfo(ev) {
-    if (ev.delta < 2) info.current.show()
+    if (ev.delta < 2 && showHandle) info.current.show()
   }
 
   /**
