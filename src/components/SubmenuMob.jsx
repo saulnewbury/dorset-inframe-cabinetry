@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import '../nav.css'
+import '@/app/nav.css'
 
 // let temp
 export default function SubmenuMob({ items = '#', isOpen, hideMenu }) {
@@ -26,7 +26,7 @@ export default function SubmenuMob({ items = '#', isOpen, hideMenu }) {
                   } flex relative text-black px-[37px] `}
                 >
                   <Link
-                    className='w-full'
+                    className="w-full"
                     key={i}
                     href={sub.url}
                     onClick={() => {
@@ -47,7 +47,7 @@ export default function SubmenuMob({ items = '#', isOpen, hideMenu }) {
               } flex relative text-black px-[37px] `}
             >
               <Link
-                className='w-full'
+                className="w-full"
                 key={i}
                 href={item.url}
                 onClick={() => {

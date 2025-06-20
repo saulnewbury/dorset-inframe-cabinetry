@@ -6,22 +6,22 @@ import { createPortal } from 'react-dom'
 import { usePathname } from 'next/navigation'
 
 // Style sheet
-import '../nav.css'
+import '@/app/nav.css'
 
 // Components
-import SvgIcon from '@/components/SvgIcon'
-import MenuButton from '../../components/MenuButton'
-import SubmenuMob from '../../components/SubmenuMob'
+import MenuButton from '@/components/MenuButton'
+import SubmenuMob from '@/components/SubmenuMob'
 import Cart from '@/components/Cart'
+import SaveButton from '@/components/SaveButton'
 
 // Static content
-import { menuMob } from '@/lib/data/menu'
-import { menu } from '@/lib/data/menu'
+import { plannerMenu as menu } from '@/lib/data/menu'
 
 export default function NavMobile() {
   const [portal, setPortal] = useState(false)
   const [isVisible, setIsVisible] = useState(false) // Entire menu
   const [isOpen, setIsOpen] = useState(false) // Submenu
+  const [showLogin, setShowLogin] = useState(false)
 
   const pathname = usePathname()
 
@@ -51,6 +51,7 @@ export default function NavMobile() {
       </div>
 
       <div className="h-full flex items-center gap-x-5">
+        <SaveButton setShowLogin={setShowLogin} />
         <Cart />
 
         {/* <div className='mr-[20px] md:mr-[36px] inline-block cursor-pointer'>
@@ -82,7 +83,7 @@ export default function NavMobile() {
                         className={`link cursor-pointer flex items-center relative border-b border-lightGrey h-full py-[10px]`}
                         href={item.url}
                         onClick={() => {
-                          const str = pathname.split('/').slice(-1)[0]
+                          const str = pathname.split('/').at(-1)
                           if (item.url.endsWith('/' + str)) setIsVisible(false)
                         }}
                       >
