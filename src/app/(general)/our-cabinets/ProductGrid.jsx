@@ -81,7 +81,7 @@ export default function ProductGrid({ products, category }) {
                 const href = pathname + '/' + item.id
                 return (
                   <div key={item.id} className="flex flex-col">
-                    <Link href={href} className="relative aspect-[3/4]">
+                    <Link href={href} className="relative aspect-[1/1]">
                       {getImages(item).map((image, i) => {
                         if (i > 1) return
                         return i % 2 === 0 ? (
@@ -93,6 +93,7 @@ export default function ProductGrid({ products, category }) {
                             src={image.src}
                             className="object-cover"
                             alt={image.alt}
+                            style={{ clipPath: 'inset(2px)' }}
                           />
                         ) : (
                           <Image
@@ -110,6 +111,7 @@ export default function ProductGrid({ products, category }) {
                             }}
                             onMouseOut={() => setHover(false)}
                             alt={image.alt}
+                            style={{ clipPath: 'inset(2px)' }}
                           />
                         )
                       })}

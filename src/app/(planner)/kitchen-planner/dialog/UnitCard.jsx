@@ -23,7 +23,8 @@ export default function UnitCard({ id, title, width, onClick }) {
         <img
           src={isHover ? images[1] : images[0]}
           alt=""
-          className="w-full h-full  object-center object-cover scale-[1.01]"
+          className="w-full h-full  object-center object-cover"
+          style={{ clipPath: 'inset(2px)' }}
         />
       </div>
       <div className="text-center">
