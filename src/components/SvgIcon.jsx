@@ -14,7 +14,7 @@ import yourItems from '@/lib/icons/your-items.svg'
 import colors from '@/lib/icons/colors.svg'
 
 import close from '@/lib/icons/close.svg'
-import save from '@/lib/icons/save-svgrepo-com.svg'
+import save from '@/lib/icons/save.svg'
 import trash from '@/lib/icons/trash.svg'
 
 import square from '@/lib/icons/square-fplan.svg'
