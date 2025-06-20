@@ -28,6 +28,17 @@ const ItemInfo = forwardRef(({ children }, ref) => {
       el.current = document.createElement('div')
       document.body.appendChild(el.current)
       root.current = createRoot(el.current)
+      root.current?.render(
+        <div className="absolute top-24 left-[120px] min-w-[380px] p-4 border border-gray-200 rounded-md shadow-sm bg-white z-50">
+          <div className="text-right">
+            <button onClick={hide}>
+              <Image src={ic_close} alt="Close" className="size-4" />
+            </button>
+          </div>
+          {children}
+        </div>
+      )
+
       activePopup = ref
     }
   }, [ref])
@@ -49,19 +60,6 @@ const ItemInfo = forwardRef(({ children }, ref) => {
   useEffect(() => {
     return hide
   }, [hide])
-
-  useLayoutEffect(() => {
-    root.current?.render(
-      <div className="absolute top-24 left-[120px] min-w-[380px] p-4 border border-gray-200 rounded-md shadow-sm bg-white z-50">
-        <div className="text-right">
-          <button onClick={hide}>
-            <Image src={ic_close} alt="Close" className="size-4" />
-          </button>
-        </div>
-        {children}
-      </div>
-    )
-  })
 
   return null // nothing added to RTF model
 })
