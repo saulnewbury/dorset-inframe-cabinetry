@@ -23,7 +23,7 @@ export default function NavConfigurator() {
 
   return (
     <>
-      <nav className="z-40 hidden bg-white fixed w-[100vw] px-[37px] h-[4.5rem] lg:grid grid-cols-[1fr_3fr_1fr] font-medium text-[14px] border-b border-lightGrey border-solid">
+      <nav className="z-40 hidden bg-white fixed w-[100vw] px-[37px] h-[4.5rem] lg:flex justify-between font-medium text-[14px] border-b border-lightGrey border-solid">
         <div className="h-full relative z-[500] flex items-center">
           <Link href="/" onClick={confirmNavigation}>
             <span className="font-medium cursor-pointer">
