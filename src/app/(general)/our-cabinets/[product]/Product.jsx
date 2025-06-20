@@ -12,7 +12,8 @@ import { Select } from '@headlessui/react'
 import { ModelContext } from '@/model/context'
 
 export default function Product(item) {
-  const { name, desc, price, sizes, options } = item
+  const { name, desc, price, sizes } = item
+  const options = []
   const [finish, setFinish] = useState(new Map())
   const [canScroll, setCanScroll] = useState(null)
   const [, dispatch] = useContext(ModelContext)
@@ -21,7 +22,7 @@ export default function Product(item) {
   const shoot = useRef()
 
   useEffect(() => {
-    if (options) {
+    if (options.length) {
       const sw = shoot.current.getBoundingClientRect().width
       const ow = optionsContainer.current.getBoundingClientRect().width
       if (ow > sw) setCanScroll(true)
@@ -66,7 +67,7 @@ export default function Product(item) {
       <div className="indent flex md:flex-row flex-col">
         {/* Images */}
         <div className="w-full sm:w-[80%] md:w-[50%] lg:w-[35%] h-[max-content] md:sticky top-[180px]">
-          <div className="relative aspect-[3/4] w-full h-[max-content] bg-red-300">
+          <div className="relative aspect-[1/1] w-full h-[max-content] bg-red-300">
             <Image
               priority
               fill
@@ -74,6 +75,7 @@ export default function Product(item) {
               src={images[0].src}
               className="object-cover"
               alt={images[0].alt}
+              style={{ clipPath: 'inset(2px)' }}
             />
             <Image
               priority
@@ -82,6 +84,7 @@ export default function Product(item) {
               src={images[1].src}
               className="object-cover opacity-0 hover:opacity-100"
               alt={images[1].alt}
+              style={{ clipPath: 'inset(2px)' }}
             />
           </div>
         </div>
