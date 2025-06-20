@@ -1,5 +1,5 @@
 import { DragControls, Html } from '@react-three/drei'
-import { useContext, useMemo, useRef, useState } from 'react'
+import { forwardRef, useContext, useMemo, useRef, useState } from 'react'
 import { Matrix4, Shape, Vector3 } from 'three'
 
 import { AppContext } from '@/context'
@@ -9,6 +9,10 @@ import { wt, wh } from '@/const'
 
 import DimensionLine from './DimensionLine'
 import Opening from './openings/Opening'
+import ItemInfo from './ItemInfo'
+
+import ic_delete from '@/assets/icons/trash.svg'
+import Image from 'next/image'
 
 import { hoverMaterial } from '@/materials'
 
@@ -35,6 +39,9 @@ export default function Wall({
   const [dragging, setDragging] = useState(false)
   const [pointerPosition, setPosition] = useState(null)
   const point = useRef(null)
+  const info = useRef()
+  const clickTimer = useRef(0)
+
   const openings = useMemo(
     () =>
       model.openings
@@ -127,6 +134,7 @@ export default function Wall({
           onPointerOut={(ev) => onHover(ev, false)}
           onPointerMove={trackMousePosition}
           onDoubleClick={insertPoint}
+          onClick={showInfo}
         >
           <planeGeometry args={[len, wt * 2]} />
         </mesh>
@@ -220,6 +228,11 @@ export default function Wall({
           </group>
         </DragControls>
       )}
+      <InfoPanel
+        ref={info}
+        id={from.segment}
+        len={model.walls[from.segment].length - 1}
+      />
     </>
   )
 
@@ -273,7 +286,7 @@ export default function Wall({
   }
 
   /**
-   * Callback for a 'click' event on the wall. Inserts a new vertex at the
+   * Callback for a 'double click' event on the wall. Inserts a new vertex at the
    * indicated position.
    */
   function insertPoint(ev) {
@@ -281,6 +294,24 @@ export default function Wall({
     const [x, , z] = pointerPosition
     dispatch({ id: 'addPoint', from, at: { x, z } })
     onHover(null, 'force')
+  }
+
+  /**
+   * Event handler for single click on the wall segment. Shows the info panel but
+   * only if the click isn't a double click.
+   */
+  function showInfo(ev) {
+    if (clickTimer.current) {
+      // Second click cancels the timer
+      window.clearTimeout(clickTimer.current)
+      clickTimer.current = 0
+      return
+    }
+    if (ev.delta > 0 || !from.segment || !showHandle) return
+    clickTimer.current = window.setTimeout(() => {
+      clickTimer.current = 0
+      info.current.show()
+    }, 200)
   }
 
   function resizeWall(len) {
@@ -291,3 +322,37 @@ export default function Wall({
     })
   }
 }
+
+/**
+ * Component to display details of the current wall segment.
+ */
+const InfoPanel = forwardRef((props, ref) => {
+  const [, dispatch] = useContext(ModelContext)
+
+  return (
+    <ItemInfo ref={ref}>
+      <div className={'flex gap-5 items-start'}>
+        <div>
+          <h3 className="text-lg font-semibold">Wall Segment {props.id}</h3>
+          <p className="text-sm text-gray-600">
+            Interior wall with {props.len} segment{props.len === 1 ? '' : 's'}.
+          </p>
+        </div>
+      </div>
+
+      <p className="text-right">
+        <button onClick={deleteItem}>
+          <Image src={ic_delete} alt="Delete" className="size-6" />
+        </button>
+      </p>
+    </ItemInfo>
+  )
+  /**
+   * Callback to delete an opening when the trash icon is clicked.
+   */
+  function deleteItem() {
+    dispatch({ id: 'removeSegment', segment: props.id })
+  }
+})
+
+InfoPanel.displayName = 'InfoPanel'

@@ -30,6 +30,7 @@ const actions = {
   moveWall,
   resizeWall,
   addPoint,
+  removeSegment,
   addOpening,
   moveOpening,
   deleteOpening,
@@ -151,10 +152,15 @@ function addSegment(state, { wall }) {
   const mid = { x: (from.x + to.x) / 2, z: (from.z + to.z) / 2 }
 
   const ns = state.walls.length
-  const start = { ...mid, id: nextId++, segment: ns }
+  const start = {
+    x: mid.x + (wt / 2) * Math.cos(angle),
+    z: mid.z + (wt / 2) * Math.sin(angle),
+    id: nextId++,
+    segment: ns
+  }
   const end = {
-    x: mid.x + Math.cos(angle),
-    z: mid.z + Math.sin(angle),
+    x: mid.x + (1 + wt / 2) * Math.cos(angle),
+    z: mid.z + (1 + wt / 2) * Math.sin(angle),
     id: nextId,
     segment: ns
   }
@@ -344,6 +350,22 @@ function addPoint(state, { from, at }) {
     ...state,
     walls: state.walls.toSpliced(s, 1, segment),
     openings,
+    dateSaved: null
+  }
+}
+
+/**
+ * Removes an interior wall.
+ */
+function removeSegment(state, { segment: s }) {
+  if (s <= 0) return state // Cannot remove outer wall
+  return {
+    ...state,
+    walls: state.walls
+      .toSpliced(s, 1)
+      .map((w) =>
+        w[0].segment > s ? w.map((p) => ({ ...p, segment: p.segment - 1 })) : w
+      ),
     dateSaved: null
   }
 }
