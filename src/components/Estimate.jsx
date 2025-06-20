@@ -6,7 +6,6 @@ import {
   tallUnitStyles
 } from '@/model/itemStyles'
 import SvgIcon from './SvgIcon'
-import Button from './Button'
 import SaveButton from './SaveButton'
 import LoginDialog from './LoginDialog'
 
@@ -23,14 +22,14 @@ export default function Estimate({
     (model?.cart.reduce((acc, unit) => acc + getPrice(unit), 0) ?? 0)
 
   return isFloating ? (
-    <div className="fixed top-[95px] right-[20px] z-40 bg-white">
+    <div className="fixed top-[95px] right-[20px] z-40 bg-white text-right">
       <p className="text-xs">Estimate:</p>
-      <p className="font-bold">£{total.toFixed(2)}</p>
+      <p className="text-2xl leading-6 font-medium">£{total.toFixed(2)}</p>
     </div>
   ) : (
-    <div className="w-[240px] max-w-[25vw] [&>p]:my-3 bg-lightGrey border border-1 border-darkBlue p-4">
+    <div className="w-[240px] max-w-[25vw] [&>p]:my-3 bg-lightGrey p-4">
       <p>Your estimate:</p>
-      <p className="font-bold text-lg">£{total.toFixed(2)}</p>
+      <p className="font-medium text-2xl">£{total.toFixed(2)}</p>
       <p>
         <button
           className="underline text-sm"
