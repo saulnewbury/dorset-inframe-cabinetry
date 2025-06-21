@@ -86,11 +86,12 @@ export default function SaveButton({ title, setShowLogin = () => {} }) {
         // If already saved and not changed since, just continue.
         setResult({})
       } else {
+        const { cart, ...rest } = model
         const res = await fetch('/api/model/save', {
           method: 'POST',
           body: JSON.stringify({
             sessionId: session.sessionId,
-            modelData: model
+            modelData: rest
           }),
           headers: {
             'Content-Type': 'application/json'
