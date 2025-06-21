@@ -11,8 +11,7 @@ import LoginDialog from './LoginDialog'
 
 export default function Estimate({
   isFloating = true,
-  onShowSummary = () => {},
-  onSubmitted = () => {}
+  onShowSummary = () => {}
 }) {
   const [showLogin, setShowLogin] = useState(false)
   const [model] = useContext(ModelContext)
@@ -38,12 +37,12 @@ export default function Estimate({
           Summary
         </button>
       </p>
-      <p className="py-3">
+      {/* <p className="py-3">
         <button onClick={() => onShowSummary(true)}>
           <SvgIcon shape="printer" />
         </button>
-      </p>
-      <p>
+      </p> */}
+      <p className="!mt-6">
         <SaveButton title="Proceed" setShowLogin={setShowLogin} />
       </p>
 

@@ -140,55 +140,6 @@ export async function POST(request) {
       })
     }
 
-    // Add details of shopping cart items.
-    if (model.cart.length > 0) {
-      document.addPage()
-      document.fontSize(16).text('Shopping Cart')
-      document.moveDown()
-      document.fontSize(12)
-      const cartDetail = new Map()
-      model.cart.forEach((item) => {
-        const key =
-          item.type === 'appliance'
-            ? `${item.type}-${item.code}`
-            : `${item.type}-${item.variant}-${item.style}-${
-                item.width
-              }-${JSON.stringify(item.finish)}`
-        if (!cartDetail.has(key)) {
-          cartDetail.set(key, { count: 0, item })
-        }
-        cartDetail.get(key).count += 1
-      })
-      const totalPrice = model.cart.reduce(
-        (total, item) => total + getUnitPrice(item),
-        0
-      )
-      document.table({
-        rowStyles: (i) => {
-          return i < 1 || i >= cartDetail.size
-            ? { border: [0, 0, 1, 0], borderColor: 'black' }
-            : { border: [0, 0, 0.5, 0], borderColor: '#aaa' }
-        },
-        columnStyles: [
-          '*',
-          { width: 100, align: { x: 'center' } },
-          { width: 30, align: { x: 'center' } },
-          { width: 50, align: { x: 'right' } },
-          { width: 70, align: { x: 'right' } }
-        ],
-        data: [['Name', 'Size (WxD)', 'Qty', 'Unit', 'Price']].concat(
-          [...cartDetail.values()].map(({ count, item }) =>
-            getUnitInfo(item, count)
-          ),
-          [
-            [
-              { colSpan: 4, text: 'Total', align: { x: 'right' } },
-              `£${totalPrice.toFixed(2)}`
-            ]
-          ]
-        )
-      })
-    }
     document.end()
   }
 }

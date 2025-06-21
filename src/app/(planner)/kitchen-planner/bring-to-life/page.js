@@ -6,11 +6,17 @@ import { useAppState } from '@/appState'
 
 import Estimate from '@/components/Estimate'
 import SvgIcon from '@/components/SvgIcon'
+import SummaryModal from './SummaryModal'
 
 export default function Page() {
   const ref = useContext(CanvasContext)
   const { snapshots, removeSnapshot } = useAppState()
   const [model] = useContext(ModelContext)
+  const [report, setReport] = useState(null)
+
+  useEffect(() => {
+    if (report) return () => URL.revokeObjectURL(report)
+  }, [report])
 
   useEffect(() => {
     const t = ref.current
@@ -55,14 +61,11 @@ export default function Page() {
           </div>
         ))}
       </div>
+      {report && <SummaryModal pdfReport={report} onClose={disposeReport} />}
     </div>
   )
 
   async function createAndShowPDF(isPrint) {
-    const frame = window.open('', '_blank')
-    frame.document.title = 'Order Summary (PDF)'
-    frame.document.body.innerHTML = `<h1>Order Summary</h1><p>Your PDF is being generated...</p>`
-
     // Get all snapshots as blobs
     const formData = new FormData()
     for (const snapshot of snapshots) {
@@ -85,22 +88,18 @@ export default function Page() {
         throw new Error('Network error: ' + response.statusText)
       }
       const body = await response.blob()
-      const f = new File([body], 'order-summary.pdf', {
-        type: body.type
-      })
-      const url = URL.createObjectURL(f)
-      frame.location.href = url
-      setTimeout(() => {
-        frame.document.title = 'Order Summary (PDF)'
-        URL.revokeObjectURL(url)
-        if (isPrint) {
-          frame.print()
-        }
-      }, 50)
+      const url = URL.createObjectURL(body) + '#toolbar=0'
+      setReport(url)
     } catch (error) {
       console.error('Error creating PDF:', error)
       alert('Failed to create PDF. Please try again later.')
-      frame.close()
+    }
+  }
+
+  function disposeReport() {
+    if (report) {
+      URL.revokeObjectURL(report)
+      setReport(null)
     }
   }
 }
