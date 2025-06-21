@@ -37,7 +37,8 @@ const actions = {
   addUnit,
   moveUnit,
   deleteUnit,
-  addToCart
+  addToCart,
+  resetCart
 }
 
 export function updateModel(state, action) {
@@ -477,7 +478,16 @@ function addToCart(state, { unit, finish }) {
   })
   return {
     ...state,
-    cart,
-    dateSaved: null
+    cart
+  }
+}
+
+/**
+ * Resets the cart to an empty state.
+ */
+function resetCart(state) {
+  return {
+    ...state,
+    cart: []
   }
 }

@@ -1,18 +1,21 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { ModelContext } from '@/model/context'
+
 import SvgIcon from '@/components/SvgIcon'
 import List from '@/components/List'
 
-export default function Cart() {
+export default function Cart({ isCart = false }) {
   const [showList, setShowList] = useState(false)
   const [model] = useContext(ModelContext)
-  const items = model ? model.units.length + model.cart.length : 0
+  const items = (isCart ? model?.cart.length : model?.units.length) ?? 0
+  const router = useRouter()
 
   return (
     <div>
       <button
         className="inline-block relative"
-        onClick={() => setShowList(true)}
+        onClick={() => (isCart ? router.push('/view-cart') : setShowList(true))}
         title="View cart"
       >
         <SvgIcon shape="list" />
