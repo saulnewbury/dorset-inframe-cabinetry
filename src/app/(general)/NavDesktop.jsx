@@ -10,11 +10,8 @@ import UserStatus from '@/components/UserStatus'
 import { menu } from '@/lib/data/menu'
 
 import '../nav.css'
-import SaveButton from '@/components/SaveButton'
 
 export default function NavDesktop({ showCart = true }) {
-  const [showLogin, setShowLogin] = useState(false)
-
   return (
     <>
       <nav className="z-40 hidden lg:flex bg-white fixed w-[100vw] px-[37px] h-[4.5rem] justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid">
@@ -32,9 +29,8 @@ export default function NavDesktop({ showCart = true }) {
         <MenuDesktop menu={menu} />
 
         <div className="flex items-center justify-self-end h-full gap-x-[30px]">
-          <SaveButton setShowLogin={setShowLogin} />
-          {showCart && <Cart />}
-          <UserStatus showLogin={showLogin} />
+          {showCart && <Cart isCart={true} />}
+          <UserStatus />
         </div>
       </nav>
 
