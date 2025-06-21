@@ -2,11 +2,10 @@ import { useAppState } from '@/appState'
 import { Edges } from '@react-three/drei'
 
 import { wh, wt } from '@/const'
-
-import { wallColor } from './cabinet/colors'
+import { ModelContext } from '@/model/context'
 
 // Reusable materials
-import { wallMaterial, archMaterial } from '@/materials'
+import { useContext } from 'react'
 
 /**
  * General component to display an arch. Checks 2D/3D state to determine which
@@ -35,6 +34,9 @@ function Arch2D({ len, offset, width, onClick = () => {} }) {
  * but leaves the rest of the space empty.
  */
 function Arch3D({ len, offset, width }) {
+  const [model] = useContext(ModelContext)
+  const wallColor = model.wall || '#BFBFBF'
+
   return (
     <group position={[offset - len / 2, 0, 0]}>
       {/* Lintel */}
