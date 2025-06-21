@@ -92,9 +92,9 @@ export default function Opening(props) {
                 <p>{position.toFixed(2)}</p>
               </Html>
             )}
-            {showHandle && (
+            {/* {showHandle && (
               <Html center className="pointer-events-none">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={dragHandle.src}
                   alt=""
@@ -102,7 +102,7 @@ export default function Opening(props) {
                   style={{ translate: '-1px 1px' }}
                 />
               </Html>
-            )}
+            )} */}
           </group>
         </>
       </DragControls>

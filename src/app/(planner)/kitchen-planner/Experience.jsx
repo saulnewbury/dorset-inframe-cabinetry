@@ -90,10 +90,18 @@ export default function Experience({ is3D }) {
     }
   }, [is3D])
 
-  // Hide default cursor when hovering or dragging.
+  // Select appropriate cursor when hovering or dragging.
   useLayoutEffect(() => {
-    document.body.style.cursor =
-      (dragging ?? hover) && hover?.type !== 'unit' ? 'none' : 'auto'
+    console.log('Hover', hover?.type)
+    let cursorType =
+      {
+        unit: 'auto',
+        door: 'grab',
+        window: 'grab',
+        arch: 'grab'
+      }[hover?.type] || 'none'
+    if (dragging && cursorType === 'grab') cursorType = 'grabbing'
+    document.body.style.cursor = dragging || hover ? cursorType : 'auto'
   }, [dragging, hover])
 
   useEffect(() => {
