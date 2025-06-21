@@ -19,15 +19,13 @@ export default forwardRef(function KitchenPlanner(props, ref) {
   const { is3D, set3D } = useAppState()
   const [show, setShow] = useState(false)
   const [shrink, setCanvasShrink] = useState(false)
-  const [refreshed, setRefreshed] = useState(false)
 
   const container = useRef()
   const overlay = useRef()
 
   // fade in animation for canvas when switching perspective
-  useGSAP(() => {
-    if (!refreshed) {
-      // Using an overlay to hide a glitchy flash
+  useGSAP(
+    () => {
       gsap.fromTo(
         overlay.current,
         { opacity: 1 },
@@ -38,14 +36,14 @@ export default forwardRef(function KitchenPlanner(props, ref) {
         duration: 0.8,
         delay: 1.8
       })
-      setRefreshed(true)
-    }
-    gsap.fromTo(
-      container.current,
-      { opacity: 0 },
-      { opacity: 1, duration: 0.4, delay: 0.3 }
-    )
-  }, [is3D, shrink])
+      gsap.fromTo(
+        container.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.4, delay: 0.3 }
+      )
+    },
+    { dependencies: [is3D, shrink], revertOnUpdate: true }
+  )
 
   // show only on relevant pages
   useImperativeHandle(
@@ -53,19 +51,16 @@ export default forwardRef(function KitchenPlanner(props, ref) {
     () => {
       return {
         showCanvas: () => {
-          setRefreshed(false)
           setShow(true)
         },
         hideCanvas: () => {
           setShow(false)
         },
         shrinkCanvas: () => {
-          setRefreshed(false)
           setCanvasShrink(true)
           setShow(true)
         },
         restoreCanvas: () => {
-          setRefreshed(false)
           setCanvasShrink(false)
           setShow(true)
         }
