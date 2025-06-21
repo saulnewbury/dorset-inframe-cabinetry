@@ -84,15 +84,9 @@ export async function POST(request) {
     const transport = nodemailer.createTransport(smtpConfig)
     await transport.sendMail(mailOptions)
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    })
+    return Response.json({ success: true })
   } catch (error) {
     console.error('Error processing contact form:', error)
-    return new Response(
-      JSON.stringify({ error: error.message || 'Internal server error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    )
+    return Response.json({ error: error.message || 'Internal server error' })
   }
 }
