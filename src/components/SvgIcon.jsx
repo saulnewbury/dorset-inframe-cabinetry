@@ -35,8 +35,9 @@ import cornerHandle from '@/lib/icons/corner-handle.svg'
 import cornerHandleCircle from '@/lib/icons/corner-handle-circle.svg'
 
 import pen from '@/lib/icons/pen.svg'
-import person from '@/lib/icons/account-avatar-man-svgrepo-com.svg'
+import person from '@/lib/icons/user-circle.svg'
 import printer from '@/lib/icons/printer.svg'
+import cart from '@/lib/icons/shopping-cart.svg'
 
 import icon2d from '@/lib/icons/2d-icon.svg'
 import icon3d from '@/lib/icons/3d-icon.svg'
@@ -48,6 +49,7 @@ const icons = [
   { icon: list, shape: 'list' },
   { icon: login, shape: 'login' },
   { icon: shape, shape: 'shape' },
+  { icon: cart, shape: 'cart' },
   // Side panel
   { icon: features, shape: 'features' },
   { icon: openings, shape: 'openings' },

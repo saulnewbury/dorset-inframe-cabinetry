@@ -18,7 +18,7 @@ export default function Cart({ isCart = false }) {
         onClick={() => (isCart ? router.push('/view-cart') : setShowList(true))}
         title="View cart"
       >
-        <SvgIcon shape="list" />
+        <SvgIcon shape={isCart ? 'cart' : 'list'} />
         <div className="w-[0.9rem] h-[0.9rem] bg-[black] rounded-full absolute bottom-[4px] -right-[7px] flex justify-center items-center">
           <span className="text-[#ffffff] text-[0.5rem] font-bold">
             {items}
