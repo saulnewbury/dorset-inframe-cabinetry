@@ -66,6 +66,7 @@ export default function Opening(props) {
     <Content {...props} />
   ) : (
     <>
+      <Content {...props} offset={position} onClick={showInfo} />
       <DragControls
         ref={drag}
         autoTransform={false}
@@ -103,7 +104,6 @@ export default function Opening(props) {
               </Html>
             )}
           </group>
-          <Content {...props} onClick={showInfo} />
         </>
       </DragControls>
       <InfoPanel ref={info} {...props} />
