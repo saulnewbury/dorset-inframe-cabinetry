@@ -24,6 +24,7 @@ const actions = {
   loadState,
   loadModel,
   setModel, // replaces the current model with a saved one
+  resetModel,
   setScheme, // color of cabinets worktop and wall
   addSegment,
   moveCorner,
@@ -90,12 +91,13 @@ function loadModel(state, { shape }) {
   const walls = [
     floorPlans[shape].map((pt, n) => ({ ...pt, id: n, segment: 0 }))
   ]
-  const { worktop, color } = state
+  const { worktop, color, floor } = state
   return {
     ...initialState,
     walls,
     worktop,
-    color
+    color,
+    floor
   }
 }
 
@@ -112,6 +114,18 @@ function setModel(state, { model }) {
     newState.floor = initialState.floor
   }
   return newState
+}
+
+/**
+ * Resets the model to an empty state, with no walls, units or openings.
+ */
+function resetModel(state) {
+  const { walls, units, openings, divider, ...rest } = state
+  return {
+    ...initialState,
+    walls: [floorPlans.square.map((pt, n) => ({ ...pt, id: n, segment: 0 }))],
+    ...rest
+  }
 }
 
 /**

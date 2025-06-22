@@ -59,6 +59,7 @@ export default function ConfigureYourKitchen({ classes = '' }) {
               <Button
                 href={'/kitchen-planner/define-your-space'}
                 replace={true}
+                onClick={resetModel}
               >
                 Start from scratch
               </Button>
@@ -100,6 +101,21 @@ export default function ConfigureYourKitchen({ classes = '' }) {
       model: JSON.parse(data.model.modelData)
     })
     router.replace('/kitchen-planner/make-it-yours')
+  }
+
+  function resetModel(ev) {
+    const hasModel =
+      model && (model.units.length > 0 || model.openings.length > 0)
+    if (
+      hasModel &&
+      !window.confirm(
+        'Really start from scratch? Your current design will be lost.'
+      )
+    ) {
+      ev.preventDefault()
+      return
+    }
+    dispatch({ id: 'resetModel' })
   }
 }
 

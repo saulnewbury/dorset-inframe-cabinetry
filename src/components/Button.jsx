@@ -8,7 +8,7 @@ export default function Button({
   primary,
   disabled = false,
   replace = false,
-  onClick = () => {}
+  onClick
 }) {
   return href ? (
     <Link
@@ -22,6 +22,7 @@ export default function Button({
       )}
       href={href}
       replace={replace}
+      onClick={onClick}
     >
       {children}
     </Link>
