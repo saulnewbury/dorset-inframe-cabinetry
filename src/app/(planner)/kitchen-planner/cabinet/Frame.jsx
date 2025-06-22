@@ -149,7 +149,7 @@ export default function Frame({
   }
 
   const offset =
-    openingOrientation === 'left'
+    openingOrientation === 'right'
       ? fullInnerWidth / 2 - carcassInnerWidth / 2
       : -fullInnerWidth / 2 + carcassInnerWidth / 2
 

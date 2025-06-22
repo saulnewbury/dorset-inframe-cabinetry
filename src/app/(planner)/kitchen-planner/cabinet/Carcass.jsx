@@ -127,7 +127,7 @@ export default function Carcass({
           position-z={0.009}
           position-y={carcassHeight - 0.5}
           position-x={
-            corner.orientation === 'left' ? corner.offset : -corner.offset
+            corner.orientation === 'right' ? corner.offset : -corner.offset
           }
         >
           <boxGeometry

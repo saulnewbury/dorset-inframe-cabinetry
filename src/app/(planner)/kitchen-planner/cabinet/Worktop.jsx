@@ -82,7 +82,7 @@ export default function Worktop({
           <mesh
             receiveShadow
             position={[
-              corner.orientation === 'left' ? corner.offset : -corner.offset,
+              corner.orientation === 'right' ? corner.offset : -corner.offset,
               height + 0.02,
               overhang / 2
             ]}

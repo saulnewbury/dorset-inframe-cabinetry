@@ -111,7 +111,7 @@ export default function KitchenUnit({
     depth / 1000 + doorThickness
   )
   const centreOffsetX = style?.includes('corner')
-    ? style?.includes('left')
+    ? style?.includes('right')
       ? -0.1565
       : +0.1565
     : 0
@@ -174,14 +174,6 @@ export default function KitchenUnit({
       </group>
       {(showHandle || dragging) && (
         <>
-          {/* <mesh
-            position={[pos.x, size.y + 0.08, pos.z]}
-            rotation-x={Math.PI / -2}
-            rotation-z={rotation}
-          >
-            <planeGeometry args={[size.x + widthOffset, size.z]} />
-            <meshStandardMaterial color="#20ff20" />
-          </mesh> */}
           <DragControls
             matrix={matrix}
             autoTransform={false}
@@ -263,9 +255,7 @@ export default function KitchenUnit({
     const pos = new Vector3(unit.pos.x, 0, unit.pos.z)
     let w = unit.width / 1000
     if (unit.type === 'base' && unit.style?.includes('corner')) {
-      const offset = unit.style?.includes('left') ? -0.1565 : +0.1565
       w += 0.61
-      pos.add(new Vector3(offset, 0, 0).applyAxisAngle(vectorY, unit.rotation))
     }
     const d = unit.depth / 1000
     return [

@@ -63,7 +63,7 @@ export default function CabinetCorner({
   const coverPanelWidth = carcassInnerWidth - interiorOpeningWidth - 0.018
 
   const panelOffset =
-    openingOrientation === 'left'
+    openingOrientation === 'right'
       ? -carcassInnerWidth / 2 + coverPanelWidth / 2 - panelThickness / 4
       : carcassInnerWidth / 2 - coverPanelWidth / 2 + panelThickness / 4
 
