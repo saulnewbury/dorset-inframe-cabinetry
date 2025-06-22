@@ -163,13 +163,7 @@ export default function KitchenUnit({
         <group position={[-centreOffsetX, 0, -centreOffsetZ]}>
           {type === 'base' && <BaseUnit {...{ width, variant, style }} />}
           {type === 'tall' && <TallUnit {...{ width, variant, style }} />}
-          {type === 'wall' && (
-            <CabinetWall
-              carcassInnerWidth={width / 1000 - 0.036}
-              carcassDepth={0.282}
-              style={style}
-            />
-          )}
+          {type === 'wall' && <WallUnit {...{ width, style }} />}
         </group>
       </group>
       {(showHandle || dragging) && (
@@ -566,4 +560,18 @@ function TallUnit({ width, variant, style }) {
   const option =
     tallUnitStyles[variant].find((s) => s.id === style) ?? nullStyle
   return <Cabinet {...option.props} carcassInnerWidth={width / 1000 - 0.036} />
+}
+
+/**
+ * Child component to render a tall unit.
+ */
+function WallUnit({ width, style }) {
+  const option = wallUnitStyles.find((s) => s.id === style) ?? nullStyle
+  return (
+    <CabinetWall
+      {...option.props}
+      carcassInnerWidth={width / 1000 - 0.036}
+      carcassDepth={0.282}
+    />
+  )
 }
