@@ -44,7 +44,6 @@ export default function List({ onClose = () => {} }) {
           onClick={onClose}
         >
           <SvgIcon shape="close" />
-          <span>Close</span>
         </button>
         <div>
           <h2 className="pb-10 pt-14 font-bold px-14">
