@@ -17,7 +17,7 @@ export default function SaveButton({ title, setShowLogin = () => {} }) {
   const [model, dispatch] = useContext(ModelContext)
   const [session] = useContext(SessionContext)
 
-  const canSave = model.units.length + model.cart.length > 0
+  const canSave = model.units.length > 0
 
   const saveModelCB = useCallback(saveModel, [
     session,
@@ -47,7 +47,7 @@ export default function SaveButton({ title, setShowLogin = () => {} }) {
         </Button>
       ) : (
         <button
-          className="inline-block relative disabled:cursor-not-allowed"
+          className="inline-block relative disabled:cursor-not-allowed disabled:opacity-0.5"
           onClick={saveModel}
           title="Save and submit"
           disabled={!canSave}
