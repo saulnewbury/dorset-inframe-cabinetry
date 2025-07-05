@@ -35,11 +35,11 @@ export default function SvgFloorPattern({
           key={i}
           className={twMerge('svg-icon inline-block cursor-pointer', classes)}
           style={style}
-          width={`${factor ? width * factor : item.icon.width}`}
-          height={`${factor ? height * factor : item.icon.height}`}
-          viewBox={`0 0 ${width ? width : item.icon.width} ${
-            height ? height : item.icon.height
-          }`}
+          // width={`${factor ? width * factor : item.icon.width}`}
+          // height={`${factor ? height * factor : item.icon.height}`}
+          width={`${width}`}
+          height={`${height}`}
+          viewBox={`0 0 ${width} ${height}`}
           role='img'
           aria-label={alt}
         >

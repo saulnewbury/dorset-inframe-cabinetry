@@ -308,10 +308,10 @@ export default function ChooseStyles() {
   return (
     <DialogInnerContainer>
       {/* Cabinets color */}
-      <div className="mb-6 relative">
-        <p className="text-gray-400 text-[.8rem] mb-3">Cabinets</p>
+      <div className='mb-6 relative'>
+        <p className='text-gray-400 text-[.8rem] mb-3'>Cabinets</p>
         <div
-          className="relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100"
+          className='relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100'
           style={{ backgroundColor: cabinetsColor }}
           onClick={() => {
             if (open) return
@@ -320,7 +320,7 @@ export default function ChooseStyles() {
         >
           <div
             style={{ color: cabinetsColor }}
-            className="absolute bottom-1 mix-blend-exclusion pl-2 text-sm"
+            className='absolute bottom-1 mix-blend-exclusion pl-2 text-sm'
           >
             {cabinetsColor}
           </div>
@@ -328,9 +328,9 @@ export default function ChooseStyles() {
         {picker === 'cabinets' && (
           <div
             ref={activePickerRef}
-            className="bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg"
+            className='bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
           >
-            <p className="text-gray-600 text-[.8rem] mb-5">Choose a colour</p>
+            <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
               selectedColor={cabinetsColor}
               onClick={(hex) => {
@@ -341,10 +341,10 @@ export default function ChooseStyles() {
         )}
       </div>
       {/* Worktop color */}
-      <div className="mb-6 relative">
-        <p className="text-gray-400 text-[.8rem] mb-3">Worktop</p>
+      <div className='mb-6 relative'>
+        <p className='text-gray-400 text-[.8rem] mb-3'>Worktop</p>
         <div
-          className="relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100"
+          className='relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100'
           style={{ backgroundColor: worktopColor }}
           onClick={() => {
             if (open) return
@@ -353,7 +353,7 @@ export default function ChooseStyles() {
         >
           <div
             style={{ color: worktopColor }}
-            className="absolute bottom-1 mix-blend-exclusion pl-2 text-sm"
+            className='absolute bottom-1 mix-blend-exclusion pl-2 text-sm'
           >
             {worktopColor}
           </div>
@@ -361,9 +361,9 @@ export default function ChooseStyles() {
         {picker === 'worktop' && (
           <div
             ref={activePickerRef}
-            className="bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg"
+            className='bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
           >
-            <p className="text-gray-600 text-[.8rem] mb-5">Choose a colour</p>
+            <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
               selectedColor={worktopColor}
               onClick={(hex) => {
@@ -374,10 +374,10 @@ export default function ChooseStyles() {
         )}
       </div>
       {/* Walls color */}
-      <div className="mb-6 relative">
-        <p className="text-gray-400 text-[.8rem] mb-3">Walls</p>
+      <div className='mb-6 relative'>
+        <p className='text-gray-400 text-[.8rem] mb-3'>Walls</p>
         <div
-          className="relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100"
+          className='relative rounded-lg w-[120px] aspect-[9/5] border-[0.5px] border-black cursor-pointer [&>div]:opacity-0 [&>div]:hover:opacity-100'
           style={{ backgroundColor: wallColor }}
           onClick={() => {
             if (open) return
@@ -386,7 +386,7 @@ export default function ChooseStyles() {
         >
           <div
             style={{ color: wallColor }}
-            className="absolute bottom-1 mix-blend-exclusion pl-2 text-sm"
+            className='absolute bottom-1 mix-blend-exclusion pl-2 text-sm'
           >
             {wallColor}
           </div>
@@ -394,9 +394,9 @@ export default function ChooseStyles() {
         {picker === 'wall' && (
           <div
             ref={activePickerRef}
-            className="bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg"
+            className='bg-[#dddddd] z-[500] absolute -top-[16px] left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg'
           >
-            <p className="text-gray-600 text-[.8rem] mb-5">Choose a colour</p>
+            <p className='text-gray-600 text-[.8rem] mb-5'>Choose a colour</p>
             <ColorPicker
               selectedColor={wallColor}
               onClick={(hex) => {
@@ -408,16 +408,16 @@ export default function ChooseStyles() {
       </div>
 
       {/* Floor */}
-      <div className="mb-6 relative min-h-[120px]">
-        <div className="mb-3 flex items-center gap-[4.5rem] cursor-pointer">
-          <p className="text-gray-400 text-[.8rem]">Floor</p>
+      <div className='mb-6 relative min-h-[120px]'>
+        <div className='mb-3 flex items-center gap-[4.5rem] cursor-pointer'>
+          <p className='text-gray-400 text-[.8rem]'>Floor</p>
           <span
             className={`w-5 h-5 flex justify-center items-center rounded-full scale-[1.3] transition chevron-icon ${
               open ? 'rotate-[90deg]' : 'rotate-[0deg]'
             }`}
             onClick={handleChevronClick}
           >
-            <SvgIcon shape="chevron-right" />
+            <SvgIcon shape='chevron-right' />
           </span>
         </div>
         {/* Floor Colors (if there is no mainColor present only show one picker) */}
@@ -429,7 +429,7 @@ export default function ChooseStyles() {
             }
             bg-[#dddddd] z-[500] absolute left-[150px] shadow-xl h-[max-content] w-[250px] px-[15px] py-[15px] rounded-lg`}
           >
-            <p className="text-gray-600 text-[.8rem] mb-5">
+            <p className='text-gray-600 text-[.8rem] mb-5'>
               {floorPatterns[patternId]?.parity ? 'Odd tiles' : 'Choose colour'}
             </p>
             <ColorPicker
@@ -441,7 +441,7 @@ export default function ChooseStyles() {
             {floorPatterns[patternId]?.parity && (
               <>
                 <br />
-                <p className="text-gray-600 text-[.8rem] mb-5">Even tiles</p>
+                <p className='text-gray-600 text-[.8rem] mb-5'>Even tiles</p>
                 <ColorPicker
                   selectedColor={floor.colorB}
                   onClick={(hex) => {
@@ -455,7 +455,7 @@ export default function ChooseStyles() {
 
         {/* Slider */}
         <div
-          className="absolute top-[2rem] left-0"
+          className='absolute top-[2rem] left-0'
           ref={containerRef}
           onClick={(e) => {
             // Prevent this click from triggering the outside click handler
@@ -480,21 +480,13 @@ export default function ChooseStyles() {
               >
                 <div
                   style={{ backgroundColor: floor.colorA }}
-                  className={`rounded-lg text-red-500 ${floor.containerClasses}`}
+                  className={`rounded-lg text-red-500 ${floor.containerClasses}  flex items-center justify-center scale-[1.25]`}
                 >
                   <SvgFloorPattern
                     {...pattern.svgProps}
                     color={floor.colorB ? floor.colorB : ''}
                   />
                 </div>
-                {/* <div
-                    style={{ color: floor.color[0] }}
-                    className='absolute bottom-1 mix-blend-exclusion pl-2 text-sm'
-                  >
-                    {floor.length === 2
-                      ? floor.color[0] + ' ' + floor.color[0]
-                      : floor.color[0]}
-                  </div> */}
               </div>
             )
           })}
@@ -503,24 +495,24 @@ export default function ChooseStyles() {
 
       {/* Reset colors modal */}
       <button
-        className="text-sm text-[#555555] hover:underline"
+        className='text-sm text-[#555555] hover:underline'
         onClick={() => {
           setResetModal(true)
         }}
       >
         Reset colors &nbsp;
         <span>
-          <SvgIcon shape="chevron-right" classes="scale-[1.3]" />
+          <SvgIcon shape='chevron-right' classes='scale-[1.3]' />
         </span>
       </button>
       {/* Modal*/}
       {resetModal && (
         <>
-          <div className="w-full h-full bg-black absolute top-0 left-0 z-[60] opacity-10"></div>
-          <div className="h-[200px] w-[35vw] shadow-xl absolute z-[900] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] flex justify-center items-center bg-white">
+          <div className='w-full h-full bg-black absolute top-0 left-0 z-[60] opacity-10'></div>
+          <div className='h-[200px] w-[35vw] shadow-xl absolute z-[900] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] flex justify-center items-center bg-white'>
             <div>
-              <p className="text-center mb-6">Are you sure?</p>
-              <div className="flex justify-center items-center gap-3">
+              <p className='text-center mb-6'>Are you sure?</p>
+              <div className='flex justify-center items-center gap-3'>
                 <Button
                   primary
                   onClick={() => {
