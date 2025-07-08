@@ -59,8 +59,7 @@ export default function Experience({ is3D }) {
   const walls = useRef()
   const light = useRef()
 
-  // useHelper(light, THREE.DirectionalLightHelper, 1)
-  useHelper(light, THREE.PointLightHelper, 1)
+  // useHelper(light, THREE.PointLightHelper, 1)
 
   const hovered = useRef(new Set())
 

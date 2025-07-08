@@ -1,11 +1,13 @@
+import SvgIcon from './SvgIcon'
+
 /**
  * Renders a table row for a kitchen unit, including image, description, quantity
  * and price.
  */
 
-export default function UnitRow({ item }) {
+export default function UnitRow({ item, onAdd, onRemove }) {
   return (
-    <div className="grid grid-cols-[8rem,1fr,4rem] items-center gap-x-4 mb-3 pb-3 border-b-[1px] border-solid border-[#c7c7c7]">
+    <div className="grid grid-cols-[8rem,1fr,4rem,3.5rem] items-center gap-x-4 mb-3 pb-3 border-b-[1px] border-solid border-[#c7c7c7]">
       <div className="w-[100px] h-[100px]">
         {item.image && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -31,6 +33,22 @@ export default function UnitRow({ item }) {
         </div>
       </div>
       <div className="font-bold text-right pr-2">£{item.total}</div>
+      <div className="flex justify-between">
+        <button
+          title="Add"
+          className="w-6 h-6 rounded-full hover:bg-lightGrey"
+          onClick={onAdd}
+        >
+          +
+        </button>
+        <button
+          title="Reduce"
+          className="w-6 h-6 rounded-full hover:bg-lightGrey"
+          onClick={onRemove}
+        >
+          &ndash;
+        </button>
+      </div>
     </div>
   )
 }

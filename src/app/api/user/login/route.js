@@ -23,10 +23,10 @@ export async function POST(request) {
 
     const result = await prisma.$transaction(async (tx) => {
       // Check that the user exists.
-      const user = await prisma.user.findUnique({
+      const user = await tx.user.findUnique({
         where: { email }
       })
-      if (!user) throw new Error('User not found')
+      if (!user) return { error: 'User not found' }
 
       const { password: pwdb, salt } = user
 
@@ -38,7 +38,7 @@ export async function POST(request) {
         })
       })
 
-      if (pwd !== pwdb) throw new Error('User not found')
+      if (pwd !== pwdb) return { error: 'User not found' }
       // Create a new session for the user.
       const { sessionId, expires } = await createSession(email, tx)
 

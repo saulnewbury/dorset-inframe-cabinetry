@@ -35,7 +35,9 @@ export default function SaveButton({ title, setShowLogin = () => {} }) {
   }, [session, isSave, saveModelCB, setShowLogin])
 
   return (
-    <span className={twMerge('inline-block relative', title && 'w-full')}>
+    <div
+      className={twMerge('inline-block relative', title ? 'w-full' : 'h-full')}
+    >
       {title ? (
         <Button
           primary
@@ -46,33 +48,38 @@ export default function SaveButton({ title, setShowLogin = () => {} }) {
           {title}
         </Button>
       ) : (
-        <button
-          className="inline-block relative disabled:cursor-not-allowed disabled:opacity-0.5"
-          onClick={saveModel}
-          title="Save and submit"
-          disabled={!canSave}
-        >
-          <SvgIcon shape="save" />
-        </button>
+        <div className="link-container h-full">
+          <div className="link h-full flex items-center">
+            <button
+              className="block h-full relative disabled:cursor-not-allowed disabled:opacity-0.5"
+              onClick={saveModel}
+              title="Save and submit"
+              disabled={!canSave}
+            >
+              <SvgIcon shape="save" />
+            </button>
+          </div>
+        </div>
       )}
 
-      {showModelSaved && (
-        <ModelSavedDialog
-          result={saveResult}
-          onClose={() => {
-            setShowModelSaved(false)
-          }}
-          onSubmit={() => {
-            setShowModelSaved(false)
-            setShowSubmitModal(true)
-          }}
-        />
-      )}
+      <ModelSavedDialog
+        isOpen={showModelSaved}
+        model={model}
+        result={saveResult}
+        onClose={() => {
+          setShowModelSaved(false)
+        }}
+        onSubmit={() => {
+          setShowModelSaved(false)
+          setShowSubmitModal(true)
+        }}
+      />
 
-      {showSubmitModal && (
-        <SubmitModelDialog onClose={() => setShowSubmitModal(false)} />
-      )}
-    </span>
+      <SubmitModelDialog
+        isOpen={showSubmitModal}
+        onClose={() => setShowSubmitModal(false)}
+      />
+    </div>
   )
 
   async function saveModel() {

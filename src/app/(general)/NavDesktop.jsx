@@ -14,7 +14,7 @@ import '../nav.css'
 export default function NavDesktop({ showCart = true }) {
   return (
     <>
-      <nav className="z-40 hidden lg:flex bg-white fixed w-[100vw] px-[37px] h-[4.5rem] justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid">
+      <nav className="z-50 hidden lg:flex bg-white fixed w-[100vw] px-[37px] h-[4.5rem] justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid">
         {/* {isOpen && (
           <div className='backpanel bg-[#ffffff] h-[328px] w-full fixed top-[72px] left-0'></div>
         )} */}

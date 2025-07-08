@@ -10,7 +10,7 @@ const quoteCracker = 'quoteCracker'
 const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
 const isRecaptcha = !!recaptchaSiteKey
 
-export default function SubmitCartDialog({ onClose = () => {} }) {
+export default function SubmitCartDialog({ isOpen, onClose = () => {} }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [postcode, setPostcode] = useState('')
@@ -18,116 +18,125 @@ export default function SubmitCartDialog({ onClose = () => {} }) {
   const [result, setResult] = useState(null)
   const [model, dispatch] = useContext(ModelContext)
   const form = useRef(null)
+  const dialog = useRef(null)
+  const [mounted, setMounted] = useState(false)
 
   const canSubmit = !!postcode
   const disabled = !!message
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    const pos = window.scrollY
-    return () => {
-      // Restore scroll position when the dialog is closed
-      window.scrollTo(0, pos)
-    }
+    setMounted(true)
   }, [])
 
-  return createPortal(
-    <div className="bg-[#0000003f] h-[100vh] w-[100vw] fixed top-0 left-0 z-[500] flex justify-center items-center">
-      <div className="w-[600px] bg-[white] text-xl p-12 relative ">
-        {result ? (
-          <div className="text-base">
-            {result.error ? (
-              <p>Submission failed: {result.error}</p>
-            ) : (
-              <>
-                <h2 className="text-lg mb-4">
-                  Congratulations on submitting your request!
-                </h2>
-                <p>
-                  We will contact you within 48hrs to provide you with a quote
-                  for the items you have requested.
+  useEffect(() => {
+    if (isOpen) {
+      dialog.current.autofocus = true
+      dialog.current.showModal()
+    } else dialog.current?.close()
+  }, [isOpen])
+
+  return (
+    mounted &&
+    createPortal(
+      <dialog ref={dialog} onCancel={onClose}>
+        <div className="bg-[#0000003f] h-[100vh] w-[100vw] fixed top-0 left-0 z-[500] flex justify-center items-center">
+          <div className="w-[600px] bg-[white] text-xl p-12 relative ">
+            {result ? (
+              <div className="text-base">
+                {result.error ? (
+                  <p>Submission failed: {result.error}</p>
+                ) : (
+                  <>
+                    <h2 className="text-lg mb-4">
+                      Congratulations on submitting your request!
+                    </h2>
+                    <p>
+                      We will contact you within 48hrs to provide you with a
+                      quote for the items you have requested.
+                    </p>
+                  </>
+                )}
+                <p className="mt-6 flex justify-end gap-8">
+                  <Button
+                    primary={!result.error}
+                    onClick={() => {
+                      setResult(null)
+                      onClose()
+                    }}
+                  >
+                    Close
+                  </Button>
                 </p>
-              </>
-            )}
-            <p className="mt-6 flex justify-end gap-8">
-              <Button
-                primary={!result.error}
-                onClick={() => {
-                  setResult(null)
-                  onClose()
-                }}
-              >
-                Close
-              </Button>
-            </p>
-          </div>
-        ) : (
-          <div className="text-base">
-            <form ref={form} onSubmit={doSubmit}>
-              <h2 className="text-xl font-medium mb-4">
-                Submit your request for a quote:
-              </h2>
-              <p className="mb-6">
-                All items are made to order, so please tell us about you and
-                your location.
-              </p>
-              <div className="flex flex-col gap-y-6">
-                <TextInput
-                  name="name"
-                  label="Your name"
-                  type="text"
-                  value={name}
-                  disabled={disabled}
-                  onChange={(value) => {
-                    setName(value)
-                    form.current['name'].setCustomValidity(
-                      /^[\w\s\d]*$/.test(name)
-                        ? ''
-                        : 'Name can only contain letters, numbers and spaces'
-                    )
-                  }}
-                />
-                <TextInput
-                  name="email"
-                  label="Email address"
-                  type="email"
-                  value={email}
-                  disabled={disabled}
-                  onChange={(value) => {
-                    setEmail(value)
-                    form.current['email'].setCustomValidity(
-                      /^[\w\d.@]*$/.test(email)
-                        ? ''
-                        : 'Address must match the format of an email address'
-                    )
-                  }}
-                />
-                <TextInput
-                  name="postcode"
-                  label="Postcode"
-                  value={postcode}
-                  onChange={setPostcode}
-                />
               </div>
-              <p className="flex justify-end gap-8 col-span-2 mt-8">
-                <Button type="button" onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  primary={true}
-                  disabled={!canSubmit || disabled}
-                >
-                  Next
-                </Button>
-              </p>
-            </form>
-            <p className="mt-6">{message}</p>
+            ) : (
+              <div className="text-base">
+                <form ref={form} onSubmit={doSubmit}>
+                  <h2 className="text-xl font-medium mb-4">
+                    Submit your request for a quote:
+                  </h2>
+                  <p className="mb-6">
+                    All items are made to order, so please tell us about you and
+                    your location.
+                  </p>
+                  <div className="flex flex-col gap-y-6">
+                    <TextInput
+                      name="name"
+                      label="Your name"
+                      type="text"
+                      value={name}
+                      disabled={disabled}
+                      onChange={(value) => {
+                        setName(value)
+                        form.current['name'].setCustomValidity(
+                          /^[\w\s\d]*$/.test(name)
+                            ? ''
+                            : 'Name can only contain letters, numbers and spaces'
+                        )
+                      }}
+                    />
+                    <TextInput
+                      name="email"
+                      label="Email address"
+                      type="email"
+                      value={email}
+                      disabled={disabled}
+                      onChange={(value) => {
+                        setEmail(value)
+                        form.current['email'].setCustomValidity(
+                          /^[\w\d.@]*$/.test(email)
+                            ? ''
+                            : 'Address must match the format of an email address'
+                        )
+                      }}
+                    />
+                    <TextInput
+                      name="postcode"
+                      label="Postcode"
+                      value={postcode}
+                      onChange={setPostcode}
+                    />
+                  </div>
+                  <p className="flex justify-end gap-8 col-span-2 mt-8">
+                    <Button type="button" onClick={onClose}>
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      primary={true}
+                      disabled={!canSubmit || disabled}
+                    >
+                      Next
+                    </Button>
+                  </p>
+                </form>
+                <p className="mt-6">{message}</p>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>,
-    document.body
+        </div>
+      </dialog>,
+      document.body
+    )
   )
 
   function doSubmit(e) {

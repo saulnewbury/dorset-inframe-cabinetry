@@ -37,11 +37,6 @@ export default function Estimate({
           Summary
         </button>
       </p>
-      {/* <p className="py-3">
-        <button onClick={() => onShowSummary(true)}>
-          <SvgIcon shape="printer" />
-        </button>
-      </p> */}
       <p className="!mt-6">
         <SaveButton title="Proceed" setShowLogin={setShowLogin} />
       </p>

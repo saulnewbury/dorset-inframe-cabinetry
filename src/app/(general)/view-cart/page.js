@@ -52,48 +52,60 @@ export default function ViewCart() {
         />
       )}
       <HeroText markup={'Your Cart'} />
-      <section className='gutter pb-[6rem]'>
+      <section className="gutter pb-[6rem]">
         {hasCart ? (
-          <div className='gutter'>
-            <div className='text-base my-6'>
+          <div className="gutter">
+            <div className="text-base my-6">
               {units.map((item, idx) => (
-                <UnitRow item={item} key={'unit-' + idx} />
+                <UnitRow
+                  item={item}
+                  key={'unit-' + idx}
+                  onAdd={() => addItem(item)}
+                  onRemove={() => removeItem(item)}
+                />
               ))}
               {appliances.map((item, idx) => (
-                <ApplianceRow item={item} key={'appliance-' + idx} />
+                <ApplianceRow
+                  item={item}
+                  key={'appliance-' + idx}
+                  onRemove={() => removeItem(item)}
+                />
               ))}
-              <div className='grid grid-cols-[8rem,1fr,4rem] items-center gap-x-4 mb-3 pb-3'>
+              <div className="grid grid-cols-[8rem,1fr,4rem] items-center gap-x-4 mb-3 pb-3">
                 <div></div>
-                <div className='text-right'>Estimated total:</div>
-                <div className='font-bold text-right pr-2'>£{price}</div>
+                <div className="text-right">Estimated total:</div>
+                <div className="font-bold text-right pr-2">£{price}</div>
               </div>
             </div>
-            <p className='flex gap-6'>
+            <p className="flex gap-6 justify-end">
               <Button primary onClick={() => setShowSubmit(true)}>
                 Submit for quote
               </Button>
-              <Button onClick={resetCart}>Reset cart</Button>
             </p>
           </div>
         ) : (
-          <div className='indent'>
-            <p className='text-base '>
+          <div className="indent">
+            <p className="text-base ">
               Your cart is empty. Please add items to your cart before
               submitting.
             </p>
           </div>
         )}
-        {showSubmit && (
-          <SubmitCartDialog onClose={() => setShowSubmit(false)} />
-        )}
+        <SubmitCartDialog
+          isOpen={showSubmit}
+          onClose={() => setShowSubmit(false)}
+        />
       </section>
       <Footer />
     </>
   )
 
-  function resetCart() {
-    if (confirm('Are you sure you want to reset your cart?')) {
-      dispatch({ id: 'resetCart' })
-    }
+  function addItem(item) {
+    const { finish, ...unit } = item.unit
+    dispatch({ id: 'addToCart', unit, finish })
+  }
+
+  function removeItem(item) {
+    dispatch({ id: 'removeCartItem', item })
   }
 }

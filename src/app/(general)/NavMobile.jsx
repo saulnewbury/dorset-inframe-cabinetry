@@ -41,7 +41,7 @@ export default function NavMobile() {
   }
 
   return (
-    <nav className="z-40 gutter bg-white fixed w-full h-[4.5rem] flex justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid lg:hidden">
+    <nav className="z-50 gutter bg-white fixed w-full h-[4.5rem] flex justify-between items-center font-medium text-[14px] border-b border-lightGrey border-solid lg:hidden">
       <div className="h-[max-content]">
         <Link href="/">
           <span className="font-medium cursor-pointer">

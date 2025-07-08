@@ -27,6 +27,7 @@ function baseInfo(unit) {
   const size = inf.sizes.indexOf(+unit.width)
   return {
     image: `/units/${base}/${base}-${unit.width}-front.webp`,
+    unit: { ...unit },
     info: {
       category: 'Base unit / ' + unit.variant,
       desc: inf.title,
@@ -48,6 +49,7 @@ function wallInfo(unit) {
   const size = inf.sizes.indexOf(+unit.width)
   return {
     image: `/units/${base}/${base}-${unit.width}-front.webp`,
+    unit: { ...unit },
     info: {
       category: 'Wall unit',
       desc: inf.title,
@@ -69,6 +71,7 @@ function tallInfo(unit) {
   const size = inf.sizes.indexOf(+unit.width)
   return {
     image: `/units/${base}/${base}-${unit.width}-front.webp`,
+    unit: { ...unit },
     info: {
       category: 'Tall unit / ' + unit.variant,
       desc: inf.title,

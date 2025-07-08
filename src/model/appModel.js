@@ -39,7 +39,8 @@ const actions = {
   moveUnit,
   deleteUnit,
   addToCart,
-  resetCart
+  resetCart,
+  removeCartItem
 }
 
 export function updateModel(state, action) {
@@ -442,7 +443,7 @@ function addUnit(state, { type, width, variant, style }) {
       id,
       type,
       width,
-      depth: type === 'wall' ? 300 : style.includes('shallow') ? 282 : 573,
+      depth: type === 'wall' ? 300 : style?.includes('shallow') ? 282 : 573,
       height: type === 'base' ? 840 : 2130,
       variant,
       style,
@@ -485,7 +486,7 @@ function addToCart(state, { unit, finish }) {
   const cart = state.cart.concat({
     ...unit,
     depth:
-      unit.type === 'wall' ? 300 : unit.style.includes('shallow') ? 282 : 573,
+      unit.type === 'wall' ? 300 : unit.style?.includes('shallow') ? 282 : 573,
     height: unit.type === 'base' ? 840 : 2130,
     finish,
     id: state.cart.reduce((id, u) => Math.max(id, u.id), -1) + 1
@@ -503,5 +504,20 @@ function resetCart(state) {
   return {
     ...state,
     cart: []
+  }
+}
+
+/**
+ * Removes an item from the cart.
+ */
+function removeCartItem(state, { item }) {
+  const match =
+    item.type === 'appliance'
+      ? state.cart.findIndex((u) => u.code === item.code)
+      : state.cart.findIndex((u) => u.id === item.unit.id)
+  if (match < 0) return state // Item not found in cart
+  return {
+    ...state,
+    cart: state.cart.toSpliced(match, 1)
   }
 }

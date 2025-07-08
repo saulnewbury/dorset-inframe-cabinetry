@@ -1,14 +1,13 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import Link from 'next/link'
 import SparkMD5 from 'spark-md5'
 
 import HeroText from '@/components/HeroText'
 import TextInput from '@/components/TextInput'
 import Textarea from '@/components/Textarea'
 import Script from 'next/script'
-
+import Button from '@/components/Button'
 import Footer from '@/components/Footer'
 
 const contactCracker = 'contactCracker'
@@ -87,12 +86,15 @@ export default function Page() {
                   value={message}
                   onChange={(text) => setMessage(text)}
                 />
-                <button
-                  type="submit"
-                  className="bg-darkGrey text-white px-6 py-3 mt-4"
-                >
-                  Submit
-                </button>
+                <div className="flex justify-end">
+                  <Button
+                    type="submit"
+                    primary
+                    classes="bg-darkGrey text-white"
+                  >
+                    Submit
+                  </Button>
+                </div>
                 <p>{error}</p>
               </form>
             </div>

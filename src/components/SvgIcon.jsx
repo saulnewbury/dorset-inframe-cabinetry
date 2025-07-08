@@ -100,7 +100,7 @@ export default function SvgIcon({
         <svg
           key={i}
           className={twMerge(
-            'svg-icon inline-block cursor-pointer fill-transparent stroke-[currentColor]',
+            'svg-icon inline-block cursor-pointer fill-transparent stroke-[currentColor] pointer-events-none',
             classes
           )}
           width={`${item.icon.width}`}
