@@ -16,6 +16,7 @@ nav .link::before {
   width: 100%;
   border-bottom: solid 1px black;
   opacity: 0;
+  pointer-events: none;
   /* @apply z-[45]; */
 }
 

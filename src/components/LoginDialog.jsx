@@ -45,7 +45,7 @@ export default function LoginDialog({
     createPortal(
       <dialog ref={dialog} onCancel={onClose}>
         <div className="bg-[#0000003f] h-[100vh] w-[100vw] fixed top-0 left-0 z-[500] flex justify-center items-center">
-          <div className="w-[600px] bg-[white] text-xl p-12 relative ">
+          <div className="w-[600px] bg-[white] p-12 relative ">
             {isProblem ? (
               <div>
                 <p>

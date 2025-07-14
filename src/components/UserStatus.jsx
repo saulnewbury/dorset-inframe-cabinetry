@@ -46,7 +46,10 @@ export default function UserStatus({ showLogin = false }) {
           <button
             type="button"
             className="flex gap-x-2 cursor-pointer"
-            onClick={() => setShowLogin(!showLogin)}
+            onClick={() => {
+              console.log('Login button clicked')
+              setShowLogin(!showLoginModal)
+            }}
           >
             <span>Login</span>
             <SvgIcon shape="login" />

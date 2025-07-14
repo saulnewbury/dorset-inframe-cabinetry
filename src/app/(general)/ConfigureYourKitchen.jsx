@@ -74,13 +74,12 @@ export default function ConfigureYourKitchen({ classes = '' }) {
           />
         )}
       </section>
-      {showLogin && (
-        <LoginDialog
-          onClose={() => {
-            setShowLogin(false)
-          }}
-        />
-      )}
+      <LoginDialog
+        isOpen={showLogin}
+        onClose={() => {
+          setShowLogin(false)
+        }}
+      />
     </>
   )
 

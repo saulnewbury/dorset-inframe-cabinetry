@@ -28,7 +28,7 @@ export default function ModelSavedDialog({
     createPortal(
       <dialog onCancel={onClose} ref={dialog}>
         <div className="bg-[#0000003f] h-[100vh] w-[100vw] fixed top-0 left-0 z-[500] flex justify-center items-center">
-          <div className="w-[600px] bg-[white] text-xl p-12 relative ">
+          <div className="w-[600px] bg-[white] p-12 relative ">
             {result?.error ? (
               <>
                 <p>Model save failed: {result.error}</p>
